@@ -20,15 +20,18 @@ reproduction is therefore not contaminated by sparse-mode tweaks.
 """
 from __future__ import annotations
 
+import math
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from math import sqrt
 from typing import Literal
 
+from common.types import FrameKind
 from extractors.base import EntityArtifact, EntityArtifacts
 from graph.relations.base import (
     RelationExtractorConfig, RelationExtractorDiagnostics,
-    count_logical_edges, make_edge_id, make_entity_ref,
+    count_logical_edges, edge_frame, make_edge_id, make_entity_ref,
+    margin_confidence, ratio_margin,
 )
 from graph.schema import Edge, EdgeRejection, EdgeType
 
@@ -58,10 +61,42 @@ class DirectionalConfig:
     mode: Literal["compat", "sparse"]
     sparse_min_delta: float = 0.5
     sparse_max_distance: float = 2.5
+    # Calibration opt-in. False = frozen behavior (confidence is literally 1.0);
+    # hash_omit_if_default keeps default config hashes byte-identical.
+    emit_margins: bool = field(
+        default=False, metadata={"hash_omit_if_default": True})
 
 
 def _euclid_3d(a: tuple[float, float, float], b: tuple[float, float, float]) -> float:
     return sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2)
+
+
+def _dominance_margin(
+    dx: float, dy: float, dz: float, min_delta: float,
+) -> float:
+    """Normalized axis-dominance margin for one directional edge.
+
+    The extractor reads two decisions off the same three numbers: (1) is the
+    separation worth reporting at all — `dominant >= min_delta` — and (2) which
+    axis owns it — `dominant == max(|dx|, |dy|, |dz|)`. Both must hold for THIS
+    edge to be the one emitted, so the binding competitor is whichever is
+    larger: the threshold, or the runner-up axis. The margin is the gap to that
+    competitor, normalized by min_delta (the extractor's own notion of "a
+    separation worth reporting").
+
+    Consequence, and the reason to prefer this over `dominant - min_delta`
+    alone: two nearly-tied axes land near 0.5 even when both are far past the
+    threshold. "left of" chosen by 1 cm over "behind" is exactly the ambiguity
+    a downstream risk-coverage sweep needs to be able to see.
+
+    Sign invariant: >= 0 iff the dominant axis both clears min_delta and is the
+    max, i.e. iff an edge of this type is emitted.
+    """
+    deltas = sorted((abs(dx), abs(dy), abs(dz)))
+    dominant, runner_up = deltas[2], deltas[1]
+    if min_delta <= 0.0:
+        return math.inf
+    return (dominant - max(min_delta, runner_up)) / min_delta
 
 
 def _build_edge(
@@ -71,7 +106,9 @@ def _build_edge(
     *,
     extractor: str,
     version: str,
+    frame: FrameKind,
     evidence: dict,
+    confidence: float = 1.0,
 ) -> Edge:
     source = make_entity_ref(src.identity.object_uid)
     target = make_entity_ref(tgt.identity.object_uid)
@@ -80,9 +117,9 @@ def _build_edge(
         source=source,
         type=type_,
         target=target,
-        frame="world",
+        frame=frame,
         weight=1.0,
-        confidence=1.0,
+        confidence=confidence,
         extractor=extractor,
         extractor_version=version,
         evidence=evidence,
@@ -119,8 +156,14 @@ def extract_compat(
     *,
     extractor: str,
     version: str,
+    frame: FrameKind,
+    emit_margins: bool = False,
 ) -> tuple[list[Edge], dict[EdgeType, int]]:
-    """Legacy reproduction. Iteration order matches relations/compute.py."""
+    """Legacy reproduction. Iteration order matches relations/compute.py.
+
+    Continuous quantity: the dominant centroid-axis delta, thresholded at
+    LEGACY_MIN_DELTA. With emit_margins, confidence =
+    margin_confidence(_dominance_margin(dx, dy, dz, LEGACY_MIN_DELTA))."""
     edges: list[Edge] = []
     counts: dict[EdgeType, int] = {}
     n = len(entities)
@@ -134,9 +177,16 @@ def extract_compat(
             if result is None:
                 continue
             rel, evidence = result
+            confidence = 1.0
+            if emit_margins:
+                confidence = margin_confidence(_dominance_margin(
+                    evidence["dx"], evidence["dy"], evidence["dz"],
+                    LEGACY_MIN_DELTA,
+                ))
             edges.append(_build_edge(
                 a, b, rel,
-                extractor=extractor, version=version, evidence=evidence,
+                extractor=extractor, version=version, frame=frame,
+                evidence=evidence, confidence=confidence,
             ))
             counts[rel] = counts.get(rel, 0) + 1
     return edges, counts
@@ -181,11 +231,23 @@ def extract_sparse(
     *,
     extractor: str,
     version: str,
+    frame: FrameKind,
     sparse_min_delta: float,
     sparse_max_distance: float,
+    emit_margins: bool = False,
 ) -> tuple[list[Edge], dict[EdgeType, int], list[EdgeRejection], dict[EdgeType, int]]:
     """Sparse: one canonical edge per unordered pair, gated on axis
-    dominance AND inter-object distance."""
+    dominance AND inter-object distance.
+
+    Continuous quantities and thresholds (emit_margins only):
+      - emitted edge: dominant axis delta vs sparse_min_delta AND vs the
+        runner-up axis -> _dominance_margin (normalized by sparse_min_delta),
+      - distance rejection: centroid distance vs sparse_max_distance ->
+        ratio_margin (normalized by the threshold),
+      - dominance rejection: the same _dominance_margin, now negative.
+    Rejection margins land in evidence["margin_confidence"] because
+    EdgeRejection has no confidence field (see module note in the margin
+    test)."""
     edges: list[Edge] = []
     counts: dict[EdgeType, int] = {}
     rejections: list[EdgeRejection] = []
@@ -200,39 +262,59 @@ def extract_sparse(
             if distance > sparse_max_distance:
                 rejection_counts["LEFT_OF"] = rejection_counts.get("LEFT_OF", 0) + 1
                 if len(rejections) < max_rejection_samples:
+                    rej_evidence = {
+                        "distance_m": distance,
+                        "sparse_max_distance": sparse_max_distance,
+                    }
+                    if emit_margins:
+                        rej_evidence["margin_confidence"] = margin_confidence(
+                            ratio_margin(distance, sparse_max_distance))
                     rejections.append(EdgeRejection(
                         source=make_entity_ref(a.identity.object_uid),
                         type="LEFT_OF",
                         target=make_entity_ref(b.identity.object_uid),
                         extractor=extractor,
                         rejected_reason="distance_exceeds_sparse_max_distance",
-                        evidence={
-                            "distance_m": distance,
-                            "sparse_max_distance": sparse_max_distance,
-                        },
+                        evidence=rej_evidence,
                     ))
                 continue
             result = _canonical_direction_for_pair(a, b, sparse_min_delta)
             if result is None:
                 rejection_counts["LEFT_OF"] = rejection_counts.get("LEFT_OF", 0) + 1
                 if len(rejections) < max_rejection_samples:
+                    rej_evidence = {
+                        "distance_m": distance,
+                        "sparse_min_delta": sparse_min_delta,
+                    }
+                    if emit_margins:
+                        rej_evidence["margin_confidence"] = margin_confidence(
+                            _dominance_margin(
+                                a.centroid[0] - b.centroid[0],
+                                a.centroid[1] - b.centroid[1],
+                                a.centroid[2] - b.centroid[2],
+                                sparse_min_delta,
+                            ))
                     rejections.append(EdgeRejection(
                         source=make_entity_ref(a.identity.object_uid),
                         type="LEFT_OF",
                         target=make_entity_ref(b.identity.object_uid),
                         extractor=extractor,
                         rejected_reason="axis_dominance_below_sparse_min_delta",
-                        evidence={
-                            "distance_m": distance,
-                            "sparse_min_delta": sparse_min_delta,
-                        },
+                        evidence=rej_evidence,
                     ))
                 continue
             src, tgt, rel, evidence = result
+            confidence = 1.0
+            if emit_margins:
+                confidence = margin_confidence(_dominance_margin(
+                    evidence["dx"], evidence["dy"], evidence["dz"],
+                    sparse_min_delta,
+                ))
             edges.append(_build_edge(
                 src, tgt, rel,
-                extractor=extractor, version=version,
+                extractor=extractor, version=version, frame=frame,
                 evidence={**evidence, "distance_m": distance},
+                confidence=confidence,
             ))
             counts[rel] = counts.get(rel, 0) + 1
     return edges, counts, rejections, rejection_counts
@@ -259,6 +341,7 @@ class DirectionalExtractor:
         if config.mode == "compat":
             edges, counts = extract_compat(
                 entities.entities, extractor=self.name, version=self.version,
+                frame=edge_frame(entities), emit_margins=config.emit_margins,
             )
             rejections: list[EdgeRejection] = []
             rejection_counts: dict[EdgeType, int] = {}
@@ -266,8 +349,10 @@ class DirectionalExtractor:
             edges, counts, rejections, rejection_counts = extract_sparse(
                 entities.entities,
                 extractor=self.name, version=self.version,
+                frame=edge_frame(entities),
                 sparse_min_delta=config.sparse_min_delta,
                 sparse_max_distance=config.sparse_max_distance,
+                emit_margins=config.emit_margins,
             )
         else:
             raise ValueError(f"unknown mode {config.mode!r}")

@@ -34,10 +34,12 @@ object pushed flush against a wall could read as attached (rare).
 """
 from __future__ import annotations
 
+import math
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Literal
 
+from common.types import FrameKind
 from extractors.base import EntityArtifact, EntityArtifacts, StructuralSurface
 from geometry.rest_contact import RestContactConfig, rest_contact
 from geometry.wall_contact import WallContactConfig, wall_contact
@@ -45,7 +47,8 @@ from graph.relations import contacts_surface as _cs
 from graph.relations import on_surface as _os
 from graph.relations.base import (
     RelationExtractorConfig, RelationExtractorDiagnostics,
-    count_logical_edges, make_edge_id, make_entity_ref, make_surface_ref,
+    count_logical_edges, edge_frame, make_edge_id, make_entity_ref, make_surface_ref,
+    margin_confidence, wall_contact_margin,
 )
 from graph.schema import Edge, EdgeRejection, EdgeType
 
@@ -72,6 +75,11 @@ class AttachedToConfig:
     floor_max_tilt_deg: float = _os.DEFAULT_MAX_TILT_DEG
     floor_footprint_tolerance_m: float = _os.DEFAULT_FOOTPRINT_TOLERANCE_M
     include_synth_fallback: bool = False
+    # Calibration opt-in (see _attachment_margin). False = frozen P7 behavior
+    # (confidence is literally 1.0); hash_omit_if_default keeps default config
+    # hashes byte-identical.
+    emit_margins: bool = field(
+        default=False, metadata={"hash_omit_if_default": True})
 
     def __post_init__(self) -> None:
         # Delegate field sanity to the two geometry configs (raise on bad values).
@@ -110,7 +118,48 @@ def _active(surfaces, surface_type, include_synth) -> list[StructuralSurface]:
     return out
 
 
-def _build_edge(entity, surface, evidence, *, extractor, version) -> Edge:
+def _attachment_margin(
+    wall_evidence: dict,
+    best_floor_gap: float | None,
+    floor_contact_threshold_m: float,
+) -> float:
+    """Normalized ATTACHED_TO margin: min over the relation's two gates.
+
+    ATTACHED_TO is a conjunction of "touching the wall" and "NOT resting on a
+    floor", so its confidence is the min of the two gates' margins — the
+    relation is only as comfortable as its weaker half.
+
+      wall gate   wall_contact_margin(evidence) — the four-clause wall
+          conjunction, discriminated by the contact band on wall_gap_m.
+      floor gate  (best_floor_gap - floor_contact_threshold_m) /
+          floor_contact_threshold_m. `best_floor_gap` is the smallest bottom
+          gap over the floors this entity actually sits above and over; the
+          entity is disqualified exactly when that gap is <= the threshold,
+          so the margin is signed correctly and normalized by the same 0.02 m
+          "what counts as touching" scale the disqualifier itself uses. A
+          genuinely wall-mounted sconce is metres clear and saturates, which
+          is the honest reading: the wall gate is what limits it. inf when
+          there is NO floor beneath the entity at all — nothing to be
+          disqualified by, so the clause carries no information and must not
+          bind the min.
+
+    Sign invariant: >= 0 iff wall_contact passed AND the entity is not
+    floor-supported, i.e. iff the edge is emitted (boundary case
+    best_floor_gap == threshold maps to exactly 0.5).
+    """
+    m_wall = wall_contact_margin(wall_evidence)
+    if best_floor_gap is None:
+        m_floor = math.inf
+    elif floor_contact_threshold_m <= 0.0:
+        m_floor = math.inf if best_floor_gap > 0.0 else -math.inf
+    else:
+        m_floor = ((best_floor_gap - floor_contact_threshold_m)
+                   / floor_contact_threshold_m)
+    return min(m_wall, m_floor)
+
+
+def _build_edge(entity, surface, evidence, *, extractor, version,
+                frame: FrameKind, confidence: float = 1.0) -> Edge:
     source = make_entity_ref(entity.identity.object_uid)
     target = make_surface_ref(surface.surface_uid)
     return Edge(
@@ -118,9 +167,9 @@ def _build_edge(entity, surface, evidence, *, extractor, version) -> Edge:
         source=source,
         type="ATTACHED_TO",
         target=target,
-        frame="world",
+        frame=frame,
         weight=1.0,
-        confidence=1.0,
+        confidence=confidence,
         extractor=extractor,
         extractor_version=version,
         evidence=evidence,
@@ -146,6 +195,7 @@ class AttachedToExtractor:
         wall_cfg = config._wall_config()
         rest_cfg = config._rest_config()
         gravity = entities.frame.gravity
+        frame = edge_frame(entities)
         edges: list[Edge] = []
         rejections: list[EdgeRejection] = []
         rejection_counts: dict[EdgeType, int] = {}
@@ -218,18 +268,33 @@ class AttachedToExtractor:
                 evidence["max_wall_tilt_deg"] = config.max_wall_tilt_deg
                 evidence["footprint_tolerance_m"] = config.footprint_tolerance_m
 
+                margin = (_attachment_margin(
+                    result.evidence, best_floor_gap,
+                    rest_cfg.contact_threshold_m,
+                ) if config.emit_margins else None)
+
                 if result.contacts_surface and not floor_supported:
                     edges.append(_build_edge(
                         entity, surface, evidence,
-                        extractor=self.name, version=self.version,
+                        extractor=self.name, version=self.version, frame=frame,
+                        confidence=1.0 if margin is None
+                        else margin_confidence(margin),
                     ))
                 elif result.contacts_surface and floor_supported:
                     rej = dict(evidence)
                     rej["disqualified_reason"] = "floor_supported"
+                    # EdgeRejection has no confidence field; the near-miss
+                    # margin rides in evidence instead. A floor cabinet shoved
+                    # against a wall lands just below 0.5 here — exactly the
+                    # near-miss a risk-coverage sweep needs.
+                    if margin is not None:
+                        rej["margin_confidence"] = margin_confidence(margin)
                     record_rejection(entity, surface, "attached_to_floor_supported", rej)
                 else:
                     rej = dict(evidence)
                     rej["failed_clauses"] = result.failed_clauses
+                    if margin is not None:
+                        rej["margin_confidence"] = margin_confidence(margin)
                     record_rejection(entity, surface, "wall_contact_clauses_failed", rej)
 
         counts: dict[EdgeType, int] = {"ATTACHED_TO": len(edges)}

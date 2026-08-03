@@ -12,6 +12,7 @@ from dataclasses import dataclass, field
 from typing import Literal
 
 from common.serde import plane_to_dict, vec3_to_list
+from common.types import FrameKind
 from extractors.base import EntityArtifact, EntityArtifacts
 from extractors.entity_surfaces import (
     DEFAULT_SUPPORT_CLASS_ALLOWLIST,
@@ -22,7 +23,8 @@ from extractors.entity_surfaces import (
 from geometry.rest_contact import RestContactConfig, rest_contact
 from graph.relations.base import (
     RelationExtractorConfig, RelationExtractorDiagnostics,
-    count_logical_edges, make_edge_id, make_entity_ref,
+    count_logical_edges, edge_frame, make_edge_id, make_entity_ref, margin_confidence,
+    rest_contact_margin,
 )
 from graph.relations.on_surface import (
     DEFAULT_CONTACT_THRESHOLD_M,
@@ -48,6 +50,16 @@ class OnEntitySurfaceConfig:
     support_class_allowlist: tuple[str, ...] = field(
         default_factory=lambda: DEFAULT_SUPPORT_CLASS_ALLOWLIST
     )
+    # Calibration opt-in. Same predicate and therefore the same normalization
+    # as ON_SURFACE (rest_contact_margin: min over the four clause margins,
+    # discriminated by the contact band on bottom_gap_m), only the plane is a
+    # DERIVED entity top rather than a structural surface — so these
+    # confidences also inherit that top's estimation error, which the
+    # structural-surface case does not have. False = frozen P6 behavior
+    # (confidence is literally 1.0); hash_omit_if_default keeps default config
+    # hashes byte-identical.
+    emit_margins: bool = field(
+        default=False, metadata={"hash_omit_if_default": True})
 
     def __post_init__(self) -> None:
         RestContactConfig(
@@ -104,6 +116,8 @@ def _build_edge(
     *,
     extractor: str,
     version: str,
+    frame: FrameKind,
+    confidence: float = 1.0,
 ) -> Edge:
     source = make_entity_ref(entity.identity.object_uid)
     target = make_entity_ref(surface.owner_entity_uid)
@@ -117,9 +131,9 @@ def _build_edge(
         source=source,
         type="ON_ENTITY_SURFACE",
         target=target,
-        frame="world",
+        frame=frame,
         weight=1.0,
-        confidence=1.0,
+        confidence=confidence,
         extractor=extractor,
         extractor_version=version,
         evidence=evidence,
@@ -145,6 +159,7 @@ class OnEntitySurfaceExtractor:
         start = time.perf_counter()
         rest_cfg = _rest_config(config)
         gravity = entities.frame.gravity
+        frame = edge_frame(entities)
         entity_surfaces = derive_entity_top_surfaces(
             entities.entities,
             frame=entities.frame,
@@ -208,14 +223,24 @@ class OnEntitySurfaceExtractor:
                     rest_cfg,
                 )
                 evidence = _evidence_for(result.evidence, surface, config)
+                margin = (rest_contact_margin(result.evidence)
+                          if config.emit_margins else None)
                 if result.on_surface:
                     edges.append(_build_edge(
                         entity, surface, evidence,
-                        extractor=self.name, version=self.version,
+                        extractor=self.name, version=self.version, frame=frame,
+                        confidence=1.0 if margin is None
+                        else margin_confidence(margin),
                     ))
                 else:
                     rej = dict(evidence)
                     rej["failed_clauses"] = result.failed_clauses
+                    # EdgeRejection has no confidence field; the near-miss
+                    # margin rides in evidence. The self-support and
+                    # supported-class rejections above are policy, not
+                    # measurement, and get none.
+                    if margin is not None:
+                        rej["margin_confidence"] = margin_confidence(margin)
                     record_rejection(
                         entity, surface, "rest_contact_clauses_failed", rej,
                     )

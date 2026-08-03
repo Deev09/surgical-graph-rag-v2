@@ -78,6 +78,7 @@ from extractors.base import (
 # match the committed enriched_v2 shape (single source of truth for the math).
 from importers.replica import (
     _dot,
+    gravity_align_matrix,
     _obb_face_corners,
     _orient_polygon,
     _orient_tag,
@@ -111,30 +112,12 @@ FLOOR_CAL_CLUSTER_M = 0.06   # low-cluster width above the lowest voter
 FLOOR_CAL_MIN_VOTERS = 3
 
 
-def _gravity_align_matrix(gravity):
-    """Rotation R mapping physical up (=-gravity) onto +z, so the imported
-    scene is gravity-canonical (up = +z exactly). Different captures have
-    slightly different gravity tilt; the Phase 6 AABB-top derivation requires
-    axis-aligned up, so we align here rather than loosen the predicate.
-    Rodrigues' formula; identity when already aligned, 180-deg flip handled."""
-    gx, gy, gz = gravity
-    m = math.sqrt(gx * gx + gy * gy + gz * gz) or 1.0
-    ux, uy, uz = -gx / m, -gy / m, -gz / m          # up
-    vx, vy, vz = uy * 1.0 - uz * 0.0, uz * 0.0 - ux * 1.0, ux * 0.0 - uy * 0.0  # up x z
-    # up x zhat = (uy, -ux, 0); cos = up . zhat = uz
-    vx, vy, vz = uy, -ux, 0.0
-    c = uz
-    if c > 1 - 1e-12:
-        return ((1.0, 0, 0), (0, 1.0, 0), (0, 0, 1.0))
-    if c < -1 + 1e-12:                                # up points at -z: flip about x
-        return ((1.0, 0, 0), (0, -1.0, 0), (0, 0, -1.0))
-    k = 1.0 / (1.0 + c)
-    # R = I + [v]x + [v]x^2 * k
-    return (
-        (1 + (-(vz * vz) - vy * vy) * k, (-vz) + (vx * vy) * k, (vy) + (vx * vz) * k),
-        ((vz) + (vx * vy) * k, 1 + (-(vz * vz) - vx * vx) * k, (-vx) + (vy * vz) * k),
-        ((-vy) + (vx * vz) * k, (vx) + (vy * vz) * k, 1 + (-(vy * vy) - vx * vx) * k),
-    )
+# Alignment rotation lives in importers/replica.py so BOTH import paths use
+# the same one — the JSON importer there now levels tilted scenes instead of
+# refusing them, and two importers computing "the same" rotation two ways is
+# how the room_2 divergence happened in the first place. Re-exported under the
+# old private name; tools/c2_run.py and tools/mvp_viewer.py import it from here.
+_gravity_align_matrix = gravity_align_matrix
 
 
 def _matvec(R, p):
@@ -490,9 +473,19 @@ def import_habitat_room(
         schema_version=2,
         bundle_hash=bundle_hash,
         scene_id=scene_id,
+        # kind="scene_canonical", NOT "world": R_align has rotated physical up
+        # onto +z (every Replica scene is tilted at least 0.11 deg, so this is
+        # never the identity), and beyond YAW_DEROTATE_GUARD_DEG a yaw
+        # de-rotation is composed on top. Edges extracted from this bundle are
+        # computed in THAT frame. See docs/frame_decision.md.
         frame=SceneFrame(gravity=gravity, canonical_forward=None,
                          canonical_right=None, units="meters",
-                         notes="imported from Replica habitat/info_semantic.json"),
+                         notes=(
+                             "imported from Replica habitat/info_semantic.json; "
+                             "gravity-aligned (up=+z exactly), "
+                             f"yaw_derotation_deg={yaw_derotation_deg}"
+                         ),
+                         kind="scene_canonical"),
         representation_hash=bundle_hash,
         extractor_name="replica_habitat_import",
         extractor_version="0.1",

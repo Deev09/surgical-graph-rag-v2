@@ -27,7 +27,7 @@ from __future__ import annotations
 
 import math
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Literal
 
 from extractors.base import EntityArtifacts, StructuralSurface
@@ -36,7 +36,8 @@ from graph.relations import contacts_surface as _cs
 from graph.relations.attached_to import _active, _build_edge
 from graph.relations.base import (
     RelationExtractorConfig, RelationExtractorDiagnostics,
-    count_logical_edges, make_entity_ref, make_surface_ref,
+    count_logical_edges, edge_frame, make_entity_ref, make_surface_ref,
+    margin_confidence, ratio_margin, wall_contact_margin,
 )
 from graph.schema import Edge, EdgeRejection, EdgeType
 
@@ -58,6 +59,11 @@ class AttachedToV2Config:
     elevated_bottom_min_m: float = 0.30        # disjunct (a) / partition point
     thin_panel_depth_max_m: float = 0.12       # disjunct (b)
     include_synth_fallback: bool = False
+    # Calibration opt-in (see _d1_margin). False = frozen D1 behavior
+    # (confidence is literally 1.0); hash_omit_if_default keeps default config
+    # hashes byte-identical.
+    emit_margins: bool = field(
+        default=False, metadata={"hash_omit_if_default": True})
 
     def __post_init__(self) -> None:
         self._wall_config()
@@ -86,6 +92,52 @@ def _depth_along_normal(aabb, plane) -> float:
     return sum(abs(n[i] / norm) * (hi[i] - lo[i]) for i in range(3))
 
 
+def _d1_margin(
+    wall_evidence: dict,
+    depth: float,
+    bottom_elev: float | None,
+    config: AttachedToV2Config,
+) -> float:
+    """Normalized D1 margin: min over the conjunction, max over the disjunction.
+
+    D1 is `wall_contact AND depth <= 0.35 AND (elevated OR thin panel)`. The
+    conjunction takes the min of its parts (only as comfortable as the tightest
+    clause); the mount disjunction takes the MAX of its two disjuncts (a
+    disjunction is as comfortable as its best-satisfied branch), which also
+    means the score does not jump when a pair crosses the 0.30 m partition
+    point from disjunct (a) to disjunct (b).
+
+      wall     wall_contact_margin(evidence), with D1's widened
+               contact_threshold_m = 0.12 already inside it, so the contact
+               band is [-0.02, +0.12] and its half-width 0.07 m is the scale.
+      depth    (depth_max_m - depth) / depth_max_m, depth being the AABB width
+               projected onto that pair's wall normal. depth_max_m = 0.35 m is
+               both the threshold and the natural scale ("how deep may an
+               attached thing be").
+      mount    (a) (bottom_elevation - 0.30) / 0.30 — the elevation test the
+               protocol names, normalized by its own threshold so a sconce at
+               1.5 m saturates and a shelf at 0.31 m sits just above 0.5;
+               (b) (0.12 - depth) / 0.12 — the thin-panel test.
+
+    bottom_elev is None (no calibrated floor plane) -> -inf: D1 rejects such
+    pairs outright, and the score has to agree rather than paper over a
+    missing input.
+
+    Sign invariant: >= 0 iff the pair satisfies D1, i.e. iff an edge is
+    emitted.
+    """
+    m_wall = wall_contact_margin(wall_evidence)
+    m_depth = ratio_margin(depth, config.depth_max_m)
+    if bottom_elev is None:
+        m_mount = -math.inf
+    else:
+        m_elevated = ((bottom_elev - config.elevated_bottom_min_m)
+                      / config.elevated_bottom_min_m)
+        m_thin = ratio_margin(depth, config.thin_panel_depth_max_m)
+        m_mount = max(m_elevated, m_thin)
+    return min(m_wall, m_depth, m_mount)
+
+
 def _floor_z_at(floors: list[StructuralSurface], x: float, y: float) -> float | None:
     """Calibrated floor-plane height at (x, y), from the first active floor
     (every keyed scene in this track has exactly one)."""
@@ -112,6 +164,7 @@ class AttachedToV2Extractor:
         start = time.perf_counter()
         wall_cfg = config._wall_config()
         gravity = entities.frame.gravity
+        frame = edge_frame(entities)
         edges: list[Edge] = []
         rejections: list[EdgeRejection] = []
         rejection_counts: dict[EdgeType, int] = {}
@@ -158,6 +211,13 @@ class AttachedToV2Extractor:
                     "elevated_bottom_min_m": config.elevated_bottom_min_m,
                     "thin_panel_depth_max_m": config.thin_panel_depth_max_m,
                 })
+                if config.emit_margins:
+                    # EdgeRejection has no confidence field, so every branch
+                    # below — emitted or rejected — carries the margin in
+                    # evidence; the emitted branch additionally puts it on
+                    # Edge.confidence.
+                    evidence["margin_confidence"] = margin_confidence(
+                        _d1_margin(result.evidence, depth, bottom_elev, config))
                 if not result.contacts_surface:
                     evidence["failed_clauses"] = result.failed_clauses
                     reject(entity, surface, "wall_contact_clauses_failed",
@@ -178,9 +238,11 @@ class AttachedToV2Extractor:
                     reject(entity, surface, "low_but_not_thin_panel",
                            evidence)
                     continue
-                edges.append(_build_edge(entity, surface, evidence,
-                                         extractor=self.name,
-                                         version=self.version))
+                edges.append(_build_edge(
+                    entity, surface, evidence,
+                    extractor=self.name, version=self.version, frame=frame,
+                    confidence=evidence.get("margin_confidence", 1.0),
+                ))
 
         runtime_ms = int((time.perf_counter() - start) * 1000)
         return edges, RelationExtractorDiagnostics(

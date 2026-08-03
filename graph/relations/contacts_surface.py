@@ -56,8 +56,9 @@ from extractors.base import EntityArtifact, EntityArtifacts, StructuralSurface
 from geometry.wall_contact import WallContactConfig, wall_contact
 from graph.relations.base import (
     RelationExtractorConfig, RelationExtractorDiagnostics,
-    count_logical_edges, make_edge_id, make_entity_ref, make_surface_ref,
-    room_scale_flat, wall_xy_extent_area,
+    count_logical_edges, edge_frame, make_edge_id, make_entity_ref, make_surface_ref,
+    margin_confidence, room_scale_flat, wall_contact_margin,
+    wall_xy_extent_area,
 )
 from graph.schema import Edge, EdgeRejection, EdgeType
 
@@ -107,6 +108,18 @@ class ContactsSurfaceConfig:
     room_scale_flat_max_height_m: float = field(
         default=DEFAULT_ROOM_SCALE_FLAT_MAX_HEIGHT_M,
         metadata={"hash_omit_if_default": True})
+    # Calibration opt-in. When True the emitted edge's confidence is
+    # margin_confidence(wall_contact_margin(evidence)) — the min over the four
+    # wall-contact clause margins, whose discriminating member is the contact
+    # band on wall_gap_m: [-penetration_tolerance_m (0.02),
+    # +contact_threshold_m (0.02)], normalized by the band's half-width (0.02).
+    # An object flush against the wall reads ~0.98, one 0.018 m off it ~0.55.
+    # NOTE this is the CONTACT band, not the 0.20 m room_scale_flat height cut
+    # or the 0.30 m wall NEAR threshold; those two are policy/superset gates
+    # and do not enter the score. False = frozen P5 behavior (confidence is
+    # literally 1.0); hash_omit_if_default keeps config hashes byte-identical.
+    emit_margins: bool = field(
+        default=False, metadata={"hash_omit_if_default": True})
 
     def __post_init__(self) -> None:
         # Delegate wall-contact field sanity to WallContactConfig.
@@ -186,6 +199,8 @@ def _build_edge(
     *,
     extractor: str,
     version: str,
+    frame: FrameKind,
+    confidence: float = 1.0,
 ) -> Edge:
     source = make_entity_ref(entity.identity.object_uid)
     target = make_surface_ref(surface.surface_uid)
@@ -194,9 +209,9 @@ def _build_edge(
         source=source,
         type="CONTACTS_SURFACE",
         target=target,
-        frame="world",
+        frame=frame,
         weight=1.0,
-        confidence=1.0,
+        confidence=confidence,
         extractor=extractor,
         extractor_version=version,
         evidence=evidence,
@@ -221,6 +236,7 @@ class ContactsSurfaceExtractor:
         start = time.perf_counter()
         wall_cfg = _wall_config(config)
         gravity = entities.frame.gravity
+        frame = edge_frame(entities)
         edges: list[Edge] = []
         rejections: list[EdgeRejection] = []
         rejection_counts: dict[EdgeType, int] = {}
@@ -304,14 +320,24 @@ class ContactsSurfaceExtractor:
                     surface.plane, surface.polygon, gravity, wall_cfg,
                 )
                 evidence = _evidence_for(result.evidence, surface, config)
+                margin = (wall_contact_margin(result.evidence)
+                          if config.emit_margins else None)
                 if result.contacts_surface:
                     edges.append(_build_edge(
                         entity, surface, evidence,
-                        extractor=self.name, version=self.version,
+                        extractor=self.name, version=self.version, frame=frame,
+                        confidence=1.0 if margin is None
+                        else margin_confidence(margin),
                     ))
                 else:
                     rej = dict(evidence)
                     rej["failed_clauses"] = result.failed_clauses
+                    # EdgeRejection has no confidence field; the near-miss
+                    # margin rides in evidence. The policy rejections above
+                    # (non-wall, synth source, no polygon, room-scale flat)
+                    # measure nothing comparable and get none.
+                    if margin is not None:
+                        rej["margin_confidence"] = margin_confidence(margin)
                     record_rejection(
                         entity, surface, "wall_contact_clauses_failed", rej,
                     )

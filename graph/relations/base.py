@@ -23,9 +23,11 @@ adapters/oracle_replica.py module docstring for details.
 from __future__ import annotations
 
 import hashlib
+import math
 from dataclasses import dataclass
 from typing import Literal, Protocol
 
+from common.types import FrameKind
 from extractors.base import EntityArtifact, EntityArtifacts, StructuralSurface
 from graph.schema import Edge, EdgeRejection, EdgeType, GraphRef
 
@@ -88,6 +90,27 @@ class RelationExtractor(Protocol):
     ) -> tuple[list[Edge], RelationExtractorDiagnostics]: ...
 
 
+def edge_frame(entities: EntityArtifacts) -> FrameKind:
+    """The frame label every edge extracted from `entities` must carry.
+
+    An edge is computed in whatever frame the importer put the geometry in,
+    so the label is a property of the ENTITY BUNDLE, never a constant an
+    extractor gets to pick. Every extractor in this package routes its
+    `Edge.frame` through here; tests/graph/test_edge_frame_label.py fails if
+    one stops doing so.
+
+    Historically all nine edge constructors hardcoded frame="world" while the
+    live importer (demo/replica_habitat_import.py) was handing them a
+    gravity-aligned, yaw-de-rotated frame. That is not a cosmetic mislabel:
+    recomputing directional edges in the raw world frame changes 26.9% of
+    room_1's edges and 9.7% of room_2's (docs/frame_and_scale_audit.md,
+    Finding 4). It stayed invisible because on room_0 — the one scene the
+    thresholds were calibrated on — the two frames agree on 2593 of 2594
+    edges.
+    """
+    return entities.frame.kind
+
+
 def count_logical_edges(edges: list[Edge]) -> int:
     """Normalize an edge list to count distinct logical facts.
 
@@ -147,6 +170,157 @@ def make_edge_id(
     """Deterministic edge id over extractor + key."""
     payload = f"{extractor}|{version}|{source.kind}:{source.uid}|{type_}|{target.kind}:{target.uid}"
     return f"e_{hashlib.sha256(payload.encode()).hexdigest()[:16]}"
+
+
+# ---------------------------------------------------------------------------
+# Calibration margins (opt-in per extractor via its config's `emit_margins`).
+#
+# Every extractor in this package already computes a continuous quantity and
+# then thresholds it to a boolean. These helpers keep that quantity: each
+# extractor converts its own measurement into a signed, scale-normalized
+# MARGIN (>= 0 iff the test passed) and squashes it once through
+# `margin_confidence`. The shared invariant every extractor documents and
+# tests/graph/test_relation_margins.py asserts: 0.5 IS the decision boundary —
+# emitted edges score >= 0.5, rejected pairs score <= 0.5. The score is a
+# faithful relaxation of the gate, not a second, disagreeing opinion.
+#
+# Equality holds only for a measurement sitting exactly on a threshold, and
+# such a case is genuinely a coin flip rather than a defect: the clearest
+# example is directional's legacy tie-break, which resolves |dx| == |dy| in
+# favour of x arbitrarily and now scores that edge exactly 0.5.
+# ---------------------------------------------------------------------------
+
+MARGIN_STEEPNESS = 4.0
+
+
+def margin_confidence(margin: float, *, k: float = MARGIN_STEEPNESS) -> float:
+    """Squash a signed, scale-normalized margin into a confidence in (0, 1).
+
+    `margin` is (measured - threshold) / scale, signed so that positive means
+    the test passed and larger means it passed more comfortably. Each
+    extractor picks and documents its own `scale`; this helper only fixes the
+    shared calibration anchors via the logistic squash:
+
+        margin  0  (exactly on the decision boundary)  -> 0.500
+        margin +1  (one full scale past it)            -> 0.982
+        margin -1  (one full scale short of it)        -> 0.018
+
+    k = 4 is chosen so a one-scale margin reads ~0.98 rather than saturating:
+    the output has to stay a usable continuous score for a risk-coverage sweep
+    instead of collapsing back onto {0, 1}.
+
+    `math.inf` is a legal input meaning "this clause carries no discriminative
+    information here" (a saturated or degenerate metric); it maps to 1.0 and
+    under `min()` never binds. NaN maps to 0.5 (no information).
+    """
+    z = k * margin
+    if z != z:                       # NaN
+        return 0.5
+    z = max(-50.0, min(50.0, z))
+    return 1.0 / (1.0 + math.exp(-z))
+
+
+def band_margin(measured: float, lo: float, hi: float) -> float:
+    """Normalized margin for a two-sided acceptance band lo <= measured <= hi.
+
+    Distance to the NEARER band edge, normalized by the band's half-width: 0 on
+    either edge, +1 dead centre, negative outside. A zero/negative-width band
+    has no scale to normalize by and returns inf."""
+    half = (hi - lo) / 2.0
+    if half <= 0.0:
+        return math.inf
+    return min(measured - lo, hi - measured) / half
+
+
+def ratio_margin(measured: float, threshold: float) -> float:
+    """Normalized margin for a one-sided `measured <= threshold` test whose
+    threshold IS the natural scale: (threshold - measured) / threshold.
+
+    A non-finite threshold means the test is vacuous (inf). A non-positive
+    threshold leaves no scale to normalize by, so the verdict degenerates to
+    +/-inf."""
+    if not math.isfinite(threshold):
+        return math.inf
+    if threshold <= 0.0:
+        return math.inf if measured <= threshold else -math.inf
+    return (threshold - measured) / threshold
+
+
+def _clause_margins(
+    ev: dict,
+    *,
+    orientation: float,
+    gap_key: str,
+) -> float:
+    """Shared body of `rest_contact_margin` / `wall_contact_margin`.
+
+    Both geometry predicates are the same four-clause conjunction with one
+    orientation gate swapped, so the remaining three clauses normalize
+    identically. `orientation` is the caller's already-normalized orientation
+    margin; `gap_key` selects bottom_gap_m vs wall_gap_m.
+    """
+    contact_thresh = float(ev["contact_threshold_m"])
+    # contact_threshold_m is the predicate's own "what counts as touching"
+    # length scale; it is what the side and footprint gaps are measured
+    # against. Guard the degenerate zero case so scale stays positive.
+    scale = contact_thresh if contact_thresh > 0.0 else 1.0
+    m_side = float(ev["sd_centroid_m"]) / scale
+    m_contact = band_margin(
+        float(ev[gap_key]),
+        -float(ev["penetration_tolerance_m"]),
+        contact_thresh,
+    )
+    in_plane_gap = float(ev["in_plane_gap_m"])
+    # aabb_to_polygon_planar saturates at 0 for ANY interior overlap, so a zero
+    # gap says "inside the footprint" and nothing about how comfortably. A
+    # saturated clause must not bind the min.
+    m_footprint = (
+        math.inf if in_plane_gap <= 0.0
+        else (float(ev["footprint_tolerance_m"]) - in_plane_gap) / scale
+    )
+    return min(orientation, m_side, m_contact, m_footprint)
+
+
+def rest_contact_margin(ev: dict) -> float:
+    """Normalized margin for geometry.rest_contact's four-clause conjunction.
+
+    One margin per clause, then min() — a conjunction is only as comfortable as
+    its tightest clause, and min >= 0 holds exactly when
+    RestContactResult.on_surface is True.
+
+    Scales:
+      support_capable  (dot - cos(max_tilt)) / (1 - cos(max_tilt)) — the full
+          span of orientations the gate admits, so +1 means dead level.
+      centroid side    sd_centroid_m / contact_threshold_m.
+      contact          two-sided band [-penetration_tolerance, contact_threshold]
+          on bottom_gap_m, normalized by half the band width. This is the clause
+          that actually discriminates in practice; the others are near-binary.
+      footprint        (footprint_tolerance - in_plane_gap) / contact_threshold_m,
+          saturating to inf at in_plane_gap == 0 (see `_clause_margins`).
+    """
+    cos_max = math.cos(math.radians(float(ev["max_tilt_deg"])))
+    span = 1.0 - cos_max
+    m_orient = (
+        (float(ev["support_normal_dot_up"]) - cos_max) / span
+        if span > 0.0 else math.inf
+    )
+    return _clause_margins(ev, orientation=m_orient, gap_key="bottom_gap_m")
+
+
+def wall_contact_margin(ev: dict) -> float:
+    """Normalized margin for geometry.wall_contact's four-clause conjunction.
+
+    Identical in structure to `rest_contact_margin` with the orientation gate
+    flipped: wall_capable is `abs(dot) <= sin(max_wall_tilt)`, so its margin is
+    (sin_max - abs(dot)) / sin_max — +1 for a perfectly vertical wall, 0 at the
+    tilt limit. The discriminating clause is the contact band on wall_gap_m.
+    """
+    sin_max = math.sin(math.radians(float(ev["max_wall_tilt_deg"])))
+    m_orient = (
+        (sin_max - abs(float(ev["wall_normal_dot_up"]))) / sin_max
+        if sin_max > 0.0 else math.inf
+    )
+    return _clause_margins(ev, orientation=m_orient, gap_key="wall_gap_m")
 
 
 def make_entity_ref(uid: str) -> GraphRef:

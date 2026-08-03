@@ -12,7 +12,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Literal
 
-from common.types import JSON, OrientedBBox, Plane, SceneFrame, Vec3
+from common.types import FrameKind, JSON, OrientedBBox, Plane, SceneFrame, Vec3
 
 
 EdgeType = Literal[
@@ -61,7 +61,10 @@ class Edge:
     source: GraphRef
     type: EdgeType
     target: GraphRef
-    frame: Literal["world", "viewpoint", "scene_canonical"]
+    # Same domain as SceneFrame.kind, and required to equal the frame of the
+    # bundle the edge was extracted from. Extractors must not hardcode it —
+    # route it through graph.relations.base.edge_frame.
+    frame: FrameKind
     weight: float
     confidence: float
     extractor: str

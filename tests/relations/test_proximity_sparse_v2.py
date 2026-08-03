@@ -307,7 +307,7 @@ def test_extract_sparse_v2_callable_directly() -> None:
         _entity("b", (1.5, 0.0, 0.0), (2.5, 1.0, 1.0)),
     ]
     edges, counts, rejections, rej_counts = extract_sparse_v2(
-        ents, extractor="proximity", sparse_near_threshold=1.0,
+        ents, extractor="proximity", frame="world", sparse_near_threshold=1.0,
     )
     if counts["NEAR"] != 1:
         raise AssertionError(f"direct call NEAR count wrong: {counts!r}")

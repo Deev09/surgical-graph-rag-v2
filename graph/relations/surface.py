@@ -53,12 +53,13 @@ import time
 from dataclasses import dataclass, field
 from typing import Literal
 
+from common.types import FrameKind
 from extractors.base import EntityArtifact, EntityArtifacts, StructuralSurface
 from geometry.surface_distance import bbox_to_plane, bbox_to_surface
 from graph.relations.base import (
     RelationExtractorConfig, RelationExtractorDiagnostics,
-    count_logical_edges, make_edge_id, make_entity_ref, make_surface_ref,
-    room_scale_flat, wall_xy_extent_area,
+    count_logical_edges, edge_frame, make_edge_id, make_entity_ref, make_surface_ref,
+    margin_confidence, ratio_margin, room_scale_flat, wall_xy_extent_area,
 )
 from graph.schema import Edge, EdgeRejection, EdgeType
 
@@ -107,6 +108,25 @@ class SurfaceProximityConfig:
         default=0.60, metadata={"hash_omit_if_default": True})
     room_scale_flat_max_height_m: float = field(
         default=0.20, metadata={"hash_omit_if_default": True})
+    # Calibration opt-in (see _near_surface_margin). False = frozen behavior
+    # (confidence is literally 1.0); hash_omit_if_default keeps default config
+    # hashes byte-identical in BOTH plane and polygon modes.
+    emit_margins: bool = field(
+        default=False, metadata={"hash_omit_if_default": True})
+
+
+def _near_surface_margin(distance: float, threshold: float) -> float:
+    """Normalized NEAR_SURFACE margin.
+
+    Continuous quantity: the entity-to-surface distance (bbox_to_plane in
+    plane mode, polygon-clipped in polygon mode). Threshold: the
+    per-surface-type threshold (floor 0.05, wall 0.30, ceiling 0.10 by
+    default). Margin = (threshold - distance) / threshold: the threshold is
+    the per-type definition of "near", so it is also the right scale to
+    measure comfort against, and the same margin means the same thing across
+    surface types despite the 6x spread in absolute thresholds. Touching the
+    surface reads 1.0; sitting exactly on the threshold reads 0."""
+    return ratio_margin(distance, threshold)
 
 
 def _threshold_for(config: SurfaceProximityConfig, surface_type: str) -> float:
@@ -146,6 +166,8 @@ def _build_near_surface_edge(
     *,
     extractor: str,
     version: str,
+    frame: FrameKind,
+    confidence: float = 1.0,
 ) -> Edge:
     source = make_entity_ref(entity.identity.object_uid)
     target = make_surface_ref(surface.surface_uid)
@@ -154,9 +176,9 @@ def _build_near_surface_edge(
         source=source,
         type="NEAR_SURFACE",
         target=target,
-        frame="world",
+        frame=frame,
         weight=1.0,
-        confidence=1.0,
+        confidence=confidence,
         extractor=extractor,
         extractor_version=version,
         evidence={
@@ -177,6 +199,8 @@ def _build_near_surface_edge_polygon(
     *,
     extractor: str,
     version: str,
+    frame: FrameKind,
+    confidence: float = 1.0,
 ) -> Edge:
     """Polygon-mode edge builder (A5). The dispatcher_evidence already
     carries distance_m, distance_metric, normal_gap_m, polygon_clipping_applied,
@@ -193,9 +217,9 @@ def _build_near_surface_edge_polygon(
         source=source,
         type="NEAR_SURFACE",
         target=target,
-        frame="world",
+        frame=frame,
         weight=1.0,
-        confidence=1.0,
+        confidence=confidence,
         extractor=extractor,
         extractor_version=version,
         evidence=evidence,
@@ -222,6 +246,7 @@ class SurfaceProximityExtractor:
         effective_version = (
             POLYGON_CLIPPED_VERSION if config.use_polygon_clip else PLANE_MODE_VERSION
         )
+        frame = edge_frame(entities)
         edges: list[Edge] = []
         rejections: list[EdgeRejection] = []
         rejection_counts: dict[EdgeType, int] = {}
@@ -300,6 +325,9 @@ class SurfaceProximityExtractor:
                         edges.append(_build_near_surface_edge_polygon(
                             entity, surface, dispatcher_evidence, threshold,
                             extractor=self.name, version=effective_version,
+                            frame=frame,
+                            confidence=margin_confidence(_near_surface_margin(
+                                distance, threshold)) if config.emit_margins else 1.0,
                         ))
                     else:
                         rejection_counts["NEAR_SURFACE"] = (
@@ -310,6 +338,10 @@ class SurfaceProximityExtractor:
                             rejection_evidence["threshold_m"] = threshold
                             rejection_evidence["surface_type"] = surface.surface_type
                             rejection_evidence["source"] = surface.source
+                            if config.emit_margins:
+                                rejection_evidence["margin_confidence"] = \
+                                    margin_confidence(_near_surface_margin(
+                                        distance, threshold))
                             rejections.append(EdgeRejection(
                                 source=make_entity_ref(entity.identity.object_uid),
                                 type="NEAR_SURFACE",
@@ -324,25 +356,33 @@ class SurfaceProximityExtractor:
                         edges.append(_build_near_surface_edge(
                             entity, surface, distance, threshold,
                             extractor=self.name, version=effective_version,
+                            frame=frame,
+                            confidence=margin_confidence(_near_surface_margin(
+                                distance, threshold)) if config.emit_margins else 1.0,
                         ))
                     else:
                         rejection_counts["NEAR_SURFACE"] = (
                             rejection_counts.get("NEAR_SURFACE", 0) + 1
                         )
                         if len(rejections) < max_rejection_samples:
+                            rejection_evidence = {
+                                "distance_m": distance,
+                                "distance_metric": "bbox_to_plane",
+                                "threshold_m": threshold,
+                                "surface_type": surface.surface_type,
+                                "source": surface.source,
+                            }
+                            if config.emit_margins:
+                                rejection_evidence["margin_confidence"] = \
+                                    margin_confidence(_near_surface_margin(
+                                        distance, threshold))
                             rejections.append(EdgeRejection(
                                 source=make_entity_ref(entity.identity.object_uid),
                                 type="NEAR_SURFACE",
                                 target=make_surface_ref(surface.surface_uid),
                                 extractor=self.name,
                                 rejected_reason="distance_exceeds_surface_threshold",
-                                evidence={
-                                    "distance_m": distance,
-                                    "distance_metric": "bbox_to_plane",
-                                    "threshold_m": threshold,
-                                    "surface_type": surface.surface_type,
-                                    "source": surface.source,
-                                },
+                                evidence=rejection_evidence,
                             ))
 
         counts: dict[EdgeType, int] = {"NEAR_SURFACE": len(edges)}

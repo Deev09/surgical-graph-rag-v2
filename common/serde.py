@@ -103,18 +103,23 @@ def scene_frame_to_dict(f: SceneFrame) -> dict[str, Any]:
         "canonical_right": vec3_to_list(f.canonical_right) if f.canonical_right is not None else None,
         "units": f.units,
         "notes": f.notes,
+        "kind": f.kind,
     }
 
 
 def scene_frame_from_dict(d: dict[str, Any]) -> SceneFrame:
     cf = d.get("canonical_forward")
     cr = d.get("canonical_right")
+    kind = d.get("kind", "world")   # payloads written before frame_kind existed
+    if kind not in ("world", "viewpoint", "scene_canonical"):
+        raise ValueError(f"unknown frame kind {kind!r}")
     return SceneFrame(
         gravity=vec3_from_list(d["gravity"]),
         canonical_forward=vec3_from_list(cf) if cf is not None else None,
         canonical_right=vec3_from_list(cr) if cr is not None else None,
         units=d["units"],
         notes=str(d.get("notes", "")),
+        kind=kind,
     )
 
 

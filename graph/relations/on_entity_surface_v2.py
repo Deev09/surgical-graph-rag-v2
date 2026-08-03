@@ -40,7 +40,8 @@ from graph.relations import on_surface as _os
 from graph.relations.attached_to import _active
 from graph.relations.base import (
     RelationExtractorConfig, RelationExtractorDiagnostics,
-    count_logical_edges, make_edge_id, make_entity_ref,
+    band_margin, count_logical_edges, edge_frame, make_edge_id, make_entity_ref,
+    margin_confidence, ratio_margin,
 )
 from graph.relations.on_entity_surface import (
     OnEntitySurfaceConfig, OnEntitySurfaceExtractor,
@@ -65,6 +66,12 @@ class OnEntitySurfaceV2Config:
     floor_penetration_tolerance_m: float = _os.DEFAULT_PENETRATION_TOLERANCE_M
     floor_max_tilt_deg: float = _os.DEFAULT_MAX_TILT_DEG
     floor_footprint_tolerance_m: float = _os.DEFAULT_FOOTPRINT_TOLERANCE_M
+    # Calibration opt-in (see _contained_rest_margin). Propagated to the
+    # delegated v1 top-rest pass, so BOTH disjuncts score. False = frozen D2
+    # behavior (confidence is literally 1.0); hash_omit_if_default keeps
+    # default config hashes byte-identical.
+    emit_margins: bool = field(
+        default=False, metadata={"hash_omit_if_default": True})
 
     def __post_init__(self) -> None:
         if not (0 < self.footprint_area_max_frac <= 1):
@@ -74,7 +81,8 @@ class OnEntitySurfaceV2Config:
 
     def _v1_config(self) -> OnEntitySurfaceConfig:
         return OnEntitySurfaceConfig(
-            support_class_allowlist=self.support_class_allowlist)
+            support_class_allowlist=self.support_class_allowlist,
+            emit_margins=self.emit_margins)
 
     def _rest_config(self) -> RestContactConfig:
         return RestContactConfig(
@@ -96,6 +104,38 @@ def _center_inside_xy(e: EntityArtifact, s: EntityArtifact) -> bool:
     return lo[0] <= cx <= hi[0] and lo[1] <= cy <= hi[1]
 
 
+def _contained_rest_margin(
+    e_area: float, s_area: float, e_bottom: float,
+    s_bottom: float, s_top: float, band: float, max_frac: float,
+) -> float:
+    """Normalized margin for D2's contained-rest disjunct: min of its two
+    continuous tests.
+
+      size      (max_frac * s_area - e_area) / (max_frac * s_area) — "E is
+          small enough relative to S". The allowed area IS the scale, so the
+          margin is dimensionless and comparable across supporter sizes; a
+          book on a large table saturates, a tray nearly filling a nightstand
+          sits just above 0.5.
+      vertical  two-sided band s_bottom <= e_bottom <= s_top + band,
+          normalized by the band's half-width — i.e. by half the supporter's
+          own height (plus the inherited contact band), which is the only
+          length scale D2 gives this test.
+
+    The other two conditions are consumed as boolean gates upstream and do not
+    enter the score: XY center-containment is a point-in-box predicate with no
+    threshold to measure against, and the floor-support disqualifier is
+    evaluated per-entity before supporter selection. Documented limitation, not
+    an oversight — a contained-rest confidence is a statement about size and
+    height fit only.
+
+    Sign invariant: >= 0 iff both tests pass, i.e. iff the pair is a candidate.
+    """
+    return min(
+        ratio_margin(e_area, max_frac * s_area),
+        band_margin(e_bottom, s_bottom, s_top + band),
+    )
+
+
 class OnEntitySurfaceV2Extractor:
     name: str = "on_entity_surface_v2"
     version: str = ON_ENTITY_SURFACE_V2_VERSION
@@ -110,6 +150,7 @@ class OnEntitySurfaceV2Extractor:
             raise TypeError(
                 "OnEntitySurfaceV2Extractor requires OnEntitySurfaceV2Config")
         start = time.perf_counter()
+        frame = edge_frame(entities)
 
         # disjunct 1: the unchanged v1 extractor with the v2 allowlist
         v1_edges, v1_diag = OnEntitySurfaceExtractor().extract(
@@ -169,11 +210,18 @@ class OnEntitySurfaceV2Extractor:
                 continue
             source = make_entity_ref(e.identity.object_uid)
             target = make_entity_ref(s.identity.object_uid)
+            confidence = 1.0
+            if config.emit_margins:
+                s_lo, s_hi = s.bbox_aabb
+                confidence = margin_confidence(_contained_rest_margin(
+                    e_area, s_area, e_bottom, s_lo[2], s_hi[2], band,
+                    config.footprint_area_max_frac,
+                ))
             contained_edges.append(Edge(
                 edge_id=make_edge_id(self.name, self.version, source,
                                      "ON_ENTITY_SURFACE", target),
                 source=source, type="ON_ENTITY_SURFACE", target=target,
-                frame="world", weight=1.0, confidence=1.0,
+                frame=frame, weight=1.0, confidence=confidence,
                 extractor=self.name, extractor_version=self.version,
                 evidence={
                     "semantics_track": "v2",

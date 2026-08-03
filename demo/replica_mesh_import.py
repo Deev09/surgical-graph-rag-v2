@@ -205,9 +205,12 @@ def import_mesh_room(
         schema_version=2,
         bundle_hash=bundle_hash,
         scene_id=scene_id,
+        # Same R_align (and same yaw de-rotation) as variant A by construction,
+        # so the same frame kind. A/B parity would be broken by disagreeing here.
         frame=SceneFrame(gravity=(0.0, 0.0, -1.0), canonical_forward=None,
                          canonical_right=None, units="meters",
-                         notes="object boxes from mesh_semantic.ply geometry"),
+                         notes="object boxes from mesh_semantic.ply geometry",
+                         kind="scene_canonical"),
         representation_hash=bundle_hash,
         extractor_name="replica_mesh_import",
         extractor_version="0.2",

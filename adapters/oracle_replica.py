@@ -138,8 +138,18 @@ class OracleReplicaAdapter:
         cm_path = Path(cm_path_str)
         capture_meta = json.loads(cm_path.read_text(encoding="utf-8"))
 
-        gravity_raw = capture_meta["axis_convention"]["gravity_dir_raw"]
-        gravity = _normalize_unit(gravity_raw)
+        axis = capture_meta["axis_convention"]
+        gravity_raw = axis["gravity_dir_raw"]
+        # importers/replica.py levels a tilted capture rather than refusing it
+        # (see its module docstring). When it does, the coordinates in
+        # scene_graph.json are in a levelled frame, so the SceneFrame must carry
+        # the levelled gravity and say "scene_canonical" — otherwise every edge
+        # extracted from this bundle inherits a false frame label, and the
+        # gravity-reading predicates compare a tilted up against levelled boxes.
+        # Both keys are absent from capture_meta files written before this
+        # existed; those describe raw-axes imports, which is exactly the default.
+        gravity = _normalize_unit(axis.get("gravity_dir_effective", gravity_raw))
+        frame_kind = axis.get("frame_kind", "world")
         z_translation = float(capture_meta["import_notes"]["z_translation_applied"])
 
         frame = SceneFrame(
@@ -152,6 +162,7 @@ class OracleReplicaAdapter:
                 f"z_translation_applied={z_translation}; "
                 f"source={capture_meta.get('source', 'replica')}"
             ),
+            kind=frame_kind,
         )
 
         geometry_handle = GeometryHandle(

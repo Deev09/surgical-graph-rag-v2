@@ -42,14 +42,15 @@ from __future__ import annotations
 
 import math
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Literal
 
 from extractors.base import EntityArtifact, EntityArtifacts, StructuralSurface
 from geometry.rest_contact import RestContactConfig, rest_contact
 from graph.relations.base import (
     RelationExtractorConfig, RelationExtractorDiagnostics,
-    count_logical_edges, make_edge_id, make_entity_ref, make_surface_ref,
+    count_logical_edges, edge_frame, make_edge_id, make_entity_ref, make_surface_ref,
+    margin_confidence, rest_contact_margin,
 )
 from graph.schema import Edge, EdgeRejection, EdgeType
 
@@ -82,6 +83,17 @@ class OnSurfaceConfig:
     footprint_tolerance_m: float = DEFAULT_FOOTPRINT_TOLERANCE_M
     near_surface_threshold_m: float = DEFAULT_NEAR_SURFACE_THRESHOLD_M
     include_synth_fallback: bool = False
+    # Calibration opt-in. When True the emitted edge's confidence is
+    # margin_confidence(rest_contact_margin(evidence)) — the min over the four
+    # rest-contact clause margins, whose discriminating member is the contact
+    # band on bottom_gap_m: [-penetration_tolerance_m (0.03),
+    # +contact_threshold_m (0.02)], normalized by the band's half-width. So a
+    # box resting dead centre of the band reads ~0.98 and one 0.019 m above the
+    # floor plane (1 mm inside the upper edge) reads ~0.54. False = frozen
+    # behavior (confidence is literally 1.0); hash_omit_if_default keeps
+    # default config hashes byte-identical.
+    emit_margins: bool = field(
+        default=False, metadata={"hash_omit_if_default": True})
 
     def __post_init__(self) -> None:
         # Delegate rest-contact field sanity to RestContactConfig (raises on
@@ -130,6 +142,8 @@ def _build_on_surface_edge(
     *,
     extractor: str,
     version: str,
+    frame: FrameKind,
+    confidence: float = 1.0,
 ) -> Edge:
     source = make_entity_ref(entity.identity.object_uid)
     target = make_surface_ref(surface.surface_uid)
@@ -138,9 +152,9 @@ def _build_on_surface_edge(
         source=source,
         type="ON_SURFACE",
         target=target,
-        frame="world",
+        frame=frame,
         weight=1.0,
-        confidence=1.0,
+        confidence=confidence,
         extractor=extractor,
         extractor_version=version,
         evidence=evidence,
@@ -185,6 +199,7 @@ class OnSurfaceExtractor:
         start = time.perf_counter()
         rest_cfg = _rest_config(config)
         gravity = entities.frame.gravity
+        frame = edge_frame(entities)
         edges: list[Edge] = []
         rejections: list[EdgeRejection] = []
         rejection_counts: dict[EdgeType, int] = {}
@@ -236,14 +251,24 @@ class OnSurfaceExtractor:
                     surface.plane, surface.polygon, gravity, rest_cfg,
                 )
                 evidence = _evidence_for(result.evidence, surface, config)
+                margin = (rest_contact_margin(result.evidence)
+                          if config.emit_margins else None)
                 if result.on_surface:
                     edges.append(_build_on_surface_edge(
                         entity, surface, evidence,
-                        extractor=self.name, version=self.version,
+                        extractor=self.name, version=self.version, frame=frame,
+                        confidence=1.0 if margin is None
+                        else margin_confidence(margin),
                     ))
                 else:
                     rej = dict(evidence)
                     rej["failed_clauses"] = result.failed_clauses
+                    # Near-misses are half the calibration data, but
+                    # EdgeRejection has no confidence field, so the margin
+                    # rides in evidence. Policy rejections above (synth
+                    # source, missing polygon) measure nothing and get none.
+                    if margin is not None:
+                        rej["margin_confidence"] = margin_confidence(margin)
                     record_rejection(
                         entity, surface, "rest_contact_clauses_failed", rej,
                     )
