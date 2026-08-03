@@ -57,6 +57,7 @@ from common.types import FrameKind
 from extractors.base import EntityArtifact, EntityArtifacts, StructuralSurface
 from geometry.surface_distance import bbox_to_plane, bbox_to_surface
 from graph.relations.base import (
+    sample_rejections,
     RelationExtractorConfig, RelationExtractorDiagnostics,
     count_logical_edges, edge_frame, make_edge_id, make_entity_ref, make_surface_ref,
     margin_confidence, ratio_margin, room_scale_flat, wall_xy_extent_area,
@@ -280,7 +281,7 @@ class SurfaceProximityExtractor:
                 rejection_counts["NEAR_SURFACE"] = (
                     rejection_counts.get("NEAR_SURFACE", 0) + 1
                 )
-                if len(rejections) < max_rejection_samples:
+                if config.emit_margins or len(rejections) < max_rejection_samples:
                     rejections.append(EdgeRejection(
                         source=make_entity_ref(entity.identity.object_uid),
                         type="NEAR_SURFACE",
@@ -300,7 +301,7 @@ class SurfaceProximityExtractor:
                     rejection_counts["NEAR_SURFACE"] = (
                         rejection_counts.get("NEAR_SURFACE", 0) + 1
                     )
-                    if len(rejections) < max_rejection_samples:
+                    if config.emit_margins or len(rejections) < max_rejection_samples:
                         rejections.append(EdgeRejection(
                             source=make_entity_ref(entity.identity.object_uid),
                             type="NEAR_SURFACE",
@@ -333,7 +334,7 @@ class SurfaceProximityExtractor:
                         rejection_counts["NEAR_SURFACE"] = (
                             rejection_counts.get("NEAR_SURFACE", 0) + 1
                         )
-                        if len(rejections) < max_rejection_samples:
+                        if config.emit_margins or len(rejections) < max_rejection_samples:
                             rejection_evidence = dict(dispatcher_evidence)
                             rejection_evidence["threshold_m"] = threshold
                             rejection_evidence["surface_type"] = surface.surface_type
@@ -364,7 +365,7 @@ class SurfaceProximityExtractor:
                         rejection_counts["NEAR_SURFACE"] = (
                             rejection_counts.get("NEAR_SURFACE", 0) + 1
                         )
-                        if len(rejections) < max_rejection_samples:
+                        if config.emit_margins or len(rejections) < max_rejection_samples:
                             rejection_evidence = {
                                 "distance_m": distance,
                                 "distance_metric": "bbox_to_plane",
@@ -395,6 +396,7 @@ class SurfaceProximityExtractor:
             physical_edges_total=len(edges),
             logical_edges_total=count_logical_edges(edges),
             rejections_per_type=rejection_counts,
-            rejection_samples=rejections,
+            rejection_samples=sample_rejections(
+                rejections, margin_aware=config.emit_margins),
             runtime_ms=runtime_ms,
         )

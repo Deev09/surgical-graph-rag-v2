@@ -48,6 +48,7 @@ from typing import Literal
 from extractors.base import EntityArtifact, EntityArtifacts, StructuralSurface
 from geometry.rest_contact import RestContactConfig, rest_contact
 from graph.relations.base import (
+    sample_rejections,
     RelationExtractorConfig, RelationExtractorDiagnostics,
     count_logical_edges, edge_frame, make_edge_id, make_entity_ref, make_surface_ref,
     margin_confidence, rest_contact_margin,
@@ -209,7 +210,7 @@ class OnSurfaceExtractor:
             rejection_counts["ON_SURFACE"] = (
                 rejection_counts.get("ON_SURFACE", 0) + 1
             )
-            if len(rejections) < max_rejection_samples:
+            if config.emit_margins or len(rejections) < max_rejection_samples:
                 rejections.append(EdgeRejection(
                     source=make_entity_ref(entity.identity.object_uid),
                     type="ON_SURFACE",
@@ -283,6 +284,7 @@ class OnSurfaceExtractor:
             physical_edges_total=len(edges),
             logical_edges_total=count_logical_edges(edges),
             rejections_per_type=rejection_counts,
-            rejection_samples=rejections,
+            rejection_samples=sample_rejections(
+                rejections, margin_aware=config.emit_margins),
             runtime_ms=runtime_ms,
         )

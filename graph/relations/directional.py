@@ -29,6 +29,7 @@ from typing import Literal
 from common.types import FrameKind
 from extractors.base import EntityArtifact, EntityArtifacts
 from graph.relations.base import (
+    sample_rejections,
     RelationExtractorConfig, RelationExtractorDiagnostics,
     count_logical_edges, edge_frame, make_edge_id, make_entity_ref,
     margin_confidence, ratio_margin,
@@ -261,7 +262,7 @@ def extract_sparse(
             distance = _euclid_3d(a.centroid, b.centroid)
             if distance > sparse_max_distance:
                 rejection_counts["LEFT_OF"] = rejection_counts.get("LEFT_OF", 0) + 1
-                if len(rejections) < max_rejection_samples:
+                if emit_margins or len(rejections) < max_rejection_samples:
                     rej_evidence = {
                         "distance_m": distance,
                         "sparse_max_distance": sparse_max_distance,
@@ -281,7 +282,7 @@ def extract_sparse(
             result = _canonical_direction_for_pair(a, b, sparse_min_delta)
             if result is None:
                 rejection_counts["LEFT_OF"] = rejection_counts.get("LEFT_OF", 0) + 1
-                if len(rejections) < max_rejection_samples:
+                if emit_margins or len(rejections) < max_rejection_samples:
                     rej_evidence = {
                         "distance_m": distance,
                         "sparse_min_delta": sparse_min_delta,
@@ -365,6 +366,7 @@ class DirectionalExtractor:
             physical_edges_total=len(edges),
             logical_edges_total=count_logical_edges(edges),
             rejections_per_type=rejection_counts,
-            rejection_samples=rejections,
+            rejection_samples=sample_rejections(
+                rejections, margin_aware=config.emit_margins),
             runtime_ms=runtime_ms,
         )

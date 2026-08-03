@@ -246,6 +246,62 @@ def ratio_margin(measured: float, threshold: float) -> float:
     return (threshold - measured) / threshold
 
 
+REJECTION_SAMPLE_CAP = 64
+
+
+def sample_rejections(
+    rejections: list[EdgeRejection],
+    *,
+    margin_aware: bool,
+    cap: int = REJECTION_SAMPLE_CAP,
+) -> list[EdgeRejection]:
+    """Bound the retained rejection sample at `cap`.
+
+    `margin_aware=False` -> `rejections[:cap]`, the historical
+    first-K-in-iteration-order behavior, preserved exactly. Extractors keep
+    their `emit_margins or len(rejections) < cap` guard, so on this path the
+    list never exceeds `cap` and this call is a no-op.
+
+    `margin_aware=True` -> the `cap` rejections with the HIGHEST
+    `evidence["margin_confidence"]`: the near-misses. Iteration order
+    truncates by whichever pairs the loop happened to reach first, which is
+    uncorrelated with how close a rejection came to passing. Measured on the
+    Phase-8 scenes, the cap retained 1472 of 10934 rejections (13.5%) and the
+    surviving margins topped out at ~0.003 for some families -- i.e. the
+    informative near-misses were being discarded almost surely.
+
+    Rejections carrying no margin (policy rejections: synth-source excluded,
+    polygon required, non-wall surface, room-scale-flat, self-support)
+    measure nothing comparable and are deliberately never scored against
+    margined ones -- giving them a fabricated score would poison the
+    calibration set. They keep a reserved slice so a family that rejects only
+    on policy still reports samples; unused reserve is returned to margins.
+
+    Selection is by margin, but the returned list is restored to iteration
+    order so it stays directly comparable with the non-margin path. Ties are
+    broken by original index, so the result is deterministic.
+    """
+    if not margin_aware or len(rejections) <= cap:
+        return rejections[:cap]
+
+    margined: list[tuple[float, int]] = []
+    policy: list[int] = []
+    for i, r in enumerate(rejections):
+        m = r.evidence.get("margin_confidence")
+        if isinstance(m, (int, float)) and not isinstance(m, bool):
+            margined.append((float(m), i))
+        else:
+            policy.append(i)
+
+    policy_reserve = min(len(policy), cap // 4)
+    margin_take = min(len(margined), cap - policy_reserve)
+    policy_take = min(len(policy), cap - margin_take)
+
+    margined.sort(key=lambda t: (-t[0], t[1]))
+    keep = sorted([i for _, i in margined[:margin_take]] + policy[:policy_take])
+    return [rejections[i] for i in keep]
+
+
 def _clause_margins(
     ev: dict,
     *,

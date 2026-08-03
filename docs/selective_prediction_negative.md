@@ -87,6 +87,29 @@ abstention threshold is the wrong instrument for an incomplete answer.
 
 ### 2. The near-miss band does not exist where these questions live
 
+> **FOLLOW-UP: this loophole has since been closed, and the verdict did not
+> change.** `graph.relations.base.sample_rejections` now selects the retained
+> sample by margin instead of iteration order when `emit_margins=True`. The
+> near-misses genuinely enter the sample -- measured per family on the
+> Phase-8 scenes, retained maximum margin moves:
+>
+> | family | n | iteration-order max | margin-aware max |
+> |---|---|---|---|
+> | on_surface | 322 | 0.0000 | **0.4679** |
+> | on_entity_surface | 326 | 0.0003 | **0.4150** |
+> | near_surface | 268 | 0.0492 | **0.4795** |
+> | attached_to | 365 | 0.1567 | **0.4726** |
+> | on_entity_surface | 870 | 0.0029 | 0.0563 |
+> | directional | 1959 | median 0.0971 | median **0.4807** |
+>
+> The `0.1567` and `0.0029` ceilings quoted below were exactly the artifacts
+> of iteration-order truncation. With them removed, the candidate AURC still
+> sits inside the `random_within_outcome` band, tie spread is still ~66% of
+> E-AURC, and the bindings AUROC moves only 0.118 -> 0.1618 -- still far below
+> chance. **The failure is not a sampling artifact.** The paragraphs below
+> record the original measurement that motivated the fix.
+
+
 `graph/relations/**` caps `rejection_samples` at 64 per extractor **in
 iteration order, not by margin** — 1,472 retained of 10,934 actual (13.5%).
 Consequences:

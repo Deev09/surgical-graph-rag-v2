@@ -64,7 +64,11 @@ from graph.relations.attached_to import AttachedToConfig, AttachedToExtractor
 from graph.relations.attached_to_v2 import (
     AttachedToV2Config, AttachedToV2Extractor,
 )
-from graph.relations.base import band_margin, margin_confidence, ratio_margin
+from graph.relations.base import (
+    REJECTION_SAMPLE_CAP, band_margin, make_entity_ref, margin_confidence,
+    ratio_margin, sample_rejections,
+)
+from graph.schema import EdgeRejection
 from graph.relations.contacts_surface import (
     ContactsSurfaceConfig, ContactsSurfaceExtractor,
 )
@@ -250,11 +254,24 @@ def _assert_bit_identical(artifacts: EntityArtifacts, where: str) -> None:
         if off_diag.rejections_per_type != on_diag.rejections_per_type:
             raise AssertionError(
                 f"{where}/{label}: rejection counts moved with the flag")
-        for a, b in zip(off_diag.rejection_samples, on_diag.rejection_samples):
-            if (a.source, a.type, a.target, a.rejected_reason) != \
-                    (b.source, b.type, b.target, b.rejected_reason):
-                raise AssertionError(
-                    f"{where}/{label}: rejection identity moved with the flag")
+
+        # BENCHMARK-DEFINITION CHANGE (rejection-cap fix).
+        # This used to assert rejection sample IDENTITY was equal across the
+        # flag. That is deliberately no longer true: with margins on, the
+        # sample is the top-`cap` by margin_confidence rather than the first
+        # `cap` in iteration order (graph.relations.base.sample_rejections).
+        # Selecting the near-misses IS the fix, so identity must move.
+        #
+        # What still has to hold, and is what protected frozen reproduction
+        # all along, is asserted above and below: emit_margins=False leaves
+        # confidence exactly 1.0, leaks no margin key, moves no edge, and
+        # moves no rejection COUNT. The off-path sample is separately pinned
+        # to first-in-iteration-order by
+        # test_margins_off_keeps_the_iteration_order_sample.
+        if len(on_diag.rejection_samples) > REJECTION_SAMPLE_CAP:
+            raise AssertionError(
+                f"{where}/{label}: margin-aware sample exceeded the cap "
+                f"({len(on_diag.rejection_samples)} > {REJECTION_SAMPLE_CAP})")
 
 
 def test_default_off_is_bit_identical_synthetic() -> None:
@@ -531,9 +548,89 @@ def test_attached_to_scores_the_floor_gate_not_just_the_wall() -> None:
             "half the calibration data")
 
 
+def _fake_rejection(i: int, margin: float | None):
+    """Minimal EdgeRejection carrying (or deliberately lacking) a margin."""
+    ev: dict = {"i": i}
+    if margin is not None:
+        ev[MARGIN_KEY] = margin
+    return EdgeRejection(
+        source=make_entity_ref(f"s{i}"),
+        type="NEAR",
+        target=make_entity_ref(f"t{i}"),
+        extractor="fake",
+        rejected_reason=f"r{i}",
+        evidence=ev,
+    )
+
+
+def test_margins_off_keeps_the_iteration_order_sample() -> None:
+    """The frozen path is pinned here: emit_margins=False must still take the
+    first `cap` rejections in iteration order, whatever their margins."""
+    rej = [_fake_rejection(i, margin=i / 100.0) for i in range(100)]
+    kept = sample_rejections(rej, margin_aware=False, cap=8)
+    if [r.evidence["i"] for r in kept] != list(range(8)):
+        raise AssertionError(
+            "emit_margins=False no longer takes first-in-iteration-order: "
+            f"{[r.evidence['i'] for r in kept]}")
+
+
+def test_margin_aware_sampling_retains_the_near_misses() -> None:
+    """The fix. Margins ascend with index, so iteration order keeps exactly
+    the LEAST informative rejections; margin-aware must keep the highest."""
+    rej = [_fake_rejection(i, margin=i / 100.0) for i in range(100)]
+    off = sample_rejections(rej, margin_aware=False, cap=8)
+    on = sample_rejections(rej, margin_aware=True, cap=8)
+
+    if [r.evidence["i"] for r in on] != list(range(92, 100)):
+        raise AssertionError(
+            f"margin-aware kept {[r.evidence['i'] for r in on]}, "
+            "expected the eight highest margins")
+    # the point of the change, stated as a number
+    if min(r.evidence[MARGIN_KEY] for r in on) <= \
+            max(r.evidence[MARGIN_KEY] for r in off):
+        raise AssertionError(
+            "margin-aware sample does not dominate the iteration-order sample")
+    # selection is by margin, but the returned order is iteration order
+    if [r.evidence["i"] for r in on] != sorted(r.evidence["i"] for r in on):
+        raise AssertionError("margin-aware sample lost iteration ordering")
+
+
+def test_margin_aware_sampling_reserves_room_for_policy_rejections() -> None:
+    """Policy rejections measure nothing comparable and are never scored
+    against margined ones -- but a family that rejects only on policy must
+    still report samples, so they hold a reserved slice."""
+    rej = ([_fake_rejection(i, margin=i / 100.0) for i in range(100)]
+           + [_fake_rejection(500 + i, margin=None) for i in range(10)])
+    on = sample_rejections(rej, margin_aware=True, cap=8)
+    n_policy = sum(1 for r in on if MARGIN_KEY not in r.evidence)
+    if n_policy != 2:                      # cap // 4
+        raise AssertionError(
+            f"expected 2 reserved policy slots, got {n_policy}")
+    if len(on) != 8:
+        raise AssertionError(f"cap not filled: {len(on)}")
+
+    # all-policy input: the whole budget goes to policy, in iteration order
+    only_policy = [_fake_rejection(i, margin=None) for i in range(50)]
+    on2 = sample_rejections(only_policy, margin_aware=True, cap=8)
+    if [r.evidence["i"] for r in on2] != list(range(8)):
+        raise AssertionError(
+            "all-policy input should fall back to iteration order")
+
+
+def test_rejection_cap_default_is_unchanged() -> None:
+    if REJECTION_SAMPLE_CAP != 64:
+        raise AssertionError(
+            f"cap moved to {REJECTION_SAMPLE_CAP}; the 13.5%-retention "
+            "measurement in docs/selective_prediction_negative.md assumes 64")
+
+
 TESTS = [
     test_default_off_is_bit_identical_synthetic,
     test_default_off_is_bit_identical_on_replica,
+    test_margins_off_keeps_the_iteration_order_sample,
+    test_margin_aware_sampling_retains_the_near_misses,
+    test_margin_aware_sampling_reserves_room_for_policy_rejections,
+    test_rejection_cap_default_is_unchanged,
     test_every_config_omits_default_emit_margins_from_hash,
     test_builder_bundle_hash_unmoved_by_default_flag,
     test_margin_confidence_anchors_and_range,

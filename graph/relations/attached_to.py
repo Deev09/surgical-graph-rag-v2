@@ -46,6 +46,7 @@ from geometry.wall_contact import WallContactConfig, wall_contact
 from graph.relations import contacts_surface as _cs
 from graph.relations import on_surface as _os
 from graph.relations.base import (
+    sample_rejections,
     RelationExtractorConfig, RelationExtractorDiagnostics,
     count_logical_edges, edge_frame, make_edge_id, make_entity_ref, make_surface_ref,
     margin_confidence, wall_contact_margin,
@@ -203,7 +204,7 @@ class AttachedToExtractor:
 
         def record_rejection(entity, surface, reason: str, evidence: dict) -> None:
             rejection_counts["ATTACHED_TO"] = rejection_counts.get("ATTACHED_TO", 0) + 1
-            if len(rejections) < max_rejection_samples:
+            if config.emit_margins or len(rejections) < max_rejection_samples:
                 rejections.append(EdgeRejection(
                     source=make_entity_ref(entity.identity.object_uid),
                     type="ATTACHED_TO",
@@ -307,6 +308,7 @@ class AttachedToExtractor:
             physical_edges_total=len(edges),
             logical_edges_total=count_logical_edges(edges),
             rejections_per_type=rejection_counts,
-            rejection_samples=rejections,
+            rejection_samples=sample_rejections(
+                rejections, margin_aware=config.emit_margins),
             runtime_ms=runtime_ms,
         )

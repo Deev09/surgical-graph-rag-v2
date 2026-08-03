@@ -32,6 +32,7 @@ from common.types import FrameKind
 from extractors.base import EntityArtifact, EntityArtifacts
 from geometry.surface_distance import aabb_to_aabb_surface
 from graph.relations.base import (
+    sample_rejections,
     RelationExtractorConfig, RelationExtractorDiagnostics,
     count_logical_edges, edge_frame, make_edge_id, make_entity_ref,
     margin_confidence, ratio_margin,
@@ -172,7 +173,7 @@ def extract_sparse(
                 counts["NEAR"] += 1
             else:
                 rejection_counts["NEAR"] = rejection_counts.get("NEAR", 0) + 1
-                if len(rejections) < max_rejection_samples:
+                if emit_margins or len(rejections) < max_rejection_samples:
                     rej_evidence = {
                         "distance_m": distance,
                         "sparse_near_threshold": sparse_near_threshold,
@@ -252,7 +253,7 @@ def extract_sparse_v2(
                 counts["NEAR"] += 1
             else:
                 rejection_counts["NEAR"] = rejection_counts.get("NEAR", 0) + 1
-                if len(rejections) < max_rejection_samples:
+                if emit_margins or len(rejections) < max_rejection_samples:
                     rej_evidence = {
                         "distance_m": distance,
                         "distance_metric": "aabb_surface",
@@ -329,6 +330,7 @@ class ProximityExtractor:
             physical_edges_total=len(edges),
             logical_edges_total=count_logical_edges(edges),
             rejections_per_type=rejection_counts,
-            rejection_samples=rejections,
+            rejection_samples=sample_rejections(
+                rejections, margin_aware=config.emit_margins),
             runtime_ms=runtime_ms,
         )
