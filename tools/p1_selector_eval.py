@@ -52,13 +52,21 @@ P1_ROOT = REPO_ROOT / "runs" / "phase8_c1p1"
 OUT_ROOT = REPO_ROOT / "runs" / "selector_v0"
 
 ABLATIONS = {
-    "full": ("agreement", "connectivity", "size", "redundancy"),
+    # v1 default: connectivity dropped. Headline AR@k / recovery /
+    # zero_overlap are ranked by THIS variant.
+    "v1_default": selector_free.DEFAULT_COMPONENTS,
+    # v0, frozen before transfer scenes were read. Kept so the ablation table
+    # in docs/selector_v0_results.md stays reproducible, and so the v1-vs-v0
+    # comparison is available in one run.
+    "full": selector_free.COMPONENTS_V0,
     "no_size": ("agreement", "connectivity", "redundancy"),
     "no_connectivity": ("agreement", "size", "redundancy"),
     "no_redundancy": ("agreement", "connectivity", "size"),
     "agreement_only": ("agreement",),
     "gates_only_no_agreement": ("connectivity", "size", "redundancy"),
 }
+# Which ABLATIONS entry the headline numbers are ranked by.
+DEFAULT_VARIANT = "v1_default"
 RAW_SIGNAL_RANKINGS = ("agreement", "support_frac", "sam_quality",
                        "connectivity", "size_prior", "n_vertices")
 
@@ -214,10 +222,10 @@ def evaluate_scene(ranked: dict) -> dict:
         entry = {"n_proposals": len(proposals),
                  "oracle_ceiling": ceiling, "ar": {}, "recovery": {},
                  "ablation": {}, "raw_signal": {}}
-        full_order = rank_order(bank["scores"]["full"])
+        default_order = rank_order(bank["scores"][DEFAULT_VARIANT])
         for t in IOU_THRESHOLDS:
             key = f"{t:.2f}"
-            c = curve(full_order, ious, t)
+            c = curve(default_order, ious, t)
             entry["ar"][key] = c
             entry["recovery"][key] = {
                 kk: (round(vv / ceiling[key], 3) if ceiling[key] else None)
@@ -227,7 +235,7 @@ def evaluate_scene(ranked: dict) -> dict:
         # patches reconstruct as perfectly stable single 2D masks).
         entry["zero_overlap_share"] = {
             ("all" if k is None else str(k)): round(float(
-                (ious[full_order if k is None else full_order[:k]].max(axis=1)
+                (ious[default_order if k is None else default_order[:k]].max(axis=1)
                  < 0.10).mean()), 3) for k in KS}
         for name in ABLATIONS:
             o = rank_order(bank["scores"][name])
@@ -243,7 +251,7 @@ def evaluate_scene(ranked: dict) -> dict:
             f"{t:.2f}": curve(o, ious, t) for t in IOU_THRESHOLDS}
         # top-25 identity, for eyeballing what the selector actually picks
         entry["top25"] = []
-        for r in full_order[:25].tolist():
+        for r in default_order[:25].tolist():
             j = int(ious[r].argmax())
             entry["top25"].append({
                 "proposal": r, "score": round(float(

@@ -74,7 +74,24 @@ SIZE_CEIL_M = 2.60     # above this max-extent, size_prior = 0
 GATE_FLOOR = 0.30      # gates multiply in [GATE_FLOOR, 1], never to 0
 SAM_QUALITY_FLOOR = 0.76  # pred_iou_thresh 0.8 * stability_thresh 0.95
 
+# Every component the scorer knows how to apply. Used to validate the
+# `components` argument; NOT the default set.
 COMPONENTS = ("agreement", "connectivity", "size", "redundancy")
+
+# v0 (frozen before transfer scenes were read). Kept so the result recorded in
+# docs/selector_v0_results.md stays reproducible by construction.
+COMPONENTS_V0 = COMPONENTS
+
+# v1 default: connectivity dropped. The v0 ablation measured it as net-harmful
+# on transfer -- neutral on the dev scene, negative on both others (AR@k at
+# k=10/25/50: room_1 6/10/13 -> 7/11/13, office_0 3/5/6 -> 4/9/10). See
+# docs/selector_v0_results.md.
+#
+# CAVEAT, stated because it is a real one: v0 was frozen before transfer
+# results were seen; this default is not. It is a transfer-informed choice,
+# so v1 numbers on room_1/office_0 are no longer a clean held-out measurement.
+# Pass components=COMPONENTS_V0 to reproduce the frozen configuration.
+DEFAULT_COMPONENTS = ("agreement", "size", "redundancy")
 
 
 @dataclass(frozen=True)
@@ -270,12 +287,16 @@ def proposal_signals(proposals: list[np.ndarray], n_vertices: int,
 
 
 def score_proposals(signals: ProposalSignals,
-                    components: tuple[str, ...] = COMPONENTS) -> np.ndarray:
+                    components: tuple[str, ...] = DEFAULT_COMPONENTS) -> np.ndarray:
     """Combine signals into one score per proposal, guaranteed in [0,1].
 
-    score = agreement
-            * gate(connectivity) * gate(size_prior)
-            * gate(exp(-alpha * n_nested_better))
+    v1 default (DEFAULT_COMPONENTS):
+        score = agreement * gate(size_prior)
+                * gate(exp(-alpha * n_nested_better))
+
+    v0 (COMPONENTS_V0) additionally multiplied by gate(connectivity); it was
+    measured net-harmful on transfer and is off by default. Pass
+    components=COMPONENTS_V0 to reproduce v0.
 
     `gate(x) = GATE_FLOOR + (1 - GATE_FLOOR) * x` so no secondary signal
     can veto a proposal outright — they re-order, they do not filter.

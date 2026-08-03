@@ -1,6 +1,33 @@
-# Oracle-free proposal selector v0 — measured result
+# Oracle-free proposal selector — measured result
 
 Status: **measured, evaluation-only.** Not wired into the graph pipeline.
+
+## v1 change: `connectivity` dropped from the default score
+
+`DEFAULT_COMPONENTS = ("agreement", "size", "redundancy")`. The v0 ablation
+(below) measured `connectivity` as net-harmful on transfer; re-running with it
+off improves or ties AR@k on **every scene and both banks, never worse**:
+
+| scene / bank | v0 (with connectivity) | v1 (without) |
+|---|---|---|
+| room_2 p1 | 10 18 21 25 25 25 | 10 18 **22** 25 25 25 |
+| room_2 pooled | 10 18 20 25 32 33 | 10 18 **21** 25 32 33 |
+| room_1 p1 | 6 10 13 13 13 13 | **7 11** 13 13 13 13 |
+| room_1 pooled | 5 12 14 18 21 26 | **7 13 15** 18 21 26 |
+| office_0 p1 | 3 5 6 12 12 12 | **4 9 10** 12 12 12 |
+| office_0 pooled | 3 6 7 12 18 19 | **4 9 10** 12 18 19 |
+
+office_0 gains most (+4 entities at k=25 and k=50) and its junk rate at k=10
+falls 0.70 -> 0.60 — consistent with connectivity having been a weak proxy that
+promoted large contiguous wall patches.
+
+**COMPARABILITY CAVEAT.** v0 was frozen before transfer scenes were read; v1 is
+not. This default was chosen using an ablation measured on room_1 and
+office_0, so v1 numbers on those scenes are no longer a clean held-out
+measurement. v0 remains reproducible via `components=COMPONENTS_V0`, and both
+variants are reported side by side in every eval run (`v1_default` / `full`).
+The tables below the ablation section are the original v0 measurements and are
+left unchanged.
 
 `runs/` is gitignored, so this file is the durable record. Reproduce with
 `python3 tools/p1_selector_eval.py`; outputs land under `runs/selector_v0/`.
