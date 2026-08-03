@@ -32,7 +32,7 @@ from reasoner.ast import (
     Aggregation, EdgeConstraint, EntityClassRef, EntityRef, Operand, QueryAST,
     SurfaceRef, Variable,
 )
-from reasoner.base import ExecutionContext, ExecutionResult
+from reasoner.base import CandidateScope, ExecutionContext, ExecutionResult
 
 
 def _norm_label(s: str) -> str:
@@ -177,6 +177,26 @@ _SURFACE_RELATION_TYPES: frozenset[EdgeType] = frozenset(
 )
 
 
+def _scope(
+    edge_type: EdgeType,
+    *,
+    anchor_uids: set[str] | None = None,
+    surface_uids: set[str] | None = None,
+) -> CandidateScope:
+    """Record what this query searched over, for reasoner/confidence.py.
+
+    `edge_type` is the STORED relation consulted, which is not always the
+    constraint type: SUPPORTS is answered from ON_SURFACE / ON_ENTITY_SURFACE
+    edges, so those are the rejection families whose near-misses bear on the
+    answer. uid tuples are sorted so the scope is deterministic.
+    """
+    return CandidateScope(
+        edge_type=edge_type,
+        anchor_uids=tuple(sorted(anchor_uids or ())),
+        surface_uids=tuple(sorted(surface_uids or ())),
+    )
+
+
 class RulesExecutor:
     """Implements the ASTExecutor Protocol."""
     name: str = "executor_v1"
@@ -216,12 +236,14 @@ class RulesExecutor:
             s.uid for s in graph.structural_surfaces
             if s.surface_type == surface_type
         }
+        scope = _scope(constraint.type, surface_uids=surface_uids)
         if not surface_uids:
             outcome = _empty_or_unknown(ctx, constraint.type, floor)
             return ExecutionResult(
                 outcome=outcome, bindings=[], evidence=[],
                 coverage_floor=floor,
                 notes=f"no {surface_type!r} surface in graph",
+                scope=scope,
             )
 
         bindings: list[dict[str, GraphRef]] = []
@@ -246,11 +268,13 @@ class RulesExecutor:
                 outcome=outcome, bindings=[], evidence=[],
                 coverage_floor=floor,
                 notes=f"no {constraint.type} edges touch a {surface_type!r} surface",
+                scope=scope,
             )
         return ExecutionResult(
             outcome="bindings", bindings=bindings, evidence=evidence,
             coverage_floor=floor,
             notes=f"matched {len(bindings)} binding(s) via stored {constraint.type}",
+            scope=scope,
         )
 
     def _execute_supports(
@@ -288,12 +312,16 @@ class RulesExecutor:
             s.uid for s in graph.structural_surfaces
             if s.surface_type == surface_type
         }
+        # SUPPORTS is derived from stored ON_SURFACE edges, so ON_SURFACE is
+        # also the rejection family that bears on this query.
+        scope = _scope("ON_SURFACE", surface_uids=surface_uids)
         if not surface_uids:
             outcome = _empty_or_unknown(ctx, "ON_SURFACE", floor)
             return ExecutionResult(
                 outcome=outcome, bindings=[], evidence=[],
                 coverage_floor=floor,
                 notes=f"no {surface_type!r} surface in graph",
+                scope=scope,
             )
 
         try:
@@ -327,11 +355,13 @@ class RulesExecutor:
                 outcome=outcome, bindings=[], evidence=[],
                 coverage_floor=floor,
                 notes=f"nothing rests on a {surface_type!r} surface",
+                scope=scope,
             )
         return ExecutionResult(
             outcome="bindings", bindings=bindings, evidence=evidence,
             coverage_floor=floor,
             notes=f"matched {len(bindings)} binding(s) via support view",
+            scope=scope,
         )
 
     def _execute_entity_supports(
@@ -359,12 +389,17 @@ class RulesExecutor:
         floor = _coverage_floor_for_query(ctx, "ON_ENTITY_SURFACE")
         owner_refs = _resolve_entity_class_ref(constraint.source, graph)
         owner_uids = {ref.uid for ref in owner_refs}
+        scope = _scope("ON_ENTITY_SURFACE", anchor_uids=owner_uids)
         if not owner_uids:
+            # No owner entity of this class exists. The scope is empty, which
+            # is the strongest form of empty available: there was never a
+            # candidate pair for a rejection to be a near-miss of.
             outcome = _empty_or_unknown(ctx, "ON_ENTITY_SURFACE", floor)
             return ExecutionResult(
                 outcome=outcome, bindings=[], evidence=[],
                 coverage_floor=floor,
                 notes=f"no {entity_class!r} owner entity in graph",
+                scope=scope,
             )
 
         try:
@@ -396,6 +431,7 @@ class RulesExecutor:
                 outcome=outcome, bindings=[], evidence=[],
                 coverage_floor=floor,
                 notes=f"nothing rests on a {entity_class!r} entity top",
+                scope=scope,
             )
         return ExecutionResult(
             outcome="bindings", bindings=bindings, evidence=evidence,
@@ -404,6 +440,7 @@ class RulesExecutor:
                 f"matched {len(bindings)} binding(s) via entity support view "
                 f"for {entity_class!r}"
             ),
+            scope=scope,
         )
 
     def execute(
@@ -451,12 +488,16 @@ class RulesExecutor:
 
         floor = _coverage_floor_for_query(ctx, constraint.type)
         anchor_refs = _resolve_entity_ref(anchor_ref, graph)
+        scope = _scope(
+            constraint.type, anchor_uids={r.uid for r in anchor_refs}
+        )
         if not anchor_refs:
             outcome = _empty_or_unknown(ctx, constraint.type, floor)
             return ExecutionResult(
                 outcome=outcome, bindings=[], evidence=[],
                 coverage_floor=floor,
                 notes=f"anchor {anchor_ref.label!r} not found in graph",
+                scope=scope,
             )
 
         bindings: list[dict[str, GraphRef]] = []
@@ -495,10 +536,12 @@ class RulesExecutor:
                 outcome=outcome, bindings=[], evidence=[],
                 coverage_floor=floor,
                 notes=f"no edges of type {constraint.type} touch {anchor_ref.label!r}",
+                scope=scope,
             )
 
         return ExecutionResult(
             outcome="bindings", bindings=bindings, evidence=evidence,
             coverage_floor=floor,
             notes=f"matched {len(bindings)} binding(s)",
+            scope=scope,
         )

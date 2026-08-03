@@ -67,14 +67,20 @@ def dump_execution_context(ctx: ExecutionContext, out_path: Path) -> Path:
     payload = {
         "completeness": completeness_to_dict(ctx.completeness),
         "empty_recall_threshold": ctx.empty_recall_threshold,
+        "answer_tau": ctx.answer_tau,
     }
     out_path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
     return out_path
 
 
 def load_execution_context(in_path: Path) -> ExecutionContext:
+    """Note: ExecutionContext.rejections is deliberately NOT round-tripped.
+    It is per-build evidence (BuildDiagnostics.rejection_samples), not
+    calibration configuration, and it is re-attached by whoever built the
+    graph. A loaded context therefore always has rejections=()."""
     payload = json.loads(in_path.read_text(encoding="utf-8"))
     return ExecutionContext(
         completeness=completeness_from_dict(payload["completeness"]),
         empty_recall_threshold=float(payload.get("empty_recall_threshold", 0.95)),
+        answer_tau=float(payload.get("answer_tau", 0.0)),
     )
