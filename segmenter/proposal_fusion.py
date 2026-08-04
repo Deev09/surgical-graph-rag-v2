@@ -37,14 +37,47 @@ def mesh_edges(faces: np.ndarray) -> np.ndarray:
     return e.astype(np.int64)
 
 
+EVIDENCE_DENOMINATORS = ("covisible", "masked")
+
+
 def edge_confidence(edges: np.ndarray, n_vertices: int,
-                    views: list[dict]) -> tuple[np.ndarray, np.ndarray]:
+                    views: list[dict], *,
+                    evidence_denominator: str = "covisible",
+                    ) -> tuple[np.ndarray, np.ndarray]:
     """views: [{'visible': sorted int array, 'masks': [vertex-id arrays]}].
 
-    Returns (co_visible_count, confidence) per edge; confidence = fraction
-    of co-visible views in which both endpoints share >=1 accepted mask
-    (0 where never co-visible)."""
+    Returns (co_visible_count, confidence) per edge. The numerator is always
+    the number of co-visible views in which both endpoints share >=1
+    accepted mask. `evidence_denominator` selects what that divides by:
+
+    "covisible" (default, frozen behaviour)
+        every co-visible view. A view where both endpoints are visible but
+        UNMASKED therefore counts against the edge.
+
+    "masked"
+        only views that carry mask evidence for this edge -- both endpoints
+        visible AND each inside at least one mask. An unmasked endpoint is
+        absence of evidence, not evidence of separation.
+
+    The two agree exactly whenever every visible vertex is masked in every
+    view, so the choice is inert on fully-covered renders and matters in
+    proportion to how much of the surface SAM leaves unmasked. Measured:
+    46.5% of occupied pixels fall inside a mask on Replica room_2 against
+    28.9% on ARKitScenes 41069021. See
+    docs/arkitscenes_fusion_evidence_protocol.md.
+
+    `co_visible_count` is unaffected by the mode -- it stays the true
+    co-visible count so callers reporting coverage are not silently
+    re-defined. Edges with an empty denominator score 0, matching the
+    existing treatment of never-co-visible edges.
+    """
+    if evidence_denominator not in EVIDENCE_DENOMINATORS:
+        raise ValueError(
+            f"unknown evidence_denominator {evidence_denominator!r}; "
+            f"supported: {EVIDENCE_DENOMINATORS}")
+    masked_mode = evidence_denominator == "masked"
     co_vis = np.zeros(len(edges), dtype=np.int32)
+    denom = np.zeros(len(edges), dtype=np.int32)
     co_mem = np.zeros(len(edges), dtype=np.int32)
     for view in views:
         visible = np.zeros(n_vertices, dtype=bool)
@@ -53,6 +86,11 @@ def edge_confidence(edges: np.ndarray, n_vertices: int,
         co_vis += both
         n_masks = len(view["masks"])
         if n_masks == 0:
+            # no evidence at all from this view; under "covisible" it still
+            # counts against every co-visible edge, which is the behaviour
+            # under test.
+            if not masked_mode:
+                denom += both
             continue
         words = (n_masks + 63) // 64
         bits = np.zeros((n_vertices, words), dtype=np.uint64)
@@ -61,10 +99,17 @@ def edge_confidence(edges: np.ndarray, n_vertices: int,
         share = np.zeros(len(edges), dtype=bool)
         for w in range(words):
             share |= (bits[edges[:, 0], w] & bits[edges[:, 1], w]) != 0
+        if masked_mode:
+            in_mask = np.zeros(n_vertices, dtype=bool)
+            for w in range(words):
+                in_mask |= bits[:, w] != 0
+            denom += both & in_mask[edges[:, 0]] & in_mask[edges[:, 1]]
+        else:
+            denom += both
         co_mem += both & share
     conf = np.zeros(len(edges), dtype=np.float64)
-    nz = co_vis > 0
-    conf[nz] = co_mem[nz] / co_vis[nz]
+    nz = denom > 0
+    conf[nz] = co_mem[nz] / denom[nz]
     return co_vis, conf
 
 

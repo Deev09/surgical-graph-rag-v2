@@ -28,15 +28,26 @@ if str(REPO_ROOT) not in sys.path:
 from adapters.arkitscenes import scene_id_for
 from tools.arkitscenes_eval import DEFAULT_DATA_ROOT, DEFAULT_VIEWS_ROOT
 from tools.arkitscenes_eval import load_canonical_geometry
+from segmenter.proposal_fusion import EVIDENCE_DENOMINATORS
 from tools.c1p1_fuse import fuse_scene
 
 
-def fuse_one(scene_dir: Path, views_root: Path) -> int:
+def bank_paths(views_root: Path, scene_id: str,
+               evidence_denominator: str) -> tuple[Path, Path]:
+    """`covisible` keeps the original names so existing artifacts and
+    downstream defaults are untouched; other modes get a suffix so both
+    banks coexist for a same-run comparison."""
+    tag = "" if evidence_denominator == "covisible" else f".{evidence_denominator}"
+    return (views_root / f"bank_{scene_id}{tag}.npz",
+            views_root / f"{scene_id}_bank{tag}.json")
+
+
+def fuse_one(scene_dir: Path, views_root: Path,
+             evidence_denominator: str = "covisible") -> int:
     scene_id = scene_id_for(scene_dir)
     views_dir = views_root / f"views_{scene_id}"
     masks_npz = views_root / f"c1p1_masks_{scene_id}.npz"
-    bank_npz = views_root / f"bank_{scene_id}.npz"
-    bank_json = views_root / f"{scene_id}_bank.json"
+    bank_npz, bank_json = bank_paths(views_root, scene_id, evidence_denominator)
 
     for p, how in ((views_dir / "manifest.json", "tools/arkitscenes_render.py"),
                    (masks_npz, "notebooks/c1p1_sam2_colab.ipynb")):
@@ -56,7 +67,8 @@ def fuse_one(scene_dir: Path, views_root: Path) -> int:
         return 1
 
     t0 = time.perf_counter()
-    bank, stats = fuse_scene(views_dir, masks_npz, mesh.faces, len(mesh.xyz))
+    bank, stats = fuse_scene(views_dir, masks_npz, mesh.faces, len(mesh.xyz),
+                             evidence_denominator=evidence_denominator)
     verts = (np.concatenate([p["vertices"] for p in bank])
              if bank else np.empty(0, dtype=np.int64))
     offsets = np.zeros(len(bank) + 1, dtype=np.int64)
@@ -71,6 +83,7 @@ def fuse_one(scene_dir: Path, views_root: Path) -> int:
         "scene_id": scene_id,
         "dataset": "arkitscenes-3dod-raw",
         "video_id": scene_dir.name,
+        "evidence_denominator": evidence_denominator,
         "representation_hash": bundle.representation_hash,
         "masks_sidecar_sha256": hashlib.sha256(masks_npz.read_bytes()).hexdigest(),
         "views_manifest_sha256": hashlib.sha256(
@@ -98,6 +111,10 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--all", action="store_true")
     ap.add_argument("--data-root", type=Path, default=DEFAULT_DATA_ROOT)
     ap.add_argument("--views-root", type=Path, default=DEFAULT_VIEWS_ROOT)
+    ap.add_argument("--evidence-denominator", default="covisible",
+                    choices=list(EVIDENCE_DENOMINATORS),
+                    help="fusion evidence rule; see "
+                         "docs/arkitscenes_fusion_evidence_protocol.md")
     args = ap.parse_args(argv)
 
     if args.all:
@@ -108,7 +125,8 @@ def main(argv: list[str] | None = None) -> int:
         scenes = [args.data_root / args.scene]
     else:
         ap.error("pass --scene <video_id> or --all")
-    return max(fuse_one(d, args.views_root) for d in scenes)
+    return max(fuse_one(d, args.views_root, args.evidence_denominator)
+               for d in scenes)
 
 
 if __name__ == "__main__":

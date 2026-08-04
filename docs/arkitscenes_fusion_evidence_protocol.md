@@ -183,7 +183,110 @@ experiment.
 
 ## Sign-off
 
-Drafted 2026-08-03. **Unexecuted.** Requires owner approval of the gate
-values in Stage 1 and Stage 2 before any code is written — the gates are the
-experiment, and setting them after seeing results would make this a tuning
-exercise wearing a protocol's clothes.
+Drafted 2026-08-03. Gate values approved by the owner before any code was
+written. Executed 2026-08-03.
+
+---
+
+# 2026-08-03 verdict — STAGE 1 FAILS. HYPOTHESIS REFUTED. LINE CLOSED.
+
+Stage 2 was **not run**: 41069025 and 41069042 have never been fused,
+evaluated, or inspected under either mode, and remain sealed.
+
+## Stage 0 — all validity gates pass
+
+| gate | criterion | measured |
+|---|---|---|
+| V1 | Replica room_2 `bank_npz_sha256` unmoved | `74b2a9a3…5e07` **identical**, 534 proposals, digests identical |
+| V2 | suite green, scorecard and hashes unmoved | 83/83; 4 / 27 / 22 / 3; all six hashes identical |
+| V3 | modes identical where every visible vertex is masked | exact, both `1/2` |
+| V4 | modes differ in the predicted direction, hand-computed | `covisible` 1/3, `masked` 1/2 |
+
+The implementation is correct and inert by default. Nothing about the frozen
+Replica path moved.
+
+## Stage 1 — dev scene 41069021, one run
+
+| gate | criterion | measured | verdict |
+|---|---|---|---|
+| F1 | ceiling @IoU 0.50 ≥ 6/18 | **1** (baseline 1) | **FAIL** |
+| F2 | ceiling @IoU 0.25 ≥ 12/18 | **5** (baseline 7) | **FAIL** |
+| F3 | median proposal size ≥ 300 | **41** (baseline 37) | **FAIL** |
+| F4 | ≤ 2000 proposals, ≤ 2 GiB | 478, 0.7 MB | pass |
+| F5 | selector recovers ≥ 0.80 of ceiling @k=100 | 1.00 | pass |
+
+Full comparison on the dev scene:
+
+| | covisible | masked |
+|---|---|---|
+| proposals | 1733 | 478 |
+| median size | 37 | 41 |
+| ceiling @0.50 | 1 | 1 |
+| ceiling @0.25 | 7 | **5** |
+| ceiling @0.10 | 12 | **9** |
+| proposals ≥1000 verts | 82 | **30** |
+| proposals ≥5000 verts | 23 | **8** |
+| largest proposal | 142,278 | 265,346 |
+
+**The change made the bank worse, not better.** Loose-threshold recall fell
+(12→9 at IoU 0.10), and the mid-size proposals that carried it were
+destroyed: those ≥1000 vertices fell 82→30 and those ≥5000 fell 23→8, while
+the largest single proposal grew to 265k vertices — a quarter of the mesh.
+
+## Decision, per the predeclared table
+
+Stage 1 fails **and F3 fails**. That row reads: *"Negative result. The
+absent-evidence hypothesis is refuted; the fusion is exonerated and the
+investigation moves upstream to the renderer. Commit and close."*
+
+Executed as written. No re-gating, no cut sweep, no rescue run, no transfer
+spend.
+
+## What actually happened, and what this does not refute
+
+The mechanism was the opposite of the prediction. Raising confidence on
+evidence-bearing edges let **more** edges survive the frozen cuts, so
+components merged — but merged *past object boundaries* into blobs, absorbing
+the mid-size proposals that had been the bank's only useful content. The
+prediction was "fragments become objects"; the observation is "fragments and
+objects alike become blobs".
+
+**Stated confound, because it bounds the claim.** The cut thresholds
+(0.25/0.50/0.75) were frozen by this protocol and are calibrated to the
+`covisible` confidence distribution. `masked` shifts that whole distribution
+upward, so the same cuts necessarily merge more aggressively. This experiment
+therefore refutes:
+
+> the absent-evidence correction **alone, at frozen cuts**, improves the
+> ARKitScenes bank
+
+and does **not** refute the weaker claim that the denominator is
+conceptually wrong. Separating the two would require a joint
+denominator-and-cut recalibration, which is a different experiment with its
+own gates and its own dev/transfer split. It is not authorized here, and
+this document does not claim the answer to it.
+
+## Where the investigation goes
+
+Upstream, as the decision table specifies. The measured chain from the
+2026-08-03 dev run stands unchanged, with fusion now exonerated as the
+binding constraint:
+
+    render   53.7% pixel fill      (Replica 72.8%)
+    SAM      28.9% of occupied px in any mask   (46.5%)
+    fusion   ← tested here; not the binding constraint
+
+A renderer experiment (splat density) is the next candidate and needs its own
+protocol. Nothing about it is authorized by this one.
+
+## Artifacts
+
+* `segmenter/proposal_fusion.py` — `evidence_denominator`, default `covisible`
+* `tests/segmenter/test_fusion_evidence_denominator.py` — V3/V4, 8/8
+* `runs/arkitscenes_p1/bank_arkitscenes_41069021.masked.npz` and
+  `arkitscenes_41069021_bank.masked.json`
+* `runs/arkitscenes_selector/arkitscenes_41069021_selector_eval.masked.json`
+
+The `"masked"` mode is retained in the codebase, off by default, because
+deleting it would discard the only evidence that this question was asked and
+answered.

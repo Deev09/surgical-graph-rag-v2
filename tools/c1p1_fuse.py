@@ -33,7 +33,12 @@ from tools.c3_surface_run import _load_generation_inputs
 
 
 def fuse_scene(views_dir: Path, masks_npz: Path, faces: np.ndarray,
-               n_vertices: int) -> tuple[list[dict], dict]:
+               n_vertices: int, *,
+               evidence_denominator: str = "covisible",
+               ) -> tuple[list[dict], dict]:
+    """`evidence_denominator` is forwarded to
+    `proposal_fusion.edge_confidence`; the default is the frozen
+    behaviour. See docs/arkitscenes_fusion_evidence_protocol.md."""
     manifest = json.loads((views_dir / "manifest.json").read_text())
     ids = np.load(views_dir / "ids.npz")
     masks = np.load(masks_npz, allow_pickle=False)
@@ -56,7 +61,9 @@ def fuse_scene(views_dir: Path, masks_npz: Path, faces: np.ndarray,
                     n_lifted += 1
         views.append({"visible": visible, "masks": lifted})
     edges = mesh_edges(faces)
-    co_vis, conf = edge_confidence(edges, n_vertices, views)
+    co_vis, conf = edge_confidence(
+        edges, n_vertices, views,
+        evidence_denominator=evidence_denominator)
     bank = build_bank(edges, co_vis, conf, n_vertices)
     stats = {
         "n_2d_masks": int(n_masks_total),
@@ -64,6 +71,7 @@ def fuse_scene(views_dir: Path, masks_npz: Path, faces: np.ndarray,
         "n_mesh_edges": int(len(edges)),
         "n_covisible_edges": int(np.count_nonzero(co_vis)),
         "confidence_cuts": list(CONFIDENCE_CUTS),
+        "evidence_denominator": evidence_denominator,
         "n_proposals": len(bank),
     }
     return bank, stats
