@@ -50,11 +50,16 @@ def fuse_one(scene_dir: Path, views_root: Path,
              rgb_splat: str = "3x3", id_splat: str = "3x3") -> int:
     scene_id = scene_id_for(scene_dir)
     views_dir = views_dir_for(views_root, scene_id, rgb_splat, id_splat)
-    # masks are keyed to the RGB image only, so an arm that leaves RGB
-    # untouched reuses the existing sidecar byte-for-byte
-    masks_npz = views_root / f"c1p1_masks_{scene_id}.npz"
     variant = ("" if (rgb_splat, id_splat) == ("3x3", "3x3")
                else f".rgb{rgb_splat}_id{id_splat}")
+    # Masks are keyed to the RGB IMAGE, so the sidecar to use depends on
+    # the RGB kernel alone. An arm that leaves RGB untouched (id-only
+    # dilation) reuses the baseline sidecar byte-for-byte -- that reuse is
+    # the point of such an arm. An arm that changes RGB must NOT: fusing
+    # new views against old masks would silently produce a meaningless
+    # bank. Verified below against the sidecar's own recorded scene id.
+    mask_variant = "" if rgb_splat == "3x3" else variant
+    masks_npz = views_root / f"c1p1_masks_{scene_id}{mask_variant}.npz"
     bank_npz, bank_json = bank_paths(views_root, scene_id,
                                      evidence_denominator, variant)
 
@@ -65,6 +70,15 @@ def fuse_one(scene_dir: Path, views_root: Path,
             return 1
     if bank_npz.exists() or bank_json.exists():
         print(f"{scene_id}: refusing to overwrite finalized bank: {bank_npz}")
+        return 1
+
+    # the sidecar records the SCENE string the notebook ran under; if it
+    # disagrees with the arm we are fusing, the wrong images were segmented
+    recorded = json.loads(str(np.load(masks_npz)["env"]))["scene"]
+    expected = f"{scene_id}{mask_variant}"
+    if recorded != expected:
+        print(f"{scene_id}: mask sidecar was produced for scene "
+              f"{recorded!r}, this arm needs {expected!r} — wrong images")
         return 1
 
     mesh, _R, bundle = load_canonical_geometry(scene_dir)

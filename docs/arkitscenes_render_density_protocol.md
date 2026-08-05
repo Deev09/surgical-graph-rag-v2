@@ -260,7 +260,68 @@ distinct visible vertices per view *fell* — median 114,255 → 80,997 — even
 as pixel fill rose. Fill and evidence are not the same quantity, which is
 precisely why H-A forbids gating on fill.
 
-## Stage 1b — arm A: rendered, awaiting SAM
+## Stage 1b — ARM A FAILS. SPLAT DENSITY IS NOT THE BINDING CONSTRAINT.
+
+| gate | criterion | measured | verdict |
+|---|---|---|---|
+| R1 | ceiling @IoU 0.50 ≥ 6/18 | **1** (baseline 1) | **FAIL** |
+| R2 | ceiling @IoU 0.25 ≥ 12/18 | **8** (baseline 7) | **FAIL** |
+| R3a | median proposal size ≥ 300 | **38** (baseline 37) | **FAIL** |
+| R3b | largest ≤ 15% of mesh | 11.2% (baseline 14.1%) | pass |
+| R4 | ≤ 2000 proposals | 1455 | pass |
+| R5 | selector recovery ≥ 0.80 @k=100 | 1.00 | pass |
+| R6 | arm A beats arm C by ≥2 @0.50 | **0** | **FAIL** |
+
+R3b passed, so the decision table's *"A fails otherwise"* row applies:
+**close the render line.**
+
+### The change worked. The outcome did not.
+
+Everything the hypothesis predicted upstream happened, and none of it
+reached the ceiling:
+
+| | fill | masks/view | occupied px in a mask | ceiling @0.50 |
+|---|---|---|---|---|
+| ARKitScenes baseline | 53.7% | 11.4 | 28.9% | **1/18** |
+| **ARKitScenes arm A** | **74.6%** | **16.4** | **30.2%** | **1/18** |
+| Replica room_2 | 72.8% | 15.5 | **46.5%** | **25/53** |
+
+Arm A **matches or exceeds Replica on both render fill and mask count**.
+SAM responded exactly as hoped — 43% more masks, 449 → 601 lifted. The
+entity ceiling moved by zero, and median proposal size by one vertex.
+
+### What the run newly identified
+
+**Occupied-pixel mask coverage is the quantity that separates the datasets,
+and it does not respond to render density.** It moved 28.9% → 30.2% while
+fill moved 21 points and mask count moved 43%. Replica sits at 46.5%.
+
+So ARKitScenes gets *more* masks that cover *no more surface*: SAM's masks
+on real-scan renders are more numerous and more localised, and they do not
+tile the visible surface the way they do on synthetic renders. That is a
+segmenter-behaviour property, not a rasterisation one, and this protocol
+freezes every SAM parameter — deliberately. Naming the next question is not
+authorising it.
+
+### Verdict
+
+The measured chain from `7af4164` is now eliminated end to end:
+
+    render density   ← tested here (arm A), null
+    lifting          ← tested here (arm C), null
+    fusion evidence  ← tested in F1, refuted
+    mask coverage    ← the residual, newly isolated, untested
+
+Per the decision table, the honest reading stands: **render-and-lift does not
+transfer off synthetic meshes on the frozen C1-P1 configuration.** C1-P1's
+result is a Replica result until something outside this configuration changes
+it. That is a limitation of the mechanism, established by measurement across
+three predeclared experiments, not an implementation defect.
+
+Stage 2 was **not run.** 41069025 and 41069042 have never been fused,
+evaluated, or inspected under any condition and remain sealed.
+
+## Stage 1b — arm A inputs (rendered before the run above)
 
 `views_arkitscenes_41069021.rgb5x5_id5x5/` rendered at 5×5 for both RGB and
 ids; id-buffer fill 74.6%, against Replica room_2's 72.8%. Upload tar is
