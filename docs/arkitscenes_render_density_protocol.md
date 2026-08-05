@@ -1,0 +1,219 @@
+# ARKitScenes R1 — render splat density (draft protocol)
+
+Status: **draft, unexecuted.** No code has been written. Baselines quoted
+here were measured before it was drafted (`runs/arkitscenes_p1/`, commits
+`7af4164` and `0c6e83e`).
+
+Follows `docs/arkitscenes_fusion_evidence_protocol.md`, whose verdict
+exonerated fusion as the binding constraint and directed the investigation
+upstream. Related: `docs/c1_p1_multiview_proposals_protocol.md` (the frozen
+render contract this modifies).
+
+---
+
+## Decision this experiment answers
+
+ARKitScenes renders fill **53.7%** of pixels against Replica's **72.8%**,
+and SAM masks cover **28.9%** of occupied pixels against **46.5%**. The
+resulting bank has a ceiling of 1/18. Is that sparsity the binding
+constraint, and does a denser splat fix it?
+
+A pass adopts a denser render for real-capture geometry. A fail closes the
+splat-density line and leaves the C1-P1 mechanism unsupported on real scans
+— at which point the honest conclusion is that render-and-lift does not
+transfer off synthetic meshes, and the next candidate is a different
+proposal source entirely.
+
+## Two hazards this design exists to avoid
+
+**H-A: circular gating.** Splat size trivially raises pixel fill. Gating on
+fill would report the knob's own setting back as a result. Fill is
+**reported and never gated**. Every gate is on entity ceiling or proposal
+geometry.
+
+**H-B: two variables in one change.** A larger splat changes both what SAM
+*sees* (denser RGB → different masks) and what a mask *lifts* (each vertex
+paints more pixels → masks lift more vertices). A naive single-arm run
+cannot tell which produced any gain.
+
+The design separates them with an arm that costs no GPU:
+
+| arm | RGB splat | id-buffer splat | SAM masks | isolates |
+|---|---|---|---|---|
+| **baseline** | 3×3 | 3×3 | existing | — |
+| **C** | 3×3 | **5×5** | **existing, byte-identical** | lifting dilation alone |
+| **A** | **5×5** | **5×5** | new run | lifting + perception |
+
+Arm C reuses the mask sidecar already on disk **unchanged**, so SAM's output
+is literally identical and only lifting differs. It is CPU-only. Run C
+first: if C alone reaches A's gates, the GPU run is unnecessary and the
+"SAM sees better" story is unsupported.
+
+## Hypothesis
+
+**H:** occupied-pixel mask coverage of 28.9% is too low for multiview
+co-membership to bind objects together, and it is low because the render is
+sparse rather than because SAM is weak. A 5×5 splat raises fill toward
+Replica's regime, raising mask coverage and lifting the entity ceiling.
+
+**Predicted direction, stated before the run.** Pixel fill rises; occupied
+mask coverage rises; ceiling rises; median proposal size rises.
+
+**Predicted failure mode, also stated before the run.** Denser lifting
+raises co-membership confidence on every edge, exactly as the refuted
+`masked` denominator did. At frozen cut thresholds that risks the same
+over-merge into blobs — largest proposal reached **265,346 vertices (26% of
+the mesh)** in F1. R3b exists to catch that, and a blob outcome is a FAIL,
+not a partial win.
+
+## Baseline (measured, dev scene 41069021)
+
+| quantity | value |
+|---|---|
+| pixel fill / view | 53.7% (Replica room_2: 72.8%) |
+| occupied px inside any mask | 28.9% (46.5%) |
+| 2D masks / lifted | 457 / 449 |
+| proposals | 1733 |
+| median proposal size | 37 vertices |
+| largest proposal | 142,278 (14.1% of mesh) |
+| ceiling @IoU 0.50 / 0.25 / 0.10 | **1/18** · 7/18 · 12/18 |
+
+## Frozen anchors
+
+* SAM 2.1 pin, checkpoint SHA, and every automatic-mask-generator parameter.
+  **Not touched.** `points_per_side` stays 32.
+* Fusion: `evidence_denominator="covisible"`, cut thresholds 0.25/0.50/0.75.
+  **Not touched, not swept.** The `masked` mode was refuted in F1 and is not
+  combined with this change — one variable.
+* Camera set, view count (40), canvas size (1024), VFOV, pitch, eye height,
+  origin fraction. Only the splat kernel changes.
+* Every Replica artifact. The Replica path keeps the 3×3 splat regardless of
+  outcome; changing it would move frozen results and needs its own protocol.
+
+## The change
+
+`segmenter/view_render.py` gains a splat parameter defaulting to today's
+kernel, plus the ability to render the id buffer at a different kernel from
+the RGB — the mechanism arm C needs:
+
+    SPLAT_OFFSETS_3X3   # current, default
+    SPLAT_OFFSETS_5X5   # the single tested alternative
+
+One alternative value. **No sweep.** 5×5 is chosen because it is the next
+symmetric kernel, not because it was tuned.
+
+## Isolation boundary
+
+* Annotations remain readable only by `tools/arkitscenes_eval.py` and
+  `tools/arkitscenes_selector_eval.py`, below their ORACLE BOUNDARY comments.
+* **41069025 and 41069042 stay sealed.** They have never been fused,
+  evaluated, or inspected under any condition and must not be touched in
+  Stage 0 or Stage 1.
+* Gates are fixed in this document before execution and are not adjusted
+  after seeing results.
+
+## Stage 0 — validity (no new inference)
+
+| gate | predeclared criterion |
+|---|---|
+| W1 | at the default 3×3 kernel, re-rendered id buffers and RGB PNGs are **byte-identical** to the committed `views_arkitscenes_41069021/` artifacts (per-file sha256 from the existing manifest) |
+| W2 | `tools/run_tests.py` green; scorecard 4 / 27 / 22 / 3; all six Replica bundle hashes unmoved |
+| W3 | arm C consumes `c1p1_masks_arkitscenes_41069021.npz` with its sha256 unchanged — SAM output is provably reused, not regenerated |
+| W4 | synthetic fixture: a single vertex rendered at 5×5 paints exactly 25 id-buffer pixels and 3×3 paints exactly 9, with correct clipping at canvas edges |
+
+Any W failure: **STOP.** No arm runs.
+
+## Stage 1a — arm C (CPU only, dev scene)
+
+Re-render id buffers at 5×5, re-lift the **existing** masks, re-fuse, evaluate.
+
+Reported, not gated: pixel fill, occupied-mask coverage, lifted-mask sizes.
+
+**Decision rule, not an adoption gate:**
+
+| arm C outcome | consequence |
+|---|---|
+| C alone meets every R gate below | Adopt C. **Do not run arm A** — the GPU spend would buy nothing and the perception story is unsupported. |
+| C moves ceiling @0.50 by ≥2 entities but misses gates | Arm A's result is confounded by lifting dilation. Run A, and report A **relative to C**, never relative to baseline. |
+| C moves ceiling @0.50 by <2 entities | Lifting dilation is not the mechanism. Any arm-A gain is attributable to perception. |
+
+## Stage 1b — arm A (one GPU run, dev scene)
+
+Render RGB and ids at 5×5, one SAM run, fuse, evaluate.
+
+| gate | predeclared criterion |
+|---|---|
+| R1 | ceiling @IoU 0.50 ≥ **6/18** (baseline 1/18) |
+| R2 | ceiling @IoU 0.25 ≥ **12/18** (baseline 7/18) |
+| R3a | median proposal size ≥ **300** vertices (baseline 37) |
+| R3b | **no proposal exceeds 15% of mesh vertices** (baseline 14.1%; F1's failure hit 26%) |
+| R4 | ≤ 2,000 proposals and ≤ 2 GiB serialized |
+| R5 | selector v1 recovers ≥ **0.80** of the new ceiling at k=100 |
+| R6 | arm A exceeds arm C on ceiling @IoU 0.50 by ≥ **2** entities |
+
+All seven must pass. Two clauses carry the lessons of F1:
+
+* **R3a and R3b are two-sided.** Too small is fragments; too large is blobs.
+  F1 was rejected for producing a quarter-of-the-mesh proposal, and this
+  protocol will reject the same outcome rather than reading it as
+  consolidation.
+* **R6 is the anti-confound gate.** If arm A does not beat the free CPU arm,
+  the denser *render* bought nothing beyond denser *lifting*, and adopting a
+  GPU-dependent change on that evidence would be unjustified.
+
+## Stage 2 — sealed transfer
+
+Only if every Stage-1b gate passes. Run the identical committed configuration
+once on 41069025 and once on 41069042, with no intervening change. Evaluate
+both only after both banks are final.
+
+| gate | predeclared criterion |
+|---|---|
+| S1 | ceiling @IoU 0.50 improves on **both** scenes versus their own 3×3 baseline, computed in the same run |
+| S2 | both satisfy R3a and R3b |
+| S3 | both stay within R4 caps |
+
+Genuinely sealed: neither scene has been fused, evaluated, or inspected under
+any condition.
+
+## Budget, stopping rule, and decision
+
+* Arm C: **no GPU.** CPU re-render (~10 s) plus fusion (~25 s).
+* Arm A: **one** SAM run on the dev scene; two more only if Stage 1b passes.
+* One splat value. No sweeps, no per-scene tuning, no rescue run.
+* A run invalidated by a crash is rerun from scratch and reported.
+
+| outcome | decision |
+|---|---|
+| W fails | STOP. Implementation defect. Nothing claimed. |
+| C meets all R gates | Adopt arm C. No GPU spend. Record that perception was never the constraint. |
+| A fails, R3b the cause | Over-merge, same failure as F1 by a different route. Negative result: the cut thresholds do not survive a changed confidence distribution, and **that** — not splat density — is the next question. |
+| A fails otherwise | Negative result. Splat density is not the binding constraint. Close the render line; the honest reading is that render-and-lift does not transfer off synthetic meshes, and the next candidate is a different proposal source. |
+| A passes, Stage 2 fails | Negative transfer. Not adopted. The dev gain is a 41069021 artifact. |
+| Both pass | Adopt 5×5 for ARKitScenes. Replica stays 3×3 unless a separate protocol re-runs its gates. |
+
+## Explicitly out of scope
+
+* SAM parameters, checkpoint, or prompt configuration.
+* Fusion changes of any kind, including combining this with the refuted
+  `masked` denominator.
+* Cut-threshold sweeps — even though the F1 verdict named cut calibration as
+  an open question. That is a separate experiment.
+* Canvas size, camera set, VFOV, view count.
+* Any relation-threshold, reasoner, or QA change.
+
+## Required artifacts and reporting
+
+* the committed render diff and its W4 synthetic test;
+* per-arm `bank_*.npz` sha256 and `*_bank.json`;
+* pixel fill and occupied-mask coverage per arm, **reported as context, not
+  as evidence of success**;
+* the gate tables above with measured values filled in, pass or fail;
+* the verdict committed to this file, negative results included.
+
+## Sign-off
+
+Drafted 2026-08-03. **Unexecuted.** Requires owner approval of the arm
+structure and of the R and S gate values before any code is written. The
+arm-C-first ordering is load-bearing: approving the gates without it would
+permit a GPU run whose result could not be attributed.
