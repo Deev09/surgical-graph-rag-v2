@@ -26,7 +26,18 @@ PITCH_DEG = -10.0
 EYE_HEIGHT_M = 1.60
 ORIGIN_FRAC = 0.18
 YAWS_DEG = tuple(range(0, 360, 45))
-SPLAT_OFFSETS = tuple((dy, dx) for dy in (-1, 0, 1) for dx in (-1, 0, 1))
+
+
+def _square_kernel(radius: int) -> tuple[tuple[int, int], ...]:
+    r = range(-radius, radius + 1)
+    return tuple((dy, dx) for dy in r for dx in r)
+
+
+SPLAT_OFFSETS = _square_kernel(1)          # 3x3, 9 px — the frozen contract
+SPLAT_OFFSETS_3X3 = SPLAT_OFFSETS
+SPLAT_OFFSETS_5X5 = _square_kernel(2)      # 25 px
+
+SPLAT_KERNELS = {"3x3": SPLAT_OFFSETS_3X3, "5x5": SPLAT_OFFSETS_5X5}
 
 
 @dataclass(frozen=True)
@@ -62,8 +73,19 @@ def _basis(cam: Camera) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
 
 
 def render_view(xyz: np.ndarray, rgb: np.ndarray, cam: Camera,
-                far_m: float) -> tuple[np.ndarray, np.ndarray]:
-    """Returns (rgb_image uint8 [S,S,3], id_buffer int32 [S,S], -1 empty)."""
+                far_m: float, *,
+                rgb_offsets=SPLAT_OFFSETS,
+                id_offsets=None) -> tuple[np.ndarray, np.ndarray]:
+    """Returns (rgb_image uint8 [S,S,3], id_buffer int32 [S,S], -1 empty).
+
+    `rgb_offsets` / `id_offsets` are the splat kernels. Both default to
+    the frozen 3x3 contract; `id_offsets=None` means 'same as RGB'.
+    They are separable so an experiment can dilate LIFTING without
+    changing what a segmenter sees — see
+    docs/arkitscenes_render_density_protocol.md (arm C).
+    """
+    if id_offsets is None:
+        id_offsets = rgb_offsets
     fwd, right, up = _basis(cam)
     d = xyz - np.asarray(cam.origin)[None, :]
     zc = d @ fwd
@@ -79,24 +101,36 @@ def render_view(xyz: np.ndarray, rgb: np.ndarray, cam: Camera,
     # Expand splats FIRST, then depth-sort all (vertex, offset) samples
     # jointly and paint far->near in one pass — per-offset passes would
     # let a far vertex overwrite a nearer one's earlier-offset pixel.
-    k = len(SPLAT_OFFSETS)
-    off = np.asarray(SPLAT_OFFSETS, dtype=np.int64)      # [k, (dy,dx)]
-    yy = np.clip(py[:, None] + off[None, :, 0], 0, SIZE - 1).ravel()
-    xx = np.clip(px[:, None] + off[None, :, 1], 0, SIZE - 1).ravel()
-    samp_idx = np.repeat(idx, k)
-    order = np.argsort(-zc[samp_idx], kind="stable")
-    yy, xx, samp_idx = yy[order], xx[order], samp_idx[order]
+    def expand(offsets):
+        k = len(offsets)
+        off = np.asarray(offsets, dtype=np.int64)        # [k, (dy,dx)]
+        yy = np.clip(py[:, None] + off[None, :, 0], 0, SIZE - 1).ravel()
+        xx = np.clip(px[:, None] + off[None, :, 1], 0, SIZE - 1).ravel()
+        samp = np.repeat(idx, k)
+        order = np.argsort(-zc[samp], kind="stable")
+        return yy[order], xx[order], samp[order]
+
+    yy, xx, samp_idx = expand(rgb_offsets)
     img = np.zeros((SIZE, SIZE, 3), dtype=np.uint8)
     ids = np.full((SIZE, SIZE), -1, dtype=np.int32)
     img[yy, xx] = rgb[samp_idx]
-    ids[yy, xx] = samp_idx.astype(np.int32)
+    if id_offsets is rgb_offsets or tuple(id_offsets) == tuple(rgb_offsets):
+        # identical kernels reuse the identical sample ordering, so the
+        # default path is bit-for-bit what it was before this parameter
+        # existed. Do not "simplify" this branch away.
+        ids[yy, xx] = samp_idx.astype(np.int32)
+    else:
+        yy2, xx2, samp2 = expand(id_offsets)
+        ids[yy2, xx2] = samp2.astype(np.int32)
     return img, ids
 
 
-def render_all(xyz: np.ndarray, rgb: np.ndarray):
+def render_all(xyz: np.ndarray, rgb: np.ndarray, *,
+               rgb_offsets=SPLAT_OFFSETS, id_offsets=None):
     """Yield (view_index, camera, rgb_image, id_buffer) for all 40 views."""
     lo, hi = xyz.min(axis=0), xyz.max(axis=0)
     far = float(np.linalg.norm(hi - lo)) + 1.0
     for i, cam in enumerate(camera_set(xyz)):
-        img, ids = render_view(xyz, rgb, cam, far)
+        img, ids = render_view(xyz, rgb, cam, far,
+                               rgb_offsets=rgb_offsets, id_offsets=id_offsets)
         yield i, cam, img, ids

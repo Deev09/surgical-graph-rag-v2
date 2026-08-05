@@ -213,7 +213,65 @@ any condition.
 
 ## Sign-off
 
-Drafted 2026-08-03. **Unexecuted.** Requires owner approval of the arm
-structure and of the R and S gate values before any code is written. The
-arm-C-first ordering is load-bearing: approving the gates without it would
-permit a GPU run whose result could not be attributed.
+Drafted 2026-08-03. Arm structure and gate values approved by the owner
+before any code was written. Stage 0 and Stage 1a executed 2026-08-03;
+Stage 1b awaiting its single GPU run.
+
+---
+
+# 2026-08-03 interim — STAGE 0 PASSES · ARM C IS NULL · ARM A PENDING
+
+## Stage 0 — all validity gates pass
+
+| gate | criterion | measured |
+|---|---|---|
+| W1 | default 3×3 render byte-identical | 40/40 RGB sha match, 40/40 id sha match, `ids.npz` sha identical |
+| W2 | Replica untouched | 84/84; 4 / 27 / 22 / 3; six bundle hashes unmoved |
+| W3 | arm C reuses SAM output unchanged | 0/40 RGB mismatches, 40/40 id buffers dilated, sidecar sha `03fa67f9…` reused |
+| W4 | splat kernels paint exactly k pixels | 3×3 → 9, 5×5 → 25; edge clipping clamps, never wraps; 6/6 |
+
+The default path is bit-for-bit what it was before the kernel became a
+parameter — asserted directly, not inferred from code shape.
+
+## Stage 1a — arm C (CPU only): **NULL RESULT**
+
+| | baseline 3×3/3×3 | arm C 3×3/5×5 |
+|---|---|---|
+| id-buffer fill | 53.7% | **74.6%** |
+| proposals | 1733 | 1428 |
+| median proposal size | 37 | 38 |
+| largest proposal | 142,278 (14.1%) | 147,560 (14.6%) |
+| ceiling @IoU 0.50 | **1** | **1** |
+| ceiling @IoU 0.25 | 7 | 5 |
+| ceiling @IoU 0.10 | 12 | 11 |
+
+**Δ ceiling @0.50 = +0.** The decision rule's third row applies: *"C moves
+ceiling @0.50 by <2 entities → lifting dilation is not the mechanism. Any
+arm-A gain is attributable to perception."*
+
+This is the arm's whole purpose and it did its job. Lifting dilation alone
+raised id-buffer fill by 21 points and changed nothing that matters — the
+ceiling is flat at 0.50 and slightly *worse* at looser thresholds. Arm A is
+therefore unconfounded: whatever it produces is attributable to what SAM
+sees, not to how masks lift.
+
+**Note for the record, not a gate.** Larger splats occlude each other, so
+distinct visible vertices per view *fell* — median 114,255 → 80,997 — even
+as pixel fill rose. Fill and evidence are not the same quantity, which is
+precisely why H-A forbids gating on fill.
+
+## Stage 1b — arm A: rendered, awaiting SAM
+
+`views_arkitscenes_41069021.rgb5x5_id5x5/` rendered at 5×5 for both RGB and
+ids; id-buffer fill 74.6%, against Replica room_2's 72.8%. Upload tar is
+16.1 MB, 40 PNGs, `ids.npz` withheld as always.
+
+**Defect found and fixed during this stage.** `tar_for_upload` used
+`Path.with_suffix(".tar.gz")`, which parses `.rgb5x5_id5x5` as the suffix
+and silently wrote every arm's upload to the **baseline filename**. Arm A's
+tar overwrote the baseline's before this was caught. Both were rebuilt from
+their own view directories and verified to carry distinct roots. Committed
+with a comment naming the trap, because the failure is silent and would have
+sent the wrong images to the GPU.
+
+No gate is claimed for arm A. R1–R6 remain as written.

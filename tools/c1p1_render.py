@@ -29,7 +29,8 @@ if str(REPO_ROOT) not in sys.path:
 
 from geometry.mesh_surfaces import load_raw_triangle_mesh, transform_mesh
 from segmenter.view_render import (
-    EYE_HEIGHT_M, NEAR_M, ORIGIN_FRAC, PITCH_DEG, SIZE, VFOV_DEG, render_all,
+    EYE_HEIGHT_M, NEAR_M, ORIGIN_FRAC, PITCH_DEG, SIZE, SPLAT_OFFSETS,
+    VFOV_DEG, render_all,
 )
 from tools.c3_surface_run import _load_generation_inputs
 
@@ -39,7 +40,10 @@ def sha256_bytes(b: bytes) -> str:
 
 
 def render_scene(mesh_path: Path, frame: dict, out_dir: Path,
-                 mesh_sha: str, scene_id: str) -> Path:
+                 mesh_sha: str, scene_id: str, *,
+                 rgb_offsets=SPLAT_OFFSETS, id_offsets=None) -> Path:
+    """Kernels default to the frozen 3x3 contract; see
+    docs/arkitscenes_render_density_protocol.md."""
     mesh = transform_mesh(load_raw_triangle_mesh(mesh_path),
                           np.asarray(frame["world_from_raw_rotation"]),
                           np.asarray(frame["world_from_raw_translation"]))
@@ -47,7 +51,9 @@ def render_scene(mesh_path: Path, frame: dict, out_dir: Path,
     t0 = time.perf_counter()
     id_arrays: dict[str, np.ndarray] = {}
     rows = []
-    for i, cam, img, ids in render_all(mesh.xyz, mesh.rgb):
+    for i, cam, img, ids in render_all(mesh.xyz, mesh.rgb,
+                                       rgb_offsets=rgb_offsets,
+                                       id_offsets=id_offsets):
         png = out_dir / f"view_{i:02d}.png"
         Image.fromarray(img).save(png, optimize=False)
         id_arrays[f"ids_{i:02d}"] = ids

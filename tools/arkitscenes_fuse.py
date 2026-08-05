@@ -29,25 +29,34 @@ from adapters.arkitscenes import scene_id_for
 from tools.arkitscenes_eval import DEFAULT_DATA_ROOT, DEFAULT_VIEWS_ROOT
 from tools.arkitscenes_eval import load_canonical_geometry
 from segmenter.proposal_fusion import EVIDENCE_DENOMINATORS
+from tools.arkitscenes_render import views_dir_for
 from tools.c1p1_fuse import fuse_scene
 
 
 def bank_paths(views_root: Path, scene_id: str,
-               evidence_denominator: str) -> tuple[Path, Path]:
+               evidence_denominator: str,
+               variant: str = "") -> tuple[Path, Path]:
     """`covisible` keeps the original names so existing artifacts and
     downstream defaults are untouched; other modes get a suffix so both
     banks coexist for a same-run comparison."""
     tag = "" if evidence_denominator == "covisible" else f".{evidence_denominator}"
+    tag += variant
     return (views_root / f"bank_{scene_id}{tag}.npz",
             views_root / f"{scene_id}_bank{tag}.json")
 
 
 def fuse_one(scene_dir: Path, views_root: Path,
-             evidence_denominator: str = "covisible") -> int:
+             evidence_denominator: str = "covisible",
+             rgb_splat: str = "3x3", id_splat: str = "3x3") -> int:
     scene_id = scene_id_for(scene_dir)
-    views_dir = views_root / f"views_{scene_id}"
+    views_dir = views_dir_for(views_root, scene_id, rgb_splat, id_splat)
+    # masks are keyed to the RGB image only, so an arm that leaves RGB
+    # untouched reuses the existing sidecar byte-for-byte
     masks_npz = views_root / f"c1p1_masks_{scene_id}.npz"
-    bank_npz, bank_json = bank_paths(views_root, scene_id, evidence_denominator)
+    variant = ("" if (rgb_splat, id_splat) == ("3x3", "3x3")
+               else f".rgb{rgb_splat}_id{id_splat}")
+    bank_npz, bank_json = bank_paths(views_root, scene_id,
+                                     evidence_denominator, variant)
 
     for p, how in ((views_dir / "manifest.json", "tools/arkitscenes_render.py"),
                    (masks_npz, "notebooks/c1p1_sam2_colab.ipynb")):
@@ -84,6 +93,8 @@ def fuse_one(scene_dir: Path, views_root: Path,
         "dataset": "arkitscenes-3dod-raw",
         "video_id": scene_dir.name,
         "evidence_denominator": evidence_denominator,
+        "rgb_splat": rgb_splat,
+        "id_splat": id_splat,
         "representation_hash": bundle.representation_hash,
         "masks_sidecar_sha256": hashlib.sha256(masks_npz.read_bytes()).hexdigest(),
         "views_manifest_sha256": hashlib.sha256(
@@ -111,6 +122,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--all", action="store_true")
     ap.add_argument("--data-root", type=Path, default=DEFAULT_DATA_ROOT)
     ap.add_argument("--views-root", type=Path, default=DEFAULT_VIEWS_ROOT)
+    ap.add_argument("--rgb-splat", default="3x3")
+    ap.add_argument("--id-splat", default="3x3")
     ap.add_argument("--evidence-denominator", default="covisible",
                     choices=list(EVIDENCE_DENOMINATORS),
                     help="fusion evidence rule; see "
@@ -125,7 +138,8 @@ def main(argv: list[str] | None = None) -> int:
         scenes = [args.data_root / args.scene]
     else:
         ap.error("pass --scene <video_id> or --all")
-    return max(fuse_one(d, args.views_root, args.evidence_denominator)
+    return max(fuse_one(d, args.views_root, args.evidence_denominator,
+                        args.rgb_splat, args.id_splat)
                for d in scenes)
 
 

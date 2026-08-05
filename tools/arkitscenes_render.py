@@ -47,6 +47,7 @@ from adapters.arkitscenes import (
     ARKitScenesAdapter, build_arkitscenes_capture_bundle, scene_id_for,
 )
 from adapters.base import ReconstructionConfig
+from segmenter.view_render import SPLAT_KERNELS, SPLAT_OFFSETS_3X3
 from tools.c1p1_render import render_scene, sha256_bytes
 
 DEFAULT_DATA_ROOT = Path.home() / "Desktop/datasets/arkitscenes/Validation"
@@ -64,10 +65,20 @@ def _sha256_file(path: Path) -> str:
     return h.hexdigest()
 
 
-def render_one(scene_dir: Path, out_root: Path) -> Path:
+def views_dir_for(out_root: Path, scene_id: str,
+                  rgb_splat: str, id_splat: str) -> Path:
+    """The frozen 3x3/3x3 pair keeps the original directory name so
+    existing artifacts and downstream defaults are untouched; any other
+    pair is suffixed so arms coexist for a same-run comparison."""
+    tag = "" if (rgb_splat, id_splat) == ("3x3", "3x3") else f".rgb{rgb_splat}_id{id_splat}"
+    return out_root / f"views_{scene_id}{tag}"
+
+
+def render_one(scene_dir: Path, out_root: Path,
+               rgb_splat: str = "3x3", id_splat: str = "3x3") -> Path:
     """Adapter -> canonical mesh -> 40 frozen views. Returns the views dir."""
     scene_id = scene_id_for(scene_dir)
-    out = out_root / f"views_{scene_id}"
+    out = views_dir_for(out_root, scene_id, rgb_splat, id_splat)
     if out.exists():
         raise FileExistsError(f"refusing to overwrite existing views: {out}")
 
@@ -82,7 +93,9 @@ def render_one(scene_dir: Path, out_root: Path) -> Path:
 
     mesh_path = Path(bundle.geometry_handle.uri)
     mpath = render_scene(mesh_path, IDENTITY_FRAME, out,
-                         _sha256_file(mesh_path), scene_id)
+                         _sha256_file(mesh_path), scene_id,
+                         rgb_offsets=SPLAT_KERNELS[rgb_splat],
+                         id_offsets=SPLAT_KERNELS[id_splat])
 
     # record where the geometry came from, alongside the shared manifest
     man = json.loads(mpath.read_text())
@@ -98,6 +111,8 @@ def render_one(scene_dir: Path, out_root: Path) -> Path:
             bundle.notes["source_up_axis_capture_frame"],
         "scale": bundle.notes["scale"],
         "render_frame_is_identity": True,
+        "rgb_splat": rgb_splat,
+        "id_splat": id_splat,
     }
     mpath.write_text(json.dumps(man, indent=1, sort_keys=True) + "\n",
                      encoding="utf-8")
@@ -106,7 +121,10 @@ def render_one(scene_dir: Path, out_root: Path) -> Path:
 
 def tar_for_upload(views_dir: Path) -> Path:
     """PNGs + manifest only. ids.npz is withheld from the GPU stage."""
-    tar_path = views_dir.with_suffix(".tar.gz")
+    # NOT with_suffix(): a variant dir like views_<scene>.rgb5x5_id5x5 has
+    # ".rgb5x5_id5x5" parsed as its suffix, so with_suffix would silently
+    # write every arm to the SAME baseline filename.
+    tar_path = views_dir.parent / (views_dir.name + ".tar.gz")
     members = sorted(views_dir.glob("view_*.png")) + [views_dir / "manifest.json"]
     missing = [p.name for p in members if not p.is_file()]
     if missing:
@@ -131,6 +149,10 @@ def main(argv: list[str] | None = None) -> int:
                     default=REPO_ROOT / "runs" / "arkitscenes_p1")
     ap.add_argument("--tar", action="store_true",
                     help="also pack PNGs+manifest for Drive upload")
+    ap.add_argument("--rgb-splat", default="3x3", choices=list(SPLAT_KERNELS))
+    ap.add_argument("--id-splat", default="3x3", choices=list(SPLAT_KERNELS),
+                    help="separate id kernel isolates lifting dilation; "
+                         "see docs/arkitscenes_render_density_protocol.md")
     args = ap.parse_args(argv)
 
     if args.all:
@@ -148,7 +170,8 @@ def main(argv: list[str] | None = None) -> int:
 
     t0 = time.perf_counter()
     for scene_dir in scenes:
-        out = render_one(scene_dir, args.out_root)
+        out = render_one(scene_dir, args.out_root,
+                         args.rgb_splat, args.id_splat)
         man = json.loads((out / "manifest.json").read_text())
         vis = [v["n_visible_vertices"] for v in man["views"]]
         line = (f"{man['scene_id']}: {man['contract']['n_views']} views in "
