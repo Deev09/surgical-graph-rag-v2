@@ -16,6 +16,94 @@ hash-pinned, every pipeline stage is isolated so failures attribute to exactly
 one stage, experiments run under predeclared gates that are allowed to fail,
 and negative results are committed as first-class documentation.
 
+---
+
+## v2 — does any of it transfer? (branch `v2-calibration`)
+
+v1 established the methodology on Replica. **v2 asks whether the system
+survives a dataset it was never tuned for**, and answers it with three
+predeclared experiments on ARKitScenes — real handheld iPad captures instead
+of synthetic meshes.
+
+**Four of the five v2 headline results are negative.** That is the point of
+the branch, not an apology for it. Each negative eliminates a named suspect
+under gates fixed before the code existed, and the frozen Replica headline
+(4 / 27 / 22 / 3, six bundle hashes) is **byte-identical across all 18
+commits** — verifiable with `git diff main...v2-calibration`.
+
+| # | result | verdict |
+|---|---|---|
+| 1 | **Oracle-free proposal selection** — ranks C1-P1 proposals with no ground truth, recovering **100% of the oracle-selection ceiling at k=50–100** on all three Replica scenes | **positive** |
+| 2 | **Frame + scale audit** (6 Replica scenes) — found `frame="world"` was false on the live path, worth **26.9% of room_1's directional edges**, and that two importers disagreed on whether the dev scene was loadable at all | **correctness finding** |
+| 3 | **Calibrated abstention from geometric margins** — AURC 0.74 → 0.23 looks like a win; random controls show it lands *inside* the noise band of a permutation that knows only the outcome type | **refuted** |
+| 4 | **F1: fusion evidence denominator** on ARKitScenes | **refuted** |
+| 5 | **R1: render splat density** on ARKitScenes | **refuted** |
+
+### What v2 establishes
+
+Running the frozen C1-P1 pipeline end-to-end on ARKitScenes yields an entity
+ceiling of **1/18** (Replica room_2: 25/53). Three experiments then eliminated
+the chain by measurement:
+
+```
+fusion evidence   → F1,     refuted   (made the bank worse: 12→9 @IoU0.10)
+lifting dilation  → R1 arm C, null    (+21pts fill, Δceiling = 0)
+render density    → R1 arm A, null    (matched Replica on fill AND mask count; Δceiling = 0)
+mask coverage     → residual, newly isolated, untested
+```
+
+Arm A is the sharp one. It brought the render **above** Replica on both fill
+(74.6% vs 72.8%) and mask density (16.4 vs 15.5 masks/view), SAM produced 43%
+more masks — and the ceiling did not move by a single entity. What did *not*
+move with it is occupied-pixel mask coverage: 28.9% → 30.2%, against Replica's
+46.5%. **That quantity is the residual**, and it is a segmenter-behaviour
+property, not a rasterisation one.
+
+The honest reading, committed in advance in the protocol's decision table:
+**render-and-lift does not transfer off synthetic meshes on the frozen C1-P1
+configuration.** C1-P1's result is a Replica result until something outside
+that configuration changes it — a limitation of the mechanism, established
+across three experiments, not an implementation defect.
+
+Protocols and verdicts:
+[`arkitscenes_fusion_evidence_protocol.md`](docs/arkitscenes_fusion_evidence_protocol.md) ·
+[`arkitscenes_render_density_protocol.md`](docs/arkitscenes_render_density_protocol.md) ·
+[`selective_prediction_negative.md`](docs/selective_prediction_negative.md) ·
+[`selector_v0_results.md`](docs/selector_v0_results.md) ·
+[`frame_and_scale_audit.md`](docs/frame_and_scale_audit.md) ·
+[`frame_decision.md`](docs/frame_decision.md)
+
+### What actually generalized
+
+| ported unchanged | why it worked |
+|---|---|
+| the `ReconstructionAdapter` seam | had exactly one implementation for a year; now holds two |
+| the splat renderer and `lift_mask` | its `id_buffer` holds **vertex indices from this repo's own renderer**, not Replica `object_id`s — so 2D→3D lifting is dataset-agnostic |
+| the gravity estimator | agrees with Replica metadata within **0.33°** on 6 scenes, and lands within **0.065–0.261°** of +z on ARKitScenes first try |
+| the selector, ablation table, and ranking helpers | imported, not reimplemented — a test asserts the ablation table is the *same object*, so the two datasets cannot drift to different scoring |
+
+**Did not generalize:** the relation thresholds. Object scale varies **4.33×**
+across six Replica scenes alone (storey height only 1.12×), and
+`sparse_min_delta=0.5` is 0.34 object-diagonals on room_1 but **1.49** on
+office_0 — the axis-dominance gate is wider than a typical object there.
+
+### Isolation discipline in v2
+
+* **Annotations have exactly one door.** `adapters/arkitscenes.py` cannot
+  parse JSON at all (AST-asserted), a runtime audit hook proves `reconstruct()`
+  opens no annotation file, and a repo-wide test fails if any file outside a
+  five-entry allow-list even *references* the annotation suffix.
+* **The oracle-free selector is structurally oracle-free** — numpy-only
+  imports, no I/O, no path argument, checked by an AST scan *and* a
+  `sys.addaudithook` around a live scoring call.
+* **Transfer scenes stay sealed.** ARKitScenes `41069025` and `41069042` have
+  SAM masks on disk but have **never been fused, evaluated, or inspected**
+  under any condition. Every number above is the dev scene.
+* Two silent artifact-collision bugs were caught by these gates before they
+  could corrupt a result — see the R1 verdict.
+
+---
+
 ## What it is NOT (read this before citing numbers)
 
 - It is **not** an end-to-end NeRF/3DGS system. The only real reconstruction
@@ -30,6 +118,24 @@ and negative results are committed as first-class documentation.
   experimental arc (tag `paper-results-v1.0`) traces where failure
   MOVES: perception → relation semantics → the dataset's own annotation
   geometry.
+
+**v2 additions to this list:**
+
+- ARKitScenes numbers are **one dev scene, 18 annotated entities**. The two
+  transfer scenes are sealed and unrun. Nothing here is a generalization
+  claim; it is a set of eliminations on a single capture.
+- The **oracle-free selector makes the pipeline runnable without an answer
+  key. It does not make it accurate** — entity recall is unchanged (47% dev,
+  29% / 26% transfer on Replica). Those are two different claims and the
+  results doc keeps them apart.
+- Its v1 default (`connectivity` dropped) was chosen using an ablation
+  measured **on the transfer scenes**, so v1 numbers there are no longer a
+  clean held-out measurement. `COMPONENTS_V0` reproduces the frozen
+  configuration.
+- **No dataset is redistributed.** Replica and ARKitScenes must be obtained
+  from their own sources under their own licences (ARKitScenes is Apple
+  non-commercial). Derived canonical meshes are written next to the data,
+  outside this repo.
 
 ## The input ladder (stage isolation)
 
@@ -104,12 +210,12 @@ verdict.
 ## Quickstart
 
 ```bash
-git clone https://github.com/Deev09/surgical-graph-rag.git
-cd surgical-graph-rag
+git clone https://github.com/Deev09/surgical-graph-rag-v2.git
+cd surgical-graph-rag-v2
 pip install -r requirements.txt   # numpy + Pillow for the current pipeline
 
-# Canonical test command (66 script-style test files, each in its own process;
-# dataset-guarded tests self-skip without the Replica data)
+# Canonical test command (84 script-style test files, each in its own process;
+# dataset-guarded tests self-skip without the Replica / ARKitScenes data)
 python3 tools/run_tests.py
 
 # With the Replica dataset on disk (see docs/reproduction.md):
@@ -123,7 +229,29 @@ python3 tools/mvp_captioned_demo.py                   # self-running captioned w
 #   -> open runs/mvp_v1/captioned_demo.html (presentation-only derivative)
 ```
 
-Public MVP walkthrough: **https://deev09.github.io/surgical-graph-rag/**
+### v2 — ARKitScenes (needs the dataset; see `DATA.md` upstream)
+
+```bash
+# 1. geometry only — no annotations are read anywhere in this chain
+python3 tools/arkitscenes_render.py --scene 41069021 --tar
+
+# 2. SAM 2.1 runs in Colab (notebooks/c1p1_sam2_colab.ipynb, unedited except
+#    SCENE=). Upload the tar; ids.npz is deliberately withheld from the GPU.
+
+# 3. back locally
+python3 tools/arkitscenes_fuse.py          --scene 41069021
+python3 tools/arkitscenes_eval.py          --scene 41069021 --bank   # G5 + ceiling
+python3 tools/arkitscenes_selector_eval.py --scene 41069021          # ranked AR@k
+
+# the two negative experiments, reproducible from the same masks:
+python3 tools/arkitscenes_fuse.py --scene 41069021 --evidence-denominator masked
+python3 tools/arkitscenes_render.py --scene 41069021 --rgb-splat 3x3 --id-splat 5x5
+```
+
+Only `arkitscenes_eval.py` and `arkitscenes_selector_eval.py` read ground
+truth, below their `ORACLE BOUNDARY` comments.
+
+Public MVP walkthrough (v1): **https://deev09.github.io/surgical-graph-rag/**
 
 The experimental arc is CLOSED at tag `paper-results-v1.0`. Surface
 estimation from the mesh closed as a three-act negative
@@ -141,16 +269,24 @@ identified but deliberately unopened — see
 
 ```
 common/ extractors/ geometry/   # EntityArtifacts contract, frame, surfaces
+  geometry/frame.py             #   v2: gravity / floor / scale from geometry alone
+adapters/                       # ReconstructionAdapter implementations
+  adapters/arkitscenes.py       #   v2: first non-Replica capture path
 graph/                          # typed relation extractors + graph builder
 reasoner/                       # RulesCompiler -> RulesExecutor -> Verbalizer (Router)
+  reasoner/confidence.py        #   v2: answer confidence (REFUTED, default-off)
 segmenter/                      # C1: segmentation sidecar contract, mask resolution,
                                 #     anonymous candidates, derived eval bundles
+  segmenter/selector_free.py    #   v2: oracle-free proposal scorer
 demo/                           # Replica importers (A/B), question battery, review sheets
 eval/                           # router QA scoring + Phase 8 answer keys (human_verified)
+  eval/selective.py             #   v2: risk-coverage, AURC, E-AURC, tie-spread
 tools/                          # evaluators, scorecard, sweeps, dataset fetch, run_tests
-notebooks/                      # Colab GPU backends (Mask3D, Segment3D) — full env recipes
+  tools/arkitscenes_*.py        #   v2: render / fuse / eval / selector-eval
+  tools/frame_scale_audit.py    #   v2: 19 constants x 6 scenes transfer-risk table
+notebooks/                      # Colab GPU backends (Mask3D, Segment3D, SAM 2.1)
 docs/                           # contracts, closeouts, protocols, phase records
-tests/                          # 66 script-style test files (tools/run_tests.py)
+tests/                          # 84 script-style test files (tools/run_tests.py)
 ```
 
 Reproduction (datasets, checkpoints, environments, hardware):
