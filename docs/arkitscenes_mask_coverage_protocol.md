@@ -1,0 +1,212 @@
+# ARKitScenes M1 — mask coverage via the stability gate (draft protocol)
+
+Status: **draft, unexecuted.** No code has been written. Baselines quoted
+here were measured before it was drafted (`runs/arkitscenes_p1/`, commit
+`e348ada`).
+
+Follows `docs/arkitscenes_render_density_protocol.md`, whose verdict closed
+the render line and isolated occupied-pixel mask coverage as the residual.
+Related: `docs/arkitscenes_fusion_evidence_protocol.md` (F1, refuted),
+`docs/c1_p1_multiview_proposals_protocol.md` (the pins this breaks).
+
+---
+
+## Decision this experiment answers
+
+R1 brought the ARKitScenes render **above** Replica on fill (74.6% vs 72.8%)
+and mask count (16.4 vs 15.5 per view), and the entity ceiling did not move
+from 1/18. The one input quantity that stayed stuck is **occupied-pixel mask
+coverage: 30.2% against Replica's 46.5%.**
+
+Is that gap the binding constraint — and does closing it lift the ceiling?
+
+A pass means the frozen SAM parameterisation, not the mechanism, was what
+failed to transfer. A fail exhausts the measured chain and settles the
+question C1-P1 has been circling since the first ARKitScenes run.
+
+## What the data already says, before any run
+
+Measured across all 40 views of the dev scene:
+
+| | masks | median area px | p90 area | total mask area / canvas | occ. coverage |
+|---|---|---|---|---|---|
+| ARK baseline (3×3) | 457 | 6,181 | 58,279 | 0.34 | 28.9% |
+| ARK arm A (5×5) | 655 | 5,612 | 49,931 | 0.35 | 30.2% |
+| Replica room_2 | 619 | **13,804** | **97,184** | **0.56** | **46.5%** |
+
+**SAM produces smaller masks here, not fewer.** Replica's are 2.2× larger by
+median from a similar count. Arm A got 43% *more* masks that were *smaller*,
+leaving total mask area per canvas flat (0.34 → 0.35).
+
+This is direct evidence against `points_per_side` as the lever: arm A already
+ran that experiment by proxy — 39% more surface for seeds to land on produced
+43% more masks and **+1.3 points of coverage**. More seeds yield more small,
+overlapping masks, not coverage of new ground. `crop_n_layers` would push the
+same direction and is excluded for the same reason.
+
+## Hypothesis
+
+**H:** on stippled real-scan renders, the large "whole-object" candidate that
+`multimask_output=True` proposes has noisier boundaries than its part-level
+siblings, scores lower on stability, and is cut by
+`stability_score_thresh=0.95`. The surviving mask is the smaller part. Lower
+the gate and the larger masks survive, coverage rises toward Replica's
+regime, and co-membership finally binds objects together.
+
+**Single variable:** `stability_score_thresh` **0.95 → 0.85**. One value.
+Nothing else moves — `pred_iou_thresh` stays 0.80, `points_per_side` stays
+32, checkpoint and commit stay pinned.
+
+### The mechanism is inferred, and here is the weakness
+
+Surviving stability scores pile up immediately above the cut on **both**
+datasets — p05 is 0.9508 (ARK) and 0.9512 (Replica) against a 0.95 threshold.
+So the gate is demonstrably binding, but **it is binding equally on both**,
+and the rejected mass is not observable from any committed artifact. This
+protocol therefore cannot claim in advance that the gate explains the
+*difference* between the datasets — only that it is a live constraint on
+ARKitScenes. M6 and the comparability arm below exist because of that gap in
+the argument, not despite it.
+
+## Three hazards this design exists to avoid
+
+**H-A: circular gating.** Lowering a rejection threshold trivially raises
+mask count and coverage. Coverage is therefore a **direction check, never a
+success criterion** — the same role F3 and R3a played. Success is entity
+ceiling and fixed-budget AR@k.
+
+**H-B: bank inflation.** The ceiling is a max over the whole bank, so
+admitting more masks can raise it mechanically without the bank becoming more
+useful. Countered by capping the bank **and** gating on AR@k at a fixed
+k=100, not on ceiling alone. This is a gate the two previous protocols did
+not need and would have benefited from.
+
+**H-C: this breaks a frozen pin — the largest cost so far.** F1 and R1 both
+left the SAM configuration untouched, so ARKitScenes and Replica banks stayed
+products of one parameterisation and remained comparable. Changing
+`stability_score_thresh` ends that. **Mitigation: the same configuration is
+run on Replica room_2 in the same experiment**, so a like-for-like comparison
+survives. That anchor arm is mandatory, not optional.
+
+## Frozen anchors
+
+* Everything in the SAM config except `stability_score_thresh`: checkpoint
+  sha, sam2 commit, `points_per_side=32`, `pred_iou_thresh=0.80`,
+  `box_nms_thresh=0.7`, `crop_n_layers=0`, `min_mask_region_area=0`,
+  `multimask_output=True`, seeds 0.
+* The **3×3 render** — R1 failed, so 5×5 was not adopted and this builds on
+  the adopted configuration, not the rejected one.
+* Fusion: `evidence_denominator="covisible"`, cuts 0.25/0.50/0.75. F1
+  refuted the alternative; it is not combined here.
+* Every Replica *baseline* artifact. The anchor arm writes to suffixed paths
+  and must leave `bank_replica_room_2.npz` and its sha untouched.
+
+## Baseline (dev scene 41069021, adopted 3×3 config)
+
+| quantity | value |
+|---|---|
+| occupied px in a mask | 28.9% (Replica room_2: 46.5%) |
+| median mask area | 6,181 px (13,804) |
+| proposals | 1733 |
+| median proposal size | 37 vertices |
+| largest proposal | 14.1% of mesh |
+| ceiling @IoU 0.50 / 0.25 / 0.10 | **1/18** · 7/18 · 12/18 |
+| AR@k=100 @IoU 0.50 | 1 |
+
+## Isolation boundary
+
+* Annotations stay behind the ORACLE BOUNDARY in `tools/arkitscenes_eval.py`
+  and `tools/arkitscenes_selector_eval.py` only.
+* **41069025 and 41069042 stay sealed.** Never fused, evaluated, or
+  inspected under any condition, through three protocols. That holds here.
+* Gates are fixed below before execution and are not adjusted afterwards.
+
+## Stage 0 — validity (no new inference)
+
+| gate | predeclared criterion |
+|---|---|
+| V1 | the notebook at `stability_score_thresh=0.95` reproduces the committed dev-scene sidecar **byte-for-byte** (sha256 `03fa67f9…`), proving the parameter is the only change |
+| V2 | `tools/run_tests.py` green; scorecard 4 / 27 / 22 / 3; all six Replica bundle hashes unmoved |
+| V3 | fuse/eval accept a mask sidecar produced under a non-default threshold and tag every artifact with it, so two parameterisations cannot silently share a filename — the failure mode caught twice already in R1 |
+
+Any V failure: **STOP.**
+
+## Stage 1 — dev scene 41069021 at `stability_score_thresh=0.85`
+
+One SAM run. One value. No sweeps.
+
+| gate | predeclared criterion |
+|---|---|
+| M1 | ceiling @IoU 0.50 ≥ **6/18** (baseline 1/18) |
+| M2 | **AR@k=100** @IoU 0.50 ≥ **6** (baseline 1) — the anti-inflation gate; the ceiling may not be earned by a bigger bank |
+| M3 | median proposal size ≥ **300** vertices (baseline 37) |
+| M4 | ≤ **2,000** proposals **and** largest proposal ≤ **15%** of mesh vertices |
+| M5 | selector v1 recovers ≥ **0.80** of the new ceiling at k=100 |
+| M6 | **direction check:** occupied-pixel mask coverage ≥ **40%** (baseline 28.9%, Replica 46.5%) |
+
+All six must pass. As in F1 and R1: **M1 or M2 passing while M6 fails is a
+FAIL**, reported as "the ceiling moved for a reason this protocol did not
+identify". A result whose mechanism is unconfirmed is not a result.
+
+## Stage 1-anchor — Replica room_2 at the same threshold
+
+Mandatory, same run, written to suffixed paths. **Reported, not gated** — it
+is a decision input, not a success criterion.
+
+Report: ceiling @0.50/0.25, occupied-pixel coverage, median mask area,
+proposal count, and AR@k=100, each against Replica's own committed 3×3
+baseline (25/53 @0.50, 46.5% coverage, 534 proposals).
+
+## Stage 2 — sealed transfer
+
+Only if every Stage-1 gate passes. Identical configuration, once each on
+41069025 and 41069042, evaluated only after both banks are final.
+
+| gate | predeclared criterion |
+|---|---|
+| T1 | ceiling @0.50 improves on **both** versus their own 3×3 baselines, computed in the same run |
+| T2 | both satisfy M3 and M4 |
+| T3 | both reach M6's coverage floor |
+
+## Budget, stopping rule, and decision
+
+* **Two SAM runs** in Stage 1 (ARKitScenes dev + Replica anchor); two more
+  only if Stage 1 passes. Everything downstream is CPU.
+* One threshold value. No sweeps, no per-scene tuning, no rescue run.
+
+| outcome | decision |
+|---|---|
+| V fails | STOP. Nothing claimed. |
+| M6 fails | The gate is not what limits coverage. Negative result; the stability hypothesis is refuted and the residual stands unexplained. |
+| M6 passes, M1/M2 fail | **Coverage was closed and the ceiling still did not move.** The strongest available negative: mask coverage is *not* the binding constraint either, and the measured chain is exhausted. C1-P1's render-and-lift mechanism does not transfer, and the next candidate is a different proposal source — not another knob. |
+| M1–M6 pass, anchor shows Replica improves **by a similar margin** | The pin was suboptimal for both datasets. Adopt it, but the **transfer gap is unexplained and must not be described as closed** — ARKitScenes would still trail Replica by roughly its original margin. |
+| M1–M6 pass, anchor shows Replica ~unchanged | The pin was miscalibrated **for real-scan renders specifically**. This is the only outcome that supports "the parameterisation, not the mechanism, failed to transfer". |
+| Stage 1 passes, Stage 2 fails | Negative transfer. Dev gain is a 41069021 artifact. |
+
+Note the third row: a pass that also lifts Replica is **not** a
+generalization result, and the decision table says so before the data exists.
+
+## Explicitly out of scope
+
+* `points_per_side`, `crop_n_layers` — argued against above from arm A's
+  natural experiment, and excluded rather than left implicit.
+* `pred_iou_thresh`, `box_nms_thresh`, `min_mask_region_area`, checkpoint,
+  commit, seeds.
+* Render, fusion, or cut changes; combining this with the refuted `masked`
+  denominator or the unadopted 5×5 render.
+* Threshold sweeps. If 0.85 is wrong, that is a finding, not an invitation.
+
+## Required artifacts and reporting
+
+* the committed diff and its V3 test;
+* per-arm sidecar and bank sha256, with the threshold recorded in each;
+* the gate table with measured values, pass or fail;
+* the Replica anchor comparison, whatever it shows;
+* the verdict committed to this file, negative results included.
+
+## Sign-off
+
+Drafted 2026-08-05. **Unexecuted.** Requires owner approval of (a) breaking
+the SAM pin at all, (b) the mandatory Replica anchor arm, and (c) the M
+gate values. Item (a) is the real decision: every prior protocol preserved
+one parameterisation across both datasets, and this one spends that.
