@@ -23,7 +23,7 @@ Nothing here touches the committed pipeline or its frozen artifacts.
 ## Scenes
 
 Scenes are **not** in the repo. They are raw Replica captures under
-`/Users/deevyaswain/Desktop/datasets/replica/`:
+`~/Desktop/datasets/replica/`:
 
 - `room_0/` — full capture incl. `habitat/mesh_semantic.ply` (44 MB). The **only
   scene with ground truth** (validated against committed `enriched_v2`).
@@ -39,7 +39,7 @@ the first match (apartment_0 is the first scene, so its files are early):
 BASE="https://github.com/facebookresearch/Replica-Dataset/releases/download/v1.0/replica_v1_0.tar.gz"
 curl -sL "$BASE.partaa" "$BASE.partab" "$BASE.partac" "$BASE.partad" "$BASE.partae" \
   | gunzip -c \
-  | tar -xq -f - -C /Users/deevyaswain/Desktop/datasets/replica \
+  | tar -xq -f - -C ~/Desktop/datasets/replica \
         'apartment_0/habitat/mesh_semantic.ply'
 ```
 
@@ -60,7 +60,7 @@ curl -sL "$BASE.partaa" "$BASE.partab" "$BASE.partac" "$BASE.partad" "$BASE.part
 ### Run everything (room_0 then apartment_0)
 
 ```bash
-AP=/Users/deevyaswain/Desktop/datasets/replica/apartment_0
+AP=~/Desktop/datasets/replica/apartment_0
 python3 demo/real_scene_demo.py                          # room_0: VALIDATED
 python3 demo/real_scene_demo.py $AP replica_apartment_0
 python3 demo/mesh_vs_json_demo.py                        # room_0 box-source A/B

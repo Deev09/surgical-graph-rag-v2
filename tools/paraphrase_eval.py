@@ -42,7 +42,7 @@ from reasoner.base import CompileResult
 from reasoner.compiler_rules import RulesCompiler
 
 BANK_PATH = REPO_ROOT / "eval" / "questions" / "paraphrase_bank.json"
-DEFAULT_ROOM = Path("/Users/deevyaswain/Desktop/datasets/replica/room_0")
+DEFAULT_ROOM = Path.home() / "Desktop/datasets/replica/room_0"
 DEFAULT_OUT = REPO_ROOT / "runs" / "phase8_paraphrase" / "report.json"
 
 

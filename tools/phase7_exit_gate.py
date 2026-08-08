@@ -10,6 +10,13 @@ repo-grounded gate.
 """
 from __future__ import annotations
 
+# NOTE: the example command strings below embed an absolute dataset path.
+# They are reproduced verbatim in the frozen
+# scenes/replica_room_0/eval/phase7_exit_gate_report.json, and this tool
+# REGENERATES that report, so "tidying" them rewrites a recorded gate
+# artifact and fails tests/tools/test_phase7_exit_gate.py. Left as-is
+# deliberately; see the v2 path-relativization commit.
+
 import json
 import sys
 import tempfile
@@ -58,7 +65,7 @@ EVAL_DIR = REPLICA_ROOM0 / "eval"
 ARTIFACT_PATH = EVAL_DIR / "phase7_exit_gate_report.json"
 SMOKE_FIXTURE = REPO_ROOT / "eval" / "questions" / "phase7_attachment_smoke.json"
 PHASE7_QA = REPO_ROOT / "eval" / "questions" / "phase7_mixed_qa.json"
-APARTMENT0 = Path("/Users/deevyaswain/Desktop/datasets/replica/apartment_0")
+APARTMENT0 = Path.home() / "Desktop/datasets/replica/apartment_0"
 
 
 def _frame() -> SceneFrame:

@@ -27,7 +27,7 @@ from graph.relations.on_entity_surface import OnEntitySurfaceConfig, OnEntitySur
 from graph.relations.on_surface import OnSurfaceConfig, OnSurfaceExtractor
 from graph.relations.surface import SurfaceProximityConfig, SurfaceProximityExtractor
 
-DEFAULT_ROOM = Path("/Users/deevyaswain/Desktop/datasets/replica/room_0")
+DEFAULT_ROOM = Path.home() / "Desktop/datasets/replica/room_0"
 PLOT = 1500          # plot area px (longest world axis maps to this)
 MARGIN = 60
 LEGEND_H = 150

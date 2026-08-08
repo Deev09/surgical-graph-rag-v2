@@ -45,7 +45,7 @@ from tools.verify_replica_inputs import init_lock, verify
 
 PHASE8_SCENES: tuple[str, ...] = ("room_1", "room_2", "office_0", "frl_apartment_0")
 
-DATA_ROOT = Path("/Users/deevyaswain/Desktop/datasets/replica")
+DATA_ROOT = Path.home() / "Desktop/datasets/replica"
 LOCK_PATH = REPO_ROOT / "tools" / "replica_scenes.lock.json"
 
 BASE_URL = (

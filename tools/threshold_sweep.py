@@ -50,7 +50,7 @@ from reasoner.executor import RulesExecutor
 from reasoner.router import Router
 from reasoner.verbalizer import StandardVerbalizer
 
-DEFAULT_ROOM = Path("/Users/deevyaswain/Desktop/datasets/replica/room_0")
+DEFAULT_ROOM = Path.home() / "Desktop/datasets/replica/room_0"
 DEFAULT_OUT_DIR = REPO_ROOT / "runs" / "phase8_threshold_sweep"
 
 GRID: tuple[float, ...] = (0.5, 0.75, 1.0, 1.25, 1.5)

@@ -49,7 +49,7 @@ from reasoner.verbalizer import StandardVerbalizer
 
 MANIFEST_PATH = REPO_ROOT / "eval" / "questions" / "phase8" / "scene_manifest.json"
 PHASE7_QA = REPO_ROOT / "eval" / "questions" / "phase7_mixed_qa.json"
-PHASE7_ROOM = Path("/Users/deevyaswain/Desktop/datasets/replica/apartment_0")
+PHASE7_ROOM = Path.home() / "Desktop/datasets/replica/apartment_0"
 DEFAULT_OUT_DIR = REPO_ROOT / "runs" / "phase8_scorecard"
 HUMAN_VERIFIED = "human_verified"
 

@@ -128,7 +128,7 @@ def test_html_renders_from_json_only():
 
 def test_e2e_room_2_reproduces_reference():
     """Dataset-guarded: full room_2 run incl. the hard reference check."""
-    data = Path("/Users/deevyaswain/Desktop/datasets/replica/room_2")
+    data = Path.home() / "Desktop/datasets/replica/room_2"
     bundle = REPO_ROOT / "runs" / "phase8_c1" / "bundles_ms02" / "room_2"
     if not data.exists() or not bundle.exists():
         print("  (skipped: dataset or ms02 bundle not present)")
@@ -148,7 +148,7 @@ def test_e2e_room_2_reproduces_reference():
 
 def test_e2e_office_0_reproduces_reference():
     """Dataset-guarded: office human key + full A/B/C1/C2 reference check."""
-    data = Path("/Users/deevyaswain/Desktop/datasets/replica/office_0")
+    data = Path.home() / "Desktop/datasets/replica/office_0"
     bundle = REPO_ROOT / "runs" / "phase8_c1" / "bundles_ms02" / "office_0"
     sidecar = (REPO_ROOT / "eval" / "predictions" / "phase8_c2"
                / "replica_office_0_c2_labels.json")

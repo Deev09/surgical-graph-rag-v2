@@ -137,7 +137,7 @@ def test_mixed_arity_parses_and_arity5_hard_fails():
 
 
 def test_pinned_room_2_parses_when_dataset_present():
-    mesh_path = Path("/Users/deevyaswain/Desktop/datasets/replica/room_2/mesh.ply")
+    mesh_path = Path.home() / "Desktop/datasets/replica/room_2/mesh.ply"
     if not mesh_path.exists():
         print("  (skipped: Replica dataset not present)")
         return

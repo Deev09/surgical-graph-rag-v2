@@ -68,7 +68,7 @@ from graph.relations import (
     surface as _surf,
 )
 
-DATA_ROOT = Path("/Users/deevyaswain/Desktop/datasets/replica")
+DATA_ROOT = Path.home() / "Desktop/datasets/replica"
 DEFAULT_OUT = REPO_ROOT / "runs" / "frame_audit"
 SCENES: tuple[str, ...] = (
     "room_0", "room_1", "room_2", "office_0",

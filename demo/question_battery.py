@@ -32,7 +32,7 @@ from reasoner.executor import RulesExecutor
 from reasoner.router import Router
 from reasoner.verbalizer import StandardVerbalizer
 
-DEFAULT_ROOM = Path("/Users/deevyaswain/Desktop/datasets/replica/room_0")
+DEFAULT_ROOM = Path.home() / "Desktop/datasets/replica/room_0"
 
 STRUCTURAL_Q = [
     "what is on the floor?",

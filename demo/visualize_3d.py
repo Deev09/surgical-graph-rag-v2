@@ -27,7 +27,7 @@ from graph.relations.on_entity_surface import OnEntitySurfaceConfig, OnEntitySur
 from graph.relations.on_surface import OnSurfaceConfig, OnSurfaceExtractor
 from graph.relations.surface import SurfaceProximityConfig, SurfaceProximityExtractor
 
-DEFAULT_ROOM = Path("/Users/deevyaswain/Desktop/datasets/replica/room_0")
+DEFAULT_ROOM = Path.home() / "Desktop/datasets/replica/room_0"
 FIT = 1500
 MARGIN = 60
 LEGEND_H = 110

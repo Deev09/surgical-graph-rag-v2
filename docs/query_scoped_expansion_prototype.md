@@ -129,7 +129,7 @@ Mask3D example:
 
 ```bash
 ./.venv/bin/python tools/query_scoped_expansion_demo.py \
-  /Users/deevyaswain/Desktop/datasets/replica/room_2 \
+  ~/Desktop/datasets/replica/room_2 \
   notebooks/bundle_room_2 \
   replica_room_2 \
   --query "what is on the table?" \
@@ -140,7 +140,7 @@ Segment3D shelf example:
 
 ```bash
 ./.venv/bin/python tools/query_scoped_expansion_demo.py \
-  /Users/deevyaswain/Desktop/datasets/replica/room_2 \
+  ~/Desktop/datasets/replica/room_2 \
   notebooks/s3d_bundle_room_2 \
   replica_room_2_segment3d \
   --query "what is on the shelf?" \

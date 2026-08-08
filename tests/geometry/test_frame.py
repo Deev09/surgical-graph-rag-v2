@@ -38,7 +38,7 @@ from geometry.frame import (
     object_scale_stats,
 )
 
-REPLICA_ROOM = Path("/Users/deevyaswain/Desktop/datasets/replica/room_0")
+REPLICA_ROOM = Path.home() / "Desktop/datasets/replica/room_0"
 
 
 # ---------------------------------------------------------------- fixtures

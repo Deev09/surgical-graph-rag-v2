@@ -42,7 +42,7 @@ from reasoner.executor import RulesExecutor
 from reasoner.router import Router
 from reasoner.verbalizer import StandardVerbalizer
 
-DEFAULT_ROOM = Path("/Users/deevyaswain/Desktop/datasets/replica/room_0")
+DEFAULT_ROOM = Path.home() / "Desktop/datasets/replica/room_0"
 
 # Ground truth for room_0 (from the committed Phase 6 closeout / enriched_v2).
 ROOM0_TABLE_RESTS = {"obj_92", "obj_90", "obj_12", "obj_59", "obj_87"}

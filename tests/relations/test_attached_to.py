@@ -35,7 +35,7 @@ from representations.mesh import MeshRepresentation
 SMOKE_FIXTURE = REPO_ROOT / "eval" / "questions" / "phase7_attachment_smoke.json"
 REPLICA_ROOM0 = REPO_ROOT / "scenes" / "replica_room_0"
 REPLICA_ROOM0_V2 = REPLICA_ROOM0 / "enriched" / "v2"
-APARTMENT0 = Path("/Users/deevyaswain/Desktop/datasets/replica/apartment_0")
+APARTMENT0 = Path.home() / "Desktop/datasets/replica/apartment_0"
 
 
 def _frame() -> SceneFrame:

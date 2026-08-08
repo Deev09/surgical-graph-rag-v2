@@ -132,7 +132,7 @@ def test_unknown_oracle_ids_normalized_to_minus_one():
 
 
 def test_real_build_when_inputs_present():
-    data = Path("/Users/deevyaswain/Desktop/datasets/replica/room_2")
+    data = Path.home() / "Desktop/datasets/replica/room_2"
     bundle = REPO_ROOT / "runs" / "phase8_c1" / "bundles_ms02" / "room_2"
     mvp = REPO_ROOT / "runs" / "mvp_v0" / "replica_room_2_mvp.json"
     if not (data.exists() and bundle.exists() and mvp.exists()):

@@ -22,7 +22,7 @@ if str(REPO_ROOT) not in sys.path:
 from demo.replica_habitat_import import import_habitat_room
 from demo.replica_mesh_import import import_mesh_room
 
-DATA_ROOT = Path("/Users/deevyaswain/Desktop/datasets/replica")
+DATA_ROOT = Path.home() / "Desktop/datasets/replica"
 SCENES = ("room_0", "room_1", "room_2", "office_0", "frl_apartment_0", "apartment_0")
 
 
