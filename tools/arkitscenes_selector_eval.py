@@ -46,7 +46,9 @@ from tools.p1_selector_eval import (
 )
 from adapters.arkitscenes import scene_id_for
 from segmenter.proposal_fusion import EVIDENCE_DENOMINATORS
-from tools.arkitscenes_fuse import bank_paths
+from tools.arkitscenes_fuse import (
+    FROZEN_STABILITY, bank_paths, stability_tag,
+)
 
 OUT_ROOT = REPO_ROOT / "runs" / "arkitscenes_selector"
 
@@ -86,13 +88,16 @@ def load_bank(bank_path: Path) -> list[np.ndarray]:
 
 
 def rank_scene(scene_dir: Path, views_root: Path,
-               evidence_denominator: str = "covisible") -> dict:
+               evidence_denominator: str = "covisible",
+               stability: float = FROZEN_STABILITY) -> dict:
     """Finished, oracle-free ranking. No annotation is open yet."""
     t0 = time.perf_counter()
     scene_id = scene_id_for(scene_dir)
     views_dir = views_root / f"views_{scene_id}"
-    masks_path = views_root / f"c1p1_masks_{scene_id}.npz"
-    bank_path, _ = bank_paths(views_root, scene_id, evidence_denominator)
+    stab = stability_tag(stability)
+    masks_path = views_root / f"c1p1_masks_{scene_id}{stab}.npz"
+    bank_path, _ = bank_paths(views_root, scene_id,
+                              evidence_denominator, stab)
     for p, how in ((views_dir / "ids.npz", "tools/arkitscenes_render.py"),
                    (masks_path, "notebooks/c1p1_sam2_colab.ipynb"),
                    (bank_path, "tools/c1p1_fuse.py")):
@@ -108,6 +113,7 @@ def rank_scene(scene_dir: Path, views_root: Path,
         "scene_id": scene_id,
         "video_id": scene_dir.name,
         "evidence_denominator": evidence_denominator,
+        "stability_score_thresh": stability,
         "representation_hash": bundle.representation_hash,
         "n_vertices": n,
         "n_proposals": len(bank),
@@ -133,6 +139,7 @@ def evaluate(ranked: dict, scene_dir: Path) -> dict:
     order = rank_order(ranked["scores"][DEFAULT_VARIANT])
     out = {k: ranked[k] for k in
            ("scene_id", "video_id", "evidence_denominator",
+            "stability_score_thresh",
             "representation_hash", "n_vertices",
             "n_proposals", "n_views", "n_lifted_masks", "rank_seconds")}
     out["n_entities"] = len(entities)
@@ -159,6 +166,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--all", action="store_true")
     ap.add_argument("--data-root", type=Path, default=DEFAULT_DATA_ROOT)
     ap.add_argument("--views-root", type=Path, default=DEFAULT_VIEWS_ROOT)
+    ap.add_argument("--stability", type=float, default=FROZEN_STABILITY)
     ap.add_argument("--evidence-denominator", default="covisible",
                     choices=list(EVIDENCE_DENOMINATORS))
     args = ap.parse_args(argv)
@@ -177,7 +185,8 @@ def main(argv: list[str] | None = None) -> int:
     for scene_dir in scenes:
         try:
             ranked = rank_scene(scene_dir, args.views_root,
-                                args.evidence_denominator)
+                                args.evidence_denominator,
+                                args.stability)
         except FileNotFoundError as e:
             print(f"=== {scene_id_for(scene_dir)}\n    SKIP — {e}")
             continue
@@ -197,8 +206,9 @@ def main(argv: list[str] | None = None) -> int:
                   for k in ks))
         print("    no-entity share     : "
               + " ".join(f"{rep['zero_overlap_share'][k]:5.2f}" for k in ks))
-        tag = ("" if args.evidence_denominator == "covisible"
-               else f".{args.evidence_denominator}")
+        tag = (("" if args.evidence_denominator == "covisible"
+                else f".{args.evidence_denominator}")
+               + stability_tag(args.stability))
         path = OUT_ROOT / f"{rep['scene_id']}_selector_eval{tag}.json"
         path.write_text(json.dumps(rep, indent=1, sort_keys=True) + "\n")
         print(f"    report              -> {path}")

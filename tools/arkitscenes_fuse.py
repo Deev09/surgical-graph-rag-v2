@@ -33,6 +33,21 @@ from tools.arkitscenes_render import views_dir_for
 from tools.c1p1_fuse import fuse_scene
 
 
+FROZEN_STABILITY = 0.95      # the C1-P1 pin
+
+
+def stability_tag(stability: float) -> str:
+    """Artifact suffix for a non-frozen SAM stability threshold.
+
+    Must agree with cell [2] of notebooks/c1p1_sam2_colab.ipynb, which
+    builds the same string when naming the mask sidecar. Two SAM
+    parameterisations sharing a filename is the failure this prevents;
+    it has already happened twice in this line of work under different
+    guises (see the R1 verdict)."""
+    return ("" if stability == FROZEN_STABILITY
+            else f".stab{int(round(stability * 100)):03d}")
+
+
 def bank_paths(views_root: Path, scene_id: str,
                evidence_denominator: str,
                variant: str = "") -> tuple[Path, Path]:
@@ -47,7 +62,8 @@ def bank_paths(views_root: Path, scene_id: str,
 
 def fuse_one(scene_dir: Path, views_root: Path,
              evidence_denominator: str = "covisible",
-             rgb_splat: str = "3x3", id_splat: str = "3x3") -> int:
+             rgb_splat: str = "3x3", id_splat: str = "3x3",
+             stability: float = FROZEN_STABILITY) -> int:
     scene_id = scene_id_for(scene_dir)
     views_dir = views_dir_for(views_root, scene_id, rgb_splat, id_splat)
     variant = ("" if (rgb_splat, id_splat) == ("3x3", "3x3")
@@ -58,10 +74,11 @@ def fuse_one(scene_dir: Path, views_root: Path,
     # the point of such an arm. An arm that changes RGB must NOT: fusing
     # new views against old masks would silently produce a meaningless
     # bank. Verified below against the sidecar's own recorded scene id.
-    mask_variant = "" if rgb_splat == "3x3" else variant
+    stab = stability_tag(stability)
+    mask_variant = ("" if rgb_splat == "3x3" else variant) + stab
     masks_npz = views_root / f"c1p1_masks_{scene_id}{mask_variant}.npz"
     bank_npz, bank_json = bank_paths(views_root, scene_id,
-                                     evidence_denominator, variant)
+                                     evidence_denominator, variant + stab)
 
     for p, how in ((views_dir / "manifest.json", "tools/arkitscenes_render.py"),
                    (masks_npz, "notebooks/c1p1_sam2_colab.ipynb")):
@@ -74,11 +91,20 @@ def fuse_one(scene_dir: Path, views_root: Path,
 
     # the sidecar records the SCENE string the notebook ran under; if it
     # disagrees with the arm we are fusing, the wrong images were segmented
-    recorded = json.loads(str(np.load(masks_npz)["env"]))["scene"]
-    expected = f"{scene_id}{mask_variant}"
-    if recorded != expected:
+    env = json.loads(str(np.load(masks_npz)["env"]))
+    expected = f"{scene_id}" + ("" if rgb_splat == "3x3" else variant)
+    if env["scene"] != expected:
         print(f"{scene_id}: mask sidecar was produced for scene "
-              f"{recorded!r}, this arm needs {expected!r} — wrong images")
+              f"{env['scene']!r}, this arm needs {expected!r} — wrong images")
+        return 1
+    # V3: the sidecar must have been produced under the SAM threshold we
+    # claim to be fusing under. Older sidecars predate the field and are
+    # the frozen pin by construction.
+    recorded_stab = float(env.get("stability_score_thresh", FROZEN_STABILITY))
+    if abs(recorded_stab - stability) > 1e-9:
+        print(f"{scene_id}: mask sidecar was produced at "
+              f"stability_score_thresh={recorded_stab}, this arm needs "
+              f"{stability} — wrong SAM parameterisation")
         return 1
 
     mesh, _R, bundle = load_canonical_geometry(scene_dir)
@@ -109,6 +135,7 @@ def fuse_one(scene_dir: Path, views_root: Path,
         "evidence_denominator": evidence_denominator,
         "rgb_splat": rgb_splat,
         "id_splat": id_splat,
+        "stability_score_thresh": stability,
         "representation_hash": bundle.representation_hash,
         "masks_sidecar_sha256": hashlib.sha256(masks_npz.read_bytes()).hexdigest(),
         "views_manifest_sha256": hashlib.sha256(
@@ -138,6 +165,10 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--views-root", type=Path, default=DEFAULT_VIEWS_ROOT)
     ap.add_argument("--rgb-splat", default="3x3")
     ap.add_argument("--id-splat", default="3x3")
+    ap.add_argument("--stability", type=float, default=FROZEN_STABILITY,
+                    help="SAM stability_score_thresh the sidecar was "
+                         "produced under; see "
+                         "docs/arkitscenes_mask_coverage_protocol.md")
     ap.add_argument("--evidence-denominator", default="covisible",
                     choices=list(EVIDENCE_DENOMINATORS),
                     help="fusion evidence rule; see "
@@ -153,7 +184,7 @@ def main(argv: list[str] | None = None) -> int:
     else:
         ap.error("pass --scene <video_id> or --all")
     return max(fuse_one(d, args.views_root, args.evidence_denominator,
-                        args.rgb_splat, args.id_splat)
+                        args.rgb_splat, args.id_splat, args.stability)
                for d in scenes)
 
 
