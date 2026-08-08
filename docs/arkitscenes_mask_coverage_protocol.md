@@ -336,11 +336,27 @@ still fail to align with object boundaries, and none of the four knobs
 touches that.
 
 **Stop turning knobs on C1-P1 for ARKitScenes.** The next candidate must be
-a different proposal source, not another parameter: Mask3D, which is trained
-on ScanNet — real scans, in-distribution for ARKitScenes and
-out-of-distribution for Replica, the reverse of C1-P1's bias — and which
-already contributed +8 entities on Replica (25/53 → 33/53 pooled).
-Infrastructure exists: `notebooks/c1_mask3d_colab.ipynb`, `load_mask3d()`.
+a different proposal source, not another parameter: Mask3D, trained on
+ScanNet, which already contributed +8 entities on Replica (25/53 → 33/53
+pooled). Infrastructure exists: `notebooks/c1_mask3d_colab.ipynb`,
+`load_mask3d()`.
+
+**Stated precisely, because an earlier draft of this paragraph overclaimed
+it.** ScanNet and ARKitScenes are *not* the same distribution. Different
+capture rig (Structure Sensor versus iPad LiDAR), different reconstruction,
+different annotation conventions. What they share is a property C1-P1 has
+now failed on four times: both are handheld scans of real rooms, with the
+mesh noise and incomplete geometry that implies, where Replica's meshes are
+clean reconstructions. So the claim is only that a ScanNet-trained model is
+**plausibly closer** to ARKitScenes on that axis than a 2D image model
+frozen at Replica-tuned parameters — a hypothesis about which failure mode
+transfers, not a statement about distributions.
+
+That it might fail is the point. A predicted result that cannot come out
+wrong is not worth the GPU time, and the value here is that Mask3D consumes
+geometry directly instead of a render, so it does not inherit the one thing
+all four refuted knobs were downstream of: what SAM's masks mean on a
+stippled real-scan render. It tests a different mechanism, and it can lose.
 
 ## Artifacts
 
