@@ -1,4 +1,4 @@
-"""Stage-0 gate V3 for the mask-coverage protocol.
+"""Stage-0 gates V1 and V3 for the mask-coverage protocol.
 
 Protocol: `docs/arkitscenes_mask_coverage_protocol.md`.
 
@@ -25,6 +25,8 @@ if str(REPO_ROOT) not in sys.path:
 from tools.arkitscenes_fuse import FROZEN_STABILITY, bank_paths, stability_tag
 
 NB = REPO_ROOT / "notebooks" / "c1p1_sam2_colab.ipynb"
+# the commit that froze the C1-P1 notebook, before M1 broke the pin
+FROZEN_NB_REF = "f373791"
 
 
 def test_frozen_threshold_produces_no_tag() -> None:
@@ -126,7 +128,77 @@ def test_only_the_threshold_is_unpinned_in_the_notebook() -> None:
                 "— M1 permits exactly one variable")
 
 
+def _generator_args(nb_text: str) -> dict[str, str]:
+    """Parse the SAM2AutomaticMaskGenerator(...) keyword arguments."""
+    nb = json.loads(nb_text)
+    src = "".join("".join(c["source"]) for c in nb["cells"])
+    i = src.index("SAM2AutomaticMaskGenerator(")
+    depth, j = 0, i + len("SAM2AutomaticMaskGenerator(") - 1
+    for j in range(j, len(src)):
+        if src[j] == "(":
+            depth += 1
+        elif src[j] == ")":
+            depth -= 1
+            if depth == 0:
+                break
+    body = src[i + len("SAM2AutomaticMaskGenerator("):j]
+    args = {}
+    for part in body.split(","):
+        if "=" in part:
+            k, v = part.split("=", 1)
+            args[k.strip()] = v.strip()
+    return args
+
+
+def test_v1_structural_exactly_one_parameter_left_the_pin() -> None:
+    """Stage-0 gate V1, structural form.
+
+    AMENDED BEFORE EXECUTION, by owner decision. As drafted, V1 required the
+    notebook at 0.95 to reproduce the committed mask sidecar byte-for-byte.
+    That is not executable as specified: SAM runs off-machine and Colab does
+    not guarantee the same GPU model, so V1 could fail for reasons unrelated
+    to the change and halt a valid experiment under the STOP rule. It also
+    implied a third GPU run against a stated two-run budget.
+
+    This is the substitute and it is arguably stronger, because it cannot be
+    confounded by hardware: diff the generator call against the frozen
+    notebook at `f373791` ("Freeze C1-P1 preparation") and require that
+    exactly one keyword argument changed.
+    """
+    import subprocess
+    r = subprocess.run(
+        ["git", "show", f"{FROZEN_NB_REF}:notebooks/c1p1_sam2_colab.ipynb"],
+        capture_output=True, text=True, cwd=REPO_ROOT)
+    if r.returncode != 0:
+        print("  SKIP (no git history available)")
+        return
+
+    before = _generator_args(r.stdout)
+    after = _generator_args(NB.read_text())
+
+    if set(before) != set(after):
+        raise AssertionError(
+            f"the argument SET changed, not just a value: "
+            f"added={set(after) - set(before)} removed={set(before) - set(after)}")
+
+    differing = {k for k in before if before[k] != after[k]}
+    if differing != {"stability_score_thresh"}:
+        raise AssertionError(
+            f"M1 permits exactly one variable; these differ from the frozen "
+            f"notebook: {sorted(differing)}")
+    if before["stability_score_thresh"] != "0.95":
+        raise AssertionError(
+            f"frozen notebook did not pin 0.95, it pinned "
+            f"{before['stability_score_thresh']!r} — the baseline this "
+            "experiment compares against is not what the protocol assumed")
+    if after["stability_score_thresh"] != "STABILITY_SCORE_THRESH":
+        raise AssertionError(
+            f"the parameter is not the declared variable: "
+            f"{after['stability_score_thresh']!r}")
+
+
 TESTS = [
+    test_v1_structural_exactly_one_parameter_left_the_pin,
     test_frozen_threshold_produces_no_tag,
     test_non_frozen_thresholds_get_distinct_tags,
     test_bank_paths_separate_by_threshold,

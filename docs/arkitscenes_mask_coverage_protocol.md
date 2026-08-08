@@ -123,9 +123,19 @@ survives. That anchor arm is mandatory, not optional.
 
 ## Stage 0 — validity (no new inference)
 
+> **V1 was amended before execution, by owner decision on 2026-08-05.** As
+> drafted it required a GPU re-run at 0.95 reproducing the committed sidecar
+> byte-for-byte. That is **not executable as specified**: SAM runs
+> off-machine and Colab does not guarantee the same GPU model, so V1 could
+> fail for reasons unrelated to the change and halt a valid experiment under
+> the STOP rule. It also implied a third GPU run against a stated two-run
+> budget. The substitute below is structural and cannot be confounded by
+> hardware. Recorded here rather than silently swapped; no other gate moved,
+> and nothing had been run when the amendment was made.
+
 | gate | predeclared criterion |
 |---|---|
-| V1 | the notebook at `stability_score_thresh=0.95` reproduces the committed dev-scene sidecar **byte-for-byte** (sha256 `03fa67f9…`), proving the parameter is the only change |
+| V1 | **(amended, structural)** the `SAM2AutomaticMaskGenerator(...)` call is diffed against the frozen notebook at `f373791` and **exactly one keyword argument differs** — `stability_score_thresh`, `0.95` → the declared variable. The argument *set* must be unchanged, so nothing may be added or removed either. |
 | V2 | `tools/run_tests.py` green; scorecard 4 / 27 / 22 / 3; all six Replica bundle hashes unmoved |
 | V3 | fuse/eval accept a mask sidecar produced under a non-default threshold and tag every artifact with it, so two parameterisations cannot silently share a filename — the failure mode caught twice already in R1 |
 
