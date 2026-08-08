@@ -30,22 +30,10 @@ from tools.arkitscenes_eval import DEFAULT_DATA_ROOT, DEFAULT_VIEWS_ROOT
 from tools.arkitscenes_eval import load_canonical_geometry
 from segmenter.proposal_fusion import EVIDENCE_DENOMINATORS
 from tools.arkitscenes_render import views_dir_for
-from tools.c1p1_fuse import fuse_scene
-
-
-FROZEN_STABILITY = 0.95      # the C1-P1 pin
-
-
-def stability_tag(stability: float) -> str:
-    """Artifact suffix for a non-frozen SAM stability threshold.
-
-    Must agree with cell [2] of notebooks/c1p1_sam2_colab.ipynb, which
-    builds the same string when naming the mask sidecar. Two SAM
-    parameterisations sharing a filename is the failure this prevents;
-    it has already happened twice in this line of work under different
-    guises (see the R1 verdict)."""
-    return ("" if stability == FROZEN_STABILITY
-            else f".stab{int(round(stability * 100)):03d}")
+# Re-exported, not redefined: both live in tools/c1p1_fuse.py so the Replica
+# anchor arm and this wrapper cannot drift to different suffix formulas.
+# Imported here because callers and tests already reach for them by this path.
+from tools.c1p1_fuse import FROZEN_STABILITY, fuse_scene, stability_tag
 
 
 def bank_paths(views_root: Path, scene_id: str,

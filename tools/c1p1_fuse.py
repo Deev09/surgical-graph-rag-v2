@@ -32,6 +32,28 @@ from segmenter.view_render import SIZE
 from tools.c3_surface_run import _load_generation_inputs
 
 
+FROZEN_STABILITY = 0.95      # the C1-P1 pin
+
+
+def stability_tag(stability: float) -> str:
+    """Artifact suffix for a non-frozen SAM stability threshold.
+
+    Must agree with cell [2] of notebooks/c1p1_sam2_colab.ipynb, which
+    builds the same string when naming the mask sidecar. Two SAM
+    parameterisations sharing a filename is the failure this prevents;
+    it has already happened twice in this line of work under different
+    guises (see the R1 verdict).
+
+    Lives HERE, in the dataset-agnostic base module, and is re-exported by
+    tools/arkitscenes_fuse.py. It began in that wrapper, but the Replica
+    anchor arm of M1 needs it too, and the wrapper already imports
+    `fuse_scene` from this module -- importing back would cycle. One
+    definition, imported both ways, because a second copy of the formula
+    is exactly the drift the V3 tests exist to catch."""
+    return ("" if stability == FROZEN_STABILITY
+            else f".stab{int(round(stability * 100)):03d}")
+
+
 def fuse_scene(views_dir: Path, masks_npz: Path, faces: np.ndarray,
                n_vertices: int, *,
                evidence_denominator: str = "covisible",
@@ -83,14 +105,39 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--masks", required=True, type=Path)
     ap.add_argument("--out-root", type=Path,
                     default=REPO_ROOT / "runs" / "phase8_c1p1")
+    ap.add_argument("--stability", type=float, default=FROZEN_STABILITY,
+                    help="SAM stability_score_thresh the sidecar was "
+                         "produced under. Affects OUTPUT NAMING only -- the "
+                         "value itself was applied off-machine in Colab. The "
+                         "default is the pin and leaves every committed "
+                         "Replica bank path byte-identical; see "
+                         "docs/arkitscenes_mask_coverage_protocol.md")
     args = ap.parse_args(argv)
 
-    bank_npz = args.out_root / f"bank_{args.scene}.npz"
-    bank_json = args.out_root / f"{args.scene}_bank.json"
+    stab = stability_tag(args.stability)
+    bank_npz = args.out_root / f"bank_{args.scene}{stab}.npz"
+    bank_json = args.out_root / f"{args.scene}_bank{stab}.json"
     if bank_npz.exists() or bank_json.exists():
         print(f"refusing to overwrite finalized bank: {bank_npz}")
         return 1
     views_dir = args.out_root / f"views_{args.scene}"
+
+    # V3: the sidecar must have been produced under the threshold we claim to
+    # be fusing under, or the bank is tagged with a parameterisation it was
+    # not built from. Sidecars written before M1 predate the field and are
+    # the frozen pin by construction.
+    env = json.loads(str(np.load(args.masks)["env"]))
+    recorded = float(env.get("stability_score_thresh", FROZEN_STABILITY))
+    if abs(recorded - args.stability) > 1e-9:
+        print(f"mask sidecar was produced at stability_score_thresh="
+              f"{recorded}, this run claims {args.stability} — wrong SAM "
+              f"parameterisation")
+        return 1
+    if env.get("scene") not in (None, args.scene):
+        print(f"mask sidecar was produced for scene {env['scene']!r}, "
+              f"this run needs {args.scene!r} — wrong images")
+        return 1
+
     mesh_path, _, _ = _load_generation_inputs(args.scene)
     mesh = load_raw_triangle_mesh(mesh_path)
 
@@ -108,6 +155,7 @@ def main(argv: list[str] | None = None) -> int:
         "schema": "c1p1_proposal_bank_v1",
         "protocol": "docs/c1_p1_multiview_proposals_protocol.md",
         "scene_id": args.scene,
+        "stability_score_thresh": args.stability,
         "masks_sidecar_sha256": hashlib.sha256(
             args.masks.read_bytes()).hexdigest(),
         "views_manifest_sha256": hashlib.sha256(

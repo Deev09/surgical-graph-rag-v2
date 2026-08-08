@@ -1,8 +1,13 @@
-# ARKitScenes M1 — mask coverage via the stability gate (draft protocol)
+# ARKitScenes M1 — mask coverage via the stability gate
 
-Status: **draft, unexecuted.** No code has been written. Baselines quoted
-here were measured before it was drafted (`runs/arkitscenes_p1/`, commit
-`e348ada`).
+Status: **EXECUTED 2026-08-08. REFUTED.** Coverage was closed — overshot,
+in fact, past Replica's own baseline — and the ceiling did not move. The
+mandatory anchor arm additionally showed the change **destroys** Replica.
+Verdict and measured gate table at the bottom; the protocol as written above
+it is unedited.
+
+Baselines quoted below were measured before it was drafted
+(`runs/arkitscenes_p1/`, commit `e348ada`).
 
 Follows `docs/arkitscenes_render_density_protocol.md`, whose verdict closed
 the render line and isolated occupied-pixel mask coverage as the residual.
@@ -216,7 +221,134 @@ generalization result, and the decision table says so before the data exists.
 
 ## Sign-off
 
-Drafted 2026-08-05. **Unexecuted.** Requires owner approval of (a) breaking
-the SAM pin at all, (b) the mandatory Replica anchor arm, and (c) the M
-gate values. Item (a) is the real decision: every prior protocol preserved
-one parameterisation across both datasets, and this one spends that.
+Drafted 2026-08-05. Approved by the owner on all three items, including the
+V1 amendment recorded above. Executed 2026-08-08 with two GPU runs, exactly
+as budgeted.
+
+---
+
+# VERDICT — refuted, 2026-08-08
+
+## Stage 0
+
+V1 (structural, exactly one keyword argument differs), V2 (85/85 test files,
+scorecard 4/27/22/3, six Replica bundle hashes unmoved), V3 (both sidecars
+record `stability_score_thresh=0.85` and their own scene string): **all
+pass.** No STOP condition.
+
+## Stage 1 — gates
+
+| gate | criterion | measured | |
+|---|---|---|---|
+| M1 | ceiling @IoU 0.50 ≥ 6/18 | **2/18** (from 1/18) | **FAIL** |
+| M2 | AR@k=100 @IoU 0.50 ≥ 6 | **2** (from 1) | **FAIL** |
+| M3 | median proposal ≥ 300 vertices | **37** (from 37) | **FAIL** |
+| M4 | ≤2000 proposals, largest ≤15% of mesh | 1550, 14.2% | pass |
+| M5 | selector recovers ≥0.80 of ceiling at k=100 | 1.00 | pass |
+| M6 | direction check: occupied coverage ≥40% | **67.7%** (from 28.9%) | pass |
+
+**Three of six fail. The protocol fails.** Stage 2 is not entered and
+41069025 / 41069042 remain sealed, unfused and uninspected, as they have
+through all four protocols.
+
+## The hypothesis was wrong in a specific, useful way
+
+H predicted the gate was cutting large whole-object candidates and leaving
+part-level siblings. If so, lowering it would return **larger** masks.
+
+It returned **more** masks of the **same** size. Median mask area moved
+6,181 → 7,241 px (+17%) while mask count went 457 → 1,272 (+178%). Coverage
+rose because the canvas was flooded, not because objects came back whole:
+total mask area went 0.34 → 0.99 canvases. The named mechanism is refuted
+directly, not merely unsupported.
+
+M6 clearing 40% and landing at 67.7% — above Replica's 46.5% baseline — is
+what makes this conclusive rather than inconclusive. Coverage is no longer a
+candidate explanation for the transfer gap. It was closed, overshot, and the
+ceiling stayed at 2/18.
+
+## What the extra masks did to fusion
+
+Per-cut proposal counts show the bank migrating to the strict cut as
+co-membership evidence saturates:
+
+| | lifted masks | cut 0.25 | cut 0.50 | cut 0.75 | total |
+|---|---|---|---|---|---|
+| ARK 0.95 | 449 | 523 | 625 | 585 | 1733 |
+| ARK 0.85 | 1249 | **171** | 392 | **987** | 1550 |
+| Replica 0.95 | 619 | 72 | 242 | 220 | 534 |
+| Replica 0.85 | 1284 | **3** | 13 | **81** | 97 |
+
+More overlapping masks raise `co-masked / covisible` almost everywhere, so at
+loose cuts the confidence graph merges into components too large to survive
+the size cap, and they are rejected outright. Replica retains **3 proposals**
+at cut 0.25, against 72. The bank stops spanning a range of scales and
+collapses onto whatever the strict cut yields. Coverage went up; the scale
+diversity that makes a bank useful went down.
+
+## The anchor arm — the result the decision table did not anticipate
+
+Mandatory under H-C, reported not gated:
+
+| quantity | Replica 0.95 | Replica 0.85 |
+|---|---|---|
+| ceiling @IoU 0.50 | **25/53** | **7/53** |
+| ceiling @IoU 0.25 | 39/53 | 11/53 |
+| AR@k=100 @IoU 0.50 | — | 7 |
+| proposals | 534 | 97 |
+| occupied coverage | 46.5% | **87.5%** |
+| median mask area | 13,804 px | 12,659 px |
+
+The decision table offered three outcomes for a passing anchor: Replica
+improves similarly, Replica unchanged, or Stage-2 negative transfer. It did
+not contemplate the anchor **collapsing**, and that is what happened —
+Replica lost 18 of 25 entities while its coverage nearly doubled.
+
+So `stability_score_thresh=0.95` was not a miscalibrated pin inherited
+carelessly. It is load-bearing, and for Replica it is close to optimal. The
+one reading this rules out completely is the one the protocol was written to
+test: that the parameterisation, not the mechanism, failed to transfer.
+
+The pin is **not adopted**. Every committed baseline artifact stands
+unchanged; the 0.85 arms live at `.stab085` paths beside them.
+
+## Where this leaves C1-P1 on real scans
+
+Four protocols, four measured failures, one attribution each:
+
+| line | protocol | result |
+|---|---|---|
+| fusion evidence | F1 | refuted — bank got worse (12→9 @IoU 0.10) |
+| lifting dilation | R1 arm C | null — +21 pts fill, Δceiling 0 |
+| render density | R1 arm A | null — matched Replica on fill and mask count, Δceiling 0 |
+| mask coverage | M1 | refuted — overshot Replica's coverage, Δceiling +1 |
+
+Every input quantity that distinguished the ARKitScenes render from the
+Replica render has now been closed or overshot, and the ceiling has moved by
+one entity in total. **The measured chain is exhausted.** Under this
+protocol's own decision table this is the strongest available negative: the
+constraint is not fill, not dilation, not density, and not coverage.
+
+The remaining difference between the two datasets is not a render statistic
+at all — it is what SAM's masks *mean* on a stippled real-scan render. Mask
+count, mask size, and pixel coverage can all be matched while the masks
+still fail to align with object boundaries, and none of the four knobs
+touches that.
+
+**Stop turning knobs on C1-P1 for ARKitScenes.** The next candidate must be
+a different proposal source, not another parameter: Mask3D, which is trained
+on ScanNet — real scans, in-distribution for ARKitScenes and
+out-of-distribution for Replica, the reverse of C1-P1's bias — and which
+already contributed +8 entities on Replica (25/53 → 33/53 pooled).
+Infrastructure exists: `notebooks/c1_mask3d_colab.ipynb`, `load_mask3d()`.
+
+## Artifacts
+
+* masks — `c1p1_masks_arkitscenes_41069021.stab085.npz`,
+  `c1p1_masks_replica_room_2.stab085.npz`
+* banks — `bank_arkitscenes_41069021.stab085.npz`,
+  `bank_replica_room_2.stab085.npz`, each with the threshold recorded in its
+  sidecar JSON
+* reports — `runs/arkitscenes_selector/arkitscenes_41069021_selector_eval.stab085.json`,
+  `runs/arkitscenes_selector/replica_room_2_m1_anchor.stab085.json`
+* anchor tool — `tools/m1_replica_anchor.py`
