@@ -6,8 +6,9 @@ target.
 
 Current development target:
 
-- branch: `codex/arkit-vertical-slice`
-- base commit: `be668c3`
+- canonical repo: `~/Desktop/surgical-graph-rag-v2` (THE only working copy;
+  `~/Desktop/surgical-graph-rag` is historical/reference-only)
+- integration branch: `v2-calibration`
 - source dataset for the active slice: ARKitScenes
 - source perception backend: frozen Mask3D bundle
 - required outcome: an oracle-free mesh -> delivered entities -> graph ->
@@ -15,9 +16,45 @@ Current development target:
 - authoritative execution contract:
   `docs/arkit_vertical_slice_72h.md`
 
+Consolidated 2026-08-09: `codex/arkit-vertical-slice` was fast-forwarded
+into `v2-calibration` (no merge, linear history). That branch is retained
+only until its artifacts are verified, then retired. Do not commit to it.
+
 Before proposing or editing anything, read the execution contract and inspect
 the current branch. Its scope and definition of done take precedence over a
 new experiment idea.
+
+## Roles, set by the owner 2026-08-09
+
+- **Claude — primary editor / integrator.** Implements the active
+  experiment, owns `v2-calibration`, commits and pushes complete
+  checkpoints, maintains this file, `AGENTS.md`, and the execution contract.
+- **Codex — independent reviewer.** Checks that a proposed experiment
+  addresses the real bottleneck; reviews the commit rather than a pasted
+  summary; verifies metrics and the ceiling-versus-delivered distinction;
+  names model/data/annotation/evaluation confounders; refuses scope
+  expansion that does not move mesh -> answer. Edits ONLY when the owner
+  assigns a bounded task, on `codex/<task>`, in its own worktree.
+
+Never let two agents edit the same branch or directory concurrently.
+
+## Handoff block — paste this when switching agents
+
+    Canonical repo: ~/Desktop/surgical-graph-rag-v2
+    Integration branch: v2-calibration
+    Current commit: <SHA>
+    Working tree: clean
+    Active objective: <one outcome>
+    Read first: CLAUDE.md + docs/arkit_vertical_slice_72h.md
+    Your role: editor OR reviewer
+    Authorized files/actions: <scope>
+    Do not start: <excluded work>
+    Validation command: .venv/bin/python3 tools/run_tests.py
+
+The receiving agent replies with: branch, HEAD SHA, `git status`, the
+objective in its own words, and the ONE task it will own. Incomplete work
+goes on a pushed WIP branch — never handed over as an unexplained dirty
+tree.
 
 Active workflow rules:
 
