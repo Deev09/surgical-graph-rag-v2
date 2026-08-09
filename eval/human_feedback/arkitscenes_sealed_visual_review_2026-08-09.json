@@ -1,0 +1,133 @@
+{
+  "schema": "arkitscenes_human_scene_inventory_v1",
+  "status": "partial_visual_review_not_a_qa_key",
+  "reviewed_on": "2026-08-09",
+  "benchmark_role": "evaluation_only; records human scene facts and diagnosis without changing Lane A outputs, ARKit annotations, thresholds, or vocabulary",
+  "source_evidence": [
+    {
+      "scene_id": "arkitscenes_41069025",
+      "source": "owner visual inspection of the sealed Lane A inspector and raw 3D scene",
+      "portable_image_committed": false
+    },
+    {
+      "scene_id": "arkitscenes_41069042",
+      "source": "owner screenshots captured 2026-08-09 from couch and kitchen perspectives",
+      "local_filenames": [
+        "Screenshot 2026-08-09 at 12.15.25 AM.png",
+        "Screenshot 2026-08-09 at 12.17.00 AM.png"
+      ],
+      "portable_image_committed": false
+    }
+  ],
+  "scenes": {
+    "arkitscenes_41069025": {
+      "human_confirmed_scene_facts": [
+        {
+          "fact": "sofa cushions rest on the sofa/couch",
+          "scope": "visible scene"
+        },
+        {
+          "fact": "the scene contains one rug, not the many rugs suggested by learned labels",
+          "scope": "class cardinality"
+        },
+        {
+          "fact": "the scene contains one trash can",
+          "scope": "class cardinality"
+        },
+        {
+          "fact": "there is one main kitchen counter; the delivered whole-plane region labeled counter is not the counter object",
+          "scope": "class identity and instance extent"
+        }
+      ],
+      "diagnosed_system_errors": [
+        {
+          "uid": "obj_13",
+          "delivered": true,
+          "learned_display_label": "projector",
+          "corrected_class": "sofa",
+          "evidence": "0.6668 vertex IoU match to the ARKit sofa box plus isolated instance visual inspection",
+          "failure_stage": "learned_label"
+        },
+        {
+          "uid": "obj_9",
+          "delivered": true,
+          "learned_display_label": "rug",
+          "corrected_class": "cushion",
+          "relation": "ON_ENTITY_SURFACE obj_13",
+          "evidence": "isolated instance is cushion-shaped; cushion is top-3; geometry resting candidate has 0.8203 target overlap and 0.0098 m gap",
+          "uid_confirmation": "supported by visual and geometry evidence; owner did not name the uid directly",
+          "failure_stage": "learned_label"
+        },
+        {
+          "uid": "obj_23",
+          "delivered": true,
+          "learned_display_label": "rug",
+          "corrected_class": "cushion",
+          "relation": "ON_ENTITY_SURFACE obj_13",
+          "evidence": "isolated instance is cushion-shaped; cushion is top-2; resting evidence has -0.010 m gap but 0.454 target overlap, just below the provisional 0.50 gate",
+          "uid_confirmation": "supported by visual and geometry evidence; owner did not name the uid directly",
+          "failure_stage": "learned_label_and_uncalibrated_relation_gate"
+        },
+        {
+          "uid": "obj_8",
+          "delivered": true,
+          "learned_display_label": "counter",
+          "corrected_class": null,
+          "evidence": "7.38 x 5.95 x 0.20 m whole-plane segment and owner report that it is not the kitchen counter",
+          "failure_stage": "instance_overmerge_and_learned_label"
+        },
+        {
+          "uid": "obj_36",
+          "delivered": true,
+          "learned_display_label": "trash-can",
+          "corrected_class": "cabinet",
+          "evidence": "0.5829 vertex IoU match to an ARKit cabinet box; human reports only one trash can",
+          "failure_stage": "learned_label"
+        }
+      ],
+      "unresolved_uid_assignments": [
+        "the single true rug",
+        "the single true trash can",
+        "the main kitchen counter"
+      ]
+    },
+    "arkitscenes_41069042": {
+      "human_confirmed_scene_facts": [
+        {
+          "fact": "the scene contains a couch/sofa facing the kitchen area",
+          "scope": "visible scene"
+        },
+        {
+          "fact": "curtains sit next to the window/pathway",
+          "scope": "visible scene"
+        },
+        {
+          "fact": "the supplied views show the kitchen from the couch perspective",
+          "scope": "view context"
+        }
+      ],
+      "annotation_and_model_diagnosis": [
+        {
+          "finding": "the ARKit annotation is non-exhaustive for the visible scene",
+          "evidence": "its six boxes contain bed, tables, cabinets, and tv_monitor but no sofa/couch, curtain, rug, or trash-can class"
+        },
+        {
+          "uid": "obj_6",
+          "learned_display_label": "counter",
+          "oracle_match_label": "bed",
+          "finding": "isolated delivered geometry contains a broad kitchen/cabinet region rather than a clean bed instance",
+          "failure_stage": "instance_overmerge_and_annotation_box_target_mismatch"
+        },
+        {
+          "finding": "curtain is absent from global_indoor_v1 vocabulary; blinds is not an equivalent correction",
+          "failure_stage": "vocabulary_and_learned_label"
+        }
+      ],
+      "unresolved_uid_assignments": [
+        "the visible couch/sofa",
+        "the curtains beside the window/pathway",
+        "the main kitchen counter"
+      ]
+    }
+  }
+}

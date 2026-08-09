@@ -93,6 +93,28 @@ relation/question keys for the two sealed scenes.
 
 Full verification after this integration passes: 95/95 test files.
 
+## Checkpoint 3 — first sealed-scene human feedback
+
+Owner visual review is recorded separately at
+`eval/human_feedback/arkitscenes_sealed_visual_review_2026-08-09.json`; it is
+not a QA key and changes no metric or Lane A artifact.
+
+The review decomposes `41069025` more sharply than the aggregate label score:
+the sofa is delivered as `obj_13` but mislabeled projector, and two delivered
+segments (`obj_9`, `obj_23`) are visually sofa cushions mislabeled rug. The
+geometry relation stage admits `obj_9` on the sofa; `obj_23` has a compatible
+−1 cm gap but 0.454 footprint overlap, just below the provisional 0.50 gate.
+This is a calibration example, not authorization to lower the constant from
+one reviewed scene. The whole-plane `obj_8` labeled counter is instead an
+instance overmerge, so label repair cannot fix it. Human review also confirms
+one rug and one trash can, contradicting the learned label cardinalities.
+
+The supplied `41069042` views show a couch-facing kitchen and curtains beside
+the window/pathway. Those visible categories are absent from its six ARKit
+annotation boxes, and `curtain` is absent from the current label vocabulary.
+Thus this scene cannot support conventional label precision from its box set;
+human scene inventory and model accuracy must remain separately reported.
+
 ## Definition of done
 
 The slice is done when one command can consume an ARKitScenes canonical mesh
