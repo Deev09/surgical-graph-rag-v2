@@ -133,11 +133,15 @@ def test_slice_can_attach_oracle_free_learned_labels() -> None:
             raise AssertionError("label attachment changed the oracle boundary")
         if not (out / "support_patches.json").is_file():
             raise AssertionError("requested horizontal patch evidence was not written")
+        if not (out / "entity_patch_rest.json").is_file():
+            raise AssertionError("requested target-to-patch evidence was not written")
         if manifest["available_capabilities"][
                 "entity_horizontal_patch_evidence"] is not True:
             raise AssertionError("patch-evidence capability was not recorded")
         if manifest["support_patch_summary"]["uses_oracle"] is not False:
             raise AssertionError("support-patch evidence crossed the oracle boundary")
+        if manifest["entity_patch_rest_summary"]["uses_oracle"] is not False:
+            raise AssertionError("target-to-patch evidence crossed the oracle boundary")
 
 
 TESTS = [

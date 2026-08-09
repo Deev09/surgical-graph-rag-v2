@@ -51,10 +51,47 @@ Development outputs are ignored run artifacts under
   integrity gate.
 - Full verification after integration passes: 92/92 test files.
 
-The remaining 72-hour critical path is now narrow: run the two sealed GPU
-bundles, implement target-to-patch resting evidence, then run the identical
-slice and stage-wise evaluation on both scenes. It is not another proposal or
-benchmark-design project.
+At Checkpoint 1 the remaining path was deliberately narrow: run the two sealed
+GPU bundles, implement target-to-patch resting evidence, then run the identical
+slice and stage-wise evaluation on both scenes. Checkpoint 2 records that
+execution; it did not open another proposal or benchmark-design project.
+
+## Checkpoint 2 — sealed transfer executed
+
+Both sealed GPU bundles passed the all-or-none integrity gate and the identical
+oracle-free Lane A path finalized both scenes before evaluation opened:
+
+- `41069025`: 35 delivered instances, 151 `NEAR` edges, and 9/20 annotated
+  entities recovered at vertex IoU 0.50. Delivery retains 100% of the scene's
+  Mask3D proposal ceiling.
+- `41069042`: 23 delivered instances, 100 `NEAR` edges, and 5/6 annotated
+  entities recovered at vertex IoU 0.50. Delivery again retains 100% of the
+  proposal ceiling.
+- Noise remains substantial: the non-exhaustive annotation diagnostic records
+  62.9% and 78.3% zero-overlap delivered instances. This is not interpreted as
+  conventional false-positive precision because ARKit annotations are not
+  exhaustive.
+
+Learned labels do not transfer reliably. On geometry-matched instances,
+top-1/top-3 results are 0/7 and 0/7 on development, 1/9 and 4/9 on `41069025`,
+and 0/5 and 0/5 on `41069042`. The fixed point-splat OpenCLIP stage is therefore
+an inspectable baseline, not a usable semantic layer; no threshold or
+vocabulary was tuned after evaluation.
+
+Target-to-patch resting evidence is integrated but not promoted to graph
+truth. It finds one provisional candidate in each sealed scene from 1,225 and
+529 evaluated target-owner pairs. The geometry-only floor census is `unknown`
+in both scenes, so the manifests preserve that uncertainty and emit no
+`ON_ENTITY_SURFACE` edge. Human relation truth is still required to calibrate
+and evaluate this stage.
+
+The measured transfer conclusion is now specific: geometry-native instance
+delivery transfers across the two sealed ARKit rooms; the present learned
+semantic labels do not; support evidence runs but remains uncalibrated; and no
+end-to-end spatial-QA generalization claim is available without independent
+relation/question keys for the two sealed scenes.
+
+Full verification after this integration passes: 95/95 test files.
 
 ## Definition of done
 

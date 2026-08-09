@@ -39,6 +39,7 @@ from extractors.learned_labels import (
 from extractors.serde import dump_entity_artifacts
 from graph.builder import ExtractorRun, build_graph
 from graph.relations.proximity import ProximityConfig, ProximityExtractor
+from graph.relations.entity_patch_rest import evaluate_entity_patch_resting
 from graph.serde import dump_build_diagnostics, dump_scene_graph_bundle
 from geometry.entity_support_patches import (
     extract_entity_horizontal_patches_from_files,
@@ -115,6 +116,8 @@ def build_slice(representation, segmentation_dir: Path, out_dir: Path,
 
     support_patches_path = None
     support_patch_summary = None
+    patch_rest_path = None
+    patch_rest_summary = None
     if with_support_patches:
         patch_evidence = extract_entity_horizontal_patches_from_files(
             Path(representation.geometry_handle.uri),
@@ -129,6 +132,16 @@ def build_slice(representation, segmentation_dir: Path, out_dir: Path,
             encoding="utf-8",
         )
         support_patch_summary = patch_evidence.diagnostics
+        patch_rest = evaluate_entity_patch_resting(entities, patch_evidence)
+        patch_rest_path = out_dir / "entity_patch_rest.json"
+        patch_rest_path.write_text(
+            json.dumps(
+                patch_rest.to_dict(), indent=2, sort_keys=True,
+                allow_nan=False,
+            ) + "\n",
+            encoding="utf-8",
+        )
+        patch_rest_summary = patch_rest.diagnostics
 
     if not graph.nodes:
         raise ValueError("vertical slice produced no delivered entities")
@@ -168,6 +181,9 @@ def build_slice(representation, segmentation_dir: Path, out_dir: Path,
             "support_patch_evidence": (
                 str(support_patches_path) if support_patches_path else None
             ),
+            "entity_patch_rest_evidence": (
+                str(patch_rest_path) if patch_rest_path else None
+            ),
         },
         "counts": {
             "entities": len(graph.nodes),
@@ -179,6 +195,7 @@ def build_slice(representation, segmentation_dir: Path, out_dir: Path,
             "delivered_anonymous_instances": True,
             "learned_semantic_hypotheses": with_learned_labels,
             "entity_horizontal_patch_evidence": with_support_patches,
+            "entity_patch_rest_candidates": with_support_patches,
             "near_relation": True,
             "relation_evidence": True,
             "inspectable_2d_aabb_views": True,
@@ -194,8 +211,8 @@ def build_slice(representation, segmentation_dir: Path, out_dir: Path,
             "floor_wall_relations": "no oracle-free structural surfaces supplied",
             "wall_attachment": "no oracle-free wall/object attachment evidence",
             "entity_surface_support": (
-                "horizontal owner patches are present, but target-relative "
-                "resting/contact evidence is not yet implemented"
+                "target-relative resting candidates are present, but remain "
+                "experimental and transfer-uncalibrated; no graph edge is emitted"
                 if with_support_patches else
                 "no entity-local support patches supplied"
             ),
@@ -213,6 +230,7 @@ def build_slice(representation, segmentation_dir: Path, out_dir: Path,
             entities.notes.get("label_stage") if with_learned_labels else None
         ),
         "support_patch_summary": support_patch_summary,
+        "entity_patch_rest_summary": patch_rest_summary,
     }
     out_dir.mkdir(parents=True, exist_ok=True)
     manifest_path = out_dir / "manifest.json"
