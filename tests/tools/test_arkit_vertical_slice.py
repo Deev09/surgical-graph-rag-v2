@@ -22,6 +22,19 @@ from segmenter.base import SegmentationOutput, save_segmentation_output, sha256_
 from tools.arkit_vertical_slice import build_slice
 
 
+class _FakeLabeler:
+    weights_sha256 = "synthetic-weights"
+
+    def classify(self, images, vocabulary: list[str]) -> list[dict]:
+        first = "table" if not hasattr(self, "called") else "chair"
+        self.called = True
+        ordered = [first] + [label for label in vocabulary if label != first]
+        return [
+            {"label": label, "score": 0.4 - i * 0.001}
+            for i, label in enumerate(ordered)
+        ]
+
+
 def _fixture(root: Path):
     xyz = np.asarray([
         [0.0, 0.0, 0.0], [0.2, 0.0, 0.0],
@@ -99,9 +112,38 @@ def test_manifest_is_deterministic_except_paths_are_stable() -> None:
             raise AssertionError("identical slice inputs produced drifting output")
 
 
+def test_slice_can_attach_oracle_free_learned_labels() -> None:
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        rep, seg_dir = _fixture(root)
+        out = root / "out"
+        manifest = build_slice(
+            rep, seg_dir, out, min_vertices=4,
+            with_learned_labels=True, labeler=_FakeLabeler(),
+            with_support_patches=True,
+        )
+        if manifest["available_capabilities"][
+                "learned_semantic_hypotheses"] is not True:
+            raise AssertionError("learned label capability was not recorded")
+        if "learned_semantic_labels" in manifest["unavailable_capabilities"]:
+            raise AssertionError("available learned labels were also marked unavailable")
+        if manifest["label_configuration"]["n_promoted_display_labels"] != 2:
+            raise AssertionError("label admission was not propagated to the manifest")
+        if manifest["oracle_free"] is not True:
+            raise AssertionError("label attachment changed the oracle boundary")
+        if not (out / "support_patches.json").is_file():
+            raise AssertionError("requested horizontal patch evidence was not written")
+        if manifest["available_capabilities"][
+                "entity_horizontal_patch_evidence"] is not True:
+            raise AssertionError("patch-evidence capability was not recorded")
+        if manifest["support_patch_summary"]["uses_oracle"] is not False:
+            raise AssertionError("support-patch evidence crossed the oracle boundary")
+
+
 TESTS = [
     test_slice_writes_oracle_free_vertical_outputs,
     test_manifest_is_deterministic_except_paths_are_stable,
+    test_slice_can_attach_oracle_free_learned_labels,
 ]
 
 

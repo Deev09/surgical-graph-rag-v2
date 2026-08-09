@@ -45,6 +45,9 @@ from tools.arkitscenes_eval import (
     load_canonical_geometry, load_oracle_entities,
 )
 from tools.arkitscenes_selector_eval import build_views, load_bank
+from tools.arkitscenes_mask3d_transfer import (
+    SEALED_VIDEO_IDS, require_pair_ready,
+)
 from tools.c1_resolve_sweep import load_raw_masks
 from tools.p1_selector_eval import ABLATIONS, DEFAULT_VARIANT, rank_order
 
@@ -336,6 +339,12 @@ def main(argv: list[str] | None = None) -> int:
     scene_dir = args.data_root / args.scene
     scene_id = scene_id_for(scene_dir)
     bundle_dir = args.bundle_root / f"bundle_{scene_id}"
+    if args.scene in SEALED_VIDEO_IDS:
+        try:
+            require_pair_ready(args.bundle_root)
+        except (FileNotFoundError, KeyError, ValueError) as exc:
+            print(f"sealed-pair gate: {exc}")
+            return 1
     if not (bundle_dir / "meta.json").is_file():
         print(f"missing {bundle_dir}/meta.json — extract the Colab bundle "
               f"there first (notebooks/c1_mask3d_colab.ipynb)")

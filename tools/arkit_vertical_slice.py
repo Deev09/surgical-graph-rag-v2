@@ -31,10 +31,18 @@ from adapters.arkitscenes import (
 )
 from adapters.base import ReconstructionConfig
 from extractors.arkitscenes_segments import build_arkitscenes_segment_artifacts
+from extractors.learned_labels import (
+    ImageLabeler,
+    LearnedLabelConfig,
+    attach_learned_labels,
+)
 from extractors.serde import dump_entity_artifacts
 from graph.builder import ExtractorRun, build_graph
 from graph.relations.proximity import ProximityConfig, ProximityExtractor
 from graph.serde import dump_build_diagnostics, dump_scene_graph_bundle
+from geometry.entity_support_patches import (
+    extract_entity_horizontal_patches_from_files,
+)
 from reasoner.base import CompletenessProfile, ExecutionContext
 from reasoner.compiler_rules import RulesCompiler
 from reasoner.executor import RulesExecutor
@@ -68,12 +76,23 @@ def _question_row(question: str, answer) -> dict:
 
 def build_slice(representation, segmentation_dir: Path, out_dir: Path,
                 *, question: str | None = None,
-                min_vertices: int = 20) -> dict:
+                min_vertices: int = 20,
+                with_learned_labels: bool = False,
+                labeler: ImageLabeler | None = None,
+                with_support_patches: bool = False) -> dict:
     """Build one finalized, annotation-free vertical-slice artifact."""
     out_dir = Path(out_dir)
     segmentation_dir = Path(segmentation_dir)
     entities = build_arkitscenes_segment_artifacts(
         representation, segmentation_dir, min_vertices=min_vertices)
+    if with_learned_labels:
+        entities = attach_learned_labels(
+            representation,
+            entities,
+            segmentation_dir=segmentation_dir,
+            config=LearnedLabelConfig(),
+            labeler=labeler,
+        )
 
     graph, diagnostics = build_graph(
         entities,
@@ -93,6 +112,23 @@ def build_slice(representation, segmentation_dir: Path, out_dir: Path,
     graph_manifest = dump_scene_graph_bundle(graph, graph_dir)
     diagnostics_path = dump_build_diagnostics(
         diagnostics, out_dir / "graph_diagnostics.json")
+
+    support_patches_path = None
+    support_patch_summary = None
+    if with_support_patches:
+        patch_evidence = extract_entity_horizontal_patches_from_files(
+            Path(representation.geometry_handle.uri),
+            segmentation_dir / "vertex_instance_ids.npy",
+        )
+        support_patches_path = out_dir / "support_patches.json"
+        support_patches_path.write_text(
+            json.dumps(
+                patch_evidence.to_dict(), indent=2, sort_keys=True,
+                allow_nan=False,
+            ) + "\n",
+            encoding="utf-8",
+        )
+        support_patch_summary = patch_evidence.diagnostics
 
     if not graph.nodes:
         raise ValueError("vertical slice produced no delivered entities")
@@ -129,6 +165,9 @@ def build_slice(representation, segmentation_dir: Path, out_dir: Path,
             "graph_manifest": str(graph_manifest),
             "graph_diagnostics": str(diagnostics_path),
             "inspector": str(inspector_path),
+            "support_patch_evidence": (
+                str(support_patches_path) if support_patches_path else None
+            ),
         },
         "counts": {
             "entities": len(graph.nodes),
@@ -138,17 +177,28 @@ def build_slice(representation, segmentation_dir: Path, out_dir: Path,
         "question": qrow,
         "available_capabilities": {
             "delivered_anonymous_instances": True,
+            "learned_semantic_hypotheses": with_learned_labels,
+            "entity_horizontal_patch_evidence": with_support_patches,
             "near_relation": True,
             "relation_evidence": True,
             "inspectable_2d_aabb_views": True,
         },
         "unavailable_capabilities": {
-            "learned_semantic_labels": "not present in class-agnostic Mask3D output",
+            **({} if with_learned_labels else {
+                "learned_semantic_labels": (
+                    "run with --with-learned-labels to attach the pinned "
+                    "global-vocabulary OpenCLIP hypotheses"),
+            }),
             "horizontal_direction": (
                 "canonical_forward/right are undefined for this representation"),
             "floor_wall_relations": "no oracle-free structural surfaces supplied",
             "wall_attachment": "no oracle-free wall/object attachment evidence",
-            "entity_surface_support": "no entity-local support patches supplied",
+            "entity_surface_support": (
+                "horizontal owner patches are present, but target-relative "
+                "resting/contact evidence is not yet implemented"
+                if with_support_patches else
+                "no entity-local support patches supplied"
+            ),
             "hierarchy": "no room/furniture/object hierarchy extractor supplied",
             "conversation": "single-turn deterministic RulesCompiler only",
             "raw_mesh_3d_inspector": "current inspector is an AABB evidence view",
@@ -159,6 +209,10 @@ def build_slice(representation, segmentation_dir: Path, out_dir: Path,
             "threshold_status": "provisional Replica-era constant; not a transfer claim",
         },
         "entity_configuration": {"min_vertices": min_vertices},
+        "label_configuration": (
+            entities.notes.get("label_stage") if with_learned_labels else None
+        ),
+        "support_patch_summary": support_patch_summary,
     }
     out_dir.mkdir(parents=True, exist_ok=True)
     manifest_path = out_dir / "manifest.json"
@@ -173,6 +227,16 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--segmentation-dir", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--question", default=None)
+    parser.add_argument(
+        "--with-learned-labels", action="store_true",
+        help=("render each delivered instance and attach pinned OpenCLIP "
+              "top-k hypotheses; low-confidence instances stay anonymous"),
+    )
+    parser.add_argument(
+        "--with-support-patches", action="store_true",
+        help=("extract geometry-only owner-local horizontal patch evidence; "
+              "this does not itself emit support relations"),
+    )
     args = parser.parse_args(argv)
 
     representation = ARKitScenesAdapter().reconstruct(
@@ -182,6 +246,8 @@ def main(argv: list[str] | None = None) -> int:
     manifest = build_slice(
         representation, args.segmentation_dir, args.out,
         question=args.question,
+        with_learned_labels=args.with_learned_labels,
+        with_support_patches=args.with_support_patches,
     )
     q = manifest["question"]
     print(f"{manifest['scene_id']}: {manifest['counts']['entities']} entities, "

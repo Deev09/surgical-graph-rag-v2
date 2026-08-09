@@ -31,6 +31,31 @@ The first integration wave is complete on development scene `41069021`:
 Development outputs are ignored run artifacts under
 `runs/arkit_vertical_slice*`; tracked code and tests reproduce them.
 
+## Checkpoint 1 — completed in the second integration wave
+
+- The same one-command path can now attach oracle-free top-3 OpenCLIP label
+  hypotheses over a fixed 41-class indoor vocabulary. On `41069021`, 6/34
+  predictions clear the declared raw-score display threshold; 28/34 remain
+  visibly anonymous. These are uncalibrated hypotheses, not accuracy claims.
+- Geometry-only horizontal patch evidence now runs on the actual canonical
+  mesh and dense instance assignment. It processed 1,008,964 vertices and
+  1,901,874 faces in about 1.3 seconds, producing 93 geometry-qualified
+  candidates across 34 entities. A patch is not yet a support relation:
+  target-relative contact and containment remain the missing decision stage.
+- The local output contains 34 entities, 139 `NEAR` edges, learned-label
+  evidence, horizontal-patch evidence, a deterministic answer, and the
+  self-contained inspector. No annotation was read.
+- The two sealed transfer meshes (`41069025`, `41069042`) are hash/count pinned
+  and staged together. Their notebook runs use the declared `min_score=0.2`;
+  evaluation is mechanically locked until both distinct bundles pass the pair
+  integrity gate.
+- Full verification after integration passes: 92/92 test files.
+
+The remaining 72-hour critical path is now narrow: run the two sealed GPU
+bundles, implement target-to-patch resting evidence, then run the identical
+slice and stage-wise evaluation on both scenes. It is not another proposal or
+benchmark-design project.
+
 ## Definition of done
 
 The slice is done when one command can consume an ARKitScenes canonical mesh
@@ -174,6 +199,47 @@ Oracle/evaluation-only dependencies:
 Next 4-hour task:
 Owner action needed (or "none"):
 ```
+
+## Owner workflow across Codex and Claude
+
+Use one assistant as the integration owner for the entire 72-hour window.
+The other assistant is a reviewer or receives a file-bounded task on a
+different branch; it does not independently choose the next experiment.
+
+Start every new chat with this exact handoff:
+
+```text
+Read AGENTS.md (or CLAUDE.md) and docs/arkit_vertical_slice_72h.md first.
+Active branch: codex/arkit-vertical-slice.
+Current commit: <paste git rev-parse --short HEAD>.
+Do not change the active objective, benchmark keys, or frozen baselines.
+First report the dirty state and the one remaining seam you will own.
+End with: files changed, commands/tests, measured result, blocker, oracle use.
+```
+
+Execution cadence:
+
+1. Keep at most three parallel work items: one deployable seam, one evaluator,
+   and one external/GPU handoff. Give each non-overlapping files and a binary
+   exit condition.
+2. Integrate every four hours. Review the diff, run focused tests, then the
+   whole suite. A worker's uncommitted tree is never the project state.
+3. After each integration, push one commit and update the checkpoint above.
+   The next worker starts from that commit, not from prose copied between
+   chats.
+4. Background jobs must be deterministic and restartable, write to a unique
+   `runs/<task>/<scene>` directory, log their command/config/hash, and write a
+   success marker only after integrity checks. Do not leave two jobs writing
+   the same bundle.
+5. The owner handles only the two actions automation cannot safely replace:
+   keeping the external GPU runtime alive and supplying semantic ground truth.
+6. Freeze only after an integrated artifact is accepted for comparison or
+   publication. Never freeze a draft, a proposed constant, or an unconnected
+   module.
+
+The integration owner may reject any task whose output does not move the
+definition of done within four hours. Such a task goes to `future_work.md`;
+it does not remain half-active.
 
 ## Stop conditions
 
