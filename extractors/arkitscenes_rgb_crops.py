@@ -37,10 +37,22 @@ pinhole/OpenCV (+z forward, +y down), hence the ``[1,-1,-1]`` flip. Getting
 that wrong yields crops that look plausible and mean nothing, which is why
 it is asserted in tests instead of trusted.
 
-KNOWN LIMITATION, stated rather than hidden: no depth buffer is used, so an
-instance occluded by furniture can still score as visible. Depth
-(`lowres_depth`) was not downloaded. Visibility here means "projects into
-frame and in front of the camera", not "unoccluded".
+OCCLUSION
+---------
+Views are filtered by a MESH z-buffer: the reconstructed mesh is rasterised
+from the same pose, and an instance point counts as visible only if nothing
+else in the mesh sits measurably in front of it. Without this, an instance
+behind a wall still projects into frame and can win view selection, so a
+"failed" crop might simply show the far side of a wall.
+
+What this is NOT: sensor depth. The mesh IS what Mask3D segmented, so this
+faithfully reports "visible" for a geometrically wrong instance -- an
+overmerged plane passes cleanly while still being the wrong object. It is
+also blind to anything absent from the reconstruction (thin surfaces,
+objects the scan missed, temporary occluders). It answers "should this be
+visible given the reconstruction", which is enough to screen views, and it
+is not evidence that reconstructed depth equals recorded depth. If crops
+still select hidden targets, `lowres_depth` becomes justified.
 """
 from __future__ import annotations
 
@@ -66,6 +78,24 @@ CONTEXT_PAD = 0.6
 MIN_CROP_PX = 24
 # Minimum instance points landing in frame for a view to count.
 MIN_VISIBLE_POINTS = 12
+# Every Nth mesh vertex forms the occlusion z-buffer. The buffer only has to
+# decide "is another surface in front of this point", which does not need
+# full density, and the full 1M-vertex mesh per candidate frame would
+# dominate runtime.
+ZBUF_STRIDE = 4
+# A point is occluded when the z-buffer at its pixel is closer than the point
+# by more than this, in metres. Loose enough to tolerate the gaps a sparse
+# point rasterisation leaves, tight enough to catch a wall in between.
+DEPTH_TOLERANCE_M = 0.12
+# Frames re-checked with the z-buffer, taken from the cheap in-frame ranking.
+# Rasterising all ~1900 frames per instance would be wasteful when only the
+# best few can win.
+VERIFY_TOP_K = 30
+# Fraction of an instance's in-frame points that must survive occlusion.
+MIN_VISIBLE_FRACTION = 0.25
+# How far outside the target mask is dimmed in the marked arm: 1.0 keeps the
+# surroundings untouched, 0.0 blacks them out.
+CONTEXT_DIM = 0.45
 
 
 def angle_axis_to_matrix(a: np.ndarray) -> np.ndarray:
@@ -76,6 +106,22 @@ def angle_axis_to_matrix(a: np.ndarray) -> np.ndarray:
     k = np.asarray(a, dtype=np.float64) / theta
     K = np.array([[0.0, -k[2], k[1]], [k[2], 0.0, -k[0]], [-k[1], k[0], 0.0]])
     return np.eye(3) + math.sin(theta) * K + (1.0 - math.cos(theta)) * (K @ K)
+
+
+def _grow_to_min(box, width: int, height: int):
+    """Expand a box about its centre to at least MIN_CROP_PX, inside bounds."""
+    u0, v0, u1, v1 = box
+    if width < MIN_CROP_PX or height < MIN_CROP_PX:
+        return None
+    if u1 - u0 < MIN_CROP_PX:
+        c = (u0 + u1) / 2.0
+        u0 = int(max(0, min(width - MIN_CROP_PX, round(c - MIN_CROP_PX / 2))))
+        u1 = u0 + MIN_CROP_PX
+    if v1 - v0 < MIN_CROP_PX:
+        c = (v0 + v1) / 2.0
+        v0 = int(max(0, min(height - MIN_CROP_PX, round(c - MIN_CROP_PX / 2))))
+        v1 = v0 + MIN_CROP_PX
+    return (u0, v0, u1, v1)
 
 
 @dataclass(frozen=True)
@@ -161,6 +207,7 @@ class RgbCropSource:
     def __init__(self, scene_dir: Path, xyz_canonical: np.ndarray,
                  R: np.ndarray, *, stride: int = 6,
                  n_views: int = 3, context_pad: float = CONTEXT_PAD,
+                 occlusion: bool = True, mark_target: bool = False,
                  rng_seed: int = 0):
         self.scene_dir = Path(scene_dir)
         self.xyz_world = np.asarray(xyz_canonical, dtype=np.float64) @ np.asarray(R)
@@ -169,7 +216,54 @@ class RgbCropSource:
             raise ValueError(f"no usable posed frames under {scene_dir}")
         self.n_views = int(n_views)
         self.context_pad = float(context_pad)
+        self.occlusion = bool(occlusion)
+        self.mark_target = bool(mark_target)
         self._rng = np.random.default_rng(rng_seed)
+        # z-buffers are per FRAME, not per instance, and instances compete for
+        # the same good viewpoints, so caching across instances pays for
+        # itself immediately.
+        self._zbuf: dict[int, np.ndarray] = {}
+        self._zsrc = self.xyz_world[::ZBUF_STRIDE]
+
+    def zbuffer(self, frame_index: int) -> np.ndarray:
+        """Nearest mesh depth per pixel; +inf where the mesh does not cover."""
+        cached = self._zbuf.get(frame_index)
+        if cached is not None:
+            return cached
+        f = self.frames[frame_index]
+        cam = (f.R_wc @ self._zsrc.T).T + f.t_wc
+        cam = cam * np.array([1.0, -1.0, -1.0])
+        z = cam[:, 2]
+        ok = z > 1e-6
+        u = (f.fx * cam[ok, 0] / z[ok] + f.cx).astype(np.int32)
+        v = (f.fy * cam[ok, 1] / z[ok] + f.cy).astype(np.int32)
+        d = z[ok]
+        m = (u >= 0) & (u < f.width) & (v >= 0) & (v < f.height)
+        buf = np.full((f.height, f.width), np.inf)
+        # np.minimum.at is the correct reduction for colliding indices; a
+        # plain assignment would keep whichever point happened to be last.
+        np.minimum.at(buf, (v[m], u[m]), d[m])
+        self._zbuf[frame_index] = buf
+        return buf
+
+    def visible_counts(self, points_world: np.ndarray,
+                       frame_index: int) -> tuple[int, int]:
+        """(n_in_frame, n_unoccluded) for one frame."""
+        f = self.frames[frame_index]
+        uv, inb = project(points_world, f)
+        n_in = int(inb.sum())
+        if n_in == 0:
+            return 0, 0
+        if not self.occlusion:
+            return n_in, n_in
+        cam = (f.R_wc @ points_world.T).T + f.t_wc
+        depth = (cam * np.array([1.0, -1.0, -1.0]))[:, 2]
+        buf = self.zbuffer(frame_index)
+        u = uv[inb, 0].astype(np.int32)
+        v = uv[inb, 1].astype(np.int32)
+        front = buf[v, u]
+        # visible when nothing sits measurably in front of the point
+        return n_in, int((depth[inb] <= front + DEPTH_TOLERANCE_M).sum())
 
     def _sample(self, vertex_idx: np.ndarray) -> np.ndarray:
         if len(vertex_idx) <= SCORE_SAMPLE:
@@ -178,7 +272,12 @@ class RgbCropSource:
         return vertex_idx[::step][:SCORE_SAMPLE]
 
     def score_frames(self, vertex_idx: np.ndarray) -> list[tuple[int, int]]:
-        """[(frame_index, n_visible)] sorted best-first. Deterministic."""
+        """[(frame_index, n_in_frame)] best-first, BEFORE occlusion.
+
+        Cheap pre-ranking only: rasterising a z-buffer for every one of ~1900
+        frames per instance would dominate runtime when only a handful can
+        win. Occlusion is applied to the top of this list by `ranked_views`.
+        """
         pts = self.xyz_world[self._sample(np.asarray(vertex_idx))]
         scored = []
         for i, f in enumerate(self.frames):
@@ -189,12 +288,55 @@ class RgbCropSource:
         scored.sort(key=lambda r: (-r[1], r[0]))     # ties -> earliest frame
         return scored
 
-    def crops_for(self, vertex_idx: np.ndarray) -> list[Image.Image]:
-        """Up to `n_views` context crops, best view first. May be empty."""
+    def ranked_views(self, vertex_idx: np.ndarray) -> list[tuple[int, int, float]]:
+        """[(frame_index, n_unoccluded, visible_fraction)] best-first."""
+        pts = self.xyz_world[self._sample(np.asarray(vertex_idx))]
+        out = []
+        for fi, _n in self.score_frames(vertex_idx)[:VERIFY_TOP_K]:
+            n_in, n_vis = self.visible_counts(pts, fi)
+            frac = (n_vis / n_in) if n_in else 0.0
+            if n_vis >= MIN_VISIBLE_POINTS and frac >= MIN_VISIBLE_FRACTION:
+                out.append((fi, n_vis, frac))
+        out.sort(key=lambda r: (-r[1], r[0]))
+        return out
+
+    def _mark(self, img: Image.Image, box, uv_vis: np.ndarray) -> Image.Image:
+        """Dim everything outside the target's projected pixels.
+
+        Padding alone cannot say WHICH object is being asked about: a wide
+        crop of a doorway reads as a kitchen. This keeps the surroundings
+        legible while making the subject unambiguous.
+        """
+        arr = np.asarray(img, dtype=np.float32)
+        keep = np.zeros(arr.shape[:2], dtype=bool)
+        u = np.clip(uv_vis[:, 0].astype(int) - box[0], 0, arr.shape[1] - 1)
+        v = np.clip(uv_vis[:, 1].astype(int) - box[1], 0, arr.shape[0] - 1)
+        keep[v, u] = True
+        # dilate so a sparse point set reads as a region, not confetti
+        for _ in range(3):
+            k = keep.copy()
+            k[1:, :] |= keep[:-1, :]; k[:-1, :] |= keep[1:, :]
+            k[:, 1:] |= keep[:, :-1]; k[:, :-1] |= keep[:, 1:]
+            keep = k
+        arr[~keep] *= CONTEXT_DIM
+        return Image.fromarray(arr.clip(0, 255).astype(np.uint8))
+
+    def crop_boxes(self, vertex_idx: np.ndarray) -> list[tuple[int, tuple, np.ndarray]]:
+        """[(frame_index, box, uv_in_frame)] that survive EVERY filter.
+
+        `coverage` and `crops_for` both go through this, so a view can never
+        be counted as available and then rejected at crop time -- which is
+        exactly what happened when they applied different filters.
+        """
         vertex_idx = np.asarray(vertex_idx)
-        pts_all = self.xyz_world[self._sample(vertex_idx)]
-        out: list[Image.Image] = []
-        for fi, _n in self.score_frames(vertex_idx):
+        # FULL vertex set here, not the scoring sample. The sample is fine for
+        # ranking views, but using it for the crop box and the target mask
+        # produced a scatter of ~400 speckles instead of a filled region --
+        # the marked arm was then testing "dimmed photo with confetti on it",
+        # which is not the experiment.
+        pts_all = self.xyz_world[vertex_idx]
+        out = []
+        for fi, _n, _frac in self.ranked_views(vertex_idx):
             f = self.frames[fi]
             uv, inb = project(pts_all, f)
             if not inb.any():
@@ -206,9 +348,40 @@ class RgbCropSource:
                    max(0, int(math.floor(v0 - ph))),
                    min(f.width, int(math.ceil(u1 + pw))),
                    min(f.height, int(math.ceil(v1 + ph))))
-            if box[2] - box[0] < MIN_CROP_PX or box[3] - box[1] < MIN_CROP_PX:
+            # A small target gets its box GROWN to the minimum rather than
+            # discarded. Discarding silently removed whole instances from the
+            # RGB arms, which would have made the comparison unpaired -- and
+            # a distant object is exactly the case the experiment needs to
+            # keep, not drop.
+            box = _grow_to_min(box, f.width, f.height)
+            if box is None:
                 continue
-            out.append(Image.open(f.png).convert("RGB").crop(box))
+            out.append((fi, box, uv[inb]))
             if len(out) >= self.n_views:
                 break
         return out
+
+    def crops_for(self, vertex_idx: np.ndarray) -> list[Image.Image]:
+        """Up to `n_views` crops, best view first. May be empty."""
+        images = []
+        for fi, box, uv_vis in self.crop_boxes(vertex_idx):
+            img = Image.open(self.frames[fi].png).convert("RGB").crop(box)
+            if self.mark_target:
+                img = self._mark(img, box, uv_vis)
+            images.append(img)
+        return images
+
+    def coverage(self, vertex_idx: np.ndarray) -> dict:
+        """Per-instance CROP availability -- what labeling will actually get."""
+        views = self.ranked_views(vertex_idx)
+        boxes = self.crop_boxes(vertex_idx)
+        return {
+            "n_views_available": len(views),
+            "n_crops": len(boxes),
+            "has_full_views": len(boxes) >= self.n_views,
+            "has_any_crop": bool(boxes),
+            "best_visible_points": int(views[0][1]) if views else 0,
+            "best_visible_fraction": round(float(views[0][2]), 4) if views else 0.0,
+            "smallest_crop_px": (min(min(b[2] - b[0], b[3] - b[1]) for _, b, _ in boxes)
+                                 if boxes else 0),
+        }

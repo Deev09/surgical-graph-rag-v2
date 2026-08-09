@@ -106,6 +106,17 @@ class ImageLabeler(Protocol):
     def classify(self, images, vocabulary: list[str]) -> list[dict]: ...
 
 
+class ImageSource(Protocol):
+    """Produce the images an instance is classified from.
+
+    Called with the instance's vertex indices and returns the views, best
+    first. Returning an empty sequence is an error the caller must handle,
+    not a licence to substitute a different image origin.
+    """
+
+    def __call__(self, vertex_indices): ...
+
+
 def _instance_id(source_instance_ref: str) -> int:
     prefix = "segmenter:"
     if not source_instance_ref.startswith(prefix):
@@ -151,6 +162,7 @@ def _content_hash(
     config: LearnedLabelConfig,
     predictions: list[dict],
     weights_sha256: str | None,
+    image_source_name: str,
 ) -> str:
     payload = json.dumps({
         "label_stage": LABEL_STAGE_NAME,
@@ -158,6 +170,7 @@ def _content_hash(
         "source_bundle_hash": source_bundle_hash,
         "segmentation_output_sha256": segmentation_hash,
         "model": MODEL_NAME,
+        "image_source": image_source_name,
         "pretrained": PRETRAINED,
         "prompts": list(PROMPTS),
         "weights_sha256": weights_sha256,
@@ -176,11 +189,21 @@ def attach_learned_labels(
     segmentation_dir: Path | None = None,
     config: LearnedLabelConfig = LearnedLabelConfig(),
     labeler: ImageLabeler | None = None,
+    image_source: "ImageSource | None" = None,
+    image_source_name: str = "instance_point_splat_3view",
 ) -> EntityArtifacts:
     """Return a copy of ``anonymous`` carrying learned top-k hypotheses.
 
     ``labeler`` is injectable for deterministic unit tests.  Production calls
     omit it and use the pinned CPU ``ClipLabeler``.
+
+    ``image_source`` replaces WHAT the labeler looks at, leaving the model,
+    vocabulary, top-k and admission threshold alone.  The default is the
+    original three isolated point-splat renders.  Passing a source that
+    returns real capture-RGB crops makes image origin the single variable in
+    a paired comparison -- see ``extractors/arkitscenes_rgb_crops.py`` for
+    why that is the interesting variable.  ``image_source_name`` is recorded
+    on every hypothesis so two arms can never be mistaken for one another.
     """
     if anonymous.scene_id != representation.scene_id:
         raise ValueError(
@@ -232,6 +255,8 @@ def attach_learned_labels(
     source = f"openclip:{MODEL_NAME}/{PRETRAINED}"
     entities = []
     prediction_records: list[dict] = []
+    # instances the image source could not supply any view for
+    without_views: list[int] = []
     n_promoted = 0
     for entity in anonymous.entities:
         instance_id = _instance_id(entity.identity.source_instance_ref)
@@ -249,9 +274,20 @@ def attach_learned_labels(
         if not points.any():
             raise ValueError(
                 f"entity {entity.identity.object_uid} has no assigned vertices")
-        views = render_views(xyz[points], rgb[points])
+        if image_source is None:
+            images = list(render_views(xyz[points], rgb[points]).values())
+        else:
+            images = list(image_source(np.flatnonzero(points)))
+            if not images:
+                # Never fall back to splats: that would mix two image origins
+                # inside one bundle and the comparison would be meaningless.
+                # The instance stays ANONYMOUS and is recorded, so a coverage
+                # gap is visible in the artifact rather than absorbed.
+                without_views.append(instance_id)
+                entities.append(entity)
+                continue
         ranking = active_labeler.classify(
-            list(views.values()), list(GLOBAL_INDOOR_VOCABULARY_V1))
+            list(images), list(GLOBAL_INDOOR_VOCABULARY_V1))
         _validate_ranking(ranking, GLOBAL_INDOOR_VOCABULARY_V1)
         if len(ranking) < config.top_k:
             raise ValueError(
@@ -306,7 +342,14 @@ def attach_learned_labels(
         "label_stage": {
             "name": LABEL_STAGE_NAME,
             "version": LABEL_STAGE_VERSION,
+            # Instances the image source could supply no view for. They stay
+            # anonymous. Recorded so a coverage gap is a visible property of
+            # the artifact instead of an invisible difference between arms.
+            "instances_without_views": sorted(without_views),
             "model": MODEL_NAME,
+            # Which images the model actually saw. Two arms differing only
+            # here must never hash or read as the same bundle.
+            "image_source": image_source_name,
             "pretrained": PRETRAINED,
             "weights_sha256": weights_sha256,
             "prompts": list(PROMPTS),
@@ -330,6 +373,7 @@ def attach_learned_labels(
             config,
             prediction_records,
             weights_sha256,
+            image_source_name,
         ),
         extractor_name=f"{anonymous.extractor_name}+{LABEL_STAGE_NAME}",
         extractor_version=(
