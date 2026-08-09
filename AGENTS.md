@@ -1,4 +1,46 @@
-# Project Overview
+# Active Objective — Read This First
+
+The historical rules below remain useful for comparability, but their
+`graffiti_bathroom` baseline description is no longer the active development
+target.
+
+Current development target:
+
+- branch: `codex/arkit-vertical-slice`
+- base commit: `be668c3`
+- source dataset for the active slice: ARKitScenes
+- source perception backend: frozen Mask3D bundle
+- required outcome: an oracle-free mesh -> delivered entities -> graph ->
+  inspectable answer vertical slice
+- authoritative execution contract:
+  `docs/arkit_vertical_slice_72h.md`
+
+Before proposing or editing anything, read the execution contract and inspect
+the current branch. Its scope and definition of done take precedence over a
+new experiment idea.
+
+Active workflow rules:
+
+1. Integration comes before another isolated experiment or protocol.
+2. Do not tune P1/SAM, repair pooled selection, add dynamics, or expand the
+   benchmark while the vertical slice is incomplete.
+3. The deployable lane must not read annotations, human keys, oracle labels,
+   oracle boxes, or oracle structural surfaces.
+4. `end-to-end` means mesh to final answer. Use `proposal ceiling`,
+   `delivered instances`, and `relation evaluation` for narrower results.
+5. Development candidates are not frozen. Freeze only an accepted comparison
+   baseline or a result being publicly claimed.
+6. Human feedback must become relation training/calibration data after the
+   slice runs; do not use it only to produce another scorecard.
+7. When multiple assistants are involved, use isolated worktrees and
+   file-bounded tasks. One integration branch owns the outcome.
+8. Every handoff states: commit, dirty/clean state, files changed, commands
+   run, measured result, remaining blocker, and any oracle dependency.
+9. Do not silently describe the current AABB plan/elevation inspector as a 3D
+   mesh inspector.
+10. Do not replace the active objective without explicit owner authorization.
+
+# Historical Project Overview
 This repository implements a coarse spatial scene-graph pruning / retrieval pipeline over a real captured scene.
 
 Current baseline:

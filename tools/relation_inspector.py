@@ -2,6 +2,9 @@
 
   python3 tools/relation_inspector.py                     # replica_room_2
   python3 tools/relation_inspector.py --scene replica_room_1
+  python3 tools/relation_inspector.py --entity-bundle runs/entities/scene
+  python3 tools/relation_inspector.py --graph-bundle runs/graph/scene \
+      --diagnostics runs/graph/scene/diagnostics.json
 
 Writes ONE self-contained HTML file (default
 `runs/inspector/<scene>_inspector.html`): no CDN, no external requests, no
@@ -23,9 +26,11 @@ recompute pass/fail. A rejection carries the failing predicate by name in
 names would invent semantics the extractors never promised, and would be
 wrong silently.
 
-Everything shown comes from `graph.builder.build_graph` and
-`reasoner.router.Router` — the same objects the scorecard scores, built the
-same way, so the inspector cannot show a scene the evaluation never saw.
+Everything shown comes from a `SceneGraphBundle` and its `BuildDiagnostics`.
+The Replica default and `--entity-bundle` modes produce those through
+`graph.builder.build_graph`; `--graph-bundle` loads the exact serialized
+objects that another dataset-neutral pipeline produced.  The inspector never
+re-derives geometry or relation verdicts.
 """
 from __future__ import annotations
 
@@ -172,6 +177,65 @@ def render(data: dict) -> str:
     title = f"Relation Inspector — {data['scene_id']}"
     return _TEMPLATE.replace("__TITLE__", html.escape(title)).replace(
         "__DATA__", blob.replace("</", "<\\/"))
+
+
+def _bundle_dir(path: Path) -> Path:
+    """Accept either a serialized bundle directory or its manifest path."""
+    return path.parent if path.name == "manifest.json" else path
+
+
+def load_entity_graph(path: Path):
+    """Load serialized EntityArtifacts and build the standard inspector graph.
+
+    This is the dataset-neutral equivalent of the Replica import path.  The
+    relation runs and density policy intentionally match the existing default.
+    """
+    from demo.question_battery import _runs
+    from extractors.serde import load_entity_artifacts
+    from graph.builder import build_graph
+
+    arts = load_entity_artifacts(_bundle_dir(path))
+    bundle, diag = build_graph(
+        arts, _runs(), density_policy="phase2_telemetry_only",
+    )
+    return arts.scene_id, bundle, diag
+
+
+def load_serialized_graph(path: Path, diagnostics_path: Path):
+    """Load an already-built graph and its exact build diagnostics.
+
+    Diagnostics are deliberately required.  Inventing an empty diagnostics
+    object would make the inspector claim that zero candidates were rejected
+    when the real state is merely unknown.
+    """
+    from graph.serde import load_build_diagnostics, load_scene_graph_bundle
+
+    bundle = load_scene_graph_bundle(_bundle_dir(path))
+    diag = load_build_diagnostics(diagnostics_path)
+    return bundle.scene_id, bundle, diag
+
+
+def write_inspector(
+    scene_id: str,
+    bundle,
+    diag,
+    out: Path,
+    *,
+    questions: list[dict] | None = None,
+) -> dict:
+    """Write one inspector from in-memory graph objects and return its payload.
+
+    External pipelines can use this seam directly without pretending their
+    input is Replica.  If `questions` is omitted, a committed MVP battery is
+    used when one exists for the scene; otherwise the question panel is empty.
+    """
+    inspected_questions = (
+        run_questions(scene_id, bundle) if questions is None else questions
+    )
+    data = payload(scene_id, bundle, diag, inspected_questions)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(render(data), encoding="utf-8")
+    return data
 
 
 _TEMPLATE = r"""<!doctype html>
@@ -501,33 +565,60 @@ render();
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("--scene", default="replica_room_2",
+    ap.add_argument("--scene", default=None,
                     choices=sorted(SCENE_ROOMS))
+    source = ap.add_mutually_exclusive_group()
+    source.add_argument(
+        "--entity-bundle", type=Path,
+        help="serialized EntityArtifacts directory (or its manifest.json)",
+    )
+    source.add_argument(
+        "--graph-bundle", type=Path,
+        help="serialized SceneGraphBundle directory (or its manifest.json)",
+    )
+    ap.add_argument(
+        "--diagnostics", type=Path,
+        help="BuildDiagnostics JSON required with --graph-bundle",
+    )
     ap.add_argument("--out", type=Path, default=None)
     args = ap.parse_args(argv)
 
-    from demo.question_battery import _runs
-    from demo.replica_habitat_import import import_habitat_room
-    from graph.builder import build_graph
+    if args.scene is not None and (args.entity_bundle or args.graph_bundle):
+        ap.error("--scene cannot be combined with a serialized bundle input")
+    if args.graph_bundle is not None and args.diagnostics is None:
+        ap.error("--diagnostics is required with --graph-bundle")
+    if args.graph_bundle is None and args.diagnostics is not None:
+        ap.error("--diagnostics is only valid with --graph-bundle")
 
-    room_dir = _room_dir(args.scene)
-    if not room_dir.is_dir():
-        print(f"scene data not found: {room_dir}")
-        return 1
-    arts = import_habitat_room(room_dir, args.scene)
-    bundle, diag = build_graph(arts, _runs(),
-                               density_policy="phase2_telemetry_only")
-    questions = run_questions(args.scene, bundle)
-    data = payload(args.scene, bundle, diag, questions)
+    if args.entity_bundle is not None:
+        scene_id, bundle, diag = load_entity_graph(args.entity_bundle)
+    elif args.graph_bundle is not None:
+        scene_id, bundle, diag = load_serialized_graph(
+            args.graph_bundle, args.diagnostics,
+        )
+    else:
+        from demo.question_battery import _runs
+        from demo.replica_habitat_import import import_habitat_room
+        from graph.builder import build_graph
 
-    out = args.out or (DEFAULT_OUT / f"{args.scene}_inspector.html")
-    out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(render(data), encoding="utf-8")
+        scene_id = args.scene or "replica_room_2"
+        room_dir = _room_dir(scene_id)
+        if not room_dir.is_dir():
+            print(f"scene data not found: {room_dir}")
+            return 1
+        arts = import_habitat_room(room_dir, scene_id)
+        bundle, diag = build_graph(
+            arts, _runs(), density_policy="phase2_telemetry_only",
+        )
+
+    out = args.out or (DEFAULT_OUT / f"{scene_id}_inspector.html")
+    data = write_inspector(scene_id, bundle, diag, out)
+    questions = data["questions"]
 
     outcomes: dict[str, int] = {}
     for q in questions:
         outcomes[q["outcome"]] = outcomes.get(q["outcome"], 0) + 1
-    print(f"{args.scene}: {len(data['nodes'])} entities, "
+    print(f"{scene_id}: {len(data['nodes'])} entities, "
           f"{len(data['edges'])} edges, "
           f"{data['rejections_sampled']} sampled rejections")
     print(f"  edges by type : "

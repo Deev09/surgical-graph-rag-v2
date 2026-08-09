@@ -14,14 +14,18 @@ from __future__ import annotations
 
 import json
 import sys
+import tempfile
 import traceback
 from pathlib import Path
+
+import numpy as np
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from tools import arkitscenes_mask3d_eval as M
+from segmenter.base import SegmentationOutput, save_segmentation_output
 
 NB = REPO_ROOT / "notebooks" / "c1_mask3d_colab.ipynb"
 CONTRACT = REPO_ROOT / "docs" / "arkitscenes_mask3d_contract.md"
@@ -170,6 +174,100 @@ def test_evaluator_never_reads_annotations_itself() -> None:
                 f"tools.arkitscenes_eval.load_oracle_entities")
 
 
+def test_delivered_partition_loads_exact_saved_assignment() -> None:
+    """The delivered check must not re-resolve, filter, or renumber masks."""
+    assignment = np.asarray([-1, 7, 7, 3, 3, 3, -1], dtype=np.int64)
+    seg = SegmentationOutput(
+        input_mesh_sha256="abc", n_vertices=len(assignment),
+        segmenter_name="synthetic", segmenter_version="1",
+        config_params_json=json.dumps({"min_score": 0.4,
+                                       "min_vertices": 2}),
+        vertex_instance_ids=assignment,
+        instance_confidence={3: 0.9, 7: 0.8},
+    ).finalize()
+    with tempfile.TemporaryDirectory() as d:
+        save_segmentation_output(seg, Path(d))
+        proposals, ids, provenance = M.load_delivered_partition(
+            Path(d), len(assignment), "abc")
+    if ids != [3, 7]:
+        raise AssertionError(f"instance ids were renumbered: {ids}")
+    if [p.tolist() for p in proposals] != [[3, 4, 5], [1, 2]]:
+        raise AssertionError(f"assignment was changed: {proposals}")
+    if provenance["resolve_config"] != {"min_score": 0.4,
+                                         "min_vertices": 2}:
+        raise AssertionError(f"artifact config lost: {provenance}")
+
+
+def test_delivered_partition_reports_effective_local_reresolve() -> None:
+    """A local operating-point artifact must not report the Colab cutoff."""
+    assignment = np.asarray([-1, 7, 7, 3, 3, 3, -1], dtype=np.int64)
+    seg = SegmentationOutput(
+        input_mesh_sha256="abc", n_vertices=len(assignment),
+        segmenter_name="synthetic", segmenter_version="1",
+        config_params_json=json.dumps({
+            "min_score": 0.4,
+            "min_vertices": 2,
+            "reresolved_locally": {
+                "min_score": 0.2,
+                "min_vertices": 2,
+                "source_bundle_output_sha256": "source",
+            },
+        }),
+        vertex_instance_ids=assignment,
+        instance_confidence={3: 0.9, 7: 0.8},
+    ).finalize()
+    with tempfile.TemporaryDirectory() as d:
+        save_segmentation_output(seg, Path(d))
+        _proposals, _ids, provenance = M.load_delivered_partition(
+            Path(d), len(assignment), "abc")
+    if provenance["resolve_config"] != {"min_score": 0.2,
+                                         "min_vertices": 2}:
+        raise AssertionError(f"effective local config lost: {provenance}")
+    if provenance["original_resolve_config"]["min_score"] != 0.4:
+        raise AssertionError(f"original config lost: {provenance}")
+    if provenance["reresolved_locally"] is not True:
+        raise AssertionError(f"local re-resolution not disclosed: {provenance}")
+
+
+def test_delivered_report_is_comparable_to_proposal_ceiling() -> None:
+    proposals = [np.asarray([0, 1]), np.asarray([2, 3]),
+                 np.asarray([6])]
+    # instances 10 and 11 are perfect for the two entities; 12 is junk.
+    ious = np.asarray([[1.0, 0.0], [0.0, 1.0], [0.0, 0.0]])
+    report = M.delivered_partition_report(
+        proposals, [10, 11, 12], ious, n_vertices=10,
+        provenance={"n_instances": 3, "unassigned_vertex_rate": 0.5},
+        proposal_ceiling={"0.10": 2, "0.25": 2, "0.50": 2})
+    if report["entity_recovery"] != {"0.10": 2, "0.25": 2, "0.50": 2}:
+        raise AssertionError(f"wrong delivered recovery: {report}")
+    if report["ceiling_retention"]["0.50"] != 1.0:
+        raise AssertionError(f"wrong ceiling retention: {report}")
+    if report["matched_instances"]["0.50"] != 2:
+        raise AssertionError(f"wrong matched-instance count: {report}")
+    if report["oracle_matched_instance_rate"]["0.50"] != round(2 / 3, 4):
+        raise AssertionError(f"wrong oracle-matched rate: {report}")
+    if report["zero_overlap_rate"] != round(1 / 3, 4):
+        raise AssertionError(f"wrong junk rate: {report}")
+
+
+def test_per_entity_delivery_identifies_resolution_loss() -> None:
+    class Entity:
+        def __init__(self, uid, label):
+            self.uid, self.label = uid, label
+    entities = [Entity("a", "chair"), Entity("b", "cabinet")]
+    rows = M.per_entity_delivery(
+        entities,
+        proposal_ious=np.asarray([[0.8, 0.0], [0.0, 0.7]]),
+        delivered_ious=np.asarray([[0.75, 0.0], [0.0, 0.4]]),
+        delivered_ids=[4, 9])
+    if rows[0]["lost_in_resolution_at_050"]:
+        raise AssertionError(f"surviving entity marked lost: {rows[0]}")
+    if not rows[1]["lost_in_resolution_at_050"]:
+        raise AssertionError(f"lost entity was not identified: {rows[1]}")
+    if rows[1]["best_delivered_instance_id"] != 9:
+        raise AssertionError(f"wrong best instance attribution: {rows[1]}")
+
+
 TESTS = [
     test_gates_match_the_approved_contract,
     test_resolve_config_is_the_replica_operating_point,
@@ -181,6 +279,10 @@ TESTS = [
     test_report_is_written_beside_its_bundle,
     test_contract_doc_exists_and_states_the_gates,
     test_evaluator_never_reads_annotations_itself,
+    test_delivered_partition_loads_exact_saved_assignment,
+    test_delivered_partition_reports_effective_local_reresolve,
+    test_delivered_report_is_comparable_to_proposal_ceiling,
+    test_per_entity_delivery_identifies_resolution_loss,
 ]
 
 

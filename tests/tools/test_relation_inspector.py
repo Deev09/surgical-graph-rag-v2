@@ -13,6 +13,7 @@ from __future__ import annotations
 import json
 import re
 import sys
+import tempfile
 import traceback
 from pathlib import Path
 
@@ -128,6 +129,75 @@ def test_closing_script_tag_in_data_is_escaped() -> None:
         raise AssertionError("expected the escaped form in the payload")
 
 
+def test_serialized_graph_input_is_dataset_neutral() -> None:
+    """A non-Replica graph can drive the complete CLI without an importer."""
+    from graph.serde import dump_build_diagnostics, dump_scene_graph_bundle
+    from tests.schema.test_round_trip import (
+        make_build_diagnostics, make_scene_graph_bundle,
+    )
+
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        graph_dir = root / "graph"
+        diagnostics = root / "diagnostics.json"
+        out = root / "inspector.html"
+        dump_scene_graph_bundle(make_scene_graph_bundle(), graph_dir)
+        dump_build_diagnostics(make_build_diagnostics(), diagnostics)
+
+        rc = RI.main([
+            "--graph-bundle", str(graph_dir / "manifest.json"),
+            "--diagnostics", str(diagnostics),
+            "--out", str(out),
+        ])
+        if rc != 0 or not out.is_file():
+            raise AssertionError("serialized graph CLI did not write an inspector")
+        page = out.read_text(encoding="utf-8")
+        if "scene_test" not in page or "obj_1" not in page or "e1" not in page:
+            raise AssertionError("serialized graph identity was lost in the inspector")
+        if "replica_room" in page:
+            raise AssertionError("serialized graph path leaked a Replica scene")
+
+
+def test_serialized_entity_input_uses_standard_graph_builder() -> None:
+    """EntityArtifacts can enter after import and retain their scene identity."""
+    from extractors.serde import dump_entity_artifacts
+    from tests.schema.test_round_trip import make_entity_artifacts
+
+    with tempfile.TemporaryDirectory() as td:
+        bundle_dir = Path(td) / "entities"
+        dump_entity_artifacts(make_entity_artifacts(), bundle_dir)
+        scene_id, graph, diag = RI.load_entity_graph(
+            bundle_dir / "manifest.json",
+        )
+        if scene_id != "scene_test" or graph.scene_id != scene_id:
+            raise AssertionError("serialized entity scene identity was not retained")
+        if [n.id for n in graph.nodes] != ["obj_1", "obj_2"]:
+            raise AssertionError("serialized entities did not reach GraphBuilder")
+        if diag.density_policy != "phase2_telemetry_only":
+            raise AssertionError("inspector changed its standard density policy")
+
+
+def test_default_replica_cli_matches_direct_legacy_path() -> None:
+    """The new input seams must not change the no-argument Replica artifact."""
+    if not _dataset_ready():
+        print("  SKIP (Replica not present)")
+        return
+    bundle, diag = _build()
+    expected = RI.render(RI.payload(
+        SCENE, bundle, diag, RI.run_questions(SCENE, bundle),
+    ))
+    with tempfile.TemporaryDirectory() as td:
+        out = Path(td) / "default.html"
+        rc = RI.main(["--out", str(out)])
+        if rc != 0:
+            raise AssertionError("default Replica CLI failed")
+        actual = out.read_text(encoding="utf-8")
+    if actual != expected:
+        raise AssertionError(
+            "dataset-neutral input support changed default Replica bytes"
+        )
+
+
 TESTS = [
     test_template_makes_no_external_requests,
     test_template_has_no_stray_font_size_in_user_units,
@@ -135,6 +205,9 @@ TESTS = [
     test_render_is_deterministic_and_embeds_the_payload,
     test_payload_is_json_serialisable_without_loss,
     test_closing_script_tag_in_data_is_escaped,
+    test_serialized_graph_input_is_dataset_neutral,
+    test_serialized_entity_input_uses_standard_graph_builder,
+    test_default_replica_cli_matches_direct_legacy_path,
 ]
 
 
