@@ -1,12 +1,21 @@
-"""End-to-end QA: does better naming produce better mesh-to-answer results?
+"""End-to-end GRAPH-CONSISTENCY QA: does naming make the graph askable?
 
   python3 tools/arkitscenes_e2e_qa_ab.py
 
 Matched-instance label accuracy improved sharply with real capture-RGB crops
 (`docs/arkitscenes_rgb_label_results.md`). That is a COMPONENT result. This
-asks the product question: given the same geometry and the same relation
-graph, does the Router answer more questions correctly when the entities are
-named from photographs instead of point splats?
+asks the integration question: given the same geometry and the same relation
+graph, does the Router answer more questions when the entities are named from
+photographs instead of point splats?
+
+SCOPE OF THE CLAIM. This is graph-consistency QA, NOT human-ground-truth
+spatial QA. Citations are scored against the NEAR-neighbour set computed on
+the SAME graph both arms use, so the metric measures anchor resolution and
+faithful neighbour return -- nothing more. If the graph is wrong about what
+is near what (missing instance, overmerged plane, misplaced geometry) both
+arms are scored against the same wrong neighbourhood and this cannot detect
+it. A human-ground-truth answer key, built from annotations independently of
+the graph, does not exist yet and is what the repair arm will need.
 
 Only the label stage differs. Both arms load already-finalized
 `EntityArtifacts` produced by `tools/arkitscenes_label_image_ab.py`, build the

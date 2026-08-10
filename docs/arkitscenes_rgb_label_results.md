@@ -116,12 +116,22 @@ validate the geometry that produced them.** Only an independent instrument
 
 ---
 
-# End-to-end QA — does better naming produce better answers?
+# End-to-end GRAPH-CONSISTENCY QA — does better naming produce better answers?
+
+**This is graph-consistency QA, not human-ground-truth spatial QA.** A
+citation is scored against the NEAR-neighbour set computed on the SAME graph
+both arms use. It therefore measures one thing: did the arm resolve the
+anchor and return the graph's own neighbours. If the graph is itself wrong
+about what is near what — because an instance is missing, overmerged or
+misplaced — this metric cannot tell, and both arms would be scored against
+the same wrong neighbourhood. Human-ground-truth spatial QA would require an
+answer key built from the annotations independently of the graph, which does
+not exist yet.
 
     python3 tools/arkitscenes_e2e_qa_ab.py
 
 The table above is **matched-instance label accuracy**, a component result.
-This is the product question: same geometry, same relation graph, same
+This is the integration question: same geometry, same relation graph, same
 questions — only the label stage differs.
 
 Questions are **not** label-derived. The vertical slice's own
@@ -142,6 +152,10 @@ difference is anchor resolution, i.e. naming.
 | 41069042 | **rgb_tight** | 2/4 | 0.96 / 0.56 / **0.71** | 0.86 |
 
 Pooled abstentions **13/14 → 3/14**. Every metric improves on every scene.
+
+Read as: RGB naming makes the graph *askable* and returns the graph's own
+neighbours faithfully. It does not establish that those neighbours are the
+spatially correct answer for a human.
 
 The splat arm mostly cannot answer at all: with almost nothing named above
 the admission threshold, the compiler cannot resolve an anchor, so the

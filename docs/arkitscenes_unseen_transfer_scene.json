@@ -1,0 +1,16 @@
+{
+ "downloaded": false,
+ "excluded_already_seen": [
+  "41069021",
+  "41069025",
+  "41069042"
+ ],
+ "inspected": false,
+ "pool_sha256": "ce45f7809d76e0c63e7588b9ef6c75903e699e651de1acc75360c9468a552d7d",
+ "pool_size": 546,
+ "purpose": "repair-arm transfer test; must stay unseen until the repair arm is locked",
+ "reproduce": "random.Random(20260810).choice(sorted(Validation ids) minus the three used)",
+ "seed": 20260810,
+ "selected_video_id": "47331972",
+ "split": "Validation"
+}
