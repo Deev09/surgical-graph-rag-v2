@@ -179,6 +179,10 @@ def test_only_the_evaluator_reads_annotations() -> None:
         # detection-repair evaluator takes entities as an argument and never
         # opens a file, which is what that test pins.
         "tests/eval/test_detection_repair.py",
+        # And again: asserts that segmenter/rgb_multiview_repair.py does NOT
+        # contain the literal. The repair arm generates proposals and must
+        # stay annotation-free.
+        "tests/segmenter/test_rgb_multiview_repair.py",
     }
     offenders = []
     for p in sorted(REPO_ROOT.glob("**/*.py")):

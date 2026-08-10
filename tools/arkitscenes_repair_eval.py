@@ -156,11 +156,12 @@ def build_proposals(scene_dir: Path, bundle_dir: Path, out_dir: Path,
     if repair_path is not None:
         repair_props, repair_manifest = load_repair_bank(
             repair_path, n_vertices)
-        if repair_manifest.get("canonical_mesh_sha256") not in (None, mesh_sha):
+        built_against = repair_manifest.get("provenance", {}).get(
+            "canonical_mesh_sha256")
+        if built_against not in (None, mesh_sha):
             raise ValueError(
-                f"repair bank was built against mesh "
-                f"{repair_manifest['canonical_mesh_sha256'][:16]}…, this scene "
-                f"is {mesh_sha[:16]}…")
+                f"repair bank was built against mesh {built_against[:16]}…, "
+                f"this scene is {mesh_sha[:16]}…")
         repair = ProposalArtifact.finalize(
             "repair", repair_props, n_vertices,
             out_dir / "repair_bank.finalized.npz",

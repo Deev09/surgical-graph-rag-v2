@@ -82,7 +82,7 @@ Five stages. Everything downstream of stage 3 is existing frozen code.
    visibility-valid (enough of the frame is explained by the mesh), then
    greedily chosen for angular diversity of view direction.
 2. **2D masks** — Felzenszwalb graph-based segmentation on the real RGB frame.
-3. **Lifting** — per-pixel nearest-visible-vertex buffer built with the
+3. **Lifting** — front-surface visibility buffer built with the
    corrected OpenCV camera convention established in
    `extractors/arkitscenes_rgb_crops.py` (validated against sensor depth:
    2.5–4.1 cm median error, versus 37–98 cm for the invalidated axis flip).
@@ -105,9 +105,10 @@ Five stages. Everything downstream of stage 3 is existing frozen code.
 | constant | value | why |
 |---|---|---|
 | `FRAME_STRIDE` | 6 | 60 Hz capture; consecutive frames are the same viewpoint |
-| `N_FRAMES` | 24 | enough co-visibility for a 3-view consensus; fusion cost is ~0.1 s/view |
+| `N_FRAMES` | ~~24~~ → 128 | corrected pre-evaluation; see below |
+| `SURFACE_DEPTH_TOLERANCE_M` | 0.05 | added pre-evaluation; see below |
 | `MIN_MESH_COVERAGE` | 0.60 | rejects frames aimed at unreconstructed space |
-| `FELZ_SIGMA` / `FELZ_K` / `FELZ_MIN_SIZE` | 0.8 / 300 / 120 px | standard Felzenszwalb defaults at this resolution |
+| `FELZ_SIGMA` / `FELZ_K` / `FELZ_MIN_SIZE` | 0.8 / 40 / 60 px | see the calibration note below |
 | `MIN_CONSENSUS_VIEWS` | 3 | "multi-view" is the mechanism; 2 is a coincidence |
 | `ADDITIONAL_MAX_CONTAINMENT` | 0.50 | majority-unexplained ⇒ candidate missing object |
 | `SPLIT_MIN_CONTAINMENT` | 0.70 | mostly inside one parent ⇒ candidate piece |
@@ -117,7 +118,48 @@ Five stages. Everything downstream of stage 3 is existing frozen code.
 | `MAX_PROPOSAL_FRAC` | 0.15 | equals the giant-mask threshold |
 | `MAX_REPAIR_PROPOSALS` | 60 | keeps the pooled bank near 100 |
 
-Two of these deserve explicit caveats rather than credit:
+### Three changes made after Checkpoint A, all before any annotation was opened
+
+Recorded rather than quietly folded in. None was informed by a measured
+result: the arm emitted **zero** proposals until the first two were fixed, and
+no annotation had been read.
+
+**1. Lifting was wrong (bug).** The first implementation kept the single
+nearest vertex per pixel. This mesh has 1,008,964 vertices and a frame has
+49,152 pixels, so that marks at most 5% of the mesh visible and reports a
+vertex as hidden because a neighbour 2 mm away won the pixel. Measured: 12k–43k
+visible vertices per view, no mesh edge reached three co-visible views, zero
+proposals emitted. Replaced with front-surface visibility — every vertex whose
+depth is within `SURFACE_DEPTH_TOLERANCE_M = 0.05` of the nearest at its pixel.
+That tolerance is tight (the buffer rasterises at full mesh density) and sits
+well above the 2.5–4.1 cm mesh-versus-sensor-depth error already measured in
+`extractors/arkitscenes_rgb_crops.py`.
+
+**2. `N_FRAMES` 24 → 128 (under-provisioned by an order of magnitude).**
+Measured share of mesh vertices seen in ≥ 3 selected views:
+
+| N frames | 24 | 48 | 72 | 96 | 128 | 160 | 200 |
+|---|---|---|---|---|---|---|---|
+| ≥3 views | 5.6% | 37.4% | 54.4% | 65.7% | 71.7% | 75.9% | 78.9% |
+
+At 24, only 5.6% of the mesh could even be evaluated by a 3-view consensus.
+Set to the smallest N reaching 70% — the criterion was fixed before the curve
+was read. This is how much evidence the mechanism gets, not a decision
+threshold.
+
+**3. Felzenszwalb scale.** The note originally declared the paper's
+`k=300 / min_size=120`. On these 256×192 frames that yields a median of 18
+regions per frame with one region covering more than half the frame — walls
+and floors, not object-scale masks. The criterion for the correction was
+stated first and is annotation-free: *median regions per frame in 40–120, and
+the largest region below a third of the frame*, measured on five evenly spaced
+development frames. `k=40 / min_size=60` gives median 107 and 31%; `k=100`
+gives median 80 and 50%. This is calibration of the mask source to the scale
+it was supposed to operate at, not tuning against a measured result — no
+annotation-based number for this arm existed when it was made. It was not
+touched again.
+
+Two constants deserve explicit caveats rather than credit:
 
 - `MAX_PROPOSAL_FRAC` equals the giant-mask threshold, so **the "giant-mask
   rate stays zero" gate is satisfied by construction, not by evidence.** It is
@@ -148,6 +190,7 @@ reported and the arm stops — no threshold sweep.
 
 ### One case cannot be scored by annotation IoU
 
+
 The audited **missing curtains** are recorded in `41069042`, not `41069025`,
 and the human review states that scene's six boxes contain "no sofa/couch,
 curtain, rug, or trash-can class". `curtain` has no annotation box in any of
@@ -156,3 +199,140 @@ annotation match, and gate 1 cannot be satisfied by it. It is checkable only
 by inspection of the emitted vertex set. Gate 2 is supplied by the operator
 from the human-feedback record for exactly this reason: it is not derivable
 from IoU.
+
+---
+
+# Checkpoint B — development result: FAILED, arm not locked
+
+The arm is implemented, runs end to end, and **does not clear the gates.**
+`47331972` was not downloaded, inspected or touched.
+
+## Result
+
+Pooled = frozen `mask3d_ms02` + repair, scored by `eval/detection_repair.py`
+against annotation boxes opened only after the proposal artifact was hashed.
+
+| scene | bank | proposals | @0.25 | @0.50 | giant | zero-overlap |
+|---|---|---|---|---|---|---|
+| 41069021 | baseline | 37 | 11 | 7 | 0.0% | 62.2% |
+| 41069021 | repair only | 52 | 1 | **0** | 0.0% | 88.5% |
+| 41069021 | pooled | 89 | 11 | 7 | 0.0% | 77.5% |
+| 41069025 | baseline | 42 | 11 | 9 | 0.0% | 61.9% |
+| 41069025 | repair only | 35 | 1 | **0** | 0.0% | 97.1% |
+| 41069025 | pooled | 77 | 11 | 9 | 0.0% | 77.9% |
+
+| gate | 41069021 | 41069025 |
+|---|---|---|
+| ≥ 2 unique matches @0.50 | **FAIL** (0) | **FAIL** (0) |
+| ≥ 1 audited case | **FAIL** | **FAIL** |
+| preserves baseline matches | PASS (0 lost) | PASS (0 lost) |
+| giant-mask rate 0 | PASS (by construction) | PASS (by construction) |
+| top-100 zero-overlap ≤ +10 pp | **FAIL** (+15.4 pp) | **FAIL** (+16.0 pp) |
+
+Three of five fail on both scenes, in the same way. The two that pass carry no
+weight: giant-mask rate is structurally guaranteed, and preservation is
+guaranteed by additive pooling, which the evaluator asserts.
+
+## Failure mechanism
+
+Diagnosed on 41069021 after the gates were scored. **The failure is in stage 4
+— consensus fusion — and specifically in its interaction with the mask
+source. It is not in the camera convention, the lifting, or frame selection,
+all of which measure as working.**
+
+What works:
+
+- Frame selection reaches 128 visibility-valid, angularly diverse frames; 71.7%
+  of mesh vertices are seen in ≥ 3 of them.
+- Lifting is healthy: 81.9% of the 2.9M mesh edges carry view evidence, at a
+  median of 6 co-visible views (p90 = 11).
+- The 2D masks are object-scale in 2D: median 103 regions per frame, 94 of
+  which lift to ≥ 20 vertices.
+
+What fails — the consensus graph never separates the scene into objects:
+
+| cut | components | largest component | ≥ 200 vertices |
+|---|---|---|---|
+| 0.25 | 12,638 | 739,103 (**73.3%** of mesh) | 56 |
+| 0.50 | 12,723 | 738,565 (**73.2%** of mesh) | 56 |
+| 0.75 | 17,054 | 690,011 (**68.4%** of mesh) | 86 |
+
+At every cut the graph is **one room-sized blob plus dust**. The blob is
+discarded by the fusion module's 40%-of-mesh cap, and what survives to be
+emitted is the dust around its edges: the 52 emitted proposals on 41069021
+have median 348 vertices, median planarity 0.006–0.012, and median extent
+0.29 m × 0.16 m — flat ~30 cm surface patches, against entities of
+2,385–40,280 vertices. 12 of 18 annotated entities have **0.0%** of their
+vertices touched by any repair proposal.
+
+The cause is visible in the edge-confidence distribution: on evidence-bearing
+edges the median confidence is 1.00, and 98.5% / 96.5% / 85.7% of them survive
+the 0.25 / 0.50 / 0.75 cuts. Edge confidence is *the fraction of co-visible
+views in which both endpoints land in the same 2D region*. For an edge to be
+cut, its endpoints must fall in different regions in more than a quarter of
+those views. Colour-region boundaries at 256×192 rarely coincide with the 3D
+object boundary and move with viewpoint and exposure, so an edge crossing a
+real object boundary still scores near 1.0 — the signal "this edge crosses an
+object boundary" is largely absent from region-agreement, whatever the cut.
+
+That is a structural mismatch, not a threshold miss. Raising the cut from 0.25
+to 0.75 moves the largest component by 5 percentage points while multiplying
+fragments; there is no middle where components are object-sized. This fusion
+rule was designed for SAM masks on rendered views, where region boundaries are
+object-shaped and stable across viewpoints. It does not transfer to
+boundary-unstable colour regions.
+
+## The audited cases
+
+Untouched, on both counts:
+
+- **Overmerged kitchen counter plane (41069025).** The audited `obj_8` is
+  identifiable in the baseline bank as proposal 8, 132,173 vertices, extent
+  7.38 × 5.95 × 0.20 m — matching the human review's "7.38 x 5.95 x 0.20 m
+  whole-plane segment" exactly. The arm emitted **one** split piece for it,
+  covering **0.2%** of it. The next two largest baseline proposals received
+  none.
+- **Sofa cushions (41069025).** No repair proposal reaches IoU 0.50 with any
+  annotated entity, and repair-only zero-overlap is 97.1%.
+- **Missing curtains.** Not evaluable here in any case — recorded in 41069042,
+  and `curtain` has no annotation box in any of the three scenes.
+
+## What this does and does not refute
+
+It refutes **this mask source through this fusion rule**. It does not refute
+multi-view 2D→3D repair as a mechanism, because Felzenszwalb colour regions
+are a deliberately weak stand-in for a learned segmenter (this environment has
+numpy and PIL only), and the diagnosis lands squarely on boundary instability
+— the property a promptable segmenter is specifically better at.
+
+The measurements that do transfer, independent of the mask source:
+
+- the corrected OpenCV projection lifts real posed RGB onto this mesh well
+  enough to give 81.9% of mesh edges multi-view evidence at a median of 6
+  views;
+- one-vertex-per-pixel id buffers are unusable at this mesh/image scale
+  (1,008,964 vertices against 49,152 pixels) — surface-tolerance visibility is
+  required;
+- 24 views is far too few: ≥3-view co-visibility rises 5.6% → 71.7% between 24
+  and 128 frames.
+
+**No end-to-end or QA claim follows from any of this.** These are detection
+metrics on proposal banks.
+
+## Stop condition
+
+Per the brief, the arm stops here rather than being tuned. Threshold changes
+that would obviously move the numbers — lowering `MIN_PROPOSAL_VERTICES`,
+raising `MAX_REPAIR_PROPOSALS`, relaxing `MIN_CONSENSUS_VIEWS` — were **not**
+tried, because the diagnosis says the components are the wrong shape, not the
+wrong size, and none of them addresses a graph whose largest component is 73%
+of the mesh.
+
+The next experiment, if the owner wants one, is a **mask-source swap behind
+the same evaluator**: `segment_frame` is the only seam, the evaluator and its
+gates are already fixed and committed, and the failure above gives a specific
+prediction to test — that a boundary-stable segmenter moves the largest
+component well below 73% of the mesh. That prediction is checkable *before*
+any annotation is opened, from the component table alone.
+
+`47331972` remains undownloaded and uninspected.
