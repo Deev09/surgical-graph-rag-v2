@@ -113,3 +113,59 @@ Under the wrong projection, coverage still read 34/34 with median visible
 fraction 0.99 — identical to the correct run. **Coverage statistics cannot
 validate the geometry that produced them.** Only an independent instrument
 (sensor depth) could.
+
+---
+
+# End-to-end QA — does better naming produce better answers?
+
+    python3 tools/arkitscenes_e2e_qa_ab.py
+
+The table above is **matched-instance label accuracy**, a component result.
+This is the product question: same geometry, same relation graph, same
+questions — only the label stage differs.
+
+Questions are **not** label-derived. The vertical slice's own
+`what is near <first node's display label>?` is a different question per arm
+and therefore uncomparable; here one `what is near the <c>?` is asked per
+annotation class in the scene, so an arm that names nothing simply fails to
+answer. Ground truth for a citation is the NEAR-neighbour set of every
+entity the annotation calls class `c`, computed on the shared graph — so any
+difference is anchor resolution, i.e. naming.
+
+| scene | arm | abstained | UID P / R / F1 | semantic citation |
+|---|---|---|---|---|
+| 41069021 | splat | **5/5** | 0.00 / 0.00 / 0.00 | — |
+| 41069021 | **rgb_tight** | **0/5** | 0.86 / 0.94 / **0.90** | 0.60 |
+| 41069025 | splat | 4/5 | 0.82 / 0.19 / 0.31 | 0.50 |
+| 41069025 | **rgb_tight** | 1/5 | 0.91 / 0.60 / **0.72** | 0.73 |
+| 41069042 | splat | 4/4 | 0.00 / 0.00 / 0.00 | — |
+| 41069042 | **rgb_tight** | 2/4 | 0.96 / 0.56 / **0.71** | 0.86 |
+
+Pooled abstentions **13/14 → 3/14**. Every metric improves on every scene.
+
+The splat arm mostly cannot answer at all: with almost nothing named above
+the admission threshold, the compiler cannot resolve an anchor, so the
+Router correctly abstains. That is the honest previous state of the product —
+a graph that could not be asked about. RGB naming is what makes the
+questions answerable, and precision stays high (0.86–0.96) rather than the
+answers being bought with guesses.
+
+`41069025` is the one scene where splats answered anything, and RGB more
+than doubles its F1 (0.31 → 0.72) while also raising semantic citation
+accuracy (0.50 → 0.73).
+
+## A metric bug worth recording
+
+The first version of this table scored a citation as correct when the cited
+entity WAS the asked class. That is the wrong ground truth for "what is near
+the X?" — the answer should be things NEAR an X, not the Xs. It made RGB
+look worse than splats on 41069025 (F1 0.15 vs 0.20). Corrected before
+reporting; the numbers above use NEAR-neighbours.
+
+## Scope
+
+14 questions across three scenes, one question form. `41069025` and
+`41069042` are **human-inspected held-out transfer scenes**, not blinded
+sealed scenes — they were visually reviewed before this run. The coverage
+figures (34/34, 35/35, 23/23) are **RGB-view coverage of delivered
+instances**, not ground-truth object-detection coverage.

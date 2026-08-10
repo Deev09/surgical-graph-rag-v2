@@ -56,6 +56,25 @@ SLICE_VERSION = "0.1"
 NEAR_THRESHOLD_M = 1.0
 
 
+
+def _scene_dir_for(representation) -> Path:
+    """The capture directory this representation was reconstructed from.
+
+    Recorded by the adapter; recovered here rather than passed separately so
+    the RGB source cannot be pointed at a different scene than the geometry.
+    """
+    # The adapter records the ORIGINAL mesh path it reconstructed from; the
+    # capture directory is its parent. Derived rather than passed separately
+    # so the RGB source cannot be pointed at a different scene than the
+    # geometry it is labeling.
+    src = representation.geometry_handle.notes.get("source_mesh")
+    if not src:
+        raise ValueError(
+            "representation records no source_mesh; RGB labels need the "
+            "capture directory that produced this geometry")
+    return Path(src).parent
+
+
 def _question_row(question: str, answer) -> dict:
     return {
         "qid": "Q01",
@@ -80,6 +99,7 @@ def build_slice(representation, segmentation_dir: Path, out_dir: Path,
                 min_vertices: int = 20,
                 with_learned_labels: bool = False,
                 labeler: ImageLabeler | None = None,
+                rgb_labels: bool = False,
                 with_support_patches: bool = False) -> dict:
     """Build one finalized, annotation-free vertical-slice artifact."""
     out_dir = Path(out_dir)
@@ -87,12 +107,28 @@ def build_slice(representation, segmentation_dir: Path, out_dir: Path,
     entities = build_arkitscenes_segment_artifacts(
         representation, segmentation_dir, min_vertices=min_vertices)
     if with_learned_labels:
+        # Opt-in ONLY. The label stage is the single thing this switches;
+        # segmentation, geometry and the relation graph below are untouched,
+        # so a splat-vs-RGB comparison differs in labels and nothing else.
+        image_source = None
+        image_source_name = "instance_point_splat_3view"
+        if rgb_labels:
+            from extractors.arkitscenes_rgb_crops import RgbCropSource
+            from tools.arkitscenes_eval import load_canonical_geometry
+            mesh, R, _rep = load_canonical_geometry(_scene_dir_for(representation))
+            crops = RgbCropSource(_scene_dir_for(representation), mesh.xyz, R,
+                                  stride=6, n_views=3, context_pad=0.15,
+                                  occlusion=True, mark_target=False)
+            image_source = crops.crops_for
+            image_source_name = "arkitscenes_rgb_crop_pad0.15_mark0"
         entities = attach_learned_labels(
             representation,
             entities,
             segmentation_dir=segmentation_dir,
             config=LearnedLabelConfig(),
             labeler=labeler,
+            image_source=image_source,
+            image_source_name=image_source_name,
         )
 
     graph, diagnostics = build_graph(
@@ -246,6 +282,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--question", default=None)
     parser.add_argument(
+        "--rgb-labels", action="store_true",
+        help="label from real capture-RGB crops instead of point splats; "
+             "requires --with-learned-labels and the scene's lowres_wide/ "
+             "stream. Labels are the ONLY stage this changes.")
+    parser.add_argument(
         "--with-learned-labels", action="store_true",
         help=("render each delivered instance and attach pinned OpenCLIP "
               "top-k hypotheses; low-confidence instances stay anonymous"),
@@ -265,6 +306,7 @@ def main(argv: list[str] | None = None) -> int:
         representation, args.segmentation_dir, args.out,
         question=args.question,
         with_learned_labels=args.with_learned_labels,
+        rgb_labels=args.rgb_labels,
         with_support_patches=args.with_support_patches,
     )
     q = manifest["question"]
