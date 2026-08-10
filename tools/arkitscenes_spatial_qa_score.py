@@ -138,9 +138,9 @@ def score(key: dict, entities: list[dict], edges: list[dict]) -> list[dict]:
         row = {"id": item["id"], "kind": kind, "question": item.get("question")}
 
         if kind == "class_cardinality":
-            wanted = item["id"].split("_")[1]
             wanted = {"rug": "rug", "trash": "trash-can",
-                      "counter": "counter"}[wanted]
+                      "counter": "counter",
+                      "cushion": "cushion"}[item["id"].split("_")[1]]
             hits = [e for e in labelled if matches(e["display_label"], wanted)]
             row.update(expected=item["expected"], answer=len(hits),
                        matched_uids=[e["uid"] for e in hits],
@@ -223,10 +223,18 @@ def main(argv: list[str] | None = None) -> int:
     outcomes = {row["id"]: row["outcome"] for row in results}
     triggered = []
     for confound in key.get("known_confounds", []):
-        if (outcomes.get("q4_sofa_present") == "wrong"
-                and outcomes.get("q5_cushion_present") == "correct"
-                and confound["id"] == "sofa_cushion_coupling"):
+        answers = {row["id"]: row.get("answer") for row in results}
+        if confound["id"] == "sofa_cushion_coupling" and (
+                outcomes.get("q4_sofa_present") == "wrong"
+                and outcomes.get("q5_cushion_present") == "correct"):
             triggered.append(confound)
+        if confound["id"] == "sofa_counted_as_cushion" and (
+                outcomes.get("q4_sofa_present") == "wrong"
+                and outcomes.get("q5_cushion_cardinality") == "wrong"):
+            expected = next(q["expected"] for q in key["independent_questions"]
+                            if q["id"] == "q5_cushion_cardinality")
+            if answers.get("q5_cushion_cardinality") == expected + 1:
+                triggered.append(confound)
     labelled = [e for e in entities if not is_anonymous(e["display_label"])]
 
     report = {

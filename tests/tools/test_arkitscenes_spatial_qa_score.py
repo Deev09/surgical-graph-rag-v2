@@ -24,6 +24,9 @@ from tools.arkitscenes_spatial_qa_score import (
     DEFAULT_KEY, is_anonymous, matches, normalize, score, scene_footprint,
 )
 
+KEY_V2 = (REPO_ROOT / "eval" / "human_feedback"
+          / "arkitscenes_41069025_spatial_qa_key_v2.json")
+
 RUN_ROOT = REPO_ROOT / "runs" / "arkit_spatial_qa"
 
 
@@ -47,6 +50,30 @@ def test_the_key_never_names_a_delivered_instance() -> None:
     assert key["unresolved_uid_mappings"], "no unresolved mappings flagged"
     assert any("obj_" in json.dumps(x) for x in key["deliberately_excluded"]), \
         "the excluded section should record which uid facts were left out"
+
+
+def test_v2_records_confirmed_cardinalities_and_supersession() -> None:
+    """Owner confirmed four counts; v1 stays intact because a score cites it."""
+    v2 = json.loads(KEY_V2.read_text())
+    assert v2["status"] == "DRAFT_AWAITING_UID_CONFIRMATION", v2["status"]
+    assert v2["supersedes"]["file"].endswith("key_v1.json")
+    cushion = next(q for q in v2["independent_questions"]
+                   if q["id"] == "q5_cushion_cardinality")
+    assert cushion["kind"] == "class_cardinality" and cushion["expected"] == 2
+    resolved = [m for m in v2["unresolved_uid_mappings"]
+                if m["status"] == "RESOLVED"]
+    assert [m["item"] for m in resolved] == ["cushion cardinality"], resolved
+    # The three genuine UID mappings stay open, with cardinality noted as fixed.
+    still_open = [m for m in v2["unresolved_uid_mappings"]
+                  if m["status"] == "UNRESOLVED"]
+    assert len(still_open) == 3, still_open
+    for m in still_open:
+        assert "CONFIRMED by owner" in m["cardinality_status"], m
+    # v2 must still name no delivered instance in any question.
+    for item in v2["independent_questions"]:
+        blob = json.dumps({k: v for k, v in item.items()
+                           if k not in {"review_basis", "scoring"}})
+        assert "obj_" not in blob, item["id"]
 
 
 def test_key_declares_draft_status_and_limits() -> None:
@@ -145,6 +172,7 @@ def test_recorded_report_is_evaluation_only() -> None:
 
 TESTS = [
     test_the_key_never_names_a_delivered_instance,
+    test_v2_records_confirmed_cardinalities_and_supersession,
     test_key_declares_draft_status_and_limits,
     test_anonymous_placeholders_are_not_labels,
     test_sofa_accepts_couch_and_nothing_else,
