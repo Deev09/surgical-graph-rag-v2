@@ -336,3 +336,148 @@ component well below 73% of the mesh. That prediction is checkable *before*
 any annotation is opened, from the component table alone.
 
 `47331972` remains undownloaded and uninspected.
+
+---
+
+# Checkpoint C — SAM 2.1 repair arm, local half complete, awaiting GPU
+
+The Felzenszwalb + mesh-edge-consensus arm above is a closed negative and is
+not tuned further. This is a different mechanism sharing the same evaluator.
+
+`eval/detection_repair.py` is **byte-identical to Checkpoint A** (zero diff).
+Its gates, IoU grid, zero-overlap definition, giant-mask threshold and
+baseline reproduction are unchanged.
+
+## The architectural correction
+
+SAM masks are overlapping, non-exhaustive object hypotheses. The previous arm
+treated 2D masks as an exhaustive per-pixel partition and paid for it: every
+pixel belonged to exactly one region, so "do these adjacent vertices share a
+region" was ~1.0 even across real object boundaries, and the consensus graph
+was one blob covering 68–73% of the mesh. Three properties are now structural
+and pinned by test:
+
+- **no partition is ever formed.** Every mask is lifted independently; a pixel
+  in no mask contributes nothing, a pixel in three masks feeds three
+  hypotheses.
+- **background is never a region.** No complement, no "everything else".
+- **association is between masks, in 3D** — not between vertices.
+
+Nested masks are kept, not resolved: SAM emits a sofa and its cushions and
+both are legitimate entries in a proposal bank.
+
+## Pipeline
+
+1. `tools/arkitscenes_repair_frames.py` — select 32 visibility-valid frames,
+   copy the exact PNGs, hash-pin each one and the ordered selection, pack a
+   portable tar for the GPU stage. Poses and intrinsics stay local; a
+   post-write check asserts nothing else reaches the tar.
+2. `notebooks/repair_sam2_colab.ipynb` — SAM 2.1 Hiera-L at the existing pin
+   (sam2 @ `2b90b9f5…`, checkpoint sha `2647878d…`, AMG parameters and seeds
+   from `docs/c1_p1_multiview_proposals_protocol.md`). Emits a sidecar
+   carrying the selection hash.
+3–5. `segmenter/sam_multiview_repair.py` — independent lifting, 3D
+   association, cluster fusion.
+6–7. `tools/arkitscenes_repair_propose_sam.py` — emit beside Mask3D, finalize
+   and hash the bank before evaluation.
+
+The propose CLI refuses a sidecar whose selection hash, sam2 commit or
+checkpoint sha does not match, and refuses a frame list whose source PNGs have
+moved. A sidecar from a different selection would lift masks onto the wrong
+geometry with no other symptom.
+
+## Frame selection was rebuilt, and it matters more than anything else here
+
+The previous arm maximised angular spread by farthest-point sampling. That
+optimises *against* association: masks can only cluster if the same object
+appears in two or more frames. Selection is now greedy on coverage
+**multiplicity** — maximising the number of vertices seen at least three times
+— subject to every pair of chosen view directions differing by at least 8°.
+Diversity is a constraint; overlap is the objective.
+
+Measured on 41069021 at the brief's 32-frame ceiling, over the 37 frozen
+Mask3D objects:
+
+| selection | ≥2 views @50% | ≥3 views @50% | mesh seen |
+|---|---|---|---|
+| farthest-point on direction | 18/37 | 7/37 | 70.0% |
+| multiplicity-greedy, 8° floor | **24/37** | **17/37** | **75.0%** |
+
+Annotation-free, measured before any SAM inference.
+
+## Loopback self-check — a necessary condition, verified before spending a GPU
+
+`tools/arkitscenes_repair_loopback.py` runs stages 3–5 on *synthetic perfect
+masks* rendered from known 3D instances (frozen Mask3D proposals, chosen
+without annotations). If the geometry cannot recover an object it is handed a
+perfect mask of, that failure is free to find now instead of being mistaken
+for "SAM missed it" afterwards.
+
+Result on 41069021: **8/12 probes recovered at IoU 0.50**, median IoU 0.60,
+all 12 visible in ≥2 selected frames.
+
+It also found a real defect. `MIN_CLUSTER_ANGULAR_SPREAD_DEG` was an arbitrary
+20°; three probes associated cleanly at 3D IoU 0.60–0.63 and were discarded
+because their only two supporting views were 10.4° apart. Selection already
+guarantees ≥8° between every chosen pair, so a larger per-cluster threshold
+re-litigates a decision already made against a frame set built not to satisfy
+it. It is now equal to the selection floor. Changed on synthetic evidence,
+before any SAM inference, with no annotation open.
+
+**The four remaining misses are a measured prediction, not noise.** Each fuses
+to ~0.45× its probe's vertex count (probes of 149k, 36k, 36k, 29k vertices →
+IoU 0.435, 0.427, 0.427, 0.455), while every recovered probe fuses to
+0.60–0.92×. The failure is under-*coverage*, not mis-segmentation: at 32
+frames the selected views collectively see under half of the largest objects.
+So before SAM runs, the expected behaviour is:
+
+- objects supported by 4+ views recover well (IoU 0.53–0.88 with perfect masks);
+- large objects supported by 2–3 partial views land near IoU 0.43–0.46 and
+  **miss the 0.50 gate**;
+- this ceiling is a property of the brief's 16–32 frame budget, not of the
+  fusion rule, and no threshold in this module moves it.
+
+## Declared constants
+
+| constant | value |
+|---|---|
+| `N_FRAMES` | 32 (top of the brief's 16–32 band) |
+| `MIN_ANGULAR_SEPARATION_DEG` | 8.0 |
+| `COVERAGE_MULTIPLICITY_CAP` | 3 |
+| `MIN_MASK_VERTICES` | 200 |
+| `MAX_MASK_FRAC` | 0.15 (= giant-mask threshold) |
+| `ASSOC_ANCHOR_STRIDE` | 16 |
+| `ASSOC_IOU` | 0.30 |
+| `ASSOC_CONTAINMENT` / min size ratio | 0.80 / 0.50 |
+| `MIN_SUPPORT_VIEWS` | 2 |
+| `MIN_CLUSTER_ANGULAR_SPREAD_DEG` | = selection floor (8.0) |
+| `VERTEX_VOTE_FRACTION` | 0.50 |
+| `MIN_MEMBER_IOU` | 0.20 |
+
+Classification thresholds (`ADDITIONAL_MAX_CONTAINMENT`,
+`SPLIT_MIN_CONTAINMENT`, `SPLIT_MAX_SIZE_RATIO`, `DUPLICATE_IOU`,
+`MIN_PROPOSAL_VERTICES`, `MAX_PROPOSAL_FRAC`, `MAX_REPAIR_PROPOSALS`) are
+**imported** from the previous arm, not restated, so the two differ only in how
+a candidate region was produced.
+
+`MIN_SUPPORT_VIEWS = 2` rather than 3 is a deliberate, recorded compromise: at
+32 frames only 17 of 37 objects are seen three times, so requiring three would
+discard half the recoverable objects before SAM runs.
+
+The giant-mask gate remains satisfied **by construction** (`MAX_MASK_FRAC` =
+`MAX_PROPOSAL_FRAC` = the evaluator's threshold) and still carries no
+evidential weight.
+
+## Status: blocked on the GPU stage
+
+Everything except SAM inference is implemented, tested (100/100 test files)
+and exercised on real geometry. The frame bundle for 41069021 is built and
+pinned:
+
+- 32 frames selected from 273 visibility-valid candidates
+- 75.0% of the mesh seen in ≥1 view, 57.2% in ≥2, 40.0% in ≥3
+- `selection_sha256` `53982b5bf1166163…`, 2.2 MB upload tar
+
+The pinned configuration is CUDA bf16 on an A100. This machine is an Apple
+M4 Pro with no CUDA and no torch installed, so inference cannot run here.
+41069025 is not prepared and 47331972 is untouched.

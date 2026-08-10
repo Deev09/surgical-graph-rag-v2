@@ -183,6 +183,9 @@ def test_only_the_evaluator_reads_annotations() -> None:
         # contain the literal. The repair arm generates proposals and must
         # stay annotation-free.
         "tests/segmenter/test_rgb_multiview_repair.py",
+        # Same reason for the SAM arm: asserts the mechanism module and both
+        # of its CLIs stay annotation-free, and needs the literal to check.
+        "tests/segmenter/test_sam_multiview_repair.py",
     }
     offenders = []
     for p in sorted(REPO_ROOT.glob("**/*.py")):
