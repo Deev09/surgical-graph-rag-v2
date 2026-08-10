@@ -16,6 +16,7 @@ import traceback
 from pathlib import Path
 
 import numpy as np
+from PIL import Image
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
@@ -43,23 +44,19 @@ def test_angle_axis_matches_rodrigues_properties() -> None:
         raise AssertionError("z-rotation handedness is wrong")
 
 
-def test_projection_uses_arkit_axes_not_opencv_directly() -> None:
-    """A point ABOVE the optical axis must land in the UPPER half of the
-    image. ARKit has +y up, the image has +y down; dropping the flip inverts
-    the crop vertically and is exactly the bug this pins."""
+def test_projection_uses_opencv_camera_axes() -> None:
+    """Pin the dataset convention: +x right, +y down, +z forward."""
     f = RC.Frame(0.0, Path("x.png"), np.eye(3), np.zeros(3),
                  200.0, 200.0, 128.0, 96.0, 256, 192)
-    # ARKit camera looks down -z, so a visible point has NEGATIVE z.
-    above = np.array([[0.0, 0.5, -2.0]])
+    above = np.array([[0.0, -0.5, 2.0]])
     uv, inb = RC.project(above, f)
     if not inb[0]:
-        raise AssertionError("a point in front of an ARKit camera was culled — "
-                             "the -z forward convention was lost")
+        raise AssertionError("a +z point in front of the camera was culled")
     if uv[0, 1] >= f.cy:
         raise AssertionError(
             f"point above the axis projected to v={uv[0,1]:.1f} >= cy={f.cy}; "
-            "the ARKit->OpenCV y flip is missing or doubled")
-    behind = np.array([[0.0, 0.0, 2.0]])          # +z is BEHIND an ARKit camera
+            "the OpenCV +y-down convention was lost")
+    behind = np.array([[0.0, 0.0, -2.0]])
     _, inb2 = RC.project(behind, f)
     if inb2[0]:
         raise AssertionError("a point behind the camera was reported visible")
@@ -68,9 +65,57 @@ def test_projection_uses_arkit_axes_not_opencv_directly() -> None:
 def test_projection_right_stays_right() -> None:
     f = RC.Frame(0.0, Path("x.png"), np.eye(3), np.zeros(3),
                  200.0, 200.0, 128.0, 96.0, 256, 192)
-    uv, inb = RC.project(np.array([[0.5, 0.0, -2.0]]), f)
+    uv, inb = RC.project(np.array([[0.5, 0.0, 2.0]]), f)
     if not inb[0] or uv[0, 0] <= f.cx:
         raise AssertionError("+x did not project to the right of centre")
+
+
+def test_synchronized_depth_pins_camera_convention() -> None:
+    """Three separated real frames reject the legacy axis flip.
+
+    This is deliberately dataset-guarded: the repository does not distribute
+    ARKitScenes. Sensor depth is independent of the mesh's baked RGB, so the
+    regression cannot pass because two visually similar textures happened to
+    be compared.
+    """
+    depth_dir = DEV / "lowres_depth"
+    timestamps = (305.377, 380.363, 455.366)
+    depth_paths = [depth_dir / f"41069021_{stamp:.3f}.png"
+                   for stamp in timestamps]
+    mesh_path = DEV / "41069021_3dod_mesh.ply"
+    if not (_dataset_ready() and mesh_path.is_file()
+            and all(path.is_file() for path in depth_paths)):
+        print("  SKIP (ARKitScenes synchronized depth not present)")
+        return
+
+    from adapters.arkitscenes import read_mesh
+    from tools.arkitscenes_camera_alignment import depth_alignment_metrics
+
+    mesh = read_mesh(mesh_path)
+    frames = RC.load_frames(DEV)
+    for timestamp, depth_path in zip(timestamps, depth_paths):
+        frame = min(frames, key=lambda item: abs(item.timestamp - timestamp))
+        if abs(frame.timestamp - timestamp) > 0.001:
+            raise AssertionError(
+                f"no exact pose for {timestamp}; nearest={frame.timestamp}")
+        depth = np.asarray(Image.open(depth_path), dtype=np.uint16)
+        direct = depth_alignment_metrics(mesh.xyz, frame, depth)
+        legacy = depth_alignment_metrics(
+            mesh.xyz, frame, depth, legacy_axis_flip=True)
+        if direct["median_abs_error_m"] > 0.06:
+            raise AssertionError(
+                f"{timestamp}: direct projection median depth error is "
+                f"{direct['median_abs_error_m']:.3f} m")
+        if direct["share_abs_error_le_0_10m"] < 0.60:
+            raise AssertionError(
+                f"{timestamp}: only "
+                f"{direct['share_abs_error_le_0_10m']:.1%} of common pixels "
+                "agree within 10 cm")
+        if legacy["median_abs_error_m"] < 4.0 * direct["median_abs_error_m"]:
+            raise AssertionError(
+                f"{timestamp}: legacy flip was not decisively worse: "
+                f"direct={direct['median_abs_error_m']:.3f} m, "
+                f"legacy={legacy['median_abs_error_m']:.3f} m")
 
 
 def test_camera_centres_lie_inside_the_scan() -> None:
@@ -80,9 +125,8 @@ def test_camera_centres_lie_inside_the_scan() -> None:
     if not _dataset_ready():
         print("  SKIP (ARKitScenes RGB not present)")
         return
-    from tools.arkitscenes_eval import load_canonical_geometry
-    mesh, R, _ = load_canonical_geometry(DEV)
-    world = mesh.xyz @ R
+    from adapters.arkitscenes import MESH_SUFFIX, read_mesh
+    world = read_mesh(DEV / f"{DEV.name}{MESH_SUFFIX}").xyz
     lo, hi = world.min(axis=0), world.max(axis=0)
     centres = np.array([-Rwc.T @ t
                         for _ts, Rwc, t in RC.load_trajectory(DEV / "lowres_wide.traj")])
@@ -142,8 +186,9 @@ def test_crops_are_context_padded_and_deterministic() -> None:
 
 TESTS = [
     test_angle_axis_matches_rodrigues_properties,
-    test_projection_uses_arkit_axes_not_opencv_directly,
+    test_projection_uses_opencv_camera_axes,
     test_projection_right_stays_right,
+    test_synchronized_depth_pins_camera_convention,
     test_camera_centres_lie_inside_the_scan,
     test_frames_have_poses_and_intrinsics,
     test_crops_are_context_padded_and_deterministic,
