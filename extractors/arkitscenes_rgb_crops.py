@@ -46,11 +46,36 @@ An earlier note here claimed the reprojection reproduced the photograph.
 That was over-read from one ambiguous frame -- diagonal streaks in a point
 render were taken to match diagonal floor planks. Retracted.
 
-Ruled out so far: pose-matching tolerance (tightening MAX_POSE_DT_S from
-0.05 to 0.002, leaving 1878 exactly-matched frames, changes nothing).
-Still open: the ``[1,-1,-1]`` flip, the direction of the world<->camera
-transform, whether ``lowres_wide.traj`` indexes the lowres stream at all,
-and whether the canonical<->capture rotation needs its inverse.
+SOURCED FROM APPLE'S OWN LOADER (threedod/benchmark_scripts/utils/
+tenFpsDataLoader.py), not inferred:
+
+  * ``TrajStringToMatrix`` builds ``extrinsics`` from the angle-axis and
+    translation and returns ``inv(extrinsics)``, so the trajectory's own
+    matrix is CAMERA->WORLD and world->camera is ``extrinsics``. The
+    composition used here matches.
+  * ``generate_point`` unprojects ``[u*d, v*d, d, 1]`` through ``inv(K)``
+    and applies the camera->world pose DIRECTLY, with no axis negation
+    anywhere. ARKitScenes poses are therefore plain pinhole/OpenCV
+    (+x right, +y down, +z forward).
+
+So the ``[1,-1,-1]`` flip in `project` is WRONG -- it imposes an
+ARKit-native -z/+y-up convention this dataset's poses do not use.
+
+That is one error but NOT the only one: reprojections without the flip, on
+three widely separated exactly-posed frames, are closer (a curtain and floor
+land on the correct side) yet still misaligned. A second transform is
+missing. Prime suspect is image rectification/orientation -- Apple ships
+`threedod/benchmark_scripts/rectify_im.py`, which implies the stored frames
+are not already in the pose's image frame.
+
+Ruled out: pose-matching tolerance (0.05 -> 0.002 leaves 1878 exactly
+matched frames and changes nothing).
+Still open: image rotation/rectification, principal-point or width/height
+convention, and row- versus column-vector composition.
+
+The flip is deliberately NOT removed yet. Changing it without a frame whose
+reprojection demonstrably matches its photograph would just be a second
+guess replacing the first.
 
 The synthetic-camera tests below pin the handedness of `project` against a
 STATED convention; they cannot tell whether that convention is ARKit's. Fix
