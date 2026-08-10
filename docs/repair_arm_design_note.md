@@ -926,8 +926,14 @@ clusters → 23 supported → **13 emitted**.
 
 **This is the best repair bank the track produced** — 13 surgical proposals,
 sensible labels, one new entity at IoU 0.25 (an `oven` Mask3D had at 0.012), and
-the only arm that made the pooled bank *cleaner* rather than junkier. It still
+the only arm whose pooled *proportion* of zero-overlap proposals fell. It still
 recovers **zero** unique entities at IoU 0.50.
+
+Stated precisely, because the rate alone flatters it: **proportional
+contamination fell from 62.2% to 58.0%, while the absolute number of
+zero-overlap proposals rose from 23 to 29.** The pool is a smaller share junk
+and a larger amount of junk. Both are true and the second is what a downstream
+consumer pays.
 
 ## Same wall as every other arm: recall, not precision
 
@@ -1026,16 +1032,25 @@ chain `{a,b}`–`{b,c}`–`{c,d}` into an empty intersection.
 | clusters supported | 23 | 27 |
 | proposals emitted | 13 | **15** |
 | repair-only zero-overlap | 46.2% | **40.0%** |
-| pooled zero-overlap | 58.0% | **55.8%** (−6.4 pp vs baseline) |
+| pooled zero-overlap, proportion | 58.0% | **55.8%** (−6.4 pp vs baseline) |
+| pooled zero-overlap, absolute | 29 | **29** (baseline 23) |
 | unique @ IoU 0.25 | +1 (oven) | +1 (oven) |
 | **unique @ IoU 0.50** | **0** | **0** |
 
 Recovering the discarded evidence did exactly what it should — two more
-proposals, two `armchair|chair` clusters, and a cleaner pooled bank than any
-other arm produced. It moved nothing at IoU 0.50.
+proposals, two `armchair|chair` clusters, and the lowest zero-overlap
+*proportion* of any arm. It moved nothing at IoU 0.50.
+
+The proportion is not the whole picture and should not be quoted alone:
+**proportional contamination fell from 62.2% (baseline) to 55.8%, while the
+absolute count of zero-overlap proposals rose from 23 to 29.** Adding 15
+proposals of which 6 overlap no annotated entity lowers the ratio and raises
+the count. A consumer filtering the bank sees the ratio; a consumer processing
+every proposal sees the count.
 
 Gate sheet: preserved matches PASS (0 lost), giant-mask rate PASS (0, by
-construction), top-100 zero-overlap PASS (−6.4 pp), unique @0.50 **FAIL** (0).
+construction), top-100 zero-overlap PASS (−6.4 pp proportional; +6 absolute, 23 → 29), unique @0.50
+**FAIL** (0).
 
 Both runs are kept side by side under
 `runs/arkitscenes_repair/arkitscenes_41069021/`: the strict artifacts are
@@ -1076,3 +1091,76 @@ answered. `47331972` was never downloaded or inspected.
 
 **Survives.** `eval/detection_repair.py`, byte-identical across all nine
 checkpoints, with its reproduced Mask3D baseline pinned by test.
+
+---
+
+# Checkpoint J — human spatial-QA key for 41069025, and one score against it
+
+Repair track stays closed. No repair run on 41069025; `47331972` untouched. No
+perception change: the scorer loads finalized Lane A artifacts and reads them.
+
+## The key
+
+`eval/human_feedback/arkitscenes_41069025_spatial_qa_key_v1.json`, status
+**DRAFT_PENDING_OWNER_CONFIRMATION**. Seven items, each restating a fact from
+`arkitscenes_sealed_visual_review_2026-08-09.json`. Nothing was taken from
+annotation boxes, Mask3D output, learned labels or any run artifact, and the
+key was written and hashed before a single system answer was read.
+
+It is **independent by construction**: every question is phrased about the
+room, never about a delivered instance id, so it survives a perception change
+and cannot become the system grading itself. A test enforces that no
+`obj_N` appears in any question.
+
+Four **unresolved UID mappings** are flagged rather than guessed — the single
+true rug, the single true trash can, the main kitchen counter, and cushion
+cardinality. The review confirms each exists (or diagnoses the impostor) but
+never says which delivered instance it is, so no per-instance item is scored.
+Those are the only things needing owner confirmation.
+
+## Score: Mask3D delivered + rgb_tight, one run
+
+35 delivered instances, 27 with admitted labels, 8 anonymous. Graph: 151 edges,
+all `NEAR`.
+
+| item | expected | system | |
+|---|---|---|---|
+| q1 rug cardinality | 1 | 0 | WRONG |
+| q2 trash-can cardinality | 1 | 2 (`obj_1`, `obj_12`) | WRONG |
+| q3 counter cardinality | 1 | 2 (`obj_16`, `obj_27`) | WRONG |
+| q4 sofa present | true | false | WRONG |
+| q5 cushion present | true | true (`obj_9`, `obj_13`, `obj_23`) | ok |
+| q6 cushions rest on sofa | `cushion ON_ENTITY_SURFACE sofa` | — | **unanswered** |
+| q7 counter not room-spanning | false | false | ok |
+
+**2 correct, 4 wrong, 1 unanswered.** 0.333 excluding unanswered; 0.286
+counting it as failure.
+
+`q6` is `unanswered`, not `wrong`: the delivered graph emits no
+`ON_ENTITY_SURFACE` edge of any type, because Checkpoint 2 recorded the
+geometry-only floor census as `unknown` here and no support edge is promoted.
+A system that cannot express an answer has not given a wrong one, and
+collapsing the two would hide a missing capability behind a mistake.
+
+## A confound the scorer flags automatically
+
+`q4` fails and `q5` passes **for the same underlying error**. The review
+diagnoses `obj_13` as the sofa; rgb_tight labels it `cushion`. So the system is
+credited with finding cushions partly because it mislabelled the sofa as one,
+and penalised for missing the sofa for the identical reason. The key declares
+this as `sofa_cushion_coverage`-style coupling and the scorer prints it
+whenever the signature (q4 wrong ∧ q5 correct) appears. **q5 should not be read
+as evidence the cushions were found.** On a stricter reading the honest score
+is 1/6 answerable.
+
+## What this does and does not say
+
+The two failures that are *not* label errors are informative: `q3` and `q7`
+together show the system reports two counters, neither room-spanning, against
+a scene with one — and the earlier detection work showed the room-spanning
+plane (`obj_8`, 7.38 × 5.95 × 0.20 m) exists but is not labelled `counter`
+under rgb_tight, which is why `q7` passes. `q7` passing is therefore weak
+evidence, not a capability.
+
+Seven items, one partial review, one scene. **This is not an end-to-end QA
+benchmark result**, and the repair track's closure is unaffected by it.

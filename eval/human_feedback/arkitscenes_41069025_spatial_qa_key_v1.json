@@ -1,0 +1,141 @@
+{
+ "schema": "arkitscenes_human_spatial_qa_key_v1",
+ "scene_id": "arkitscenes_41069025",
+ "video_id": "41069025",
+ "status": "DRAFT_PENDING_OWNER_CONFIRMATION",
+ "authored": "2026-08-10",
+ "provenance": {
+  "derived_from": "eval/human_feedback/arkitscenes_sealed_visual_review_2026-08-09.json",
+  "derivation": "Every expected answer below restates a fact the owner recorded in that review. Nothing was inferred from ARKitScenes annotation boxes, from Mask3D output, from learned labels, or from any run artifact.",
+  "why_a_separate_file": "The review declares itself 'partial_visual_review_not_a_qa_key'. This file is the key; it does not modify or replace the review, and the review remains the sole source of its content.",
+  "independence": "Questions are phrased about the SCENE, never about a delivered instance id. A system is scored on what it reports about the room, so the key stays valid across perception changes.",
+  "authored_before_scoring": "This key was written and hashed before any system answer was read."
+ },
+ "scoring_rules": {
+  "count_source": "instances carrying an admitted display label equal to the class, after the label stage's own admission threshold; unlabelled instances are not counted",
+  "class_normalization": "the graph's canonical hyphen form; underscore and space variants map to the same class family",
+  "unanswerable": "If the system emits no relation of the required type at all, the item is scored `unanswered` and reported separately from `wrong`. A system that cannot express an answer has not given a wrong one.",
+  "partial_credit": "none; each item is correct, wrong, or unanswered"
+ },
+ "independent_questions": [
+  {
+   "id": "q1_rug_cardinality",
+   "kind": "class_cardinality",
+   "question": "How many rugs are in this scene?",
+   "expected": 1,
+   "review_basis": "the scene contains one rug, not the many rugs suggested by learned labels",
+   "review_scope": "class cardinality"
+  },
+  {
+   "id": "q2_trash_can_cardinality",
+   "kind": "class_cardinality",
+   "question": "How many trash cans are in this scene?",
+   "expected": 1,
+   "review_basis": "the scene contains one trash can",
+   "review_scope": "class cardinality"
+  },
+  {
+   "id": "q3_counter_cardinality",
+   "kind": "class_cardinality",
+   "question": "How many kitchen counters are in this scene?",
+   "expected": 1,
+   "review_basis": "there is one main kitchen counter",
+   "review_scope": "class identity and instance extent"
+  },
+  {
+   "id": "q4_sofa_present",
+   "kind": "class_presence",
+   "question": "Is there a sofa or couch in this scene?",
+   "expected": true,
+   "review_basis": "sofa cushions rest on the sofa/couch (the review's own diagnosis also corrects obj_13 to sofa)",
+   "review_scope": "visible scene"
+  },
+  {
+   "id": "q5_cushion_present",
+   "kind": "class_presence",
+   "question": "Are there cushions in this scene?",
+   "expected": true,
+   "review_basis": "sofa cushions rest on the sofa/couch",
+   "review_scope": "visible scene",
+   "note": "Presence only. The review says 'cushions' and separately diagnoses two instances, but never states the cushion count as a scene fact, so no cardinality item is asserted here."
+  },
+  {
+   "id": "q6_cushion_on_sofa",
+   "kind": "support_relation",
+   "question": "What do the sofa cushions rest on?",
+   "expected_relation": "ON_ENTITY_SURFACE",
+   "expected_subject_class": "cushion",
+   "expected_object_class": "sofa",
+   "review_basis": "sofa cushions rest on the sofa/couch",
+   "review_scope": "visible scene"
+  },
+  {
+   "id": "q7_counter_is_not_room_spanning",
+   "kind": "instance_extent",
+   "question": "Is the kitchen counter a room-spanning planar region?",
+   "expected": false,
+   "expected_detail": "No instance reported as the kitchen counter should span the room. The owner reports the counter is a bounded object.",
+   "review_basis": "the delivered whole-plane region labeled counter is not the counter object; recorded extent 7.38 x 5.95 x 0.20 m",
+   "review_scope": "class identity and instance extent",
+   "scoring": "Correct when every instance labelled `counter` has a horizontal footprint smaller than ROOM_SPAN_FRACTION of the scene footprint. This phrasing avoids naming obj_8, so the item survives a perception change.",
+   "room_span_fraction": 0.5
+  }
+ ],
+ "unresolved_uid_mappings": [
+  {
+   "item": "the single true rug",
+   "status": "UNRESOLVED",
+   "why": "The review confirms exactly one rug exists but does not say which delivered instance it is; obj_9 and obj_23 carry the learned label `rug` and were both diagnosed as cushions.",
+   "needed_from_owner": "the delivered uid of the one real rug, or a statement that none of the delivered instances is it",
+   "blocks": "any per-instance rug scoring; q1 counts only, and does not check identity"
+  },
+  {
+   "item": "the single true trash can",
+   "status": "UNRESOLVED",
+   "why": "The review confirms one trash can and corrects obj_36 from `trash-can` to `cabinet`, leaving the real one unassigned.",
+   "needed_from_owner": "the delivered uid of the real trash can, or a statement that it was not delivered",
+   "blocks": "per-instance trash-can scoring; q2 counts only"
+  },
+  {
+   "item": "the main kitchen counter",
+   "status": "UNRESOLVED",
+   "why": "The review states obj_8 is an overmerged whole-plane region and NOT the counter, leaving the counter unassigned.",
+   "needed_from_owner": "the delivered uid of the main kitchen counter, or a statement that it was not delivered as a separate instance",
+   "blocks": "per-instance counter scoring; q3 counts and q7 checks extent only"
+  },
+  {
+   "item": "cushion cardinality",
+   "status": "UNRESOLVED",
+   "why": "The review diagnoses obj_9 and obj_23 as cushions but never states how many cushions the scene contains.",
+   "needed_from_owner": "the number of cushions, if a cardinality item is wanted",
+   "blocks": "any cushion cardinality question; q5 asserts presence only"
+  }
+ ],
+ "deliberately_excluded": [
+  {
+   "item": "per-instance label corrections (obj_13 sofa, obj_9/obj_23 cushion, obj_36 cabinet)",
+   "why": "These reference delivered instance ids, so a key built on them would be re-scoring the system against itself and would break the moment segmentation changes. The scene-level facts they imply are captured by q4, q5 and q6."
+  },
+  {
+   "item": "anything from 41069042",
+   "why": "Different scene. The curtains fact belongs to that scene's review."
+  },
+  {
+   "item": "counts of any class the review does not state",
+   "why": "The review is a partial visual review. Absence of a statement is not a statement of absence, and inventing counts would manufacture ground truth."
+  }
+ ],
+ "interpretation_limit": "Seven items from one partial visual review of one scene. This is a human scene-fact key, not a benchmark, and a score against it is not an end-to-end QA result.",
+ "known_confounds": [
+  {
+   "id": "sofa_cushion_coupling",
+   "items": [
+    "q4_sofa_present",
+    "q5_cushion_present"
+   ],
+   "description": "If the system labels the sofa as a cushion, q5 passes and q4 fails for one and the same error. q5 must not then be read as evidence the system found the cushions.",
+   "detection": "q4 wrong AND q5 correct is the signature; the scorer flags it automatically.",
+   "review_basis": "the review diagnoses obj_13 as the sofa, and rgb_tight labels obj_13 `cushion`. That per-instance fact is deliberately outside the key, so the confound is recorded here rather than scored."
+  }
+ ]
+}
