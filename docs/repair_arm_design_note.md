@@ -1,8 +1,9 @@
 # Multi-view 2D-mask → 3D instance repair arm — design note
 
-Status: **TRACK CLOSED at Checkpoint H.** Four mechanisms were built and
-measured against one unchanged evaluator; none added a single annotation match
-at IoU 0.50. The closure and what survives it are at the end of this file.
+Status: **TRACK CLOSED PERMANENTLY at Checkpoint I.** Four mechanisms plus one
+correctness replay were measured against one unchanged evaluator; none added a
+single annotation match at IoU 0.50. The closure and what survives it are at
+the end of this file.
 
 Constants below were declared at Checkpoint A, **before** the repair arm was
 implemented or run. Results are appended per checkpoint.
@@ -988,3 +989,90 @@ Checkpoint A: an annotation-free, hash-ordered, additively-pooled detection
 evaluator with a reproduced Mask3D baseline (7/18 and 9/20 at IoU 0.50) pinned
 by test. Any future proposal source can be scored against it without
 re-litigating the measurement.
+
+---
+
+# Checkpoint I — candidate-label-set replay, and PERMANENT closure
+
+No GPU. Identical detector sidecar, byte for byte. Detector and SAM pins,
+thresholds, frames, vocabulary, fusion constants, evaluator and gates all
+unchanged.
+
+## The correctness defect
+
+Checkpoint H discarded 13 of 127 detections whose phrase did not resolve to
+exactly one class — 10 of them `armchair chair`, plus `blinds window`,
+`stool table` and one empty string. That was wrong. Grounding DINO returning a
+span across two adjacent prompt entries is the model saying "armchair or
+chair": real evidence, not failed inference.
+
+Each detection now carries the **set** of classes its phrase could name, and
+association requires those sets to **intersect** rather than match.
+`{armchair, chair}` joins `{chair}`; `{sofa}` and `{cushion}` still never join;
+an empty set intersects nothing and cannot associate. Genuinely unknown
+phrases (`teapot`, `""`) still resolve to the empty set and are still dropped —
+ambiguity between known classes is evidence, an unknown word is not.
+
+Cluster reporting uses the intersection of member sets when non-empty
+(`armchair|chair`), else the most-admitted class, since single-linkage can
+chain `{a,b}`–`{b,c}`–`{c,d}` into an empty intersection.
+
+## Replay result
+
+| | strict (H) | candidate sets (I) |
+|---|---|---|
+| detections used | 114 | **127** |
+| lifted masks | 113 | **125** |
+| clusters supported | 23 | 27 |
+| proposals emitted | 13 | **15** |
+| repair-only zero-overlap | 46.2% | **40.0%** |
+| pooled zero-overlap | 58.0% | **55.8%** (−6.4 pp vs baseline) |
+| unique @ IoU 0.25 | +1 (oven) | +1 (oven) |
+| **unique @ IoU 0.50** | **0** | **0** |
+
+Recovering the discarded evidence did exactly what it should — two more
+proposals, two `armchair|chair` clusters, and a cleaner pooled bank than any
+other arm produced. It moved nothing at IoU 0.50.
+
+Gate sheet: preserved matches PASS (0 lost), giant-mask rate PASS (0, by
+construction), top-100 zero-overlap PASS (−6.4 pp), unique @0.50 **FAIL** (0).
+
+Both runs are kept side by side under
+`runs/arkitscenes_repair/arkitscenes_41069021/`: the strict artifacts are
+suffixed `.strict`, the replay overwrites the plain names.
+
+## Permanent closure
+
+Per the brief, unique recovery at IoU 0.50 remained zero, so the repair track
+closes permanently.
+
+| arm | proposals | unique @0.50 |
+|---|---|---|
+| B — Felzenszwalb + mesh-edge consensus | 52 | 0 |
+| D — SAM 2.1 automatic masks | 60 | 0 |
+| F — topology-only split | 868 | 0 |
+| H — Grounding DINO → SAM 2.1 | 13 | 0 |
+| I — same, candidate-label sets | 15 | **0** |
+| E — oracle-guided ceiling over all part banks | ≤16 parts | 0 |
+
+The last row is the one that makes this a closure rather than a pause: even
+choosing parts *with the annotation in hand*, no union of ≤16 from any bank
+reached IoU 0.50 for a single entity Mask3D missed.
+
+**One post-result change is on the record.** The candidate-set rule was written
+after the strict result had been scored. It is a correctness fix authorised as
+such, it can only *add* evidence — 13 detections that were being thrown away —
+and it moved the gated metric not at all. It is not tuning toward a number, but
+it is not blind either, and it should be read that way.
+
+**What no longer needs re-litigating.** Multi-view lifting on this capture is
+sound: 79.5% entity visibility, 84.3% mask coverage of what is visible, 8/12
+loopback probes recovered from perfect masks. Every arm fails the same way —
+high precision, low recall against ARKitScenes oriented-box extents.
+
+**Never touched.** `41069025` has no frame bundle and no run, so the audited
+counter/cushion cases were never evaluated by any arm; that gap is open, not
+answered. `47331972` was never downloaded or inspected.
+
+**Survives.** `eval/detection_repair.py`, byte-identical across all nine
+checkpoints, with its reproduced Mask3D baseline pinned by test.

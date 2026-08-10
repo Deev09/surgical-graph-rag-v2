@@ -48,7 +48,7 @@ from eval.detection_repair import Proposal, ProposalArtifact
 from extractors.arkitscenes_rgb_crops import load_frames
 from segmenter.base import sha256_file
 from segmenter.detector_guided_repair import (
-    VOCABULARY, generate_from_sidecar, label_from_prompt_phrase,
+    VOCABULARY, generate_from_sidecar, labels_from_prompt_phrase,
 )
 from segmenter.rgb_multiview_repair import FRAME_STRIDE
 from tools.arkitscenes_eval import DEFAULT_DATA_ROOT, load_canonical_geometry
@@ -150,10 +150,10 @@ def load_sidecar(path: Path, frames_manifest: dict) -> tuple[dict, dict, dict]:
         phrases = [str(p) for p in z[f"phrases_{slot:02d}"]]
         labels = []
         for phrase in phrases:
-            label = label_from_prompt_phrase(phrase)
-            if label is None:
+            candidates = labels_from_prompt_phrase(phrase)
+            if not candidates:
                 unresolved[phrase] = unresolved.get(phrase, 0) + 1
-            labels.append(label)
+            labels.append(candidates or None)
         out[slot] = {
             "masks": masks,
             "sam_scores": np.stack([
@@ -169,11 +169,13 @@ def load_sidecar(path: Path, frames_manifest: dict) -> tuple[dict, dict, dict]:
 
 
 def drop_unresolved(sidecar: dict) -> tuple[dict, int, int]:
-    """Remove detections whose phrase did not resolve to exactly one class.
+    """Remove detections whose phrase named NOTHING in the vocabulary.
 
-    A guessed label would corrupt label-guided association, which is the whole
-    mechanism under test, so an ambiguous detection is dropped rather than
-    coerced. The count is reported, not hidden.
+    Only genuinely unknown phrases are dropped. A phrase naming several known
+    classes -- `armchair chair` -- keeps all of them as a candidate set and
+    survives: it is model evidence, and association resolves it by requiring
+    candidate sets to intersect. The earlier single-label rule discarded 13 of
+    127 detections on the development scene, 10 of them for that reason alone.
     """
     kept_total = dropped_total = 0
     for slot, entry in sidecar.items():

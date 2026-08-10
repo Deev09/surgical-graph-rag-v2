@@ -29,10 +29,12 @@ WHAT IS STRUCTURAL HERE
     frame -- from the sidecar through association into the emitted proposal's
     notes, so any recovery can be attributed to a specific detection in a
     specific photograph.
-  * **Association requires label compatibility AND 3D overlap.** Two masks join
-    only if the detector called them the same class and they occupy the same
-    surface. This is the one thing the class-agnostic arm could not do, and it
-    is why a cushion mask cannot merge into a sofa cluster here.
+  * **Association requires label compatibility AND 3D overlap.** Each detection
+    carries the SET of vocabulary classes its phrase could name, and two masks
+    join only if those sets intersect and they occupy the same surface. A
+    `{armchair, chair}` detection joins a `{chair}` one; `{sofa}` and
+    `{cushion}` never join. This is the one thing the class-agnostic arm could
+    not do.
 
 The vocabulary is `extractors.learned_labels.GLOBAL_INDOOR_VOCABULARY_V1`,
 imported and unmodified.
@@ -53,10 +55,34 @@ from segmenter.sam_multiview_repair import (
 
 VOCABULARY: tuple[str, ...] = GLOBAL_INDOOR_VOCABULARY_V1
 
-# Association additionally requires the detector to agree on the class. The
-# geometric thresholds are IMPORTED from the class-agnostic arm rather than
-# re-declared, so the two arms differ only in the prompt and in this rule.
+# Association additionally requires the detector's candidate label SETS to
+# intersect. The geometric thresholds are IMPORTED from the class-agnostic arm
+# rather than re-declared, so the two arms differ only in the prompt and in
+# this rule.
 REQUIRE_SAME_LABEL = True
+
+_VOCAB_INDEX = {name: i for i, name in enumerate(VOCABULARY)}
+
+
+def _as_sets(labels) -> list[frozenset[str]]:
+    """Accept a bare label or a candidate set; normalise to sets."""
+    out = []
+    for entry in labels:
+        if isinstance(entry, str):
+            out.append(frozenset({entry}))
+        else:
+            out.append(frozenset(entry))
+    return out
+
+
+def _label_bits(candidates: frozenset[str]) -> int:
+    """Candidate set as a bitmask over the 41-class vocabulary."""
+    bits = 0
+    for name in candidates:
+        index = _VOCAB_INDEX.get(name)
+        if index is not None:
+            bits |= 1 << index
+    return bits
 
 
 def prompt_text(vocabulary: tuple[str, ...] = VOCABULARY) -> str:
@@ -69,26 +95,73 @@ def prompt_text(vocabulary: tuple[str, ...] = VOCABULARY) -> str:
     return " . ".join(name.replace("-", " ") for name in vocabulary) + " ."
 
 
-def label_from_prompt_phrase(phrase: str,
-                             vocabulary: tuple[str, ...] = VOCABULARY
-                             ) -> str | None:
-    """Map a detector's returned phrase back to a canonical vocabulary entry.
+def labels_from_prompt_phrase(phrase: str,
+                              vocabulary: tuple[str, ...] = VOCABULARY
+                              ) -> frozenset[str]:
+    """Map a detector phrase to the SET of vocabulary classes it could name.
 
-    Grounding DINO returns the span of the prompt it matched, which may be a
-    fragment ('trash' for 'trash can') or a concatenation when spans run
-    together. Anything that does not resolve to exactly one vocabulary entry is
-    dropped rather than guessed: a mislabelled mask would corrupt association,
-    and dropping is the conservative failure.
+    Grounding DINO returns the span of the prompt it matched. Three shapes
+    occur, and all three are model evidence:
+
+      exact        'sofa'            -> {sofa}
+      fragment     'trash'           -> {trash-can}
+      concatenated 'armchair chair'  -> {armchair, chair}
+
+    The concatenated case is the detector matching a span that runs across two
+    adjacent prompt entries. It is NOT failed inference: the model is saying
+    "this is an armchair or a chair", which is a real and useful constraint.
+    An earlier version of this function returned a single label or None, and
+    so discarded 13 of 127 detections on the development scene -- 10 of them
+    `armchair chair`. Returning a candidate set keeps that evidence and lets
+    association decide, which is what a set intersection is for.
+
+    A phrase naming nothing in the vocabulary still returns the empty set and
+    is still rejected. Ambiguity between known classes is evidence; an unknown
+    word is not.
     """
     cleaned = " ".join(phrase.lower().replace("-", " ").split())
     if not cleaned:
-        return None
+        return frozenset()
     canonical = {name.replace("-", " "): name for name in vocabulary}
     if cleaned in canonical:
-        return canonical[cleaned]
-    hits = [full for phrase_form, full in canonical.items()
-            if cleaned == phrase_form.split()[0] or phrase_form.startswith(cleaned)]
-    return hits[0] if len(hits) == 1 else None
+        return frozenset({canonical[cleaned]})
+
+    # Greedily consume the phrase as a sequence of vocabulary entries, longest
+    # match first, so 'trash can table' resolves to {trash-can, table} rather
+    # than to {trash-can} plus a dangling word.
+    words = cleaned.split()
+    by_length = sorted(canonical.items(), key=lambda kv: -len(kv[0].split()))
+    found: set[str] = set()
+    position = 0
+    while position < len(words):
+        for phrase_form, full in by_length:
+            tokens = phrase_form.split()
+            if words[position:position + len(tokens)] == tokens:
+                found.add(full)
+                position += len(tokens)
+                break
+        else:
+            # A lone fragment of exactly one class is still usable
+            # ('trash' -> trash-can). An unrecognised word contributes nothing
+            # and is skipped; whatever classes the phrase DID name survive.
+            prefix = [full for phrase_form, full in canonical.items()
+                      if phrase_form.startswith(words[position])]
+            if len(prefix) == 1 and len(words) == 1:
+                found.add(prefix[0])
+            position += 1
+    return frozenset(found)
+
+
+def label_from_prompt_phrase(phrase: str,
+                             vocabulary: tuple[str, ...] = VOCABULARY
+                             ) -> str | None:
+    """Single-label view of `labels_from_prompt_phrase`, or None if not unique.
+
+    Retained because it states the unambiguous case cleanly; the arm itself
+    uses the set form so that ambiguity survives to association.
+    """
+    candidates = labels_from_prompt_phrase(phrase, vocabulary)
+    return next(iter(candidates)) if len(candidates) == 1 else None
 
 
 @dataclass(frozen=True)
@@ -141,8 +214,14 @@ def associate_by_label_and_overlap(
            & (ratio >= ASSOC_CONTAINMENT_MIN_SIZE_RATIO)))
     link = (views[:, None] != views[None, :]) & geometric
     if require_same_label:
-        label_array = np.array(labels, dtype=object)
-        link &= label_array[:, None] == label_array[None, :]
+        # Candidate sets must INTERSECT, not match. {armchair, chair} joins
+        # {chair} because both admit `chair`; {sofa} and {cushion} still never
+        # join. Encoded as 41-bit masks so the pairwise test is one AND.
+        bits = np.array([_label_bits(s) for s in _as_sets(labels)],
+                        dtype=object)
+        compatible = np.array(
+            [[(a & b) != 0 for b in bits] for a in bits], dtype=bool)
+        link &= compatible
     np.fill_diagonal(link, False)
 
     parent = list(range(len(masks)))
@@ -163,12 +242,34 @@ def associate_by_label_and_overlap(
     return [sorted(v) for _, v in sorted(groups.items())]
 
 
+def _cluster_label(labels: list, group: list[int]) -> str:
+    """Reporting label for a cluster of candidate sets.
+
+    The intersection when it is non-empty -- every member admits that class.
+    Single-linkage can chain {a,b}-{b,c}-{c,d} into a cluster with an empty
+    intersection, so the fallback is the class the most members admit, with
+    ties broken alphabetically. Reporting only; association already happened.
+    """
+    sets = _as_sets([labels[i] for i in group])
+    common = set.intersection(*(set(s) for s in sets)) if sets else set()
+    if common:
+        return "|".join(sorted(common))
+    tally: dict[str, int] = {}
+    for candidate_set in sets:
+        for name in candidate_set:
+            tally[name] = tally.get(name, 0) + 1
+    if not tally:
+        return "?"
+    return sorted(tally.items(), key=lambda kv: (-kv[1], kv[0]))[0][0]
+
+
 def config_record() -> dict:
     return {
         "detector_pin": "docs/grounding_dino_pin.json",
         "vocabulary_source": "extractors.learned_labels.GLOBAL_INDOOR_VOCABULARY_V1",
         "vocabulary_size": len(VOCABULARY),
         "vocabulary_modified": False,
+        "label_rule": "candidate sets must intersect",
         "require_same_label": REQUIRE_SAME_LABEL,
         "assoc_iou": ASSOC_IOU,
         "assoc_containment": ASSOC_CONTAINMENT,
@@ -217,7 +318,8 @@ def generate_from_sidecar(xyz_world: np.ndarray, frames: list,
             "n_detections": int(len(raw)),
             "n_lifted": len(lifted),
             "n_visible_vertices": int(len(vertices)),
-            "labels": sorted({entry["labels"][m.mask_index] for m in lifted}),
+            "labels": sorted({name for m in lifted
+                              for name in entry["labels"][m.mask_index]}),
         })
         if progress:
             progress(f"  [{slot + 1}/{len(selected)}] {len(raw)} detections -> "
@@ -236,7 +338,7 @@ def generate_from_sidecar(xyz_world: np.ndarray, frames: list,
             unsupported += 1
             continue
         clusters.append(fused)
-        cluster_labels.append(labels[group[0]])
+        cluster_labels.append(_cluster_label(labels, group))
     if progress:
         progress(f"{len(clusters)} clusters supported, {unsupported} dropped")
 
@@ -260,7 +362,11 @@ def generate_from_sidecar(xyz_world: np.ndarray, frames: list,
     diagnostics["per_view"] = per_view
     diagnostics["config"] = config_record()
     diagnostics["detections"] = [{
-        "view": d.view, "mask_index": d.mask_index, "label": d.label,
+        "view": d.view, "mask_index": d.mask_index,
+        # Candidate sets are serialised as sorted lists; a frozenset is not
+        # JSON, and sorting keeps the diagnostics diffable run to run.
+        "candidate_labels": sorted(d.label) if not isinstance(d.label, str)
+        else [d.label],
         "detector_score": round(d.detector_score, 4),
         "box_xyxy": [round(v, 2) for v in d.box_xyxy],
         "sam_score": round(d.sam_score, 4),

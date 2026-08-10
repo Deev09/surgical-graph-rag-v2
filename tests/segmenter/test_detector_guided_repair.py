@@ -25,7 +25,7 @@ from extractors.learned_labels import GLOBAL_INDOOR_VOCABULARY_V1
 from extractors.arkitscenes_rgb_crops import Frame
 from segmenter.detector_guided_repair import (
     VOCABULARY, associate_by_label_and_overlap, config_record,
-    label_from_prompt_phrase, prompt_text,
+    label_from_prompt_phrase, labels_from_prompt_phrase, prompt_text,
 )
 from segmenter.sam_multiview_repair import LiftedMask, lift_masks
 
@@ -73,6 +73,60 @@ def test_ambiguous_or_unknown_phrases_resolve_to_none() -> None:
     assert label_from_prompt_phrase("") is None
     # 'c' prefixes cabinet, chair, clock, counter, cushion -> ambiguous.
     assert label_from_prompt_phrase("c") is None
+
+
+def test_ambiguous_recognised_phrases_survive_as_candidate_sets() -> None:
+    """`armchair chair` is model evidence, not failed inference.
+
+    Grounding DINO matched a span running across two adjacent prompt entries.
+    The detector is saying "armchair or chair", which is a real constraint, and
+    an earlier single-label rule threw 13 of 127 development detections away --
+    10 of them exactly this phrase.
+    """
+    assert labels_from_prompt_phrase("armchair chair") == \
+        frozenset({"armchair", "chair"})
+    assert labels_from_prompt_phrase("blinds window") == \
+        frozenset({"blinds", "window"})
+    assert labels_from_prompt_phrase("stool table") == \
+        frozenset({"stool", "table"})
+    # Unambiguous and fragment cases still collapse to one class.
+    assert labels_from_prompt_phrase("sofa") == frozenset({"sofa"})
+    assert labels_from_prompt_phrase("trash") == frozenset({"trash-can"})
+    # ...and every member is a real vocabulary entry, not a guess.
+    for phrase in ("armchair chair", "blinds window", "stool table"):
+        assert labels_from_prompt_phrase(phrase) <= set(VOCABULARY), phrase
+
+
+def test_genuinely_unknown_phrases_are_still_rejected() -> None:
+    """Ambiguity between KNOWN classes is evidence; an unknown word is not."""
+    for phrase in ("", "   ", "teapot", "helicopter", "xyzzy"):
+        assert labels_from_prompt_phrase(phrase) == frozenset(), phrase
+        assert label_from_prompt_phrase(phrase) is None, phrase
+    # A prefix matching several classes resolves to nothing rather than to one.
+    assert labels_from_prompt_phrase("c") == frozenset()
+    # A phrase mixing a known class with an unknown word keeps only the known
+    # part -- it named something real, and that part is usable.
+    assert labels_from_prompt_phrase("sofa teapot") == frozenset({"sofa"})
+
+
+def test_candidate_sets_associate_exactly_when_they_intersect() -> None:
+    frames = [_frame(), _frame()]
+    masks = [_mask(0, 0, 0, 10_000), _mask(1, 0, 0, 10_000)]
+
+    overlapping = associate_by_label_and_overlap(
+        masks, [frozenset({"armchair", "chair"}), frozenset({"chair"})], N)
+    assert len(overlapping) == 1, \
+        f"{{armchair,chair}} and {{chair}} share a class and must join: {overlapping}"
+
+    disjoint = associate_by_label_and_overlap(
+        masks, [frozenset({"armchair", "chair"}), frozenset({"sofa"})], N)
+    assert len(disjoint) == 2, \
+        f"disjoint candidate sets must not join: {disjoint}"
+
+    # An empty candidate set intersects nothing, so it can never associate.
+    empty = associate_by_label_and_overlap(
+        masks, [frozenset(), frozenset({"chair"})], N)
+    assert len(empty) == 2, f"an unknown-phrase mask associated: {empty}"
 
 
 def test_different_labels_never_associate_however_much_they_overlap() -> None:
@@ -204,6 +258,9 @@ TESTS = [
     test_vocabulary_is_the_repo_list_unmodified,
     test_prompt_uses_spaces_but_labels_keep_hyphens,
     test_ambiguous_or_unknown_phrases_resolve_to_none,
+    test_ambiguous_recognised_phrases_survive_as_candidate_sets,
+    test_genuinely_unknown_phrases_are_still_rejected,
+    test_candidate_sets_associate_exactly_when_they_intersect,
     test_different_labels_never_associate_however_much_they_overlap,
     test_same_label_still_needs_3d_overlap,
     test_same_view_detections_stay_separate,
