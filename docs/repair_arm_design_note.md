@@ -511,3 +511,97 @@ Run `notebooks/repair_sam2_colab.ipynb` with
 then drop the sidecar back and run the two commands in the notebook's closing
 cell. Gate failure on 41069021 stops the arm; 41069025 is prepared only if it
 passes, and 47331972 stays untouched either way.
+
+---
+
+# Checkpoint D — SAM 2.1 arm, 41069021 result: FAILED. Stop; 41069025 not prepared.
+
+GPU run completed on the pin: A100-SXM4-80GB, torch 2.11.0+cu128, bf16, 27.4 s,
+selection `53982b5b…`, checkpoint `2647878d…`, sam2 `2b90b9f5…`. 735 masks over
+32 frames, no empty frames. All three joins verified by the propose CLI before
+lifting.
+
+Local: 570 lifted masks → 318 raw clusters → 94 supported → 60 emitted
+(42 additional, 18 split), median 3,163 vertices.
+
+## Result against the brief's four proceed conditions
+
+| condition | value | |
+|---|---|---|
+| ≥ 2 unique entities at IoU 0.50 | **0** | **FAIL** |
+| existing Mask3D matches preserved | 0 lost | PASS |
+| giant-mask rate zero | 0.0% | PASS (by construction) |
+| top-100 zero-overlap ≤ +10 pp | **+12.1 pp** | **FAIL** |
+
+| bank | proposals | @0.25 | @0.50 | zero-overlap |
+|---|---|---|---|---|
+| mask3d_ms02 | 37 | 11 | 7 | 62.2% |
+| repair only | 60 | 3 | 0 | 81.7% |
+| pooled | 97 | **12** | 7 | 74.2% |
+
+The pooled bank gains **one** unique entity at IoU 0.25 (a cabinet, best IoU
+0.010 → 0.300) and none at 0.50.
+
+The evaluator also reports a fifth gate, `covers_an_audited_case`. It is a
+Checkpoint-A gate, is not among this brief's four proceed conditions, and is
+**not applicable to 41069021**: the human-feedback record contains audited
+cases only for 41069025 and 41069042. The evaluator was not modified.
+
+## Failure mechanism: high precision, low recall — SAM returns parts
+
+For every entity where a repair proposal overlaps at all, the proposal sits
+almost entirely *inside* the annotated object and covers a small fraction of
+it:
+
+| entity | entity verts | proposal verts | IoU | precision | recall |
+|---|---|---|---|---|---|
+| sofa | 36,258 | 5,529 | 0.152 | **0.997** | 0.152 |
+| table | 10,431 | 2,439 | 0.234 | **1.000** | 0.234 |
+| tv_monitor | 4,806 | 1,506 | 0.311 | **0.993** | 0.311 |
+| table | 17,453 | 3,276 | 0.176 | 0.947 | 0.178 |
+| cabinet | 11,226 | 1,924 | 0.144 | 0.862 | 0.148 |
+| oven | 13,417 | 1,234 | 0.074 | 0.823 | 0.076 |
+| cabinet | 26,384 | 2,854 | 0.091 | 0.855 | 0.092 |
+
+Median emitted proposal is 3,163 vertices against a median entity of 10,231.
+The proposals are **correct object parts, not wrong regions** — a cabinet door,
+a table top, a sofa cushion. IoU 0.50 requires recall ≥ 0.50 even at perfect
+precision; observed recall is 0.08–0.31, so the gate is unreachable by
+arithmetic, not by a threshold being slightly off.
+
+Two compounding causes, neither fixable by a constant in this module:
+
+1. **The pinned AMG configuration returns part-level masks at this
+   resolution.** `points_per_side=32` on a 256×192 frame over-segments objects
+   into parts. The pin is the frozen C1-P1 configuration and was not varied.
+2. **Annotation targets are OBB vertex sets** — everything inside an oriented
+   box — so an object part can never reach 0.50 against one even when it is a
+   perfectly clean part.
+
+The 60-proposal cap was binding (78 candidates, 18 dropped) but is **not** what
+failed the gate: raising it adds more parts, and parts do not raise recall.
+
+This is a different failure from Checkpoint B. That arm produced flat ~30 cm
+patches unrelated to objects, leaving 12 of 18 entities untouched. This arm
+touches 12 of 18 entities with precision 0.82–1.00 and fails on extent.
+
+## What the loopback did and did not predict
+
+The loopback predicted large objects landing near IoU 0.43–0.46. The real run
+came in far lower (0.07–0.31). The gap is the loopback's own design: it
+rendered **whole-object** synthetic masks, so it could validate lifting,
+association and fusion, but structurally could not simulate part-level
+fragmentation — the thing that actually decided the outcome. It was labelled a
+necessary-condition check and it was one; it is now also a recorded example of
+what such a check cannot see. A future version should render *part-level*
+probes.
+
+## Stop
+
+Per the brief, 41069021 fails and **41069025 is not prepared**: no frame
+bundle, no GPU run. `47331972` remains undownloaded and uninspected.
+
+The audited counter/cushion cases are recorded for 41069025 and therefore
+**were not evaluated** — reporting on them requires the run the gate forbids.
+
+No constant was tuned against this result.
