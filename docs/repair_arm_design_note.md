@@ -1,7 +1,11 @@
 # Multi-view 2D-mask → 3D instance repair arm — design note
 
-Status: constants below were declared at Checkpoint A, **before** the repair
-arm was implemented or run. Results are appended at Checkpoint B.
+Status: **TRACK CLOSED at Checkpoint H.** Four mechanisms were built and
+measured against one unchanged evaluator; none added a single annotation match
+at IoU 0.50. The closure and what survives it are at the end of this file.
+
+Constants below were declared at Checkpoint A, **before** the repair arm was
+implemented or run. Results are appended per checkpoint.
 
 ## What this arm is, and what it is not
 
@@ -892,3 +896,95 @@ Everything except detector+SAM inference is implemented and tested
 
 **If this arm also produces zero unique IoU-0.50 recoveries, the repair track
 closes** — no further mask, geometry or threshold variant.
+
+---
+
+# Checkpoint H — detector-guided SAM result, and CLOSURE of the repair track
+
+Run on the pin: A100-SXM4-40GB, 8.5 s, 126 boxes over the same 32 frames,
+selection `53982b5b…`. Detector pin **frozen before scoring** —
+`IDEA-Research/grounding-dino-base` revision `12bdfa31…`, weights
+`5548f844…` — at the published thresholds 0.35 / 0.25, vocabulary hash
+verified against the repo's 41 classes. 113 masks lifted → 66 label-consistent
+clusters → 23 supported → **13 emitted**.
+
+## Result
+
+| bank | proposals | @0.25 | @0.50 | giant | zero-overlap |
+|---|---|---|---|---|---|
+| mask3d_ms02 | 37 | 11 | 7 | 0.0% | 62.2% |
+| repair only | 13 | 4 | **0** | 0.0% | 46.2% |
+| pooled | 50 | **12** | 7 | 0.0% | **58.0%** |
+
+| condition | value | |
+|---|---|---|
+| ≥ 2 unique entities at IoU 0.50 | **0** | **FAIL** |
+| Mask3D matches preserved | 0 lost | PASS |
+| giant-mask rate zero | 0.0% | PASS (by construction) |
+| top-100 zero-overlap ≤ +10 pp | **−4.2 pp** | PASS |
+
+**This is the best repair bank the track produced** — 13 surgical proposals,
+sensible labels, one new entity at IoU 0.25 (an `oven` Mask3D had at 0.012), and
+the only arm that made the pooled bank *cleaner* rather than junkier. It still
+recovers **zero** unique entities at IoU 0.50.
+
+## Same wall as every other arm: recall, not precision
+
+Best repair proposal per entity it touches:
+
+| entity | baseline | repair IoU | precision | recall | label |
+|---|---|---|---|---|---|
+| table (17,453) | 0.531 | 0.380 | **0.962** | 0.385 | desk |
+| oven (13,417) | 0.012 | 0.312 | 0.744 | 0.349 | oven |
+| table (10,431) | 0.697 | 0.273 | 0.650 | 0.321 | table |
+| table (2,385) | 0.616 | 0.217 | 0.250 | **0.622** | table |
+| cabinet (11,226) | 0.086 | 0.185 | 0.235 | 0.464 | counter |
+
+Precision reaches 0.96; recall never exceeds 0.62 and is usually 0.02–0.48. IoU
+0.50 needs recall ≥ 0.50 at perfect precision. One over-extended `counter`
+detection (22,113 vertices) straddles five separate cabinet entities — the
+counter/cabinet-run ambiguity the human review already flagged on 41069025.
+
+13 of 127 detections were dropped for phrases that resolve to no single class
+(`armchair chair` ×10, `blinds window`, `stool table`, one empty). A span-
+parsing improvement could recover about ten detections. It was **not** made:
+the track closes rather than iterating.
+
+## Closure
+
+Per the brief, zero unique IoU-0.50 recoveries from detector-guided SAM closes
+the repair track. Four mechanisms, one unchanged evaluator, one scene:
+
+| arm | proposals | unique @0.50 | failure |
+|---|---|---|---|
+| B — Felzenszwalb + mesh-edge consensus | 52 | 0 | consensus graph is one 73%-of-mesh blob; emitted flat 30 cm patches |
+| D — SAM 2.1 automatic masks | 60 | 0 | masks are object parts: precision 0.82–1.00, recall 0.08–0.31 |
+| F — topology-only split of those masks | 868 | 0 | cuts at reconstruction holes, not object boundaries; 1 oracle-assembled hit, 0 genuine |
+| H — Grounding DINO boxes → SAM 2.1 | 13 | **0** | precision up to 0.96, recall ≤ 0.62 |
+
+And the oracle-guided ceiling (E) showed the parts are not merely
+unassembled — with the annotation in hand, no union of ≤16 parts from any bank
+reached IoU 0.50 for any missed entity.
+
+**What is established.** Multi-view 2D→3D lifting on this capture works: the
+corrected OpenCV convention, front-surface visibility and multiplicity-greedy
+frame selection give 79.5% entity visibility and 84.3% mask coverage of what is
+visible, and the loopback recovers 8/12 probes from perfect masks. The
+machinery is sound. What no 2D mask source tested here supplies is an extent
+that matches an ARKitScenes oriented-box entity: every arm lands high-precision
+and low-recall against that target.
+
+**What is not established, and should not be inferred.** That 2D-guided repair
+is impossible; that a different detector, prompt granularity or frame budget
+would fail; or anything at all about labelling, relations or QA. These are
+detection metrics on proposal banks for one scene.
+
+**Scope actually consumed.** 41069021 only. `41069025` was never prepared —
+no frame bundle, no GPU run — so the audited counter/cushion cases were never
+evaluated by any arm. `47331972` was never downloaded or inspected.
+
+**What survives for reuse.** `eval/detection_repair.py`, byte-identical since
+Checkpoint A: an annotation-free, hash-ordered, additively-pooled detection
+evaluator with a reproduced Mask3D baseline (7/18 and 9/20 at IoU 0.50) pinned
+by test. Any future proposal source can be scored against it without
+re-litigating the measurement.
