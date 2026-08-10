@@ -186,6 +186,9 @@ def test_only_the_evaluator_reads_annotations() -> None:
         # Same reason for the SAM arm: asserts the mechanism module and both
         # of its CLIs stay annotation-free, and needs the literal to check.
         "tests/segmenter/test_sam_multiview_repair.py",
+        # And the detector-guided arm: asserts its mechanism module and CLI
+        # stay annotation-free, which needs the literal to check for.
+        "tests/segmenter/test_detector_guided_repair.py",
     }
     offenders = []
     for p in sorted(REPO_ROOT.glob("**/*.py")):

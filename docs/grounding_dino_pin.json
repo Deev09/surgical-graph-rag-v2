@@ -1,0 +1,40 @@
+{
+ "arm": "detector_guided_sam_repair",
+ "design_note": "docs/repair_arm_design_note.md",
+ "detector": {
+  "implementation": "huggingface transformers AutoModelForZeroShotObjectDetection",
+  "model_id": "IDEA-Research/grounding-dino-base",
+  "revision": null,
+  "checkpoint_sha256": null,
+  "pin_status": "UNPINNED_UNTIL_FIRST_RUN",
+  "pin_procedure": "The revision and weight sha256 are resolved and printed by notebooks/repair_gdino_sam2_colab.ipynb, then written into this file by the freeze commit before any result is claimed. This mirrors docs/c1_p1_multiview_proposals_protocol.md, which states the SAM weights SHA-256 is filled by the freeze commit after download and before any scene inference. Nothing here is invented ahead of the download.",
+  "enforcement": "tools/arkitscenes_repair_propose_gdino.py refuses a sidecar whose revision or sha disagrees once these fields are non-null, and refuses to treat a run as pinned while they are null."
+ },
+ "thresholds": {
+  "box_threshold": 0.35,
+  "text_threshold": 0.25,
+  "source": "published defaults of the Grounding DINO reference demo and the transformers post_process_grounded_object_detection docs",
+  "fixed_before_evaluation": true,
+  "sweep": "none permitted; one operating point, one run per scene"
+ },
+ "vocabulary": {
+  "source": "extractors.learned_labels.GLOBAL_INDOOR_VOCABULARY_V1",
+  "n_classes": 41,
+  "modified": false,
+  "prompt_formatting": "Hyphens are rendered as spaces in the text prompt only ('trash-can' -> 'trash can'); the canonical hyphen form is what is stored and matched. This is prompt formatting, not a vocabulary change."
+ },
+ "segmenter": {
+  "sam2_commit": "2b90b9f5ceec907a1c18123530e92e794ad901a4",
+  "checkpoint": "sam2.1_hiera_large.pt",
+  "checkpoint_sha256": "2647878d5dfa5098f2f8649825738a9345572bae2d4350a2468587ece47dd318",
+  "prompting": "box prompts from the detector; multimask_output=false, one mask per accepted box",
+  "note": "Same checkpoint as the automatic-mask arm. The variable under test is what prompts SAM, not which SAM."
+ },
+ "frames": {
+  "scene_id": "arkitscenes_41069021",
+  "selection_sha256": "53982b5bf1166163f490cb2e4d6988e7b86e65d3e9033995d8dd51f572857363",
+  "n_frames": 32,
+  "note": "The identical 32-frame bundle the automatic-mask arm used. Reused unchanged so the mask source is the only variable."
+ },
+ "seeds": 0
+}

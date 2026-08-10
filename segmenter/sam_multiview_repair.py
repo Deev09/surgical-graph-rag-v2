@@ -423,8 +423,15 @@ def classify_clusters(clusters: list[MaskCluster], baseline: list[np.ndarray],
     """
     rejected = {"duplicate_of_baseline": 0, "ambiguous_containment": 0,
                 "split_piece_too_small": 0, "duplicate_repair": 0}
+    # Each candidate remembers which cluster it came from. Emission reorders,
+    # caps and dedupes, and a `split` piece is CLIPPED to its parent, so a
+    # caller cannot recover the source afterwards by matching vertices -- a
+    # detector-guided caller that tried lost the label on every split. The
+    # index is reported through diagnostics, which keeps this function's
+    # signature and behaviour unchanged.
+    sources: dict[int, int] = {}
     candidates: list[RepairProposal] = []
-    for cluster in clusters:
+    for cluster_index, cluster in enumerate(clusters):
         verts = cluster.vertices
         best_containment, best_parent, best_iou = 0.0, None, 0.0
         for j, parent in enumerate(baseline):
@@ -443,6 +450,7 @@ def classify_clusters(clusters: list[MaskCluster], baseline: list[np.ndarray],
             candidates.append(RepairProposal(
                 verts, "additional", cluster.confidence,
                 float(cluster.support_views), 0.0, None, best_containment))
+            sources[id(candidates[-1])] = cluster_index
             continue
         if best_containment >= SPLIT_MIN_CONTAINMENT and best_parent is not None:
             parent = baseline[best_parent]
@@ -457,6 +465,7 @@ def classify_clusters(clusters: list[MaskCluster], baseline: list[np.ndarray],
                 piece, "split", cluster.confidence,
                 float(cluster.support_views), 0.0, best_parent,
                 best_containment))
+            sources[id(candidates[-1])] = cluster_index
             continue
         rejected["ambiguous_containment"] += 1
 
@@ -480,6 +489,7 @@ def classify_clusters(clusters: list[MaskCluster], baseline: list[np.ndarray],
         kept.append(cand)
 
     diagnostics = {
+        "source_cluster_indices": [sources[id(p)] for p in kept],
         "n_clusters": len(clusters),
         "n_candidates": len(candidates),
         "n_emitted": len(kept),

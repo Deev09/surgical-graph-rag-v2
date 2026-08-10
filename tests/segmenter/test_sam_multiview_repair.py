@@ -288,6 +288,38 @@ def test_selection_enforces_diversity_and_prefers_multiplicity() -> None:
         "multiplicity objective selected no overlapping views at all"
 
 
+def test_source_cluster_indices_track_every_emitted_proposal() -> None:
+    """Emission reorders, caps and CLIPS, so the source index is the only way
+    a caller can carry per-cluster metadata (a detector label) through."""
+    frames = [_frame(), _frame(_yaw(30))]
+    visibility = {0: np.arange(N_VERTICES), 1: np.arange(N_VERTICES)}
+    # The parent starts at 5000 and the split cluster starts at 4000, so
+    # clipping removes the cluster's HEAD. A cluster wholly inside its parent
+    # would be clipped to itself and prove nothing.
+    parent = np.arange(5_000, 15_000, dtype=np.int64)
+    unexplained = fuse_cluster([_mask(0, 0, 50_000, 55_000),
+                                _mask(1, 0, 50_000, 55_000)],
+                               frames, visibility, N_VERTICES)
+    piece = fuse_cluster([_mask(0, 1, 4_000, 10_500),
+                          _mask(1, 1, 4_000, 10_500)],
+                         frames, visibility, N_VERTICES)
+    clusters = [unexplained, piece]
+    proposals, diagnostics = classify_clusters(clusters, [parent], N_VERTICES)
+    sources = diagnostics["source_cluster_indices"]
+    assert len(sources) == len(proposals), (sources, len(proposals))
+    for proposal, source in zip(proposals, sources):
+        origin = clusters[source]
+        if proposal.kind == "additional":
+            assert np.array_equal(proposal.vertices, origin.vertices)
+        else:
+            # A split piece is clipped to its parent, so it is a SUBSET of the
+            # cluster rather than equal to it -- which is exactly why matching
+            # on vertices does not work and the index is required.
+            assert set(proposal.vertices.tolist()) <= set(
+                origin.vertices.tolist()), "split piece is not from its cluster"
+            assert len(proposal.vertices) < len(origin.vertices)
+
+
 def test_config_record_is_complete() -> None:
     """Every declared constant reaches the artifact manifest."""
     record = config_record()
@@ -346,6 +378,7 @@ TESTS = [
     test_classification_emits_beside_the_baseline,
     test_a_copy_of_a_baseline_proposal_is_not_a_repair,
     test_selection_enforces_diversity_and_prefers_multiplicity,
+    test_source_cluster_indices_track_every_emitted_proposal,
     test_config_record_is_complete,
     test_module_is_annotation_free,
     test_loopback_artifact_if_present,

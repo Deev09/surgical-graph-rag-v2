@@ -805,3 +805,90 @@ mechanism this measurement does not rule out. It equally does not support it:
 nothing here measures whether normal discontinuities coincide with the specific
 boundaries these masks straddle, and the same cut would also fire on every
 interior crease of a sofa. That is a measurement, not a plan.
+
+---
+
+# Checkpoint G — detector-guided SAM arm, built and awaiting one GPU run
+
+Checkpoints B, E and F are closed negatives and are not revisited. No normal,
+depth or connectivity threshold experiment was run.
+
+`eval/detection_repair.py` is **byte-identical to Checkpoint A** (zero diff).
+41069025 not prepared; 47331972 untouched.
+
+## The single change under test
+
+Every prior arm segmented *without being told what to look for*. The
+class-agnostic SAM arm seeded a 32×32 point grid and produced object PARTS —
+precision 0.82–1.00, recall 0.08–0.31 — and no union of those parts reached
+IoU 0.50 for a missed entity, before or after topology splitting.
+
+Nothing in that says SAM cannot outline a whole object. It says nothing told it
+which object to outline. So the variable here is the **prompt**: Grounding DINO
+boxes over the fixed 41-class vocabulary, each box prompting the *same* SAM 2.1
+checkpoint. Same 32 frames, same lifting, same geometric association
+thresholds, same evaluator, same gates.
+
+## Pins, fixed before evaluation
+
+| | |
+|---|---|
+| detector | `IDEA-Research/grounding-dino-base` |
+| thresholds | `box_threshold=0.35`, `text_threshold=0.25` — published defaults, **no sweep** |
+| vocabulary | `GLOBAL_INDOOR_VOCABULARY_V1`, 41 classes, imported not copied |
+| segmenter | SAM 2.1 Hiera-L, sha `2647878d…`, box prompts, `multimask_output=False` |
+| frames | the identical 32-frame bundle, selection `53982b5b…` |
+
+Recorded in `docs/grounding_dino_pin.json`. The detector **revision and weight
+sha are null until the first run**: the notebook resolves and prints them, and
+they go into the pin file by the freeze commit before any result is claimed —
+the same procedure `docs/c1_p1_multiview_proposals_protocol.md` used for the
+SAM weights. Nothing was invented ahead of the download, and the CLI reports
+the run as `UNPINNED` while those fields are null.
+
+The propose CLI refuses a sidecar on any of five joins: frame selection hash,
+SAM commit, SAM checkpoint sha, detector identity/revision/sha once frozen,
+either threshold differing from the pin, or a vocabulary that does not hash to
+the repo's list. Refusing a threshold mismatch is what "no sweep" means
+mechanically rather than as a promise.
+
+## What is structural
+
+- **No background or complement proposal.** Only detected boxes produce masks.
+  A test AST-scans the module for mask inversion, `logical_not`, `invert` and
+  `setdiff1d` and fails on any of them.
+- **Association requires compatible labels AND 3D overlap.** Two masks merge
+  only if the detector named the same class and they occupy the same surface.
+  The geometric half is *imported* from the class-agnostic arm, so the two
+  differ only in the prompt and this rule.
+- **Provenance survives to the proposal.** Detector label, score, box and frame
+  ride from the sidecar into each emitted proposal's notes.
+- Phrases that do not resolve to exactly one vocabulary entry are **dropped,
+  not guessed**, and counted in the diagnostics.
+
+## Two defects the pre-GPU smoke test caught
+
+The whole post-GPU path was exercised on a synthetic sidecar in the real wire
+format, into a scratch directory.
+
+1. **Split proposals lost their label.** Labels were re-attached by matching a
+   proposal's first vertex to its cluster's, but a `split` piece is clipped to
+   its Mask3D parent, so that match fails whenever clipping removes the head.
+   Two of five proposals came out labelled `?`. Fixed by threading the source
+   cluster index through `classify_clusters` diagnostics — an additive change
+   that leaves the function's signature and behaviour alone.
+2. Re-running the class-agnostic arm afterwards reproduces proposal sha
+   `39bcd061c21ae464…` **exactly**, confirming the Checkpoint D result is
+   untouched by that patch.
+
+Both are now regression-tested, including a fixture that genuinely exercises
+head-clipping — the first attempt clipped only the tail and would have passed
+vacuously.
+
+## Status
+
+Everything except detector+SAM inference is implemented and tested
+(104/104 test files). The run is one Colab session on the existing bundle.
+
+**If this arm also produces zero unique IoU-0.50 recoveries, the repair track
+closes** — no further mask, geometry or threshold variant.
