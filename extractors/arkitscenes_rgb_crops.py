@@ -28,14 +28,34 @@ xyz_canon @ R``.
 
 A trajectory row is ``ts ax ay az tx ty tz`` where ``(ax,ay,az)`` is the
 angle-axis of the WORLD->CAMERA rotation and ``(tx,ty,tz)`` its translation;
-the camera centre is ``-R.T @ t``. Verified rather than assumed: those
-centres fall inside the mesh bounds at handheld heights (0.06-1.34 m), and a
-z-buffered colour reprojection reproduces the photograph.
+the camera centre is ``-R.T @ t``. Those centres fall inside the mesh bounds
+at handheld heights (0.06-1.34 m), which validates the translation/rotation
+COMPOSITION.
 
-ARKit's camera looks down -z with +y up, while the `.pincam` intrinsics are
-pinhole/OpenCV (+z forward, +y down), hence the ``[1,-1,-1]`` flip. Getting
-that wrong yields crops that look plausible and mean nothing, which is why
-it is asserted in tests instead of trusted.
+*** UNRESOLVED, 2026-08-09 -- DO NOT RUN A LABEL EXPERIMENT ON THIS YET ***
+
+It does NOT validate the axis convention, and the axis convention is wrong
+or the pose-to-frame association is. A z-buffered colour reprojection of the
+full mesh under a selected frame's pose shows a DIFFERENT part of the room
+than that frame's photograph. Consequences already observed: instances
+project onto blank walls and ceilings, so the "best view" of a chair is a
+featureless wall, and the RGB arms of the label A/B score 0/7 for a reason
+that has nothing to do with the input hypothesis.
+
+An earlier note here claimed the reprojection reproduced the photograph.
+That was over-read from one ambiguous frame -- diagonal streaks in a point
+render were taken to match diagonal floor planks. Retracted.
+
+Ruled out so far: pose-matching tolerance (tightening MAX_POSE_DT_S from
+0.05 to 0.002, leaving 1878 exactly-matched frames, changes nothing).
+Still open: the ``[1,-1,-1]`` flip, the direction of the world<->camera
+transform, whether ``lowres_wide.traj`` indexes the lowres stream at all,
+and whether the canonical<->capture rotation needs its inverse.
+
+The synthetic-camera tests below pin the handedness of `project` against a
+STATED convention; they cannot tell whether that convention is ARKit's. Fix
+by finding a frame whose reprojection matches its photograph, then asserting
+that as a regression test.
 
 OCCLUSION
 ---------
@@ -65,7 +85,7 @@ from PIL import Image
 
 # Frames are 60 Hz and the trajectory ~10 Hz, so most frames have no exact
 # pose. A frame is usable only if a pose exists within this many seconds.
-MAX_POSE_DT_S = 0.05
+MAX_POSE_DT_S = 0.002
 # Points sampled per instance when scoring frames. Scoring only needs a
 # reliable visible-fraction, and the full vertex set is wasteful.
 SCORE_SAMPLE = 400
@@ -90,9 +110,21 @@ DEPTH_TOLERANCE_M = 0.12
 # Frames re-checked with the z-buffer, taken from the cheap in-frame ranking.
 # Rasterising all ~1900 frames per instance would be wasteful when only the
 # best few can win.
-VERIFY_TOP_K = 30
+VERIFY_TOP_K = 150
 # Fraction of an instance's in-frame points that must survive occlusion.
 MIN_VISIBLE_FRACTION = 0.25
+# Target share of the frame the instance's projected box should occupy.
+# Ranking purely by unoccluded point count selects the CLOSEST, most face-on
+# view, because proximity maximises projected points. For a table that is a
+# close-up of the tabletop: a textureless surface filling the frame with no
+# surroundings -- the exact opposite of what a context experiment needs. A
+# lognormal preference around this value keeps the object large enough to
+# read and small enough to sit in a scene.
+IDEAL_FILL = 0.15
+FILL_LOG_SIGMA = 0.9
+# Views where the instance runs off the edge are penalised: a clipped object
+# is a partial object, and CLIP is being asked what the whole thing is.
+BORDER_PX = 2
 # How far outside the target mask is dimmed in the marked arm: 1.0 keeps the
 # surroundings untouched, 0.0 blacks them out.
 CONTEXT_DIM = 0.45
@@ -288,17 +320,58 @@ class RgbCropSource:
         scored.sort(key=lambda r: (-r[1], r[0]))     # ties -> earliest frame
         return scored
 
+    def view_quality(self, pts: np.ndarray, frame_index: int) -> dict | None:
+        """Score one candidate view, or None if it fails a hard filter.
+
+        Three terms, because raw point count alone picks degenerate views:
+          completeness -- share of the WHOLE instance that is unoccluded and
+                          in frame, so partial glimpses lose to full ones;
+          fill         -- lognormal preference for the object occupying
+                          ~IDEAL_FILL of the frame, so a close-up of one
+                          textureless face loses to a view of the object;
+          uncropped    -- share of visible points off the image border.
+        """
+        f = self.frames[frame_index]
+        n_in, n_vis = self.visible_counts(pts, frame_index)
+        if n_vis < MIN_VISIBLE_POINTS:
+            return None
+        occl_frac = n_vis / n_in if n_in else 0.0
+        if occl_frac < MIN_VISIBLE_FRACTION:
+            return None
+        completeness = n_vis / len(pts)
+
+        uv, inb = project(pts, f)
+        u, v = uv[inb, 0], uv[inb, 1]
+        fill = (((u.max() - u.min()) * (v.max() - v.min()))
+                / float(f.width * f.height))
+        fill = max(fill, 1e-6)
+        scale_term = math.exp(-((math.log(fill) - math.log(IDEAL_FILL)) ** 2)
+                              / (2.0 * FILL_LOG_SIGMA ** 2))
+        on_border = ((u <= BORDER_PX) | (u >= f.width - 1 - BORDER_PX)
+                     | (v <= BORDER_PX) | (v >= f.height - 1 - BORDER_PX))
+        uncropped = 1.0 - float(on_border.mean())
+        return {
+            "frame_index": frame_index,
+            "n_visible": int(n_vis),
+            "visible_fraction": float(occl_frac),
+            "completeness": float(completeness),
+            "fill": float(fill),
+            "uncropped": uncropped,
+            "score": float(completeness * scale_term * uncropped),
+        }
+
     def ranked_views(self, vertex_idx: np.ndarray) -> list[tuple[int, int, float]]:
         """[(frame_index, n_unoccluded, visible_fraction)] best-first."""
         pts = self.xyz_world[self._sample(np.asarray(vertex_idx))]
-        out = []
+        scored = []
         for fi, _n in self.score_frames(vertex_idx)[:VERIFY_TOP_K]:
-            n_in, n_vis = self.visible_counts(pts, fi)
-            frac = (n_vis / n_in) if n_in else 0.0
-            if n_vis >= MIN_VISIBLE_POINTS and frac >= MIN_VISIBLE_FRACTION:
-                out.append((fi, n_vis, frac))
-        out.sort(key=lambda r: (-r[1], r[0]))
-        return out
+            q = self.view_quality(pts, fi)
+            if q is not None:
+                scored.append(q)
+        # highest quality first; frame index breaks ties for determinism
+        scored.sort(key=lambda q: (-q["score"], q["frame_index"]))
+        return [(q["frame_index"], q["n_visible"], q["visible_fraction"])
+                for q in scored]
 
     def _mark(self, img: Image.Image, box, uv_vis: np.ndarray) -> Image.Image:
         """Dim everything outside the target's projected pixels.
