@@ -134,8 +134,11 @@ FILL_LOG_SIGMA = 0.9
 # is a partial object, and CLIP is being asked what the whole thing is.
 BORDER_PX = 2
 # How far outside the target mask is dimmed in the marked arm: 1.0 keeps the
-# surroundings untouched, 0.0 blacks them out.
-CONTEXT_DIM = 0.45
+# surroundings untouched, 0.0 blacks them out. Was 0.45, which turned a
+# normally-lit room into grey mush and destroyed the very context the marked
+# arm exists to supply -- observed directly in the crops, and independent of
+# the projection bug. Recorded config, not a frozen constant.
+CONTEXT_DIM = 0.7
 
 
 def angle_axis_to_matrix(a: np.ndarray) -> np.ndarray:
@@ -204,7 +207,12 @@ def load_frames(scene_dir: Path, stride: int = 1) -> list[Frame]:
         raise ValueError(f"no trajectory rows in {scene_dir}")
     ts = np.array([r[0] for r in traj])
     frames: list[Frame] = []
-    pngs = sorted((scene_dir / "lowres_wide").glob("*.png"))[::stride]
+    # Stride is applied AFTER pose matching, never before. The RGB stream is
+    # 60 Hz and the trajectory ~10 Hz, so only about one frame in six has an
+    # exact pose; striding the raw list first intersects two unrelated
+    # subsamples and decimated 1878 usable frames to 122, which silently
+    # starved view selection.
+    pngs = sorted((scene_dir / "lowres_wide").glob("*.png"))
     for png in pngs:
         try:
             stamp = float(png.stem.split("_", 1)[1])
@@ -219,7 +227,7 @@ def load_frames(scene_dir: Path, stride: int = 1) -> list[Frame]:
         w, h, fx, fy, cx, cy = (float(v) for v in pin.read_text().split())
         frames.append(Frame(stamp, png, traj[j][1], traj[j][2],
                             fx, fy, cx, cy, int(w), int(h)))
-    return frames
+    return frames[::stride] if stride > 1 else frames
 
 
 def project(points_world: np.ndarray, f: Frame) -> tuple[np.ndarray, np.ndarray]:
@@ -326,7 +334,8 @@ class RgbCropSource:
         scored.sort(key=lambda r: (-r[1], r[0]))     # ties -> earliest frame
         return scored
 
-    def view_quality(self, pts: np.ndarray, frame_index: int) -> dict | None:
+    def view_quality(self, pts: np.ndarray, frame_index: int,
+                     *, enforce: bool = True) -> dict | None:
         """Score one candidate view, or None if it fails a hard filter.
 
         Three terms, because raw point count alone picks degenerate views:
@@ -339,10 +348,12 @@ class RgbCropSource:
         """
         f = self.frames[frame_index]
         n_in, n_vis = self.visible_counts(pts, frame_index)
-        if n_vis < MIN_VISIBLE_POINTS:
+        if n_in == 0:
+            return None
+        if enforce and n_vis < MIN_VISIBLE_POINTS:
             return None
         occl_frac = n_vis / n_in if n_in else 0.0
-        if occl_frac < MIN_VISIBLE_FRACTION:
+        if enforce and occl_frac < MIN_VISIBLE_FRACTION:
             return None
         completeness = n_vis / len(pts)
 
@@ -375,6 +386,31 @@ class RgbCropSource:
             if q is not None:
                 scored.append(q)
         # highest quality first; frame index breaks ties for determinism
+        if not scored:
+            # Every candidate failed a quality filter. Return the best one
+            # anyway rather than no view at all: the evaluator requires labels
+            # to cover the delivered partition exactly, and dropping an
+            # instance from only the RGB arms would silently unpair the
+            # comparison. The poor visibility is reported by `coverage`, so
+            # analysis can stratify on it instead of it vanishing.
+            cands = self.score_frames(vertex_idx)[:VERIFY_TOP_K]
+            if not cands:
+                # Not even MIN_VISIBLE_POINTS anywhere: rank every frame by
+                # raw in-frame count with no floor at all, so an instance that
+                # is barely observed still yields its single best glimpse.
+                raw = []
+                for i, f in enumerate(self.frames):
+                    _uv, inb = project(pts, f)
+                    n = int(inb.sum())
+                    if n:
+                        raw.append((i, n))
+                raw.sort(key=lambda r: (-r[1], r[0]))
+                cands = raw[:VERIFY_TOP_K]
+            for fi, _n in cands:
+                q = self.view_quality(pts, fi, enforce=False)
+                if q is not None:
+                    scored.append(q)
+                    break
         scored.sort(key=lambda q: (-q["score"], q["frame_index"]))
         return [(q["frame_index"], q["n_visible"], q["visible_fraction"])
                 for q in scored]
