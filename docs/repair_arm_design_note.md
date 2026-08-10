@@ -481,3 +481,33 @@ pinned:
 The pinned configuration is CUDA bf16 on an A100. This machine is an Apple
 M4 Pro with no CUDA and no torch installed, so inference cannot run here.
 41069025 is not prepared and 47331972 is untouched.
+
+### Post-GPU path verified before the GPU session
+
+The whole downstream half was exercised on a **synthetic sidecar** built in the
+exact wire format (packbits masks, scores, shapes, pinned env) over the real
+development scene, run through the real CLIs into a scratch directory:
+
+```
+propose_sam  45 lifted masks -> 13 clusters -> 10 supported -> 5 emitted
+repair_eval  pooled 42 proposals, gates evaluated, report written
+```
+
+So sidecar parsing, the pin/selection joins, lifting, association, fusion,
+finalization, additive pooling and gate evaluation all run end to end. **The
+numbers from that run are meaningless** — the synthetic masks were rendered
+*from* the Mask3D proposals, so the arm can only rediscover the baseline — and
+they were written to a scratch path, not to `runs/`. It is a plumbing check: a
+crash discovered after a GPU session would waste the session.
+
+`tests/tools/test_arkitscenes_repair_propose_sam.py` pins the cheap half of
+that (selection-hash mismatch, off-pin model, frame-count and shape mismatch,
+empty-mask frames) so it cannot rot between sessions.
+
+## Handoff
+
+Run `notebooks/repair_sam2_colab.ipynb` with
+`runs/arkitscenes_repair/arkitscenes_41069021/repair_frames_arkitscenes_41069021.tar.gz`,
+then drop the sidecar back and run the two commands in the notebook's closing
+cell. Gate failure on 41069021 stops the arm; 41069025 is prepared only if it
+passes, and 47331972 stays untouched either way.
