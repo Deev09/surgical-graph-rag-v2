@@ -174,6 +174,11 @@ def test_only_the_evaluator_reads_annotations() -> None:
         # naming the annotation file, which is stricter than this substring
         # sweep. It needs the literal in order to look for it.
         "tests/tools/test_arkitscenes_mask3d_contract.py",
+        # Same reason: asserts that eval/detection_repair.py does NOT contain
+        # the literal, and needs the literal in order to look for it. The
+        # detection-repair evaluator takes entities as an argument and never
+        # opens a file, which is what that test pins.
+        "tests/eval/test_detection_repair.py",
     }
     offenders = []
     for p in sorted(REPO_ROOT.glob("**/*.py")):
