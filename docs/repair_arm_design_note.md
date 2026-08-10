@@ -699,3 +699,109 @@ mask source, and directly tests whether the precision collapse is caused by
 masks bleeding across geometric boundaries — the one hypothesis consistent with
 all the numbers above. If cut parts assemble to 0.50, the fix is geometric
 boundary snapping, not a new pin.
+
+---
+
+# Checkpoint F — topology-only boundary cut: 0 genuine recoveries. Stop.
+
+Zero GPU, same pinned sidecar, no SAM parameter changed. Development stop held:
+41069025 not run, 47331972 untouched. `eval/detection_repair.py` byte-identical
+to Checkpoint A.
+
+## What was run
+
+For each of the 570 lifted SAM masks: take its vertices, induce the
+mesh-adjacency subgraph on exactly those vertices, split into connected
+components. **No distance, normal, depth, curvature or learned threshold** —
+`connected_components` does not even take coordinates, and a test asserts its
+signature. The only threshold is the existing `MIN_MASK_VERTICES = 200`. Every
+qualifying component is emitted; none is selected against annotations. The bank
+is finalized and sha256-stamped (`85cd974dd86112fb…`) before the ceiling opens
+a single box.
+
+## Components
+
+| quantity | value |
+|---|---|
+| components before min-size | **51,446** |
+| components emitted | **868** (835 unique vertex sets) |
+| masks that split | 556/570 (97.5%), median 38, mean 90.3, max 1,037 |
+| mass removed by min-size | **14.4%** (305,346 of 2.1M mask-vertices) |
+| component size | min 200, p10 251, median 736, p90 4,929, max 33,824 |
+
+The size floor discards 98% of components but only 14.4% of mass: almost all
+components are sub-200-vertex speckle at occlusion edges.
+
+## Ceiling, same ≤1/2/4/8/16 budgets
+
+| bank | props | zero-ovl | ≤1 | ≤2 | ≤4 | ≤8 | ≤16 | **missed reached** | **1-part** | **assembled** |
+|---|---|---|---|---|---|---|---|---|---|---|
+| emitted | 60 | 81.7% | 0 | 0 | 0 | 0 | 0 | **0** | 0 | 0 |
+| supported | 94 | 81.9% | 1 | 1 | 1 | 1 | 1 | **0** | 0 | 0 |
+| pre_support | 318 | 88.4% | 1 | 1 | 1 | 2 | 2 | **0** | 0 | 0 |
+| topology_cut | **868** | **94.3%** | 1 | 1 | 2 | 2 | 4 | **1** | **0** | **1** |
+
+Median precision / recall at ≤16 parts: `pre_support` 0.615 / 0.496;
+`topology_cut` 0.762 / 0.441.
+
+At **1 part**, topology cutting raises median precision from 0.556 to **0.950**
+— the cleanest parts this arm has produced. Recall at 1 part falls to 0.195.
+
+## Answers to the five questions asked
+
+1. **Components and sizes** — above. 51,446 raw, 868 emitted, median 736.
+2. **Newly reachable missed entities at IoU 0.50** — **one**, versus zero for
+   every other bank.
+3. **Precision/recall** — precision up substantially (0.556 → 0.950 at 1 part;
+   0.615 → 0.762 at ≤16), recall down (0.496 → 0.441 at ≤16).
+4. **Proposal and zero-overlap growth** — 318 → 868 proposals (+173%),
+   zero-overlap 88.4% → 94.3% (+5.9 pp).
+5. **Source of the recovery — actual disconnected surfaces, or oracle assembly?**
+   **Oracle assembly.** Single-part recoveries of missed entities are **zero**
+   in every bank at every budget. The one topology_cut recovery needed 16
+   oracle-selected fragments. No annotation-free assembler reproduces that.
+
+## Why topology cut in the wrong places
+
+The hypothesis was that over-extended masks bleed across boundaries that are
+*disconnected* on the mesh. Measuring the annotated entities directly refutes
+it — and refutes a "shredded mesh" reading too:
+
+| | median over 18 entities |
+|---|---|
+| largest mesh-connected component's share of an entity | **0.882** |
+| entities whose largest component holds ≥90% of them | 8/18 |
+
+Entities are largely **connected**: a single component could reach IoU 0.88 for
+a median entity, and `tv_monitor` is exactly one component. So the mesh is not
+shredded and connectivity is not the missing signal.
+
+What that means is that connectivity carries almost no *object-boundary*
+information in this scene. Objects rest on floors and against walls, and those
+contacts are mesh-connected, so a mask spanning cabinet-and-wall cannot be cut
+by adjacency. Topology instead cuts at **reconstruction holes** — occlusion
+gaps and scan dropouts — producing 51,446 fragments that are clean (precision
+0.95) but small (median 736) and located wherever the scanner failed, not
+wherever objects end.
+
+## Stop
+
+The literal count is **1 newly reachable missed entity, not 0**, so the stated
+stop condition is not met word-for-word. Stopping anyway, and flagging the
+judgement rather than acting on it:
+
+- genuine, single-part recoveries are **0**;
+- the one recovery is 16-fragment oracle assembly, unreachable without the
+  annotation;
+- 1 is below the standing bar of 2;
+- the diagnosis says the cue itself is wrong, so tuning around it is unlikely
+  to convert.
+
+**No normal or depth threshold tuning has been started, and none will be
+without another decision.** For that decision, the relevant evidence is
+double-edged: object boundaries that adjacency cannot cut — a cabinet meeting a
+wall — usually *are* normal discontinuities, so a normal-based cut is the one
+mechanism this measurement does not rule out. It equally does not support it:
+nothing here measures whether normal discontinuities coincide with the specific
+boundaries these masks straddle, and the same cut would also fire on every
+interior crease of a sofa. That is a measurement, not a plan.

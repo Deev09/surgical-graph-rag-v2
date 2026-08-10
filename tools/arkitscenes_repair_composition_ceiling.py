@@ -221,6 +221,10 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--bundle-root", type=Path, default=DEFAULT_BUNDLE_ROOT)
     ap.add_argument("--out-root", type=Path, default=DEFAULT_OUT_ROOT)
     ap.add_argument("--skip-exhaustive", action="store_true")
+    ap.add_argument("--extra-bank", action="append", default=[],
+                    metavar="NAME=PATH",
+                    help="score an additional finalized bank, e.g. the "
+                         "topology-cut components. Repeatable.")
     args = ap.parse_args(argv)
 
     scene_dir = args.data_root / args.scene
@@ -240,6 +244,10 @@ def main(argv: list[str] | None = None) -> int:
 
     banks = {"emitted": emitted, "supported": supported,
              "pre_support": pre_support}
+    for spec in args.extra_bank:
+        name, _, path = spec.partition("=")
+        extra, _ = load_repair_bank(Path(path), n_vertices)
+        banks[name] = [p.vertices for p in extra]
     print(f"=== {scene_id}   composition ceiling (ORACLE-GUIDED, diagnostic)")
     print(f"    lifted masks {n_lifted} | banks: " + ", ".join(
         f"{k}={len(v)}" for k, v in banks.items()))
@@ -305,34 +313,70 @@ def main(argv: list[str] | None = None) -> int:
         summary = {}
         for k in PART_BUDGETS:
             key = str(k)
+            reaching = [r for r in missed
+                        if r["by_budget"][key]["iou"] >= TARGET_IOU]
             summary[key] = {
                 "entities_reaching_target": sum(
                     1 for r in rows if r["by_budget"][key]["iou"] >= TARGET_IOU),
-                "missed_entities_reaching_target": sum(
-                    1 for r in missed if r["by_budget"][key]["iou"] >= TARGET_IOU),
+                "missed_entities_reaching_target": len(reaching),
+                # 1 part means a genuinely disconnected surface was separated;
+                # more means the ORACLE stitched fragments, which no
+                # annotation-free assembler could reproduce.
+                "missed_reached_by_single_part": sum(
+                    1 for r in reaching if r["by_budget"][key]["n_parts"] == 1),
+                "missed_reached_by_oracle_assembly": sum(
+                    1 for r in reaching if r["by_budget"][key]["n_parts"] > 1),
                 "median_iou": round(float(np.median(
                     [r["by_budget"][key]["iou"] for r in rows])), 4),
+                "median_precision": round(float(np.median(
+                    [r["by_budget"][key]["precision"] for r in rows])), 4),
                 "median_recall": round(float(np.median(
                     [r["by_budget"][key]["recall"] for r in rows])), 4),
             }
+
+        # Junk growth, on the same definition eval/detection_repair.py uses.
+        # Recomputed locally because this bank is a diagnostic and must never
+        # be handed to the evaluator.
+        best_per_proposal = []
+        for proposal in bank:
+            best = 0.0
+            for entity in entities:
+                inter = np.intersect1d(proposal, entity.vertices,
+                                       assume_unique=True).size
+                if inter:
+                    best = max(best, inter / (len(proposal)
+                                              + len(entity.vertices) - inter))
+            best_per_proposal.append(best)
+        best_per_proposal = np.asarray(best_per_proposal)
+
         report["per_bank"][name] = {
             "n_proposals": len(bank),
             "n_missed_by_baseline": len(missed),
             "greedy_below_exhaustive_pair_count": (
                 None if args.skip_exhaustive else greedy_gap),
+            "zero_overlap_rate": (round(float((best_per_proposal < 0.10).mean()), 4)
+                                  if len(bank) else None),
+            "median_proposal_vertices": int(np.median(
+                [len(p) for p in bank])) if bank else 0,
             "summary_by_budget": summary,
             "per_entity": rows,
         }
 
-        print(f"\n    --- {name} ({len(bank)} proposals, "
-              f"{len(missed)} entities missed by Mask3D) ---")
-        print(f"    {'parts':>6} {'reach 0.50':>11} {'of missed':>10} "
-              f"{'median IoU':>11} {'median recall':>14}")
+        zero = report["per_bank"][name]["zero_overlap_rate"]
+        print(f"\n    --- {name}: {len(bank)} proposals, "
+              f"zero-overlap {zero:.1%}, "
+              f"{len(missed)} entities missed by Mask3D ---")
+        print(f"    {'parts':>6} {'reach .50':>10} {'of missed':>10} "
+              f"{'1-part':>7} {'assembled':>10} "
+              f"{'med IoU':>8} {'med prec':>9} {'med rec':>8}")
         for k in PART_BUDGETS:
             s = summary[str(k)]
-            print(f"    {k:>6} {s['entities_reaching_target']:>11} "
+            print(f"    {k:>6} {s['entities_reaching_target']:>10} "
                   f"{s['missed_entities_reaching_target']:>10} "
-                  f"{s['median_iou']:>11.3f} {s['median_recall']:>14.3f}")
+                  f"{s['missed_reached_by_single_part']:>7} "
+                  f"{s['missed_reached_by_oracle_assembly']:>10} "
+                  f"{s['median_iou']:>8.3f} {s['median_precision']:>9.3f} "
+                  f"{s['median_recall']:>8.3f}")
 
     path = out_dir / "composition_ceiling.json"
     report["runtime_seconds"] = round(time.perf_counter() - t0, 1)
