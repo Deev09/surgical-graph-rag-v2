@@ -605,3 +605,97 @@ The audited counter/cushion cases are recorded for 41069025 and therefore
 **were not evaluated** — reporting on them requires the run the gate forbids.
 
 No constant was tuned against this result.
+
+---
+
+# Checkpoint E — oracle-guided composition ceiling: part assembly cannot reach 0.50
+
+Zero GPU. Same pinned sidecar, no SAM parameter changed. **Diagnostic only** —
+parts are chosen with the annotation in hand, so every number is an upper bound
+no oracle-free assembler can exceed. The report is stamped
+`oracle_guided: true`, `deployable: false`, and a test AST-checks that the tool
+cannot mint a `ProposalArtifact` or reach the gate sheet.
+
+Development stop held: 41069025 not run, 47331972 untouched.
+
+## Ceiling
+
+Greedy union maximising IoU per entity, over three banks of increasing
+permissiveness. 11 of 18 entities are missed by Mask3D at IoU 0.50.
+
+| bank | parts | reach 0.50 | **of the 11 missed** | median IoU | median recall |
+|---|---|---|---|---|---|
+| emitted (60) | 1 → 16 | 0 → 0 | **0** | 0.142 → 0.242 | 0.152 → 0.275 |
+| supported (94) | 1 → 16 | 1 → 1 | **0** | 0.202 → 0.309 | 0.253 → 0.374 |
+| pre_support (318) | 1 | 1 | 0 | 0.256 | 0.342 |
+| pre_support (318) | 2 | 1 | 0 | 0.297 | 0.440 |
+| pre_support (318) | 4 | 1 | 0 | 0.346 | 0.487 |
+| pre_support (318) | 8 | 2 | **0** | 0.401 | 0.496 |
+| pre_support (318) | 16 | 2 | **0** | 0.409 | 0.496 |
+
+**Zero previously missed entities become reachable at IoU 0.50 under any bank
+at any budget.** Best value seen anywhere is 0.777, on the `tv_monitor` that
+Mask3D already delivers at 0.945. Everything saturates past 8 parts.
+
+Greedy was checked against the exhaustive best pair on every entity: genuine
+shortfalls are 0 / 0 / 1 across the three banks, worst +0.0055. (The first run
+of the tool reported 9 shortfalls on `pre_support`; that was a rounding
+artifact in the comparison — unrounded exhaustive against 4-decimal greedy —
+and is fixed. It did not affect any ceiling value.) So the ceiling is tight,
+not a loose greedy lower bound.
+
+**Per the decision rule, the next mechanism is NOT oracle-free part assembly.**
+The parts to assemble are not there.
+
+## Why: it is a precision wall, not a coverage wall
+
+Two decompositions, both on the 32 selected frames.
+
+Coverage is *not* the binding constraint:
+
+| quantity | median over 18 entities |
+|---|---|
+| entity fraction visible in ≥1 selected frame | **0.795** |
+| of that visible part, fraction inside ≥1 SAM mask | **0.843** |
+
+So the raw material for ~0.67 recall exists. But taking it destroys precision.
+Compare the IoU-optimal union against the recall-maximal union (every
+`pre_support` part touching the entity):
+
+| union | median IoU | median precision | median recall |
+|---|---|---|---|
+| greedy, ≤16 parts, IoU-optimal | 0.409 | 0.615 | 0.496 |
+| all touching parts, recall-maximal | **0.073** | **0.078** | 0.611 |
+
+Buying the last 0.115 of recall costs 0.54 of precision. The parts holding the
+rest of each object are ~13× larger than their intersection with it: they are
+surface regions spanning several objects at once (a counter run continuing into
+cabinet and wall). The bank contains, for each object, a few clean parts and
+then nothing usable.
+
+## What this evidence does and does not support
+
+It does **not** support raising `points_per_side` or upsampling frames. Both
+make masks *smaller and more numerous*. The measured gap is not "masks too
+coarse to be precise" — precision at the IoU-optimal union is already 0.615 and
+the uncovered-visible surface is only 15.7%. The gap is "no available mask
+covers the rest of the object without also covering its neighbours". Finer
+seeding addresses the 15.7%, not the precision collapse, and would enlarge the
+318-cluster bank that already fails. **I am not claiming finer masks would
+fail — I am declining to claim they would help, because nothing measured here
+says so.**
+
+The one change with direct supporting evidence is the **view budget**: 20.5% of
+a median entity is never seen by any of the 32 frames, and that is a hard cap
+on recall independent of the mask source. It is also not sufficient on its own
+— lifting visibility from 0.795 to 1.0 does not fix a precision collapse from
+0.615 to 0.078.
+
+If the owner wants one more measurement before changing anything, the cheapest
+discriminating test is: re-run the ceiling with the SAME sidecar but parts
+**intersected with mesh-geometry connected components**, i.e. cut the
+over-extended masks at geometric discontinuities. That is zero-GPU, uses no new
+mask source, and directly tests whether the precision collapse is caused by
+masks bleeding across geometric boundaries — the one hypothesis consistent with
+all the numbers above. If cut parts assemble to 0.50, the fix is geometric
+boundary snapping, not a new pin.
