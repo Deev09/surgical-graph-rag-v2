@@ -144,5 +144,8 @@
  "supersedes": {
   "file": "arkitscenes_41069025_spatial_qa_key_v1.json",
   "why": "v1 asserted cushion PRESENCE only because the review never stated a count. The owner confirmed four cardinalities on 2026-08-10, including two visible sofa cushions, so the cushion item becomes a cardinality item. v1 is left intact because runs/arkit_spatial_qa recorded a score against its hash."
- }
+ },
+ "score_status": "DRAFT. Any score against v1 or v2 is provisional until the UID correspondence is owner-confirmed and this key is finalized. It is not a system result.",
+ "blocker_framing": "Support-relation promotion is the HIGHEST-LEVERAGE immediate blocker, not the sole one. Label reliability, the single-query answer surface and key coverage remain open independently of it.",
+ "gate_discipline": "The provisional 0.50 footprint-overlap gate in the support stage must NOT be tuned from the single 0.454 observation. Calibration requires owner relation truth collected across candidates, not a fit to one example."
 }

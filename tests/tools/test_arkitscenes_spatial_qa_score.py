@@ -151,6 +151,43 @@ def test_room_spanning_counter_is_caught() -> None:
     assert scene_footprint([small, far]) == 100.0
 
 
+def test_uid_sheets_never_read_or_show_a_predicted_label() -> None:
+    """Both confirmation sheets must be label-free, text and visual alike.
+
+    A shortlist ranked by `display_label` would launder a model guess into
+    ground truth, which is exactly what the key exists to avoid.
+    """
+    import ast
+    for name in ("tools/arkitscenes_uid_confirmation_sheet.py",
+                 "tools/arkitscenes_uid_visual_sheet.py"):
+        path = REPO_ROOT / name
+        tree = ast.parse(path.read_text())
+        used = set()
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Constant) and isinstance(node.value, str):
+                used.add(node.value)
+            elif isinstance(node, ast.Attribute):
+                used.add(node.attr)
+        assert "display_label" not in used, \
+            f"{name} reads the predicted label"
+        assert "semantic_hypotheses" not in used, \
+            f"{name} reads the predicted label hypotheses"
+
+    rendered = (REPO_ROOT / "runs" / "arkit_uid_confirmation"
+                / "arkitscenes_41069025_uid_confirmation.html")
+    if not rendered.is_file():
+        print("  skip: visual sheet not rendered yet")
+        return
+    page = rendered.read_text()
+    # Class names the labeler actually assigned in this scene. `cushion`,
+    # `sofa` and `counter` are excluded: they are the OWNER's object names in
+    # sections 1-2, not predictions, and must appear.
+    for predicted in ("trash-can", "chair", "vase", "microwave", "blinds",
+                      "tv-monitor", "stool", "drawer"):
+        assert predicted not in page, \
+            f"the visual sheet shows the predicted class {predicted!r}"
+
+
 def test_recorded_report_is_evaluation_only() -> None:
     """Dataset-guarded: whatever the scorer last wrote must say so."""
     reports = sorted(RUN_ROOT.glob("*_human_spatial_qa.json"))
@@ -179,6 +216,7 @@ TESTS = [
     test_cardinality_counts_only_admitted_labels,
     test_a_missing_relation_type_is_unanswered_not_wrong,
     test_room_spanning_counter_is_caught,
+    test_uid_sheets_never_read_or_show_a_predicted_label,
     test_recorded_report_is_evaluation_only,
 ]
 
