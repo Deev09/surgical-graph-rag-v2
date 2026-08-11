@@ -76,15 +76,17 @@
    "review_scope": "visible scene"
   },
   {
-   "id": "q7_counter_is_not_room_spanning",
+   "id": "q7_counter_is_object_scale",
    "kind": "instance_extent",
-   "question": "Is the kitchen counter a room-spanning planar region?",
-   "expected": false,
+   "question": "Is every region reported as a kitchen counter object-scale, rather than spanning the room?",
+   "expected": true,
    "expected_detail": "No instance reported as the kitchen counter should span the room. The owner reports the counter is a bounded object.",
    "review_basis": "the delivered whole-plane region labeled counter is not the counter object; recorded extent 7.38 x 5.95 x 0.20 m",
    "review_scope": "class identity and instance extent",
-   "scoring": "Correct when every instance labelled `counter` has a horizontal footprint smaller than ROOM_SPAN_FRACTION of the scene footprint. This phrasing avoids naming obj_8, so the item survives a perception change.",
-   "room_span_fraction": 0.5
+   "scoring": "Correct when every instance labelled `counter` has a horizontal footprint smaller than room_span_fraction of the scene footprint. Names no delivered region, so it survives a perception change.",
+   "room_span_fraction": 0.5,
+   "metric": "object_scale",
+   "renamed_from": "q7_counter_is_not_room_spanning, expected false \u2014 a double negative that made a passing system read as a failing one at a glance"
   },
   {
    "id": "q8_cushion_instance_identity",

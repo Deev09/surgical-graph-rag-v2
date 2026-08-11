@@ -249,6 +249,34 @@ def test_delivery_diagnostic_is_reported_but_not_tallied() -> None:
         or "SAME system count" in diagnostic["why_not_scored"], diagnostic
 
 
+def test_q7_reads_positively_in_the_final_key() -> None:
+    """The double negative is gone: a passing system now reads as passing.
+
+    v1 asked "is the counter room-spanning?" expecting false, so a correct
+    system displayed `expected=False answer=False`. Same measurement, clearer
+    framing, and v1's phrasing still scores so its report stays reproducible.
+    """
+    key = json.loads(KEY_FINAL.read_text())
+    q7 = next(q for q in key["independent_questions"]
+              if q["id"].startswith("q7_"))
+    assert q7["id"] == "q7_counter_is_object_scale", q7["id"]
+    assert q7["expected"] is True and q7["metric"] == "object_scale", q7
+    assert "double negative" in q7["renamed_from"], q7
+
+    small = _entity("obj_0", "counter", [[0.0, 0.0, 0.0], [1.0, 1.0, 0.2]])
+    far = _entity("obj_1", "table", [[0.0, 0.0, 0.0], [10.0, 10.0, 1.0]])
+    row = {r["id"]: r for r in score(key, [small, far], [])}[q7["id"]]
+    assert row["answer"] is True and row["outcome"] == "correct", row
+
+    spanning = _entity("obj_2", "counter", [[0.0, 0.0, 0.0], [9.0, 9.0, 0.2]])
+    row = {r["id"]: r for r in score(key, [spanning, far], [])}[q7["id"]]
+    assert row["answer"] is False and row["outcome"] == "wrong", row
+
+    # v1's framing still evaluates, so the earlier recorded score reproduces.
+    legacy = {r["id"]: r for r in score(_key(), [small, far], [])}
+    assert legacy["q7_counter_is_not_room_spanning"]["outcome"] == "correct"
+
+
 def test_recorded_report_is_evaluation_only() -> None:
     """Dataset-guarded: whatever the scorer last wrote must say so."""
     reports = sorted(RUN_ROOT.glob("*_human_spatial_qa.json"))
@@ -281,6 +309,7 @@ TESTS = [
     test_final_key_records_the_owner_confirmation_faithfully,
     test_instance_identity_scores_exact_set_match,
     test_delivery_diagnostic_is_reported_but_not_tallied,
+    test_q7_reads_positively_in_the_final_key,
     test_recorded_report_is_evaluation_only,
 ]
 

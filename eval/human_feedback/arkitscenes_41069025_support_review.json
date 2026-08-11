@@ -1,0 +1,1483 @@
+{
+ "schema": "arkitscenes_support_relation_review_v1",
+ "scene_id": "arkitscenes_41069025",
+ "status": "AWAITING_OWNER",
+ "definition": "gravity-resting contact on the supporter",
+ "human_relation_truth": [
+  {
+   "pair_id": "obj_21->obj_8",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_23->obj_8",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_29->obj_8",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_34->obj_8",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_9->obj_8",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_15->obj_8",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_0->obj_8",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_1->obj_8",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_5->obj_8",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_28->obj_8",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_9->obj_13",
+   "judgement": "supports",
+   "source": "owner_confirmed_2026-08-10"
+  },
+  {
+   "pair_id": "obj_12->obj_8",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_18->obj_8",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_6->obj_8",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_7->obj_8",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_27->obj_8",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_23->obj_13",
+   "judgement": "supports",
+   "source": "owner_confirmed_2026-08-10"
+  },
+  {
+   "pair_id": "obj_20->obj_8",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_1->obj_14",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_11->obj_8",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_4->obj_14",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_29->obj_21",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_36->obj_27",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_36->obj_8",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_4->obj_28",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_18->obj_16",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_12->obj_27",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_15->obj_13",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_28->obj_4",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_27->obj_36",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_25->obj_11",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_21->obj_29",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_8->obj_5",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_27->obj_12",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_8->obj_14",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_8->obj_13",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_7->obj_20",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_2->obj_3",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_13->obj_23",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_13->obj_34",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_13->obj_15",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_13->obj_2",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_24->obj_0",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_8->obj_0",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_5->obj_0",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_8->obj_2",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_14->obj_1",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_32->obj_3",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_8->obj_3",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_0->obj_1",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_0->obj_11",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_0->obj_12",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_0->obj_13",
+   "judgement": null,
+   "source": null
+  },
+  {
+   "pair_id": "obj_8->obj_21",
+   "judgement": null,
+   "source": null
+  }
+ ],
+ "system_candidate_evidence": [
+  {
+   "pair_id": "obj_21->obj_8",
+   "target_uid": "obj_21",
+   "owner_uid": "obj_8",
+   "row_sources": [
+    "qualifying_patch",
+    "stratified_reject"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_8_hpatch_951",
+   "overlap_ratio_target": 1.0,
+   "vertical_gap_m": -2.1343,
+   "patch_footprint_m2": 17.0613,
+   "target_footprint_m2": 0.1006,
+   "patch_rejection_reasons": [
+    "vertical_gap_below_penetration_band"
+   ]
+  },
+  {
+   "pair_id": "obj_23->obj_8",
+   "target_uid": "obj_23",
+   "owner_uid": "obj_8",
+   "row_sources": [
+    "stratified_reject"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_8_hpatch_951",
+   "overlap_ratio_target": 1.0,
+   "vertical_gap_m": -1.8017,
+   "patch_footprint_m2": 17.0613,
+   "target_footprint_m2": 0.2051,
+   "patch_rejection_reasons": [
+    "vertical_gap_below_penetration_band"
+   ]
+  },
+  {
+   "pair_id": "obj_29->obj_8",
+   "target_uid": "obj_29",
+   "owner_uid": "obj_8",
+   "row_sources": [
+    "stratified_reject"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_8_hpatch_951",
+   "overlap_ratio_target": 1.0,
+   "vertical_gap_m": -2.2201,
+   "patch_footprint_m2": 17.0613,
+   "target_footprint_m2": 0.0087,
+   "patch_rejection_reasons": [
+    "vertical_gap_below_penetration_band"
+   ]
+  },
+  {
+   "pair_id": "obj_34->obj_8",
+   "target_uid": "obj_34",
+   "owner_uid": "obj_8",
+   "row_sources": [
+    "stratified_reject"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_8_hpatch_951",
+   "overlap_ratio_target": 1.0,
+   "vertical_gap_m": -2.2481,
+   "patch_footprint_m2": 17.0613,
+   "target_footprint_m2": 1.1378,
+   "patch_rejection_reasons": [
+    "vertical_gap_below_penetration_band"
+   ]
+  },
+  {
+   "pair_id": "obj_9->obj_8",
+   "target_uid": "obj_9",
+   "owner_uid": "obj_8",
+   "row_sources": [
+    "qualifying_patch",
+    "stratified_reject"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_8_hpatch_1457",
+   "overlap_ratio_target": 1.0,
+   "vertical_gap_m": -1.7859,
+   "patch_footprint_m2": 8.9331,
+   "target_footprint_m2": 0.2197,
+   "patch_rejection_reasons": [
+    "vertical_gap_below_penetration_band"
+   ]
+  },
+  {
+   "pair_id": "obj_15->obj_8",
+   "target_uid": "obj_15",
+   "owner_uid": "obj_8",
+   "row_sources": [
+    "stratified_reject"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_8_hpatch_1457",
+   "overlap_ratio_target": 0.997,
+   "vertical_gap_m": -2.2582,
+   "patch_footprint_m2": 8.9331,
+   "target_footprint_m2": 0.4722,
+   "patch_rejection_reasons": [
+    "vertical_gap_below_penetration_band"
+   ]
+  },
+  {
+   "pair_id": "obj_0->obj_8",
+   "target_uid": "obj_0",
+   "owner_uid": "obj_8",
+   "row_sources": [
+    "stratified_reject"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_8_hpatch_951",
+   "overlap_ratio_target": 0.9746,
+   "vertical_gap_m": -1.9918,
+   "patch_footprint_m2": 17.0613,
+   "target_footprint_m2": 0.2291,
+   "patch_rejection_reasons": [
+    "vertical_gap_below_penetration_band"
+   ]
+  },
+  {
+   "pair_id": "obj_1->obj_8",
+   "target_uid": "obj_1",
+   "owner_uid": "obj_8",
+   "row_sources": [
+    "stratified_reject"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_8_hpatch_951",
+   "overlap_ratio_target": 0.9446,
+   "vertical_gap_m": -2.2642,
+   "patch_footprint_m2": 17.0613,
+   "target_footprint_m2": 0.1241,
+   "patch_rejection_reasons": [
+    "vertical_gap_below_penetration_band"
+   ]
+  },
+  {
+   "pair_id": "obj_5->obj_8",
+   "target_uid": "obj_5",
+   "owner_uid": "obj_8",
+   "row_sources": [
+    "stratified_reject"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_8_hpatch_951",
+   "overlap_ratio_target": 0.9276,
+   "vertical_gap_m": -1.698,
+   "patch_footprint_m2": 17.0613,
+   "target_footprint_m2": 0.8201,
+   "patch_rejection_reasons": [
+    "vertical_gap_below_penetration_band"
+   ]
+  },
+  {
+   "pair_id": "obj_28->obj_8",
+   "target_uid": "obj_28",
+   "owner_uid": "obj_8",
+   "row_sources": [
+    "stratified_reject"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_8_hpatch_951",
+   "overlap_ratio_target": 0.8531,
+   "vertical_gap_m": -2.1512,
+   "patch_footprint_m2": 17.0613,
+   "target_footprint_m2": 0.2691,
+   "patch_rejection_reasons": [
+    "vertical_gap_below_penetration_band"
+   ]
+  },
+  {
+   "pair_id": "obj_9->obj_13",
+   "target_uid": "obj_9",
+   "owner_uid": "obj_13",
+   "row_sources": [
+    "owner_confirmed",
+    "qualifying_patch"
+   ],
+   "relation_candidate": true,
+   "rejection_reasons": [],
+   "best_patch_uid": "instance_13_hpatch_164",
+   "overlap_ratio_target": 0.8203,
+   "vertical_gap_m": 0.0098,
+   "patch_footprint_m2": 0.3211,
+   "target_footprint_m2": 0.2197,
+   "patch_rejection_reasons": []
+  },
+  {
+   "pair_id": "obj_12->obj_8",
+   "target_uid": "obj_12",
+   "owner_uid": "obj_8",
+   "row_sources": [
+    "qualifying_patch"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_8_hpatch_339",
+   "overlap_ratio_target": 0.7911,
+   "vertical_gap_m": -2.2841,
+   "patch_footprint_m2": 0.908,
+   "target_footprint_m2": 0.4449,
+   "patch_rejection_reasons": [
+    "vertical_gap_below_penetration_band"
+   ]
+  },
+  {
+   "pair_id": "obj_18->obj_8",
+   "target_uid": "obj_18",
+   "owner_uid": "obj_8",
+   "row_sources": [
+    "qualifying_patch"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_8_hpatch_951",
+   "overlap_ratio_target": 0.7267,
+   "vertical_gap_m": -0.8826,
+   "patch_footprint_m2": 17.0613,
+   "target_footprint_m2": 2.1718,
+   "patch_rejection_reasons": [
+    "vertical_gap_below_penetration_band"
+   ]
+  },
+  {
+   "pair_id": "obj_6->obj_8",
+   "target_uid": "obj_6",
+   "owner_uid": "obj_8",
+   "row_sources": [
+    "stratified_reject"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_8_hpatch_1457",
+   "overlap_ratio_target": 0.4978,
+   "vertical_gap_m": -1.2761,
+   "patch_footprint_m2": 8.9331,
+   "target_footprint_m2": 0.2487,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_below_penetration_band"
+   ]
+  },
+  {
+   "pair_id": "obj_7->obj_8",
+   "target_uid": "obj_7",
+   "owner_uid": "obj_8",
+   "row_sources": [
+    "stratified_reject"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_8_hpatch_951",
+   "overlap_ratio_target": 0.4949,
+   "vertical_gap_m": -2.2319,
+   "patch_footprint_m2": 17.0613,
+   "target_footprint_m2": 1.918,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_below_penetration_band"
+   ]
+  },
+  {
+   "pair_id": "obj_27->obj_8",
+   "target_uid": "obj_27",
+   "owner_uid": "obj_8",
+   "row_sources": [
+    "stratified_reject"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_8_hpatch_951",
+   "overlap_ratio_target": 0.4632,
+   "vertical_gap_m": -2.2704,
+   "patch_footprint_m2": 17.0613,
+   "target_footprint_m2": 2.9917,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_below_penetration_band"
+   ]
+  },
+  {
+   "pair_id": "obj_23->obj_13",
+   "target_uid": "obj_23",
+   "owner_uid": "obj_13",
+   "row_sources": [
+    "owner_confirmed",
+    "qualifying_patch",
+    "stratified_reject"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_13_hpatch_159",
+   "overlap_ratio_target": 0.4545,
+   "vertical_gap_m": -0.0099,
+   "patch_footprint_m2": 0.2577,
+   "target_footprint_m2": 0.2051,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min"
+   ]
+  },
+  {
+   "pair_id": "obj_20->obj_8",
+   "target_uid": "obj_20",
+   "owner_uid": "obj_8",
+   "row_sources": [
+    "stratified_reject"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_8_hpatch_951",
+   "overlap_ratio_target": 0.4432,
+   "vertical_gap_m": -1.4982,
+   "patch_footprint_m2": 17.0613,
+   "target_footprint_m2": 1.0992,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_below_penetration_band"
+   ]
+  },
+  {
+   "pair_id": "obj_1->obj_14",
+   "target_uid": "obj_1",
+   "owner_uid": "obj_14",
+   "row_sources": [
+    "qualifying_patch",
+    "stratified_reject"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_14_hpatch_028",
+   "overlap_ratio_target": 0.3927,
+   "vertical_gap_m": -0.8126,
+   "patch_footprint_m2": 0.0498,
+   "target_footprint_m2": 0.1241,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_below_penetration_band"
+   ]
+  },
+  {
+   "pair_id": "obj_11->obj_8",
+   "target_uid": "obj_11",
+   "owner_uid": "obj_8",
+   "row_sources": [
+    "stratified_reject"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_8_hpatch_1457",
+   "overlap_ratio_target": 0.31,
+   "vertical_gap_m": -0.8976,
+   "patch_footprint_m2": 8.9331,
+   "target_footprint_m2": 0.6532,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_below_penetration_band"
+   ]
+  },
+  {
+   "pair_id": "obj_4->obj_14",
+   "target_uid": "obj_4",
+   "owner_uid": "obj_14",
+   "row_sources": [
+    "qualifying_patch",
+    "stratified_reject"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_14_hpatch_033",
+   "overlap_ratio_target": 0.2467,
+   "vertical_gap_m": 0.3216,
+   "patch_footprint_m2": 0.3244,
+   "target_footprint_m2": 0.4434,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_above_contact_band"
+   ]
+  },
+  {
+   "pair_id": "obj_29->obj_21",
+   "target_uid": "obj_29",
+   "owner_uid": "obj_21",
+   "row_sources": [
+    "qualifying_patch",
+    "stratified_reject"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_21_hpatch_000",
+   "overlap_ratio_target": 0.1202,
+   "vertical_gap_m": -1.1566,
+   "patch_footprint_m2": 0.0011,
+   "target_footprint_m2": 0.0087,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_below_penetration_band"
+   ]
+  },
+  {
+   "pair_id": "obj_36->obj_27",
+   "target_uid": "obj_36",
+   "owner_uid": "obj_27",
+   "row_sources": [
+    "qualifying_patch",
+    "stratified_reject"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_27_hpatch_165",
+   "overlap_ratio_target": 0.0959,
+   "vertical_gap_m": 0.0898,
+   "patch_footprint_m2": 0.0954,
+   "target_footprint_m2": 0.9942,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min"
+   ]
+  },
+  {
+   "pair_id": "obj_36->obj_8",
+   "target_uid": "obj_36",
+   "owner_uid": "obj_8",
+   "row_sources": [
+    "stratified_reject"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_8_hpatch_951",
+   "overlap_ratio_target": 0.0714,
+   "vertical_gap_m": -1.7499,
+   "patch_footprint_m2": 17.0613,
+   "target_footprint_m2": 0.9942,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_below_penetration_band"
+   ]
+  },
+  {
+   "pair_id": "obj_4->obj_28",
+   "target_uid": "obj_4",
+   "owner_uid": "obj_28",
+   "row_sources": [
+    "qualifying_patch",
+    "stratified_reject"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_28_hpatch_003",
+   "overlap_ratio_target": 0.0652,
+   "vertical_gap_m": 0.6733,
+   "patch_footprint_m2": 0.0362,
+   "target_footprint_m2": 0.4434,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_above_contact_band"
+   ]
+  },
+  {
+   "pair_id": "obj_18->obj_16",
+   "target_uid": "obj_18",
+   "owner_uid": "obj_16",
+   "row_sources": [
+    "qualifying_patch",
+    "stratified_reject"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_16_hpatch_095",
+   "overlap_ratio_target": 0.0534,
+   "vertical_gap_m": 0.5191,
+   "patch_footprint_m2": 0.1206,
+   "target_footprint_m2": 2.1718,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_above_contact_band"
+   ]
+  },
+  {
+   "pair_id": "obj_12->obj_27",
+   "target_uid": "obj_12",
+   "owner_uid": "obj_27",
+   "row_sources": [
+    "qualifying_patch",
+    "stratified_reject"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_27_hpatch_199",
+   "overlap_ratio_target": 0.05,
+   "vertical_gap_m": -0.0318,
+   "patch_footprint_m2": 0.0222,
+   "target_footprint_m2": 0.4449,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_below_penetration_band"
+   ]
+  },
+  {
+   "pair_id": "obj_15->obj_13",
+   "target_uid": "obj_15",
+   "owner_uid": "obj_13",
+   "row_sources": [
+    "qualifying_patch",
+    "stratified_reject"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_13_hpatch_056",
+   "overlap_ratio_target": 0.0477,
+   "vertical_gap_m": -0.746,
+   "patch_footprint_m2": 0.0584,
+   "target_footprint_m2": 0.4722,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_below_penetration_band"
+   ]
+  },
+  {
+   "pair_id": "obj_28->obj_4",
+   "target_uid": "obj_28",
+   "owner_uid": "obj_4",
+   "row_sources": [
+    "qualifying_patch"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_4_hpatch_001",
+   "overlap_ratio_target": 0.0258,
+   "vertical_gap_m": -1.551,
+   "patch_footprint_m2": 0.0196,
+   "target_footprint_m2": 0.2691,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_below_penetration_band"
+   ]
+  },
+  {
+   "pair_id": "obj_27->obj_36",
+   "target_uid": "obj_27",
+   "owner_uid": "obj_36",
+   "row_sources": [
+    "qualifying_patch"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_36_hpatch_048",
+   "overlap_ratio_target": 0.0235,
+   "vertical_gap_m": -1.4651,
+   "patch_footprint_m2": 0.0703,
+   "target_footprint_m2": 2.9917,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_below_penetration_band"
+   ]
+  },
+  {
+   "pair_id": "obj_25->obj_11",
+   "target_uid": "obj_25",
+   "owner_uid": "obj_11",
+   "row_sources": [
+    "qualifying_patch"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_11_hpatch_038",
+   "overlap_ratio_target": 0.0199,
+   "vertical_gap_m": -1.9594,
+   "patch_footprint_m2": 0.0073,
+   "target_footprint_m2": 0.3692,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_below_penetration_band"
+   ]
+  },
+  {
+   "pair_id": "obj_21->obj_29",
+   "target_uid": "obj_21",
+   "owner_uid": "obj_29",
+   "row_sources": [
+    "qualifying_patch"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_29_hpatch_000",
+   "overlap_ratio_target": 0.0101,
+   "vertical_gap_m": 0.0717,
+   "patch_footprint_m2": 0.001,
+   "target_footprint_m2": 0.1006,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_above_contact_band"
+   ]
+  },
+  {
+   "pair_id": "obj_8->obj_5",
+   "target_uid": "obj_8",
+   "owner_uid": "obj_5",
+   "row_sources": [
+    "qualifying_patch"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_5_hpatch_039",
+   "overlap_ratio_target": 0.0088,
+   "vertical_gap_m": 1.4406,
+   "patch_footprint_m2": 0.3848,
+   "target_footprint_m2": 43.8822,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_above_contact_band"
+   ]
+  },
+  {
+   "pair_id": "obj_27->obj_12",
+   "target_uid": "obj_27",
+   "owner_uid": "obj_12",
+   "row_sources": [
+    "qualifying_patch"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_12_hpatch_050",
+   "overlap_ratio_target": 0.0086,
+   "vertical_gap_m": -0.6056,
+   "patch_footprint_m2": 0.0256,
+   "target_footprint_m2": 2.9917,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_below_penetration_band"
+   ]
+  },
+  {
+   "pair_id": "obj_8->obj_14",
+   "target_uid": "obj_8",
+   "owner_uid": "obj_14",
+   "row_sources": [
+    "qualifying_patch"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_14_hpatch_033",
+   "overlap_ratio_target": 0.0074,
+   "vertical_gap_m": 1.3912,
+   "patch_footprint_m2": 0.3244,
+   "target_footprint_m2": 43.8822,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_above_contact_band"
+   ]
+  },
+  {
+   "pair_id": "obj_8->obj_13",
+   "target_uid": "obj_8",
+   "owner_uid": "obj_13",
+   "row_sources": [
+    "qualifying_patch"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_13_hpatch_164",
+   "overlap_ratio_target": 0.0073,
+   "vertical_gap_m": 1.7288,
+   "patch_footprint_m2": 0.3211,
+   "target_footprint_m2": 43.8822,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_above_contact_band"
+   ]
+  },
+  {
+   "pair_id": "obj_7->obj_20",
+   "target_uid": "obj_7",
+   "owner_uid": "obj_20",
+   "row_sources": [
+    "qualifying_patch"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_20_hpatch_003",
+   "overlap_ratio_target": 0.0045,
+   "vertical_gap_m": -0.788,
+   "patch_footprint_m2": 0.0086,
+   "target_footprint_m2": 1.918,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_below_penetration_band"
+   ]
+  },
+  {
+   "pair_id": "obj_2->obj_3",
+   "target_uid": "obj_2",
+   "owner_uid": "obj_3",
+   "row_sources": [
+    "qualifying_patch"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_3_hpatch_002",
+   "overlap_ratio_target": 0.0029,
+   "vertical_gap_m": -1.7306,
+   "patch_footprint_m2": 0.0012,
+   "target_footprint_m2": 0.3858,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_below_penetration_band"
+   ]
+  },
+  {
+   "pair_id": "obj_13->obj_23",
+   "target_uid": "obj_13",
+   "owner_uid": "obj_23",
+   "row_sources": [
+    "qualifying_patch"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_23_hpatch_005",
+   "overlap_ratio_target": 0.0022,
+   "vertical_gap_m": -0.7882,
+   "patch_footprint_m2": 0.0072,
+   "target_footprint_m2": 3.2768,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_below_penetration_band"
+   ]
+  },
+  {
+   "pair_id": "obj_13->obj_34",
+   "target_uid": "obj_13",
+   "owner_uid": "obj_34",
+   "row_sources": [
+    "qualifying_patch"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_34_hpatch_006",
+   "overlap_ratio_target": 0.002,
+   "vertical_gap_m": -0.4507,
+   "patch_footprint_m2": 0.063,
+   "target_footprint_m2": 3.2768,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_below_penetration_band"
+   ]
+  },
+  {
+   "pair_id": "obj_13->obj_15",
+   "target_uid": "obj_13",
+   "owner_uid": "obj_15",
+   "row_sources": [
+    "qualifying_patch"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_15_hpatch_025",
+   "overlap_ratio_target": 0.0019,
+   "vertical_gap_m": -0.4472,
+   "patch_footprint_m2": 0.0063,
+   "target_footprint_m2": 3.2768,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_below_penetration_band"
+   ]
+  },
+  {
+   "pair_id": "obj_13->obj_2",
+   "target_uid": "obj_13",
+   "owner_uid": "obj_2",
+   "row_sources": [
+    "qualifying_patch"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_2_hpatch_002",
+   "overlap_ratio_target": 0.0017,
+   "vertical_gap_m": -0.6838,
+   "patch_footprint_m2": 0.0215,
+   "target_footprint_m2": 3.2768,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_below_penetration_band"
+   ]
+  },
+  {
+   "pair_id": "obj_24->obj_0",
+   "target_uid": "obj_24",
+   "owner_uid": "obj_0",
+   "row_sources": [
+    "qualifying_patch"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_0_hpatch_026",
+   "overlap_ratio_target": 0.0013,
+   "vertical_gap_m": -0.4378,
+   "patch_footprint_m2": 0.0536,
+   "target_footprint_m2": 4.1911,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_below_penetration_band"
+   ]
+  },
+  {
+   "pair_id": "obj_8->obj_0",
+   "target_uid": "obj_8",
+   "owner_uid": "obj_0",
+   "row_sources": [
+    "qualifying_patch"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_0_hpatch_026",
+   "overlap_ratio_target": 0.0012,
+   "vertical_gap_m": 1.7456,
+   "patch_footprint_m2": 0.0536,
+   "target_footprint_m2": 43.8822,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_above_contact_band"
+   ]
+  },
+  {
+   "pair_id": "obj_5->obj_0",
+   "target_uid": "obj_5",
+   "owner_uid": "obj_0",
+   "row_sources": [
+    "qualifying_patch"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_0_hpatch_038",
+   "overlap_ratio_target": 0.001,
+   "vertical_gap_m": 0.1524,
+   "patch_footprint_m2": 0.0207,
+   "target_footprint_m2": 0.8201,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_above_contact_band"
+   ]
+  },
+  {
+   "pair_id": "obj_8->obj_2",
+   "target_uid": "obj_8",
+   "owner_uid": "obj_2",
+   "row_sources": [
+    "qualifying_patch"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_2_hpatch_012",
+   "overlap_ratio_target": 0.001,
+   "vertical_gap_m": 1.5324,
+   "patch_footprint_m2": 0.0424,
+   "target_footprint_m2": 43.8822,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_above_contact_band"
+   ]
+  },
+  {
+   "pair_id": "obj_14->obj_1",
+   "target_uid": "obj_14",
+   "owner_uid": "obj_1",
+   "row_sources": [
+    "qualifying_patch"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_1_hpatch_012",
+   "overlap_ratio_target": 0.0009,
+   "vertical_gap_m": -0.285,
+   "patch_footprint_m2": 0.0013,
+   "target_footprint_m2": 1.4242,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_below_penetration_band"
+   ]
+  },
+  {
+   "pair_id": "obj_32->obj_3",
+   "target_uid": "obj_32",
+   "owner_uid": "obj_3",
+   "row_sources": [
+    "qualifying_patch"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_3_hpatch_000",
+   "overlap_ratio_target": 0.0008,
+   "vertical_gap_m": -1.8345,
+   "patch_footprint_m2": 0.01,
+   "target_footprint_m2": 0.386,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_below_penetration_band"
+   ]
+  },
+  {
+   "pair_id": "obj_8->obj_3",
+   "target_uid": "obj_8",
+   "owner_uid": "obj_3",
+   "row_sources": [
+    "qualifying_patch"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_3_hpatch_012",
+   "overlap_ratio_target": 0.0003,
+   "vertical_gap_m": 0.8029,
+   "patch_footprint_m2": 0.0132,
+   "target_footprint_m2": 43.8822,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_above_contact_band"
+   ]
+  },
+  {
+   "pair_id": "obj_0->obj_1",
+   "target_uid": "obj_0",
+   "owner_uid": "obj_1",
+   "row_sources": [
+    "stratified_reject"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_1_hpatch_003",
+   "overlap_ratio_target": 0.0,
+   "vertical_gap_m": null,
+   "patch_footprint_m2": 0.0007,
+   "target_footprint_m2": 0.2291,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_unavailable_without_overlap"
+   ]
+  },
+  {
+   "pair_id": "obj_0->obj_11",
+   "target_uid": "obj_0",
+   "owner_uid": "obj_11",
+   "row_sources": [
+    "stratified_reject"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_11_hpatch_038",
+   "overlap_ratio_target": 0.0,
+   "vertical_gap_m": null,
+   "patch_footprint_m2": 0.0073,
+   "target_footprint_m2": 0.2291,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_unavailable_without_overlap"
+   ]
+  },
+  {
+   "pair_id": "obj_0->obj_12",
+   "target_uid": "obj_0",
+   "owner_uid": "obj_12",
+   "row_sources": [
+    "stratified_reject"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_12_hpatch_000",
+   "overlap_ratio_target": 0.0,
+   "vertical_gap_m": null,
+   "patch_footprint_m2": 0.009,
+   "target_footprint_m2": 0.2291,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_unavailable_without_overlap"
+   ]
+  },
+  {
+   "pair_id": "obj_0->obj_13",
+   "target_uid": "obj_0",
+   "owner_uid": "obj_13",
+   "row_sources": [
+    "stratified_reject"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_13_hpatch_010",
+   "overlap_ratio_target": 0.0,
+   "vertical_gap_m": null,
+   "patch_footprint_m2": 0.0568,
+   "target_footprint_m2": 0.2291,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_unavailable_without_overlap"
+   ]
+  },
+  {
+   "pair_id": "obj_8->obj_21",
+   "target_uid": "obj_8",
+   "owner_uid": "obj_21",
+   "row_sources": [
+    "qualifying_patch"
+   ],
+   "relation_candidate": false,
+   "rejection_reasons": [
+    "no_patch_satisfies_resting_evidence"
+   ],
+   "best_patch_uid": "instance_21_hpatch_006",
+   "overlap_ratio_target": 0.0,
+   "vertical_gap_m": 1.17,
+   "patch_footprint_m2": 0.0014,
+   "target_footprint_m2": 43.8822,
+   "patch_rejection_reasons": [
+    "footprint_overlap_below_min",
+    "vertical_gap_above_contact_band"
+   ]
+  }
+ ],
+ "sampling": {
+  "bands": [
+   {
+    "band": "overlap >= 0.50",
+    "low": 0.5,
+    "high": 1.01,
+    "budget": 10,
+    "taken": 10
+   },
+   {
+    "band": "0.40 <= overlap < 0.50",
+    "low": 0.4,
+    "high": 0.5,
+    "budget": 8,
+    "taken": 5
+   },
+   {
+    "band": "0.25 <= overlap < 0.40",
+    "low": 0.25,
+    "high": 0.4,
+    "budget": 6,
+    "taken": 2
+   },
+   {
+    "band": "0.10 <= overlap < 0.25",
+    "low": 0.1,
+    "high": 0.25,
+    "budget": 6,
+    "taken": 2
+   },
+   {
+    "band": "0 < overlap < 0.10",
+    "low": 1e-09,
+    "high": 0.1,
+    "budget": 6,
+    "taken": 6
+   },
+   {
+    "band": "overlap == 0",
+    "low": -1.0,
+    "high": 1e-09,
+    "budget": 4,
+    "taken": 4
+   }
+  ],
+  "rule": "highest overlap first, ties by uid; deterministic",
+  "owner_confirmed_always_included": [
+   "obj_9->obj_13",
+   "obj_23->obj_13"
+  ]
+ },
+ "provenance": {
+  "resting_artifact": "runs/arkit_vertical_slice/sealed_pair_rest/41069025/entity_patch_rest.json",
+  "resting_artifact_sha256": "e16ee06a46cd33116a81e2a37f93b14fba4b24a5f2fdcd32636a39ae4923507b",
+  "n_pairs": 1225,
+  "n_evaluated": 714,
+  "n_candidates": 1,
+  "n_qualifying_patches": 77,
+  "patch_to_pair_note": "the qualifying patches collapse to fewer target-owner pairs because several patches share an owner and the same best target; every patch is represented by the pair it scores highest against, none is dropped",
+  "algorithm_config": {
+   "calibration_status": "provisional_unvalidated_transfer_calibration_pending",
+   "contact_gap_ratio": 0.05,
+   "floor_candidate_low_height_fraction": 0.2,
+   "floor_candidate_min_scene_area_ratio": 0.15,
+   "floor_contact_gap_ratio": 0.03,
+   "floor_contact_min_target_overlap_ratio": 0.5,
+   "min_target_overlap_ratio": 0.5,
+   "penetration_ratio": 0.02,
+   "reject_when_floor_unknown": false,
+   "target_containment_ratio": 0.95
+  },
+  "floor_evidence_status": "unknown",
+  "logic_changed": false,
+  "thresholds_changed": false
+ }
+}

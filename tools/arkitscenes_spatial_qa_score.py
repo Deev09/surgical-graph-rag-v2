@@ -196,14 +196,20 @@ def score(key: dict, entities: list[dict], edges: list[dict]) -> list[dict]:
             spanning = [{"uid": e["uid"],
                          "footprint_m2": round(footprint(e["aabb"]), 2)}
                         for e in counters if footprint(e["aabb"]) > limit]
-            row.update(expected=item["expected"], answer=bool(spanning),
+            # One measurement, two framings. `object_scale` is the current
+            # phrasing; `room_spanning` is v1's double negative, kept so the
+            # earlier report stays reproducible.
+            answer = (not spanning if item.get("metric") == "object_scale"
+                      else bool(spanning))
+            row.update(expected=item["expected"], answer=answer,
                        room_span_limit_m2=round(limit, 2),
                        counter_instances=[
                            {"uid": e["uid"],
                             "footprint_m2": round(footprint(e["aabb"]), 2)}
                            for e in counters],
                        room_spanning=spanning,
-                       outcome="correct" if not spanning else "wrong")
+                       outcome="correct" if answer == item["expected"]
+                       else "wrong")
         else:
             row.update(outcome="unanswered", reason=f"unknown item kind {kind}")
         results.append(row)
