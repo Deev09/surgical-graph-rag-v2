@@ -1,0 +1,381 @@
+{
+ "schema": "arkitscenes_support_relation_key_v1",
+ "scene_id": "arkitscenes_41069025",
+ "definition": "gravity-resting contact on the supporter",
+ "status": "PENDING_RECHECK",
+ "coverage": {
+  "rows_on_sheet": 54,
+  "rows_returned": 52,
+  "rows_omitted": [
+   "obj_23->obj_13",
+   "obj_9->obj_13"
+  ],
+  "omitted_reason": "the sheet's Build JSON only emits rows with a checked radio, and the pre-confirmed pairs were highlighted with the note 'leave or change them as you see fit'. Omission here is a form defect, not a retraction, so the prior confirmation is carried forward and marked with its own source."
+ },
+ "judgement_counts": {
+  "does_not_support": 39,
+  "supports": 6,
+  "unsure": 9
+ },
+ "needs_owner_recheck": [
+  {
+   "pair_id": "obj_11->obj_8",
+   "flags": [
+    {
+     "flag": "target_below_owner",
+     "detail": "target underside 1.460 m is below the owner underside 2.286 m, so the target extends beneath what it is said to rest on; the pair may be right with the direction reversed"
+    }
+   ]
+  },
+  {
+   "pair_id": "obj_7->obj_20",
+   "flags": [
+    {
+     "flag": "target_below_owner",
+     "detail": "target underside 0.120 m is below the owner underside 0.853 m, so the target extends beneath what it is said to rest on; the pair may be right with the direction reversed"
+    }
+   ]
+  },
+  {
+   "pair_id": "obj_32->obj_3",
+   "flags": [
+    {
+     "flag": "floor_standing_target",
+     "detail": "target underside is 0.000 m above the lowest scene point (<= 0.06 m), so it appears to stand on the floor"
+    },
+    {
+     "flag": "target_below_owner",
+     "detail": "target underside 0.000 m is below the owner underside 1.473 m, so the target extends beneath what it is said to rest on; the pair may be right with the direction reversed"
+    }
+   ]
+  }
+ ],
+ "human_relation_truth": [
+  {
+   "pair_id": "obj_21->obj_8",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_23->obj_8",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_29->obj_8",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_34->obj_8",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_9->obj_8",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_15->obj_8",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_0->obj_8",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_1->obj_8",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_5->obj_8",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_28->obj_8",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_9->obj_13",
+   "judgement": "supports",
+   "source": "owner_confirmed_prior_step",
+   "flags": []
+  },
+  {
+   "pair_id": "obj_12->obj_8",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_18->obj_8",
+   "judgement": "unsure",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_6->obj_8",
+   "judgement": "unsure",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_7->obj_8",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_27->obj_8",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_23->obj_13",
+   "judgement": "supports",
+   "source": "owner_confirmed_prior_step",
+   "flags": []
+  },
+  {
+   "pair_id": "obj_20->obj_8",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_1->obj_14",
+   "judgement": "supports",
+   "source": "owner_review_sheet",
+   "flags": []
+  },
+  {
+   "pair_id": "obj_11->obj_8",
+   "judgement": "supports",
+   "source": "owner_review_sheet",
+   "flags": [
+    {
+     "flag": "target_below_owner",
+     "detail": "target underside 1.460 m is below the owner underside 2.286 m, so the target extends beneath what it is said to rest on; the pair may be right with the direction reversed"
+    }
+   ]
+  },
+  {
+   "pair_id": "obj_4->obj_14",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_29->obj_21",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_36->obj_27",
+   "judgement": "unsure",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_36->obj_8",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_4->obj_28",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_18->obj_16",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_12->obj_27",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_15->obj_13",
+   "judgement": "unsure",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_28->obj_4",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_27->obj_36",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_25->obj_11",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_21->obj_29",
+   "judgement": "unsure",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_8->obj_5",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_27->obj_12",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_8->obj_14",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_8->obj_13",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_7->obj_20",
+   "judgement": "supports",
+   "source": "owner_review_sheet",
+   "flags": [
+    {
+     "flag": "target_below_owner",
+     "detail": "target underside 0.120 m is below the owner underside 0.853 m, so the target extends beneath what it is said to rest on; the pair may be right with the direction reversed"
+    }
+   ]
+  },
+  {
+   "pair_id": "obj_2->obj_3",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_13->obj_23",
+   "judgement": "unsure",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_13->obj_34",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_13->obj_15",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_13->obj_2",
+   "judgement": "unsure",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_24->obj_0",
+   "judgement": "unsure",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_8->obj_0",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_5->obj_0",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_8->obj_2",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_14->obj_1",
+   "judgement": "unsure",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_32->obj_3",
+   "judgement": "supports",
+   "source": "owner_review_sheet",
+   "flags": [
+    {
+     "flag": "floor_standing_target",
+     "detail": "target underside is 0.000 m above the lowest scene point (<= 0.06 m), so it appears to stand on the floor"
+    },
+    {
+     "flag": "target_below_owner",
+     "detail": "target underside 0.000 m is below the owner underside 1.473 m, so the target extends beneath what it is said to rest on; the pair may be right with the direction reversed"
+    }
+   ]
+  },
+  {
+   "pair_id": "obj_8->obj_3",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_0->obj_1",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_0->obj_11",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_0->obj_12",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_0->obj_13",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  },
+  {
+   "pair_id": "obj_8->obj_21",
+   "judgement": "does_not_support",
+   "source": "owner_review_sheet"
+  }
+ ],
+ "algorithm_agreement": {
+  "n_algorithm_candidates": 1,
+  "n_owner_positives": 6,
+  "candidates_owner_confirms": [
+   "obj_9->obj_13"
+  ],
+  "candidates_owner_rejects": [],
+  "owner_positives_algorithm_misses": [
+   "obj_1->obj_14",
+   "obj_11->obj_8",
+   "obj_23->obj_13",
+   "obj_32->obj_3",
+   "obj_7->obj_20"
+  ],
+  "note": "reported for the record; no logic or threshold changed here"
+ },
+ "consistency_checks": {
+  "floor_margin_m": 0.06,
+  "checks": [
+   "floor_standing_target",
+   "target_below_owner"
+  ],
+  "not_checked": "whether the target sits above the owner's TOP -- a book on a middle shelf legitimately does not",
+  "effect": "flag only; no judgement was altered or dropped"
+ },
+ "provenance": {
+  "returned_truth_sha256": "5a9661faea9d4a4b77261c35b23c431559df2a5013a557c4556942e2ff7175a4",
+  "sheet_sha256": "122552f29c65158c52b4980562dbd00c9a89bf938b8c204ad95a476267f81b51",
+  "logic_changed": false,
+  "thresholds_changed": false
+ }
+}
