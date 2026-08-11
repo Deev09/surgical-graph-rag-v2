@@ -60,6 +60,11 @@ if str(REPO_ROOT) not in sys.path:
 
 DEFAULT_REST = (REPO_ROOT / "runs" / "arkit_vertical_slice" / "sealed_pair_rest"
                 / "41069025" / "entity_patch_rest.json")
+DEFAULT_ENTITIES = (REPO_ROOT / "runs" / "arkit_label_image_ab_41069025"
+                    / "rgb_tight" / "entities" / "manifest.json")
+DEFAULT_IDS = (REPO_ROOT / "runs" / "arkitscenes_mask3d_transfer"
+               / "bundle_arkitscenes_41069025" / "vertex_instance_ids.npy")
+DEFAULT_DATA_ROOT = Path.home() / "Desktop/datasets/arkitscenes/Validation"
 DEFAULT_OUT = REPO_ROOT / "eval" / "human_feedback"
 
 # Owner-asserted resting contacts, included regardless of algorithm status.
@@ -176,21 +181,34 @@ def build_html(scene_id: str, rows: list[dict], band_counts: dict,
     body = []
     for r in rows:
         s = r["system"]
-        mark = " ✔ owner-confirmed" if r["pair_id"] in confirmed else ""
+        mark = ' <span class="tag">owner-confirmed</span>' \
+            if r["pair_id"] in confirmed else ""
         reasons = ", ".join(s["rejection_reasons"] + s["patch_rejection_reasons"]) or "—"
+        pics = r.get("renders")
+        imgs = "" if not pics else f"""
+        <div class="imgs">
+          <div><img src="{pics['side']}" alt="side-on"><span>side-on</span></div>
+          <div><img src="{pics['ctx'][0]}" alt="room A"><span>room A</span></div>
+          <div><img src="{pics['ctx'][1]}" alt="room B"><span>room B</span></div>
+        </div>"""
         body.append(f"""
-      <tr data-pair="{r['pair_id']}" class="{'conf' if mark else ''}">
-        <td class="pid"><b>{r['target_uid']}</b> → {r['owner_uid']}{mark}</td>
-        <td class="sysc">{'candidate' if s['relation_candidate'] else 'rejected'}</td>
-        <td class="num">{'' if s['overlap_ratio_target'] is None else s['overlap_ratio_target']}</td>
-        <td class="num">{'' if s['vertical_gap_m'] is None else s['vertical_gap_m']}</td>
-        <td class="rsn">{reasons}</td>
-        <td>
+      <article class="pair {'conf' if mark else ''}" data-pair="{r['pair_id']}">
+        <div class="hd">
+          <span class="tgt">{r['target_uid']}</span>
+          <span class="arrow">rests on?</span>
+          <span class="own">{r['owner_uid']}</span>{mark}
+        </div>
+        {imgs}
+        <div class="ev">{'candidate' if s['relation_candidate'] else 'rejected'}
+          · overlap {'—' if s['overlap_ratio_target'] is None else s['overlap_ratio_target']}
+          · gap {'—' if s['vertical_gap_m'] is None else str(s['vertical_gap_m']) + ' m'}
+          <br><span class="rsn">{reasons}</span></div>
+        <div class="ans">
           <label><input type="radio" name="{r['pair_id']}" value="supports"> rests on</label>
           <label><input type="radio" name="{r['pair_id']}" value="does_not_support"> no</label>
           <label><input type="radio" name="{r['pair_id']}" value="unsure"> unsure</label>
-        </td>
-      </tr>""")
+        </div>
+      </article>""")
     bands = "".join(f"<tr><td>{n}</td><td>{c}</td></tr>"
                     for n, c in band_counts.items())
     return f"""<title>Support-relation review — {scene_id}</title>
@@ -214,6 +232,28 @@ def build_html(scene_id: str, rows: list[dict], band_counts: dict,
  th {{ color:var(--mut); font-weight:600; position:sticky; top:0;
    background:var(--bg); }}
  .num {{ text-align:right; font-variant-numeric:tabular-nums; }}
+ .pairs {{ display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+   gap:12px; }}
+ .pair {{ border:1px solid var(--line); border-radius:8px; padding:9px; }}
+ .pair.conf {{ background:rgba(10,125,85,.10); border-color:var(--ac); }}
+ .hd {{ font-size:14px; margin-bottom:6px; }}
+ .tgt {{ font-weight:700; color:#c0158f; }}
+ .own {{ font-weight:700; color:#00857a; }}
+ @media (prefers-color-scheme: dark) {{
+   .tgt {{ color:#ff5cc8; }} .own {{ color:#3fd39b; }} }}
+ .arrow {{ color:var(--mut); font-size:12px; margin:0 4px; }}
+ .tag {{ font-size:10.5px; background:var(--ac); color:#fff; padding:1px 6px;
+   border-radius:9px; margin-left:4px; }}
+ .imgs {{ display:flex; gap:4px; margin-bottom:6px; }}
+ .imgs div {{ flex:1; text-align:center; }}
+ .imgs img {{ width:100%; border:1px solid var(--line); border-radius:4px;
+   display:block; }}
+ .imgs span {{ font-size:10px; color:var(--mut); }}
+ .ev {{ font-size:12px; color:var(--mut); margin-bottom:6px; }}
+ .ans label {{ display:inline-block; }}
+ .sw {{ display:inline-block; width:10px; height:10px; border-radius:2px;
+   vertical-align:middle; }}
+ .tgt-sw {{ background:#ff28be; }} .own-sw {{ background:#00b3a4; }}
  .rsn {{ color:var(--mut); font-size:12px; }}
  .sysc {{ font-size:12.5px; }}
  tr.conf {{ background:rgba(10,125,85,.10); }}
@@ -240,14 +280,16 @@ confirmed. They are shown so the sheet is self-consistent — leave or change
 them as you see fit.</p>
 
 <h2>2 · Pairs to judge</h2>
-<p class="sub">System columns are evidence, not a suggestion. One pair the
-algorithm proposes and one it rejects are both known-good, so the columns
-cannot be used as a shortcut.</p>
-<div class="wrap"><table>
-  <tr><th>pair</th><th>system</th><th>overlap</th><th>gap m</th>
-      <th>rejection reasons</th><th>your judgement</th></tr>
-  {''.join(body)}
-</table></div>
+<p class="sub"><b><span class="sw tgt-sw"></span> pink = the target</b> (the
+thing that might be resting) ·
+<b><span class="sw own-sw"></span> teal = the owner</b> (what it might rest on)
+· grey = the rest of the room, ceiling clipped. The <b>side-on</b> view is the
+one to judge from: resting contact is a vertical question and the room views
+flatten it.</p>
+<p class="sub">The evidence line is evidence, not a suggestion. One pair the
+algorithm proposes and one it rejects are both known-good, so it cannot be used
+as a shortcut.</p>
+<div class="pairs">{''.join(body)}</div>
 <p style="margin-top:14px"><button onclick="emit()">Build JSON</button></p>
 <pre id="out">(judge the rows above, then press Build JSON)</pre>
 
@@ -260,7 +302,7 @@ highest overlap first, ties by uid — deterministic, no seed.</p>
 <script>
 function emit() {{
   const truth = [];
-  document.querySelectorAll('tr[data-pair]').forEach(tr => {{
+  document.querySelectorAll('[data-pair]').forEach(tr => {{
     const pick = tr.querySelector('input[type=radio]:checked');
     if (pick) truth.push({{pair_id: tr.dataset.pair, judgement: pick.value}});
   }});
@@ -280,7 +322,13 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--scene", default="41069025")
     ap.add_argument("--rest", type=Path, default=DEFAULT_REST)
+    ap.add_argument("--entities", type=Path, default=DEFAULT_ENTITIES)
+    ap.add_argument("--ids", type=Path, default=DEFAULT_IDS)
+    ap.add_argument("--data-root", type=Path, default=DEFAULT_DATA_ROOT)
     ap.add_argument("--out-root", type=Path, default=DEFAULT_OUT)
+    ap.add_argument("--no-renders", action="store_true",
+                    help="text-only sheet; renders are the point, so this is "
+                         "for debugging the sampling")
     args = ap.parse_args(argv)
 
     scene_id = f"arkitscenes_{args.scene}"
@@ -289,6 +337,39 @@ def main(argv: list[str] | None = None) -> int:
     rows, band_counts = select_rows(pairs)
     n_patches = len({patch["patch_uid"] for pair in pairs
                      for patch in pair["evaluated_patches"]})
+
+    # Pictures, so a pair can be judged without cross-referencing the UID sheet
+    # by hand. Same renderer, so the colours and framing match.
+    if not args.no_renders:
+        import numpy as np
+        from adapters.arkitscenes import MESH_SUFFIX, read_mesh
+        from tools.arkitscenes_uid_visual_sheet import SceneRenderer
+
+        mesh = read_mesh(args.data_root / args.scene
+                         / f"{args.scene}{MESH_SUFFIX}")
+        instance_ids = np.load(args.ids)
+        if len(instance_ids) != len(mesh.xyz):
+            raise ValueError(
+                f"{len(instance_ids)} instance ids against {len(mesh.xyz)} "
+                "mesh vertices; the sidecar does not belong to this mesh")
+        index_of = {e["identity"]["object_uid"]:
+                    int(e["geometry_handle"].rsplit("#", 1)[1])
+                    for e in json.loads(args.entities.read_text())["entities"]}
+        renderer = SceneRenderer(mesh.xyz, mesh.rgb)
+        cache: dict[str, np.ndarray] = {}
+
+        def vertices_of(uid: str) -> np.ndarray:
+            if uid not in cache:
+                cache[uid] = np.flatnonzero(instance_ids == index_of[uid])
+            return cache[uid]
+
+        for row in rows:
+            target = vertices_of(row["target_uid"])
+            owner = vertices_of(row["owner_uid"])
+            row["renders"] = {
+                "side": renderer.isolated_pair(target, owner),
+                "ctx": renderer.context_pair(target, owner),
+            }
 
     provenance = {
         "resting_artifact": str(args.rest.relative_to(REPO_ROOT)),
@@ -333,6 +414,7 @@ def main(argv: list[str] | None = None) -> int:
              "owner_uid": r["owner_uid"], "row_sources": r["sources"],
              **r["system"]}
             for r in rows],
+        "renders_embedded": not args.no_renders,
         "sampling": {"bands": [{"band": n, "low": lo, "high": hi,
                                 "budget": b, "taken": band_counts[n]}
                                for n, lo, hi, b in BANDS],

@@ -68,6 +68,14 @@ AZIMUTHS = (35.0, 215.0)
 ELEVATION = 22.0
 RENDER_STRIDE = 4          # scene points used for the context base
 HIGHLIGHT = np.array([255, 40, 190], dtype=np.uint8)
+# Pair review: the TARGET (the thing that might be resting) and the OWNER (the
+# thing it might rest on). Pink/teal rather than red/green so the pair stays
+# separable for the most common colour-vision deficiencies.
+TARGET_COLOUR = np.array([255, 40, 190], dtype=np.uint8)
+OWNER_COLOUR = np.array([0, 179, 164], dtype=np.uint8)
+# Resting contact is a VERTICAL question, and a view from above hides it. The
+# paired isolation view is rendered nearly side-on so the gap is visible.
+PAIR_ELEVATION = 6.0
 # Base points above this height over the lowest point are dropped, so the
 # ceiling does not cover the whole room in a view from above. The HIGHLIGHTED
 # region is never clipped -- if the region is the ceiling, it must still show.
@@ -184,6 +192,61 @@ class SceneRenderer:
                                int(np.median(v[inside])), HIGHLIGHT)
             out.append(_png(canvas))
         return out
+
+    def context_pair(self, target: np.ndarray, owner: np.ndarray) -> list[str]:
+        """Both regions over the room, target and owner in distinct colours."""
+        out = []
+        for azimuth in AZIMUTHS:
+            basis, base, _ = self._base[azimuth]
+            canvas = base.copy()
+            for vertices, colour in ((owner, OWNER_COLOUR),
+                                     (target, TARGET_COLOUR)):
+                u, v, depth = _project(self.xyz[vertices], basis, self.centre,
+                                       self.scale, CONTEXT_PX)
+                scratch = np.full((CONTEXT_PX, CONTEXT_PX), np.inf)
+                _paint(canvas, scratch, u, v, depth, colour,
+                       radius=_splat_radius(len(vertices)))
+            out.append(_png(canvas))
+        return out
+
+    def isolated_pair(self, target: np.ndarray, owner: np.ndarray) -> str:
+        """Target and owner alone, seen nearly side-on so contact is legible.
+
+        Painted as one depth-sorted set rather than one region after the other,
+        so whichever is actually in front occludes the other -- painting the
+        target last would draw it through the owner and make every pair look
+        like contact.
+        """
+        both = np.concatenate([owner, target])
+        colours = np.concatenate([
+            np.tile(OWNER_COLOUR, (len(owner), 1)),
+            np.tile(TARGET_COLOUR, (len(target), 1))])
+        points = self.xyz[both]
+        lo, hi = points.min(axis=0), points.max(axis=0)
+        centre = (lo + hi) / 2.0
+        scale = 0.78 * ISOLATED_PX / max(float((hi - lo).max()), 1e-6)
+        basis = _basis(AZIMUTHS[0], PAIR_ELEVATION)
+        u, v, depth = _project(points, basis, centre, scale, ISOLATED_PX)
+        canvas = np.full((ISOLATED_PX, ISOLATED_PX, 3), 255, dtype=np.uint8)
+        depth_buf = np.full((ISOLATED_PX, ISOLATED_PX), np.inf)
+        _paint(canvas, depth_buf, u, v, depth, colours,
+               radius=_splat_radius(len(both)))
+
+        # The combined pass gets occlusion right but sizes every splat from the
+        # COMBINED count, so a small target against a large owner renders at
+        # one pixel and disappears. Re-draw the target at its own radius, but
+        # only where it is genuinely in front, so this cannot fake contact.
+        target_radius = _splat_radius(len(target))
+        if target_radius > _splat_radius(len(both)):
+            tu, tv, td = u[len(owner):], v[len(owner):], depth[len(owner):]
+            inside = ((tu >= 0) & (tu < ISOLATED_PX)
+                      & (tv >= 0) & (tv < ISOLATED_PX))
+            front = inside.copy()
+            front[inside] = td[inside] <= depth_buf[tv[inside], tu[inside]] + 1e-6
+            scratch = np.full((ISOLATED_PX, ISOLATED_PX), np.inf)
+            _paint(canvas, scratch, tu[front], tv[front], td[front],
+                   TARGET_COLOUR, radius=target_radius)
+        return _png(canvas)
 
     def isolated(self, vertices: np.ndarray) -> str:
         points = self.xyz[vertices]

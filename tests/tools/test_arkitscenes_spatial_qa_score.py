@@ -161,7 +161,8 @@ def test_uid_sheets_never_read_or_show_a_predicted_label() -> None:
     """
     import ast
     for name in ("tools/arkitscenes_uid_confirmation_sheet.py",
-                 "tools/arkitscenes_uid_visual_sheet.py"):
+                 "tools/arkitscenes_uid_visual_sheet.py",
+                 "tools/arkitscenes_support_review_sheet.py"):
         path = REPO_ROOT / name
         tree = ast.parse(path.read_text())
         used = set()
