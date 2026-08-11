@@ -138,9 +138,11 @@ def score(key: dict, entities: list[dict], edges: list[dict]) -> list[dict]:
         row = {"id": item["id"], "kind": kind, "question": item.get("question")}
 
         if kind == "class_cardinality":
-            wanted = {"rug": "rug", "trash": "trash-can",
-                      "counter": "counter",
-                      "cushion": "cushion"}[item["id"].split("_")[1]]
+            # Prefer the key's explicit class; the id-parsing fallback is for
+            # v1/v2 items written before the field existed.
+            wanted = item.get("class") or {
+                "rug": "rug", "trash": "trash-can", "counter": "counter",
+                "cushion": "cushion"}[item["id"].split("_")[1]]
             hits = [e for e in labelled if matches(e["display_label"], wanted)]
             row.update(expected=item["expected"], answer=len(hits),
                        matched_uids=[e["uid"] for e in hits],
@@ -154,6 +156,16 @@ def score(key: dict, entities: list[dict], edges: list[dict]) -> list[dict]:
                        matched_uids=[e["uid"] for e in hits],
                        outcome="correct" if bool(hits) == item["expected"]
                        else "wrong")
+
+        elif kind == "instance_identity":
+            wanted = item["class"]
+            got = sorted(e["uid"] for e in labelled
+                         if matches(e["display_label"], wanted))
+            expected_uids = sorted(item["expected_uids"])
+            row.update(expected=expected_uids, answer=got,
+                       spurious=sorted(set(got) - set(expected_uids)),
+                       missed=sorted(set(expected_uids) - set(got)),
+                       outcome="correct" if got == expected_uids else "wrong")
 
         elif kind == "support_relation":
             wanted_type = item["expected_relation"]
@@ -214,6 +226,24 @@ def main(argv: list[str] | None = None) -> int:
     edges, graph_prov = load_graph(args.graph)
     results = score(key, entities, edges)
 
+    diagnostics = []
+    for item in key.get("delivery_diagnostics", []):
+        hits = [e["uid"] for e in entities
+                if not is_anonymous(e["display_label"])
+                and matches(e["display_label"], item["class"])]
+        diagnostics.append({
+            "id": item["id"], "question": item["question"],
+            "expected": item["expected"], "answer": len(hits),
+            "matched_uids": hits, "scored": False,
+            "agrees_with_expectation": len(hits) == item["expected"],
+            "context": item.get("context"),
+            "why_not_scored": item.get("why_not_scored"),
+        })
+
+    by_status: dict[str, int] = {}
+    for mapping in key["unresolved_uid_mappings"]:
+        by_status[mapping["status"]] = by_status.get(mapping["status"], 0) + 1
+
     tally = {"correct": 0, "wrong": 0, "unanswered": 0}
     for row in results:
         tally[row["outcome"]] += 1
@@ -256,12 +286,14 @@ def main(argv: list[str] | None = None) -> int:
                     "nothing; a low class count is not a confident denial",
         },
         "tally": tally,
+        "delivery_diagnostics": diagnostics,
         "confounds_triggered": triggered,
         "score_excluding_unanswered": (
             round(tally["correct"] / (tally["correct"] + tally["wrong"]), 4)
             if tally["correct"] + tally["wrong"] else None),
         "score_counting_unanswered_as_failure": round(
             tally["correct"] / len(results), 4) if results else None,
+        "uid_mapping_status": by_status,
         "unresolved_uid_mappings": key["unresolved_uid_mappings"],
         "results": results,
         "interpretation_limit": key["interpretation_limit"],
@@ -270,8 +302,7 @@ def main(argv: list[str] | None = None) -> int:
     path = args.out_root / f"{key['scene_id']}_human_spatial_qa.json"
     path.write_text(json.dumps(report, indent=1, sort_keys=True) + "\n")
 
-    print(f"=== {key['scene_id']}   human spatial-QA key v1  "
-          f"({key['status']})")
+    print(f"=== {key['scene_id']}   {args.key.stem}  ({key['status']})")
     print(f"    system   : {report['system']}")
     print(f"    entities : {len(entities)} delivered, {len(labelled)} labelled, "
           f"{len(entities) - len(labelled)} anonymous")
@@ -287,6 +318,12 @@ def main(argv: list[str] | None = None) -> int:
             print(f"             uids: {row['matched_uids']}")
         if row.get("room_spanning"):
             print(f"             room-spanning: {row['room_spanning']}")
+    for d in diagnostics:
+        mark = "agrees" if d["agrees_with_expectation"] else "disagrees"
+        print(f"    [diag ] {d['id']:32s} expected={d['expected']}  "
+              f"answer={d['answer']}  ({mark}; not tallied)")
+        if d.get("context"):
+            print(f"             {d['context']}")
     print()
     print(f"    correct {tally['correct']}, wrong {tally['wrong']}, "
           f"unanswered {tally['unanswered']}  of {len(results)}")
@@ -296,8 +333,8 @@ def main(argv: list[str] | None = None) -> int:
           f"{report['score_counting_unanswered_as_failure']}")
     for confound in triggered:
         print(f"    CONFOUND {confound['id']}: {confound['description']}")
-    print(f"    unresolved UID mappings awaiting owner: "
-          f"{len(key['unresolved_uid_mappings'])}")
+    print("    UID mappings: " + ", ".join(
+        f"{v} {k.lower()}" for k, v in sorted(by_status.items())))
     print(f"    report -> {path}   ({time.perf_counter() - t0:.1f}s)")
     return 0
 

@@ -26,6 +26,8 @@ from tools.arkitscenes_spatial_qa_score import (
 
 KEY_V2 = (REPO_ROOT / "eval" / "human_feedback"
           / "arkitscenes_41069025_spatial_qa_key_v2.json")
+KEY_FINAL = (REPO_ROOT / "eval" / "human_feedback"
+             / "arkitscenes_41069025_spatial_qa_key_v3_final.json")
 
 RUN_ROOT = REPO_ROOT / "runs" / "arkit_spatial_qa"
 
@@ -188,6 +190,65 @@ def test_uid_sheets_never_read_or_show_a_predicted_label() -> None:
             f"the visual sheet shows the predicted class {predicted!r}"
 
 
+def test_final_key_records_the_owner_confirmation_faithfully() -> None:
+    """Two mappings resolved, two ambiguous; neither is silently guessed."""
+    key = json.loads(KEY_FINAL.read_text())
+    assert key["status"] == "FINAL", key["status"]
+    status = {m["item"]: m["status"] for m in key["unresolved_uid_mappings"]}
+    assert status["the single true rug"] == "RESOLVED"
+    assert status["cushion cardinality"] == "RESOLVED"
+    assert status["the single true trash can"] == "AMBIGUOUS_PER_OWNER"
+    assert status["the main kitchen counter"] == "AMBIGUOUS_PER_OWNER"
+    # Ambiguity must NOT become a per-instance item.
+    ids = [q["id"] for q in key["independent_questions"]]
+    assert not any("trash" in i and "identity" in i for i in ids), ids
+    assert not any("counter" in i and "identity" in i for i in ids), ids
+    # The one item confirmation unlocked is present and expects the two uids.
+    # Compared as a SET: lexical sort puts obj_23 before obj_9.
+    q8 = next(q for q in key["independent_questions"]
+              if q["id"] == "q8_cushion_instance_identity")
+    assert set(q8["expected_uids"]) == {"obj_9", "obj_23"}, q8
+
+    # Independence still holds where it should: the scene-fact items q1-q7 name
+    # no delivered region. q8 legitimately does -- it IS the correspondence
+    # item, and it exists only because the owner supplied those uids.
+    for item in key["independent_questions"]:
+        if item["id"] == "q8_cushion_instance_identity":
+            continue
+        blob = json.dumps({k: v for k, v in item.items()
+                           if k not in {"review_basis", "scoring",
+                                        "delivery_note"}})
+        assert "obj_" not in blob, f"{item['id']} names a delivered uid"
+
+
+def test_instance_identity_scores_exact_set_match() -> None:
+    key = json.loads(KEY_FINAL.read_text())
+    exact = [_entity("obj_9", "cushion"), _entity("obj_23", "cushion")]
+    row = {r["id"]: r for r in score(key, exact, [])}["q8_cushion_instance_identity"]
+    assert row["outcome"] == "correct", row
+
+    spurious = exact + [_entity("obj_13", "cushion")]
+    row = {r["id"]: r for r in score(key, spurious, [])}["q8_cushion_instance_identity"]
+    assert row["outcome"] == "wrong" and row["spurious"] == ["obj_13"], row
+    assert row["missed"] == [], row
+
+    missing = [_entity("obj_9", "cushion")]
+    row = {r["id"]: r for r in score(key, missing, [])}["q8_cushion_instance_identity"]
+    assert row["missed"] == ["obj_23"], row
+
+
+def test_delivery_diagnostic_is_reported_but_not_tallied() -> None:
+    """d1 reads the same count as q1 against the opposite expectation, so
+    tallying both would score one measurement as a pass and a fail."""
+    key = json.loads(KEY_FINAL.read_text())
+    scored_ids = {q["id"] for q in key["independent_questions"]}
+    assert "d1_rug_not_hallucinated" not in scored_ids
+    diagnostic = key["delivery_diagnostics"][0]
+    assert diagnostic["scored"] is False
+    assert "same system count as q1" in diagnostic["why_not_scored"] \
+        or "SAME system count" in diagnostic["why_not_scored"], diagnostic
+
+
 def test_recorded_report_is_evaluation_only() -> None:
     """Dataset-guarded: whatever the scorer last wrote must say so."""
     reports = sorted(RUN_ROOT.glob("*_human_spatial_qa.json"))
@@ -217,6 +278,9 @@ TESTS = [
     test_a_missing_relation_type_is_unanswered_not_wrong,
     test_room_spanning_counter_is_caught,
     test_uid_sheets_never_read_or_show_a_predicted_label,
+    test_final_key_records_the_owner_confirmation_faithfully,
+    test_instance_identity_scores_exact_set_match,
+    test_delivery_diagnostic_is_reported_but_not_tallied,
     test_recorded_report_is_evaluation_only,
 ]
 

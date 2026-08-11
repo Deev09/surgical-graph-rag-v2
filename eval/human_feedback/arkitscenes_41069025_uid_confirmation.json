@@ -1,38 +1,15 @@
 {
  "schema": "arkitscenes_uid_confirmation_v1",
  "scene_id": "arkitscenes_41069025",
- "status": "AWAITING_OWNER",
- "instructions": "For each object set exactly one of: uid, none_missing (true), overmerged_into (a uid), ambiguous (true). Leave the rest null.",
- "human_object_facts": [
-  {
-   "object": "rug",
-   "confirmed_count": 1,
-   "source": "owner confirmation 2026-08-10"
-  },
-  {
-   "object": "trash can",
-   "confirmed_count": 1,
-   "source": "owner confirmation 2026-08-10"
-  },
-  {
-   "object": "main kitchen counter",
-   "confirmed_count": 1,
-   "source": "owner confirmation 2026-08-10"
-  },
-  {
-   "object": "visible sofa cushion",
-   "confirmed_count": 2,
-   "source": "owner confirmation 2026-08-10"
-  }
- ],
+ "status": "OWNER_CONFIRMED",
+ "confirmed": "2026-08-10",
  "predicted_uid_correspondence": [
   {
    "object": "rug",
-   "expected_count": 1,
    "assignments": [
     {
      "uid": null,
-     "none_missing": null,
+     "none_missing": true,
      "overmerged_into": null,
      "ambiguous": null
     }
@@ -40,53 +17,42 @@
   },
   {
    "object": "trash can",
-   "expected_count": 1,
    "assignments": [
     {
      "uid": null,
      "none_missing": null,
      "overmerged_into": null,
-     "ambiguous": null
+     "ambiguous": true
     }
    ]
   },
   {
    "object": "main kitchen counter",
-   "expected_count": 1,
    "assignments": [
     {
      "uid": null,
      "none_missing": null,
      "overmerged_into": null,
-     "ambiguous": null
+     "ambiguous": true
     }
    ]
   },
   {
    "object": "visible sofa cushion",
-   "expected_count": 2,
    "assignments": [
     {
-     "uid": null,
+     "uid": "obj_23",
      "none_missing": null,
      "overmerged_into": null,
      "ambiguous": null
     },
     {
-     "uid": null,
+     "uid": "obj_9",
      "none_missing": null,
      "overmerged_into": null,
      "ambiguous": null
     }
    ]
   }
- ],
- "region_provenance": {
-  "entity_manifest": "runs/arkit_label_image_ab_41069025/rgb_tight/entities/manifest.json",
-  "entity_manifest_sha256": "a61f83f3eec75bff9950cef92cb7c3c3c8eb64692ae72b495ee14d521d3964e7",
-  "bundle_hash": "ent_openclip_global_indoor_labels_35de101d48b05a87",
-  "n_regions": 35,
-  "scene_floor_z": -1.012,
-  "descriptors": "geometry only; predicted labels deliberately omitted"
- }
+ ]
 }
