@@ -2,7 +2,7 @@
  "schema": "arkitscenes_support_relation_key_v1",
  "scene_id": "arkitscenes_41069025",
  "definition": "gravity-resting contact on the supporter",
- "status": "PENDING_RECHECK",
+ "status": "FINAL",
  "coverage": {
   "rows_on_sheet": 54,
   "rows_returned": 52,
@@ -13,43 +13,11 @@
   "omitted_reason": "the sheet's Build JSON only emits rows with a checked radio, and the pre-confirmed pairs were highlighted with the note 'leave or change them as you see fit'. Omission here is a form defect, not a retraction, so the prior confirmation is carried forward and marked with its own source."
  },
  "judgement_counts": {
-  "does_not_support": 39,
-  "supports": 6,
+  "does_not_support": 42,
+  "supports": 3,
   "unsure": 9
  },
- "needs_owner_recheck": [
-  {
-   "pair_id": "obj_11->obj_8",
-   "flags": [
-    {
-     "flag": "target_below_owner",
-     "detail": "target underside 1.460 m is below the owner underside 2.286 m, so the target extends beneath what it is said to rest on; the pair may be right with the direction reversed"
-    }
-   ]
-  },
-  {
-   "pair_id": "obj_7->obj_20",
-   "flags": [
-    {
-     "flag": "target_below_owner",
-     "detail": "target underside 0.120 m is below the owner underside 0.853 m, so the target extends beneath what it is said to rest on; the pair may be right with the direction reversed"
-    }
-   ]
-  },
-  {
-   "pair_id": "obj_32->obj_3",
-   "flags": [
-    {
-     "flag": "floor_standing_target",
-     "detail": "target underside is 0.000 m above the lowest scene point (<= 0.06 m), so it appears to stand on the floor"
-    },
-    {
-     "flag": "target_below_owner",
-     "detail": "target underside 0.000 m is below the owner underside 1.473 m, so the target extends beneath what it is said to rest on; the pair may be right with the direction reversed"
-    }
-   ]
-  }
- ],
+ "needs_owner_recheck": [],
  "human_relation_truth": [
   {
    "pair_id": "obj_21->obj_8",
@@ -104,7 +72,8 @@
   {
    "pair_id": "obj_9->obj_13",
    "judgement": "supports",
-   "source": "owner_confirmed_prior_step",
+   "source": "owner_correction",
+   "rationale": "obj_9 is a cushion resting on obj_13, the sofa",
    "flags": []
   },
   {
@@ -135,7 +104,8 @@
   {
    "pair_id": "obj_23->obj_13",
    "judgement": "supports",
-   "source": "owner_confirmed_prior_step",
+   "source": "owner_correction",
+   "rationale": "obj_23 is the second cushion resting on obj_13, the sofa",
    "flags": []
   },
   {
@@ -151,14 +121,10 @@
   },
   {
    "pair_id": "obj_11->obj_8",
-   "judgement": "supports",
-   "source": "owner_review_sheet",
-   "flags": [
-    {
-     "flag": "target_below_owner",
-     "detail": "target underside 1.460 m is below the owner underside 2.286 m, so the target extends beneath what it is said to rest on; the pair may be right with the direction reversed"
-    }
-   ]
+   "judgement": "does_not_support",
+   "source": "owner_correction",
+   "rationale": "obj_8 is the ceiling-height slab and obj_11 is below it, so obj_11 cannot rest on it",
+   "superseded": "supports"
   },
   {
    "pair_id": "obj_4->obj_14",
@@ -242,14 +208,10 @@
   },
   {
    "pair_id": "obj_7->obj_20",
-   "judgement": "supports",
-   "source": "owner_review_sheet",
-   "flags": [
-    {
-     "flag": "target_below_owner",
-     "detail": "target underside 0.120 m is below the owner underside 0.853 m, so the target extends beneath what it is said to rest on; the pair may be right with the direction reversed"
-    }
-   ]
+   "judgement": "does_not_support",
+   "source": "owner_correction",
+   "rationale": "vertically adjacent/overlapping, not a gravity-support pair",
+   "superseded": "supports"
   },
   {
    "pair_id": "obj_2->obj_3",
@@ -303,18 +265,10 @@
   },
   {
    "pair_id": "obj_32->obj_3",
-   "judgement": "supports",
-   "source": "owner_review_sheet",
-   "flags": [
-    {
-     "flag": "floor_standing_target",
-     "detail": "target underside is 0.000 m above the lowest scene point (<= 0.06 m), so it appears to stand on the floor"
-    },
-    {
-     "flag": "target_below_owner",
-     "detail": "target underside 0.000 m is below the owner underside 1.473 m, so the target extends beneath what it is said to rest on; the pair may be right with the direction reversed"
-    }
-   ]
+   "judgement": "does_not_support",
+   "source": "owner_correction",
+   "rationale": "obj_32 is a tall vertical region, not resting on obj_3",
+   "superseded": "supports"
   },
   {
    "pair_id": "obj_8->obj_3",
@@ -349,17 +303,14 @@
  ],
  "algorithm_agreement": {
   "n_algorithm_candidates": 1,
-  "n_owner_positives": 6,
+  "n_owner_positives": 3,
   "candidates_owner_confirms": [
    "obj_9->obj_13"
   ],
   "candidates_owner_rejects": [],
   "owner_positives_algorithm_misses": [
    "obj_1->obj_14",
-   "obj_11->obj_8",
-   "obj_23->obj_13",
-   "obj_32->obj_3",
-   "obj_7->obj_20"
+   "obj_23->obj_13"
   ],
   "note": "reported for the record; no logic or threshold changed here"
  },
@@ -372,8 +323,36 @@
   "not_checked": "whether the target sits above the owner's TOP -- a book on a middle shelf legitimately does not",
   "effect": "flag only; no judgement was altered or dropped"
  },
+ "corrections_applied": [
+  {
+   "pair_id": "obj_11->obj_8",
+   "judgement": "does_not_support",
+   "rationale": "obj_8 is the ceiling-height slab and obj_11 is below it, so obj_11 cannot rest on it"
+  },
+  {
+   "pair_id": "obj_23->obj_13",
+   "judgement": "supports",
+   "rationale": "obj_23 is the second cushion resting on obj_13, the sofa"
+  },
+  {
+   "pair_id": "obj_32->obj_3",
+   "judgement": "does_not_support",
+   "rationale": "obj_32 is a tall vertical region, not resting on obj_3"
+  },
+  {
+   "pair_id": "obj_7->obj_20",
+   "judgement": "does_not_support",
+   "rationale": "vertically adjacent/overlapping, not a gravity-support pair"
+  },
+  {
+   "pair_id": "obj_9->obj_13",
+   "judgement": "supports",
+   "rationale": "obj_9 is a cushion resting on obj_13, the sofa"
+  }
+ ],
  "provenance": {
   "returned_truth_sha256": "5a9661faea9d4a4b77261c35b23c431559df2a5013a557c4556942e2ff7175a4",
+  "corrections_sha256": "c5f4e354465969742a8935ee5b97538b32d71d0b3eee923294ce08a4e58e606b",
   "sheet_sha256": "122552f29c65158c52b4980562dbd00c9a89bf938b8c204ad95a476267f81b51",
   "logic_changed": false,
   "thresholds_changed": false

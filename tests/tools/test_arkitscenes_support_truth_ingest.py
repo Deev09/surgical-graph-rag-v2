@@ -103,12 +103,39 @@ def test_recorded_key_preserves_every_judgement() -> None:
     for pair_id in flagged:
         assert by_id[pair_id]["judgement"] == "supports", by_id[pair_id]
 
-    # Omitted pre-confirmed pairs are carried, and say so.
+    # An omitted row is never left blank. It is either carried forward from
+    # the prior confirmation or superseded by an explicit correction -- both
+    # are attributed, and neither is a silent drop.
     for pair_id in key["coverage"]["rows_omitted"]:
         record = by_id[pair_id]
-        assert record["judgement"] == "supports", record
-        assert record["source"] == "owner_confirmed_prior_step", record
+        assert record["judgement"] is not None, record
+        assert record["source"] in {"owner_confirmed_prior_step",
+                                    "owner_correction"}, record
     assert "not a retraction" in key["coverage"]["omitted_reason"]
+
+
+def test_corrections_outrank_and_record_what_they_replaced() -> None:
+    if not KEY.is_file():
+        print("  skip: no support-relation key on disk")
+        return
+    key = json.loads(KEY.read_text())
+    applied = {c["pair_id"]: c for c in key.get("corrections_applied", [])}
+    if not applied:
+        print("  skip: no corrections applied to this key")
+        return
+    by_id = {r["pair_id"]: r for r in key["human_relation_truth"]}
+    for pair_id, correction in applied.items():
+        record = by_id[pair_id]
+        assert record["source"] == "owner_correction", record
+        assert record["judgement"] == correction["judgement"], record
+        assert record.get("rationale"), \
+            f"{pair_id} was corrected without a recorded reason"
+        # Where a correction changed an earlier answer, the old one survives.
+        if "superseded" in record:
+            assert record["superseded"] != record["judgement"], record
+    # A key with every flagged positive re-checked is FINAL, not pending.
+    assert not key["needs_owner_recheck"], key["needs_owner_recheck"]
+    assert key["status"] == "FINAL", key["status"]
 
 
 def test_recorded_key_reports_algorithm_agreement_without_tuning() -> None:
@@ -133,6 +160,7 @@ TESTS = [
     test_floor_margin_boundary,
     test_the_tool_changes_no_support_logic,
     test_recorded_key_preserves_every_judgement,
+    test_corrections_outrank_and_record_what_they_replaced,
     test_recorded_key_reports_algorithm_agreement_without_tuning,
 ]
 

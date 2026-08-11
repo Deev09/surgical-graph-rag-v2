@@ -1,0 +1,19 @@
+{
+ "schema": "arkitscenes_support_relation_corrections_v1",
+ "scene_id": "arkitscenes_41069025",
+ "definition": "gravity-resting contact on the supporter",
+ "confirmed": "2026-08-10",
+ "reason": "owner re-check after direction flags; the direction was reversed on three positives",
+ "corrections": [
+  {"pair_id": "obj_9->obj_13", "judgement": "supports",
+   "rationale": "obj_9 is a cushion resting on obj_13, the sofa"},
+  {"pair_id": "obj_23->obj_13", "judgement": "supports",
+   "rationale": "obj_23 is the second cushion resting on obj_13, the sofa"},
+  {"pair_id": "obj_11->obj_8", "judgement": "does_not_support",
+   "rationale": "obj_8 is the ceiling-height slab and obj_11 is below it, so obj_11 cannot rest on it"},
+  {"pair_id": "obj_7->obj_20", "judgement": "does_not_support",
+   "rationale": "vertically adjacent/overlapping, not a gravity-support pair"},
+  {"pair_id": "obj_32->obj_3", "judgement": "does_not_support",
+   "rationale": "obj_32 is a tall vertical region, not resting on obj_3"}
+ ]
+}

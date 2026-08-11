@@ -95,6 +95,9 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--scene", default="41069025")
     ap.add_argument("--truth", type=Path, required=True)
     ap.add_argument("--sheet", type=Path, default=DEFAULT_SHEET)
+    ap.add_argument("--corrections", type=Path, default=None,
+                    help="owner re-check that overrides returned judgements; "
+                         "each correction is recorded with its rationale")
     ap.add_argument("--entities", type=Path, default=DEFAULT_ENTITIES)
     ap.add_argument("--out-root", type=Path, default=DEFAULT_OUT)
     args = ap.parse_args(argv)
@@ -111,6 +114,13 @@ def main(argv: list[str] | None = None) -> int:
 
     judged = {row["pair_id"]: row["judgement"]
               for row in returned["human_relation_truth"]}
+    corrections: dict[str, dict] = {}
+    if args.corrections is not None:
+        payload = json.loads(args.corrections.read_text())
+        if payload.get("definition") != DEFINITION:
+            raise ValueError("corrections use a different definition")
+        for entry in payload["corrections"]:
+            corrections[entry["pair_id"]] = entry
     unknown = sorted(set(judged) - set(evidence))
     if unknown:
         raise ValueError(f"judgements for pairs not on the sheet: {unknown}")
@@ -120,7 +130,12 @@ def main(argv: list[str] | None = None) -> int:
 
     records = []
     for pair_id, entry in evidence.items():
-        if pair_id in judged:
+        if pair_id in corrections:
+            # An explicit re-check outranks both the sheet and the prior step.
+            # The superseded value is kept so the key shows what changed.
+            judgement = corrections[pair_id]["judgement"]
+            source = "owner_correction"
+        elif pair_id in judged:
             judgement, source = judged[pair_id], "owner_review_sheet"
         elif pair_id in prior:
             # Pre-confirmed in the UID step and simply not re-ticked. The form
@@ -130,6 +145,11 @@ def main(argv: list[str] | None = None) -> int:
         else:
             judgement, source = None, None
         record = {"pair_id": pair_id, "judgement": judgement, "source": source}
+        if pair_id in corrections:
+            record["rationale"] = corrections[pair_id].get("rationale")
+            was = judged.get(pair_id, "supports" if pair_id in prior else None)
+            if was is not None and was != judgement:
+                record["superseded"] = was
         if judgement == "supports":
             record["flags"] = consistency_flags(
                 entry["target_uid"], entry["owner_uid"], boxes, floor_z)
@@ -160,7 +180,11 @@ def main(argv: list[str] | None = None) -> int:
         "schema": "arkitscenes_support_relation_key_v1",
         "scene_id": scene_id,
         "definition": DEFINITION,
-        "status": "PENDING_RECHECK" if (flagged or omitted) else "FINAL",
+        # Once every flagged positive has been re-checked, the key is final.
+        # Omissions no longer block it: they were resolved by correction.
+        "status": ("PENDING_RECHECK"
+                   if [r for r in flagged
+                       if r["pair_id"] not in corrections] else "FINAL"),
         "coverage": {
             "rows_on_sheet": len(evidence),
             "rows_returned": len(judged),
@@ -185,9 +209,16 @@ def main(argv: list[str] | None = None) -> int:
                 "middle shelf legitimately does not"),
             "effect": "flag only; no judgement was altered or dropped",
         },
+        "corrections_applied": [
+            {"pair_id": p, "judgement": c["judgement"],
+             "rationale": c.get("rationale")}
+            for p, c in sorted(corrections.items())],
         "provenance": {
             "returned_truth_sha256": hashlib.sha256(
                 args.truth.read_bytes()).hexdigest(),
+            "corrections_sha256": (
+                hashlib.sha256(args.corrections.read_bytes()).hexdigest()
+                if args.corrections else None),
             "sheet_sha256": hashlib.sha256(args.sheet.read_bytes()).hexdigest(),
             "logic_changed": False,
             "thresholds_changed": False,
