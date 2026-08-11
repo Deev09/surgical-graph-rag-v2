@@ -18,19 +18,33 @@ THREE FAILURE MODES, WHICH NEED DIFFERENT FIXES
   threshold_reachable   a patch exists at the right place -- small |gap| -- and
                         the pair fails only a numeric gate. A threshold change
                         could recover this one.
-  evidence_missing      NO patch exists near the contact height at all. The
-                        supporting surface was never extracted, so no threshold
-                        on any of these features can recover it. Counting this
-                        as a threshold failure would send the next change to the
-                        wrong stage.
+  evidence_missing      NO patch exists near the contact height at all. No
+                        threshold on any of these features can recover it, and
+                        neither can patch selection. Whether the cause is
+                        segmentation or extraction is a separate question,
+                        answered by tools/arkitscenes_support_evidence_probe.py.
 
-PATCH SELECTION IS SCORED SEPARATELY FROM THE GATES
-----------------------------------------------------
-The stage picks the patch with the highest footprint overlap. That is not
-necessarily the patch the target rests ON: a shelf unit's top face can overlap a
-target more than the shelf it actually sits on. Both selections are reported --
-`by_overlap` (what the stage does) and `by_contact` (smallest |gap|) -- because
-if they disagree on a positive, the bug is in selection, not in a gate.
+WHAT `by_overlap` VERSUS `by_contact` DOES AND DOES NOT SHOW
+--------------------------------------------------------------
+An earlier version of this file claimed that a disagreement between the two
+selections located a patch-SELECTION bug. That was wrong on two counts and the
+claim is withdrawn.
+
+First, the relation module's pair test is already EXISTENTIAL:
+`graph/relations/entity_patch_rest.py` evaluates every qualifying patch and
+accepts the pair if any one passes. The highest-overlap ordering only decides
+which passing patch is reported, so it cannot cause a rejection. The
+select-then-report behaviour was in this analysis tooling, not in the module.
+
+Second, and decisively: if NO extracted patch lies near contact, selection
+cannot recover the pair whatever it picks. A disagreement is then a reporting
+artefact, not a diagnosis.
+
+The two selections are still reported, because reading a positive's evidence
+off the highest-overlap patch is misleading -- that is how
+`obj_1 -> obj_14` came to be described by a gap of 0.80 m. Where they disagree,
+the correct next step is `tools/arkitscenes_support_evidence_probe.py`, which
+asks whether the supporting surface is in the owner's VERTICES at all.
 """
 from __future__ import annotations
 
@@ -178,12 +192,22 @@ def main(argv: list[str] | None = None) -> int:
             "separable_on_overlap_alone": bool(pos_pts)
                                           and not overlap_only_intruders,
         },
-        "patch_selection": {
-            "stage_rule": "highest footprint overlap",
-            "disagrees_with_contact_on": sorted(
+        "patch_reporting": {
+            "pair_test": "existential -- graph/relations/entity_patch_rest.py "
+                         "accepts a pair if ANY qualifying patch passes; the "
+                         "highest-overlap ordering only picks which passing "
+                         "patch is reported and cannot cause a rejection",
+            "reporting_rule_here": "highest footprint overlap, kept only for "
+                                   "comparison with nearest contact",
+            "reporting_disagrees_with_contact_on": sorted(
                 c["pair_id"] for c in classified
                 if c["by_overlap"] and c["by_contact"]
                 and c["by_overlap"]["patch_uid"] != c["by_contact"]["patch_uid"]),
+            "not_a_selection_bug": (
+                "a disagreement is a reporting artefact. For a positive with no "
+                "patch near contact, selection cannot recover it whatever it "
+                "picks; use tools/arkitscenes_support_evidence_probe.py to ask "
+                "whether the supporting surface is in the owner's vertices"),
         },
         "caution": (
             f"{len(positives)} positives from one scene. A boundary that "
@@ -217,9 +241,12 @@ def main(argv: list[str] | None = None) -> int:
              if sep["negatives_inside_that_box"] else
              f"  (box: overlap >= {sep['min_positive_overlap']}, "
              f"|gap| <= {sep['max_positive_abs_gap']})"))
-    if report["patch_selection"]["disagrees_with_contact_on"]:
-        print("    patch selection disagrees with contact on: "
-              + ", ".join(report["patch_selection"]["disagrees_with_contact_on"]))
+    disagree = report["patch_reporting"]["reporting_disagrees_with_contact_on"]
+    if disagree:
+        print("    highest-overlap REPORTING differs from nearest contact on: "
+              + ", ".join(disagree))
+        print("      (a reporting artefact -- the pair test is existential; "
+              "run the evidence probe to locate the real failure)")
     print(f"    CAUTION: {report['caution']}")
     print(f"    -> {path.relative_to(REPO_ROOT)}")
     return 0

@@ -83,6 +83,42 @@ def test_the_tool_changes_nothing() -> None:
         '"""', 2)[-1], "the analysis names the gate outside its docstring"
 
 
+def test_the_pair_test_in_the_relation_module_is_existential() -> None:
+    """The withdrawn claim, pinned so it cannot come back.
+
+    A patch-SELECTION bug can only exist if the module tests one selected
+    patch. It does not: it evaluates every qualifying patch and accepts the
+    pair when any passes. If this ever changes, the separability tool's
+    reporting caveat becomes wrong and should be revisited.
+    """
+    module = (REPO_ROOT / "graph" / "relations" / "entity_patch_rest.py")
+    tree = ast.parse(module.read_text())
+    fn = next(n for n in ast.walk(tree)
+              if isinstance(n, ast.FunctionDef)
+              and any(isinstance(s, ast.Assign)
+                      and any(getattr(t, "id", "") == "evaluated"
+                              for t in s.targets)
+                      for s in ast.walk(n)))
+    src = ast.get_source_segment(module.read_text(), fn)
+    # Every qualifying patch is evaluated...
+    assert "for patch in qualifying" in src, src[:400]
+    # ...and the pair is a candidate when ANY evaluated result is one.
+    assert "relation_candidate=selected is not None" in src
+    assert "for result in evaluated if result.relation_candidate" in src
+
+
+def test_report_does_not_call_a_reporting_artefact_a_selection_bug() -> None:
+    if not REPORT.is_file():
+        print("  skip: no separability report on disk")
+        return
+    report = json.loads(REPORT.read_text())
+    assert "patch_selection" not in report, \
+        "the withdrawn patch_selection claim is back in the report"
+    block = report["patch_reporting"]
+    assert "existential" in block["pair_test"], block
+    assert "not_a_selection_bug" in block, block
+
+
 def test_recorded_report_separates_one_feature_from_two() -> None:
     if not REPORT.is_file():
         print("  skip: no separability report on disk")
@@ -130,6 +166,8 @@ TESTS = [
     test_patches_without_overlap_or_gap_are_ignored,
     test_contact_band_boundary,
     test_the_tool_changes_nothing,
+    test_the_pair_test_in_the_relation_module_is_existential,
+    test_report_does_not_call_a_reporting_artefact_a_selection_bug,
     test_recorded_report_separates_one_feature_from_two,
     test_recorded_report_precision_recall_agree_with_its_own_lists,
 ]
