@@ -1120,6 +1120,22 @@ Those are the only things needing owner confirmation.
 
 ## Score: Mask3D delivered + rgb_tight, one run
 
+**Superseded by the key v3 score below. Corrected 2026-08-10 after an external
+review noticed this section still narrated the v1 DRAFT key while the committed
+artifact had moved on — the stale text flattered the result by roughly 2x, in a
+project whose whole claim is evidentiary hygiene. Recorded rather than
+overwritten.**
+
+The v1 DRAFT run (7 items) read **2 correct, 4 wrong, 1 unanswered**, 0.333
+excluding unanswered. Two of those three non-failures did not survive
+confirmation: `q5` asked only whether cushions were PRESENT, and it passed
+solely because the sofa was mislabelled a cushion.
+
+### Current, against key v3 FINAL — the number of record
+
+`runs/arkit_spatial_qa/arkitscenes_41069025_human_spatial_qa.json`, 8 items,
+after owner UID confirmation.
+
 35 delivered instances, 27 with admitted labels, 8 anonymous. Graph: 151 edges,
 all `NEAR`.
 
@@ -1129,11 +1145,12 @@ all `NEAR`.
 | q2 trash-can cardinality | 1 | 2 (`obj_1`, `obj_12`) | WRONG |
 | q3 counter cardinality | 1 | 2 (`obj_16`, `obj_27`) | WRONG |
 | q4 sofa present | true | false | WRONG |
-| q5 cushion present | true | true (`obj_9`, `obj_13`, `obj_23`) | ok |
+| q5 cushion cardinality | 2 | 3 (`obj_9`, `obj_13`, `obj_23`) | WRONG |
 | q6 cushions rest on sofa | `cushion ON_ENTITY_SURFACE sofa` | — | **unanswered** |
-| q7 counter not room-spanning | false | false | ok |
+| q7 counter is object-scale | true | true | ok |
+| q8 cushion identity | {obj_9, obj_23} | {obj_9, obj_13, obj_23} | WRONG |
 
-**2 correct, 4 wrong, 1 unanswered.** 0.333 excluding unanswered; 0.286
+**1 correct, 6 wrong, 1 unanswered.** 0.143 excluding unanswered; 0.125
 counting it as failure.
 
 `q6` is `unanswered`, not `wrong`: the delivered graph emits no
