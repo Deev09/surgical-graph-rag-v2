@@ -58,6 +58,55 @@ structured arms leave it unanswered. This is not evidence that graphs are
 useless. It says the current graph does not yet contain the relation needed by
 the available human question.
 
+## What this run can and cannot establish
+
+Determined before the blinded arm was scored, from the delivered artifacts
+alone. It does not depend on the visual result.
+
+The delivered graph contains 151 edges, all `NEAR`. The router sends a question
+to the graph only when the question is `support_relation` **and** the graph
+materializes an answer. Of the common six, only `q6_cushion_on_sofa` is
+graph-eligible, and the graph answers it `null`. So all six hybrid rows fall
+back to the visual arm plus the two-view abstention gate.
+
+Two consequences follow:
+
+1. The hybrid can only convert a visual answer into an abstention; it can never
+   add a correct answer the visual arm did not already have. Therefore
+   `hybrid_correct <= direct_correct`, so
+   `gain = hybrid_accuracy - best_single_accuracy <= 0` and the accuracy clause
+   (`gain >= 0.10`) is **unreachable in this configuration**, whatever the
+   blinded model answers.
+2. Only the safety clause can fire. A `proceed` here would therefore mean
+   *evidence-sufficiency abstention reduced confident errors*, and would **not**
+   mean the graph helped.
+
+**This run cannot establish that explicit 3D structure improves spatial QA.**
+The graph is not being tested against a question it can answer: its only
+relational key item requires `ON_ENTITY_SURFACE`, which it does not emit. That
+is a measured missing capability, not evidence against graphs.
+
+Owner reading of the possible outcomes, recorded 2026-08-16:
+
+| observed | reading |
+|---|---|
+| direct VLM wins, hybrid equal | use direct visual QA for the immediate demo |
+| hybrid makes fewer mistakes by abstaining | evidence sufficiency is valuable; the graph still has not helped |
+| any outcome | insufficient to claim graph benefit from this key |
+
+### Named next task
+
+A small, independently human-keyed **relation challenge** over relations the
+graph actually contains, starting with `NEAR` — e.g. which objects are near the
+TV, table, sofa or counter, asked across views. Compare direct RGB, object map
+and graph on it. That is the first test that can actually answer the main
+question: does persistent 3D structure uniquely answer spatial questions that
+bounded multi-view visual reasoning misses?
+
+The key must come from human inspection, not from the graph being scored. Do
+not expand the architecture until that relation-heavy test shows at least one
+reproducible graph advantage.
+
 ## Pending blinded visual run
 
 The repository has no configured vision-model runtime or credentials. The
