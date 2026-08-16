@@ -76,6 +76,25 @@ The hybrid only accepts a visual answer when it cites at least two supplied
 views. Support routes to the graph only when the graph materializes an answer;
 otherwise it falls back to visible evidence.
 
+## Result viewer
+
+`tools/arkitscenes_representation_kill_test_viewer.py` renders one offline HTML
+page from a committed report:
+
+```bash
+.venv/bin/python3 tools/arkitscenes_representation_kill_test_viewer.py \
+  --report runs/arkit_representation_kill_test/41069025_common6/report.json \
+  --packet runs/arkit_representation_kill_test/41069025_common6/packet.json \
+  --contact-sheet runs/arkit_representation_kill_test/41069025_common6/contact_sheet.jpg \
+  --out runs/arkit_representation_kill_test/41069025_common6/result.html
+```
+
+The page contains no script and makes no external request; the contact sheet is
+inlined as a data URI. Every tally, rate and decision value is printed verbatim
+from `report.json`, so the page cannot disagree with the scorer. A partial
+report renders the direct and hybrid columns as explicitly pending rather than
+as scored zeros.
+
 ## Screening decision rule
 
 Continue toward a larger hybrid only if it beats the best single arm by at
