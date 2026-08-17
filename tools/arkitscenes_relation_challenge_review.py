@@ -58,8 +58,21 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from adapters.arkitscenes import MESH_SUFFIX, read_mesh
+from extractors.arkitscenes_rgb_crops import RgbCropSource
+from tools.arkitscenes_eval import load_canonical_geometry
 from tools.arkitscenes_representation_kill_test import image_information_score
+from tools import arkitscenes_uid_visual_sheet as uid_sheet
 from tools.arkitscenes_uid_visual_sheet import SceneRenderer
+
+# The shared renderer sizes its canvases from module constants at construction
+# time. 260 px of whole-flat top-down with a small highlight is a puzzle, not a
+# question -- the owner reported being unable to tell what they were looking
+# at. Raised here, for this process only; the uid sheet runs in its own process
+# and its output is unchanged.
+uid_sheet.CONTEXT_PX = 520
+uid_sheet.ISOLATED_PX = 520
+
+N_RGB_CROPS = 3
 
 QUESTIONS_SCHEMA = "arkitscenes_relation_challenge_questions_v1"
 KEY_SCHEMA = "arkitscenes_relation_challenge_key_v1"
@@ -170,7 +183,18 @@ def context_frames(frames_dir: Path, n: int) -> list[dict]:
 
 
 def delivered_regions(scene_id: str, paths: dict) -> list[dict]:
-    """Geometry only. This function must never touch a label field."""
+    """Geometry and real capture photographs. Never touches a label field.
+
+    The photographs matter more than the renders. `extractors/
+    arkitscenes_rgb_crops` exists because classifying an instance from
+    texture-free point splats is the input pathology that produced this
+    scene's label errors -- a sofa read as "projector", two cushions read as
+    "rug". Asking a human to identify regions from those same splats repeats
+    the mistake one level up, so each region leads with up to three real
+    frames from the capture, cropped around where the instance actually
+    appears and with the instance marked. The renders stay as secondary
+    evidence for placement and extent.
+    """
     mesh = read_mesh(paths["mesh"])
     instance_ids = np.load(paths["ids"])
     if len(instance_ids) != len(mesh.xyz):
@@ -179,12 +203,24 @@ def delivered_regions(scene_id: str, paths: dict) -> list[dict]:
     floor_z = min(e["bbox_aabb"][0][2] for e in manifest["entities"])
     renderer = SceneRenderer(mesh.xyz, mesh.rgb)
 
+    # Same canonical geometry + rotation the labeler used, so a crop shows the
+    # region the uid actually denotes rather than an approximately similar one.
+    canon_mesh, rotation, _ = load_canonical_geometry(paths["scene_dir"])
+    crops = RgbCropSource(paths["scene_dir"], canon_mesh.xyz, rotation,
+                          stride=6, n_views=N_RGB_CROPS, mark_target=True)
+
     regions = []
     for entity in manifest["entities"]:
         uid = entity["identity"]["object_uid"]
         index = int(entity["geometry_handle"].rsplit("#", 1)[1])
         vertices = np.flatnonzero(instance_ids == index)
         (x0, y0, z0), (x1, y1, z1) = entity["bbox_aabb"]
+        photos = []
+        for image in crops.crops_for(vertices):
+            image = image.copy()
+            image.thumbnail((420, 420), Image.Resampling.LANCZOS)
+            photos.append(jpeg_data_uri(image, quality=88))
+        coverage = crops.coverage(vertices)
         regions.append({
             "uid": uid,
             "n_vertices": int(len(vertices)),
@@ -192,6 +228,8 @@ def delivered_regions(scene_id: str, paths: dict) -> list[dict]:
             "height_m": round(z1 - z0, 2),
             "footprint_m2": round((x1 - x0) * (y1 - y0), 2),
             "underside_above_floor_m": round(z0 - floor_z, 2),
+            "photos": photos,
+            "best_visible_fraction": coverage.get("best_visible_fraction"),
             "ctx": renderer.context(vertices),
             "iso": renderer.isolated(vertices),
         })
@@ -290,6 +328,21 @@ def mapping_rows(anchors: list[str], regions: list[dict]) -> str:
 def region_cards(regions: list[dict]) -> str:
     cards = []
     for r in regions:
+        if r.get("photos"):
+            photos = "".join(
+                f'<div><img src="{uri}" alt="capture photo {i + 1}">'
+                f'<span>photo {i + 1}</span></div>'
+                for i, uri in enumerate(r["photos"]))
+            visible = r.get("best_visible_fraction")
+            caveat = ("" if visible is None else
+                      f'<span class="dim">best view has {visible:.0%} of the '
+                      f'region unoccluded</span>')
+            photo_block = (f'<div class="photos">{photos}</div>{caveat}')
+        else:
+            photo_block = ('<p class="dim nophoto">No usable capture photo: '
+                           'this region is never sufficiently visible in a '
+                           'posed frame. Judge it from the renders below, or '
+                           'mark it ambiguous.</p>')
         cards.append(f"""
     <figure class="card" id="{r['uid']}">
       <figcaption><b>{r['uid']}</b>
@@ -297,11 +350,15 @@ def region_cards(regions: list[dict]) -> str:
         {r['width_m']}×{r['depth_m']}×{r['height_m']} m ·
         {r['footprint_m2']} m² · underside {r['underside_above_floor_m']} m</span>
       </figcaption>
-      <div class="imgs">
-        <div><img src="{r['ctx'][0]}" alt="context A"><span>context A</span></div>
-        <div><img src="{r['ctx'][1]}" alt="context B"><span>context B</span></div>
-        <div><img src="{r['iso']}" alt="isolated"><span>isolated</span></div>
-      </div>
+      {photo_block}
+      <details>
+        <summary>3D renders — where it sits and what it is on its own</summary>
+        <div class="imgs">
+          <div><img src="{r['ctx'][0]}" alt="context A"><span>context A</span></div>
+          <div><img src="{r['ctx'][1]}" alt="context B"><span>context B</span></div>
+          <div><img src="{r['iso']}" alt="isolated"><span>isolated</span></div>
+        </div>
+      </details>
     </figure>""")
     return "".join(cards)
 
@@ -340,8 +397,16 @@ textarea { width:100%; }
   padding:10px 14px; font-size:13.5px; margin:14px 0; border-radius:0 6px 6px 0; }
 .convention { border:1px solid var(--line); border-radius:8px; padding:12px 16px;
   margin:14px 0; }
-.grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
-  gap:14px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(430px,1fr));
+  gap:16px; }
+.photos { display:flex; gap:6px; margin-bottom:6px; }
+.photos div { flex:1; text-align:center; }
+.photos img { width:100%; border:1px solid var(--line); border-radius:5px;
+  display:block; }
+.photos span { font-size:10.5px; color:var(--mut); }
+.nophoto { border-left:3px solid var(--warn); padding:6px 10px; margin:0 0 6px; }
+details { margin-top:4px; }
+summary { cursor:pointer; font-size:12.5px; color:var(--mut); }
 .card { margin:0; border:1px solid var(--line); border-radius:8px; padding:8px; }
 .card figcaption { font-size:13px; margin-bottom:6px; }
 .dim { color:var(--mut); display:block; font-size:11.5px; }

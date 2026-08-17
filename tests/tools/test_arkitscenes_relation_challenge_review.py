@@ -149,6 +149,29 @@ def test_every_question_offers_ambiguous_and_an_evidence_count():
         assert f'value="{value}"' in html
 
 
+def test_region_cards_lead_with_photos_and_degrade_honestly():
+    """Real capture photos are the primary evidence, renders are secondary.
+
+    Identifying an instance from texture-free point splats is the exact input
+    pathology that produced this scene's label errors -- a sofa read as
+    "projector". Asking a human to do the same thing repeats it one level up.
+    When no usable photo exists the card must say so rather than quietly
+    showing only renders.
+    """
+    with_photo = [dict(regions()[0], photos=["data:image/jpeg;base64,EEEE"],
+                       best_visible_fraction=0.82)]
+    html = mod.region_cards(with_photo)
+    assert 'alt="capture photo 1"' in html
+    assert "unoccluded" in html
+    assert html.index("capture photo 1") < html.index("context A"), \
+        "photos must come before the renders"
+
+    without = [dict(regions()[0], photos=[])]
+    html = mod.region_cards(without)
+    assert "No usable capture photo" in html
+    assert "mark it ambiguous" in html
+
+
 def test_mapping_offers_all_four_outcomes():
     html = page()
     for token in ("none_missing", "ambiguous", "overmerged"):
