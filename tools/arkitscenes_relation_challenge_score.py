@@ -671,8 +671,15 @@ def check_ready(questions_doc: dict, key: dict, questions_path: Path) -> None:
         raise ValueError(
             f"key status is {key.get('status')!r}; real scoring requires "
             "OWNER_CONFIRMED. A draft key must not produce a score.")
-    if key.get("questions_sha256") != sha256(questions_path):
-        raise ValueError("key does not pin this question manifest")
+    # Pin the QUESTIONS, not the file. Confirming the manifest edits the file,
+    # so a whole-file pin would break exactly when it is first used -- the key
+    # would be invalidated by the very act of accepting it.
+    content = json_sha256(questions_doc["questions"])
+    if key.get("questions_content_sha256") != content:
+        raise ValueError(
+            "key does not pin these questions "
+            f"(expected {content[:16]}..., got "
+            f"{str(key.get('questions_content_sha256'))[:16]}...)")
     answered = {a["id"] for a in key["human_relation_truth"]}
     asked = {q["id"] for q in questions_doc["questions"]}
     if answered != asked:
@@ -689,12 +696,16 @@ def run(questions_path: Path, key_path: Path, scene_inputs_path: Path,
     questions = questions_doc["questions"]
     scenes = load_scene_inputs(json.loads(scene_inputs_path.read_text()))
     synonyms = questions_doc.get("object_synonyms", {})
-    uid_mappings = {
-        scene_id: {m["object"]: m.get("uid") for m in mappings
-                   if m.get("uid") and not m.get("ambiguous")
-                   and not m.get("none_missing")}
-        for scene_id, mappings in key.get("uid_mappings", {}).items()
-    }
+    # The merge step already dropped every unresolved mapping and kept the
+    # reason under `unresolved_mappings`, so this consumes {scene: {object:
+    # uid}} directly. Re-deriving it here would be a second place for the
+    # none/missing and ambiguous outcomes to be silently reinterpreted.
+    uid_mappings = key.get("uid_mappings", {})
+    for scene_id, mapping in uid_mappings.items():
+        if not isinstance(mapping, dict):
+            raise ValueError(
+                f"{scene_id}: uid_mappings must be a resolved object->uid map; "
+                "run the review kit's `merge` command on the per-scene returns")
 
     ceiling = grade(answer_geometry_ceiling(questions, scenes, uid_mappings),
                     key, questions)

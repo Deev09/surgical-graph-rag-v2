@@ -1,12 +1,15 @@
 {
  "schema": "arkitscenes_relation_challenge_questions_v1",
- "status": "DRAFT_AWAITING_OWNER",
+ "status": "OWNER_CONFIRMED",
  "drafted": "2026-08-17",
  "relation_under_test": "NEAR",
  "purpose": "Test a relation the delivered representation can actually express, so that a failure can be attributed to geometry, labels, extraction or routing rather than guessed at. The previous six-question key could not test graph reasoning at all: its only relational item required ON_ENTITY_SURFACE, which the delivered graph does not emit.",
  "near_convention": {
   "statement": "Two objects are NEAR when the nearest points of their surfaces are within about one metre of each other -- close enough that a person standing at one could reach the other by leaning or taking a single step. Judge the gap between the objects themselves, not between their centres.",
-  "applies_to_forms": ["binary_near", "near_set"],
+  "applies_to_forms": [
+   "binary_near",
+   "near_set"
+  ],
   "not_applied_to": "comparative_near items are ordinal and use no threshold at all",
   "declared_confound": "The delivered extractor's NEAR threshold is also 1.0 m (AABB surface-to-surface, strict less-than), recorded in each slice manifest as a 'provisional Replica-era constant; not a transfer claim'. One metre was chosen here because it is the natural human reading of 'near' at room scale, not because the extractor uses it -- but the coincidence is real and must be declared: a binary item the delivered system gets right cannot distinguish 'the representation is correct' from 'the threshold happens to match the convention'. This is the reason comparative items, which need no threshold, carry the discriminative weight of this set.",
   "boundary_note": "Items whose true gap sits within 0.1 m of one metre are threshold-determined rather than geometry-determined. Which items those are will be reported only AFTER the key is returned; checking first would let edge distances influence question selection."
@@ -20,50 +23,188 @@
   "anchor_rule": "Every anchor is an object a careful human can identify and count confidently from the raw frames. Objects whose count could not be resolved from the imagery -- the number of pillows in 41069042, whether that room has one or two nightstands and one or two wall lamps, the exact door count in 41069025 -- were deliberately NOT used as anchors."
  },
  "excluded_question_classes": [
-  {"class": "object cardinality", "why": "excluded by the task; also the previous key's weakest items"},
-  {"class": "delivered obj_N identity as the user-facing question", "why": "raw RGB has no access to system-internal uids; asking it would favour the structured arms by definition"},
-  {"class": "support / on-surface / resting-on / attachment", "why": "the delivered graph emits no ON_ENTITY_SURFACE edge of any kind, so the question would again test an absent capability rather than graph reasoning"},
-  {"class": "appearance-only questions (colour, material, style)", "why": "no relation content; direct RGB would win by construction"},
-  {"class": "direction and orientation -- 'to the left of', 'across from', 'on the far side of', 'facing'", "why": "MEASURED CAPABILITY LIMIT: the graph frame records canonical_forward=null and canonical_right=null, and the slice manifest declares horizontal_direction unavailable. Only metric proximity transfers across views; a directional phrasing would silently exceed the evidence."},
-  {"class": "containment -- 'inside', 'in the drawer'", "why": "no containment relation exists in the delivered representation"},
-  {"class": "metric magnitude -- 'how far apart', 'by how many metres'", "why": "when only one edge of a pair is stored the ordering is derivable but the magnitude is not; asking for magnitude would be unanswerable for a large fraction of pairs"}
+  {
+   "class": "object cardinality",
+   "why": "excluded by the task; also the previous key's weakest items"
+  },
+  {
+   "class": "delivered obj_N identity as the user-facing question",
+   "why": "raw RGB has no access to system-internal uids; asking it would favour the structured arms by definition"
+  },
+  {
+   "class": "support / on-surface / resting-on / attachment",
+   "why": "the delivered graph emits no ON_ENTITY_SURFACE edge of any kind, so the question would again test an absent capability rather than graph reasoning"
+  },
+  {
+   "class": "appearance-only questions (colour, material, style)",
+   "why": "no relation content; direct RGB would win by construction"
+  },
+  {
+   "class": "direction and orientation -- 'to the left of', 'across from', 'on the far side of', 'facing'",
+   "why": "MEASURED CAPABILITY LIMIT: the graph frame records canonical_forward=null and canonical_right=null, and the slice manifest declares horizontal_direction unavailable. Only metric proximity transfers across views; a directional phrasing would silently exceed the evidence."
+  },
+  {
+   "class": "containment -- 'inside', 'in the drawer'",
+   "why": "no containment relation exists in the delivered representation"
+  },
+  {
+   "class": "metric magnitude -- 'how far apart', 'by how many metres'",
+   "why": "when only one edge of a pair is stored the ordering is derivable but the magnitude is not; asking for magnitude would be unanswerable for a large fraction of pairs"
+  }
  ],
  "object_synonyms": {
-  "sofa": ["sofa", "couch"],
-  "striped rug": ["rug", "carpet"],
-  "coffee table": ["table", "coffee-table"],
-  "round dining table": ["table", "dining-table"],
-  "long narrow desk": ["desk"],
-  "wall-mounted television": ["tv-monitor", "monitor", "tv", "television"],
-  "kitchen counter": ["counter", "countertop"],
-  "tall stainless kitchen bin": ["trash-can", "trashcan", "bin", "garbage-can"],
-  "small grey wastepaper basket under the desk": ["trash-can", "trashcan", "basket", "wastebasket"],
-  "pedestal fan": ["fan"],
-  "white convector heater": ["radiator", "heater"],
-  "window curtains": ["curtain", "curtains", "drape", "drapes", "blinds"],
-  "bed": ["bed"],
-  "white desk": ["desk", "table"],
-  "chest of drawers": ["drawer", "chest-of-drawers", "dresser", "cabinet"],
-  "white radiator": ["radiator", "heater"],
-  "window": ["window"],
-  "cream curtain": ["curtain", "curtains", "blinds"],
-  "framed picture standing on the carpet": ["picture", "painting", "poster", "frame"]
+  "sofa": [
+   "sofa",
+   "couch"
+  ],
+  "striped rug": [
+   "rug",
+   "carpet"
+  ],
+  "coffee table": [
+   "table",
+   "coffee-table"
+  ],
+  "round dining table": [
+   "table",
+   "dining-table"
+  ],
+  "long narrow desk": [
+   "desk"
+  ],
+  "wall-mounted television": [
+   "tv-monitor",
+   "monitor",
+   "tv",
+   "television"
+  ],
+  "kitchen counter": [
+   "counter",
+   "countertop"
+  ],
+  "tall stainless kitchen bin": [
+   "trash-can",
+   "trashcan",
+   "bin",
+   "garbage-can"
+  ],
+  "small grey wastepaper basket under the desk": [
+   "trash-can",
+   "trashcan",
+   "basket",
+   "wastebasket"
+  ],
+  "pedestal fan": [
+   "fan"
+  ],
+  "white convector heater": [
+   "radiator",
+   "heater"
+  ],
+  "window curtains": [
+   "curtain",
+   "curtains",
+   "drape",
+   "drapes",
+   "blinds"
+  ],
+  "bed": [
+   "bed"
+  ],
+  "white desk": [
+   "desk",
+   "table"
+  ],
+  "chest of drawers": [
+   "drawer",
+   "chest-of-drawers",
+   "dresser",
+   "cabinet"
+  ],
+  "white radiator": [
+   "radiator",
+   "heater"
+  ],
+  "window": [
+   "window"
+  ],
+  "cream curtain": [
+   "curtain",
+   "curtains",
+   "blinds"
+  ],
+  "framed picture standing on the carpet": [
+   "picture",
+   "painting",
+   "poster",
+   "frame"
+  ]
  },
  "synonym_note": "These map a human anchor name onto the delivered closed vocabulary (global_indoor_v1). The mapping is a translation step, not a tuning step: it decides how an anchor NAME is looked up and never touches which relation is asked or which pair is tested. Several anchors deliberately share candidate labels -- both waste containers map to trash-can, both scene-25 tables map to table. When two delivered instances claim the same label the delivered arm ABSTAINS rather than guessing, and 'ambiguous' is reported separately from 'absent' because the two say different things about the label stage.",
  "measured_label_resolution": {
   "measured_on": "2026-08-17, before any key existed and after the questions were fixed",
   "what_it_is": "Whether the DELIVERED label stage can resolve each anchor to exactly one instance. Measured after question selection, never before it, so it could not influence which questions were asked.",
   "arkitscenes_41069025": {
-   "admitted_vocabulary": ["blinds", "cabinet", "chair", "counter", "cushion", "desk", "door", "lamp", "microwave", "stool", "table", "trash-can", "tv-monitor", "vase", "window"],
-   "resolves_to_one_instance": ["long narrow desk"],
-   "ambiguous_several_instances": ["kitchen counter", "tall stainless kitchen bin", "small grey wastepaper basket under the desk", "coffee table", "round dining table"],
-   "absent_from_admitted_labels": ["sofa", "striped rug", "pedestal fan", "white convector heater"]
+   "admitted_vocabulary": [
+    "blinds",
+    "cabinet",
+    "chair",
+    "counter",
+    "cushion",
+    "desk",
+    "door",
+    "lamp",
+    "microwave",
+    "stool",
+    "table",
+    "trash-can",
+    "tv-monitor",
+    "vase",
+    "window"
+   ],
+   "resolves_to_one_instance": [
+    "long narrow desk"
+   ],
+   "ambiguous_several_instances": [
+    "kitchen counter",
+    "tall stainless kitchen bin",
+    "small grey wastepaper basket under the desk",
+    "coffee table",
+    "round dining table"
+   ],
+   "absent_from_admitted_labels": [
+    "sofa",
+    "striped rug",
+    "pedestal fan",
+    "white convector heater"
+   ]
   },
   "arkitscenes_41069042": {
-   "admitted_vocabulary": ["bed", "blinds", "box", "cushion", "drawer", "monitor", "nightstand", "refrigerator", "shelf", "tv-monitor", "whiteboard"],
+   "admitted_vocabulary": [
+    "bed",
+    "blinds",
+    "box",
+    "cushion",
+    "drawer",
+    "monitor",
+    "nightstand",
+    "refrigerator",
+    "shelf",
+    "tv-monitor",
+    "whiteboard"
+   ],
    "resolves_to_one_instance": [],
-   "ambiguous_several_instances": ["bed", "cream curtain", "chest of drawers"],
-   "absent_from_admitted_labels": ["white radiator", "window", "white desk", "framed picture standing on the carpet"]
+   "ambiguous_several_instances": [
+    "bed",
+    "cream curtain",
+    "chest of drawers"
+   ],
+   "absent_from_admitted_labels": [
+    "white radiator",
+    "window",
+    "white desk",
+    "framed picture standing on the carpet"
+   ]
   },
   "consequence": "As authored, the delivered_graph layer abstains on all twelve questions -- not because the relation is wrong but because the label stage cannot name the objects a human asks about. Delivered-graph-unique wins are therefore ZERO BY CONSTRUCTION and the continuation bar is unreachable on this set, in the same structural way the previous kill test's accuracy clause was unreachable. This is recorded here before the owner reviews anything, and it is the decision described in owner_decision_required below."
  },
@@ -150,7 +291,13 @@
    "form": "near_set",
    "question": "Which of the listed objects are near the sofa?",
    "subject": "sofa",
-   "candidate_objects": ["striped rug", "coffee table", "white convector heater", "round dining table", "kitchen counter"],
+   "candidate_objects": [
+    "striped rug",
+    "coffee table",
+    "white convector heater",
+    "round dining table",
+    "kitchen counter"
+   ],
    "cross_view": true,
    "rationale": "Closed roster spanning the lounge zone and the far kitchen, so the answer set has real negatives. The roster is fixed on the question so every layer answers the same closed question rather than an open-vocabulary one."
   },
@@ -202,7 +349,12 @@
    "form": "near_set",
    "question": "Which of the listed objects are near the window?",
    "subject": "window",
-   "candidate_objects": ["white radiator", "cream curtain", "bed", "chest of drawers"],
+   "candidate_objects": [
+    "white radiator",
+    "cream curtain",
+    "bed",
+    "chest of drawers"
+   ],
    "cross_view": false,
    "rationale": "Closed roster mixing two near members at the window wall with at least one clear negative across the room."
   }
@@ -228,5 +380,9 @@
   ],
   "recommendation": "A, with the caveat stated in the report: run it for the attribution, and do not read a zero delivered score as evidence about graphs. Option C is the honest reading of both experiments so far, but it is an engineering decision the owner owns."
  },
- "interpretation_limit": "Two human-reviewed scenes and twelve questions are a screening test. A pass is a reason to test more scenes, not a generalization claim, not an embodied-planning result, and not a claim about room understanding."
+ "interpretation_limit": "Two human-reviewed scenes and twelve questions are a screening test. A pass is a reason to test more scenes, not a generalization claim, not an embodied-planning result, and not a claim about room understanding.",
+ "confirmed": "2026-08-17",
+ "reviewed_as_sha256": "f8835bfbc4ad541c03217daf004fbb9f0ce5e5be4947d1894de6ab453e63c299",
+ "questions_content_sha256": "0fe7037c1161e6af4aa718393f60a732ce65b62b03ccf78411c8ab4c2dcac52c",
+ "pin_note": "A key pins questions_content_sha256, a hash over the questions array alone. The whole-file hash cannot serve as the pin: confirming the manifest edits the file and would invalidate every key that pinned it, so the pin would break exactly when it is first used. reviewed_as_sha256 records the file the owner actually reviewed."
 }

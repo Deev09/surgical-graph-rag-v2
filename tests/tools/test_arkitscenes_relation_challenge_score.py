@@ -433,7 +433,7 @@ def test_a_draft_key_cannot_produce_a_score():
            "questions": questions()}
     path = _write(tmp, "q.json", doc)
     k = key()
-    k["questions_sha256"] = mod.sha256(path)
+    k["questions_content_sha256"] = mod.json_sha256(doc["questions"])
     try:
         check_ready(doc, k, path)
     except ValueError as exc:
@@ -445,7 +445,7 @@ def test_a_draft_key_cannot_produce_a_score():
     path = _write(tmp, "q2.json", doc)
     draft_key = key()
     draft_key["status"] = "DRAFT_AWAITING_OWNER"
-    draft_key["questions_sha256"] = mod.sha256(path)
+    draft_key["questions_content_sha256"] = mod.json_sha256(doc["questions"])
     try:
         check_ready(doc, draft_key, path)
     except ValueError as exc:
@@ -460,7 +460,7 @@ def test_key_must_pin_the_exact_question_manifest():
            "questions": questions()}
     path = _write(tmp, "q.json", doc)
     k = key()
-    k["questions_sha256"] = "0" * 64
+    k["questions_content_sha256"] = "0" * 64
     try:
         check_ready(doc, k, path)
     except ValueError as exc:
@@ -475,7 +475,7 @@ def test_key_must_answer_exactly_the_asked_questions():
            "questions": questions()}
     path = _write(tmp, "q.json", doc)
     k = key()
-    k["questions_sha256"] = mod.sha256(path)
+    k["questions_content_sha256"] = mod.json_sha256(doc["questions"])
     k["human_relation_truth"] = k["human_relation_truth"][:2]
     try:
         check_ready(doc, k, path)
@@ -483,6 +483,41 @@ def test_key_must_answer_exactly_the_asked_questions():
         assert "exactly" in str(exc)
     else:
         raise AssertionError("a partial key must not be scorable")
+
+
+def test_confirming_the_manifest_does_not_break_the_pin():
+    """The pin is over the questions, not the file.
+
+    A whole-file pin breaks exactly when it is first used: accepting a key
+    means flipping the manifest to OWNER_CONFIRMED, which edits the file and
+    invalidates every key that pinned it. This caught that for real.
+    """
+    tmp = Path(tempfile.mkdtemp())
+    doc = {"schema": QUESTIONS_SCHEMA, "status": "OWNER_CONFIRMED",
+           "questions": questions()}
+    path = _write(tmp, "q.json", doc)
+    k = key()
+    k["questions_content_sha256"] = mod.json_sha256(doc["questions"])
+    check_ready(doc, k, path)                       # baseline: accepted
+
+    # Editorial change only -- status, notes, a confirmation date.
+    doc["confirmed"] = "2026-08-17"
+    doc["pin_note"] = "questions unchanged"
+    path = _write(tmp, "q_confirmed.json", doc)
+    assert mod.sha256(path) != mod.sha256(_write(tmp, "q.json", {
+        "schema": QUESTIONS_SCHEMA, "status": "OWNER_CONFIRMED",
+        "questions": questions()})), "the file hash must actually have changed"
+    check_ready(doc, k, path)                       # same key still accepted
+
+    # Changing a QUESTION must still break the pin.
+    doc["questions"][0]["object"] = "fridge"
+    path = _write(tmp, "q_edited.json", doc)
+    try:
+        check_ready(doc, k, path)
+    except ValueError as exc:
+        assert "pin" in str(exc)
+    else:
+        raise AssertionError("editing a question must invalidate the key")
 
 
 def test_answers_are_deterministic():

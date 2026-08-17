@@ -134,6 +134,94 @@ all, because every visual answer happened to cite two views.
 scene**, before proposing a larger hybrid. A ceiling win is not a graph win.
 This is a screening gate on two scenes, not a publication claim.
 
+## Result — ceiling and delivered scored 2026-08-17
+
+Owner key returned per scene, validated, merged, scored once. The blinded RGB
+and hybrid layers have **not** run yet, so this is a partial report.
+
+| layer | correct | wrong | unanswered | excluded | accuracy | deployable |
+|---|---:|---:|---:|---:|---:|---|
+| geometry_relation_ceiling | 7 | 1 | 2 | 2 | 0.700 | **no** |
+| delivered_graph | 0 | 0 | 10 | 2 | 0.000 | yes |
+| blinded_rgb_vlm | — | — | — | — | pending | yes |
+| evidence_aware_hybrid | — | — | — | — | pending | yes |
+
+Per scene, ceiling: `41069025` 5/6 correct, 0 wrong; `41069042` 2/4 correct,
+1 wrong. Two items excluded because the owner marked them ambiguous.
+
+### The headline: instance delivery binds, and it is now measured
+
+**Seven of ten scored items are `ceiling correct, delivered unanswered`.** The
+delivered geometry expresses the answer; the delivered pipeline cannot address
+the question. Zero items are `ceiling correct, delivered wrong` and zero are
+`ceiling unanswerable`. The delivered graph abstained on all ten exactly as
+pre-registered, because its label stage resolves one anchor in twelve.
+
+This is the attribution the four-layer split was built to produce, and it is
+unambiguous: **naming and instance delivery bind, not relation extraction and
+not geometry.**
+
+Three objects the owner could see are simply absent from the delivered
+partition — the striped rug in `41069025`, the white radiator in `41069042` —
+returned as `none / missing`. Their absence, not any scoring rule, is what
+killed four items: both `near_set` questions abstained rather than return a
+short set, and both ambiguous exclusions are questions whose subject the owner
+could not judge because the object is not delivered at all. On
+`q25_set_near_sofa` the owner's own answer names the striped rug, so the
+correct answer is *not expressible* in the delivered partition at any layer.
+
+### Cross-view proximity worked
+
+`q25_bin_kitchenbin_near_basket` — the stainless kitchen bin and the wastepaper
+basket under the desk, at opposite ends of the room, never co-visible in any
+frame, owner-recorded at **0 views**. Human says not near; the ceiling says not
+near. Correct. That is the item this whole set was built around, and the fused
+3D representation answered it from geometry that no single frame contains.
+
+### The one ceiling error is a convention divergence, not a geometry failure
+
+`q42_bin_bed_near_desk`: the owner says not near, the ceiling says near.
+Measured directly:
+
+| pair | AABB-surface | true point-cloud nearest |
+|---|---:|---:|
+| bed ↔ white desk | 0.320 m | 0.633 m |
+| white desk ↔ chest of drawers | 0.000 m | 0.001 m |
+
+Two separate facts, and they must not be merged:
+
+1. **The AABB proxy really does distort.** On a 2.42 × 2.64 m bed the
+   axis-aligned box understates the gap by 0.31 m. It is exact when objects
+   touch. Worth carrying into any future relation work — `aabb_surface` is not
+   object surface distance for large or non-axis-aligned instances.
+2. **That is not what caused this disagreement.** Both 0.320 m and 0.633 m sit
+   under the declared 1.0 m convention, so by the stated rule the answer is
+   NEAR either way. The owner applied a stricter notion of "near" than one
+   metre — plausibly a functional separation across a walkway, and recorded at
+   0 views, i.e. judged from room knowledge rather than from a frame.
+
+So the predeclared reading for `ceiling_wrong` — "the representation cannot
+answer the relation" — is **wrong for this item**, and is corrected here. The
+threshold was not tuned and must not be; what this shows is that the 1.0 m
+convention and the owner's intuition diverge at around 0.6 m, which is a
+finding about the convention to carry into the next key.
+
+### Owner correction to an anchor description
+
+`q42_cmp_picture_drawers_vs_bed` — the owner notes the framed picture is
+"actually vertical on wall on top of the bed not on the floor". The anchor was
+authored from raw-frame inspection that read it as floor-standing and leaning;
+that description is wrong. The item itself stands: the owner mapped it to
+`obj_3` and answered "bed", and the ceiling agreed. The anchor NAME in the
+manifest is inaccurate and should be corrected before reuse.
+
+### Still pending
+
+The blinded RGB and hybrid layers. Six of the twelve items carry an
+owner-recorded visibility of 0 or 1 view, which is a substantial natural
+thin-evidence slice — but the sufficiency gate applies only to the RGB arm, so
+the secondary subtest cannot run until that arm does.
+
 ## Pre-registered: the delivered arm will abstain on every question
 
 Measured on 2026-08-17, **after** the questions were fixed and **before** any

@@ -338,6 +338,30 @@ def test_validate_requires_ambiguous_items_to_carry_a_null_answer():
     assert validate_returned(doc(), path, ok) == []
 
 
+def test_an_ambiguous_item_may_omit_the_visibility_judgement():
+    """Excluded items are in no tally and in no thin-evidence slice.
+
+    Demanding a view count for a question the owner has just said they cannot
+    answer would force them to invent one. A non-ambiguous item still requires
+    it, and a bad value is still rejected.
+    """
+    path = _questions_file(doc())
+    ok = good_return(path)
+    ok["human_relation_truth"][0].update(ambiguous=True, answer=None,
+                                         evidence_views=None)
+    assert validate_returned(doc(), path, ok) == []
+
+    bad = good_return(path)
+    bad["human_relation_truth"][0].update(ambiguous=True, answer=None,
+                                          evidence_views="lots")
+    assert any("or null" in p for p in validate_returned(doc(), path, bad))
+
+    still_required = good_return(path)
+    still_required["human_relation_truth"][1]["evidence_views"] = None
+    assert any("must be one of" in p
+               for p in validate_returned(doc(), path, still_required))
+
+
 def test_validate_reports_every_problem_in_one_pass():
     """One round trip per review, not one per mistake."""
     path = _questions_file(doc())

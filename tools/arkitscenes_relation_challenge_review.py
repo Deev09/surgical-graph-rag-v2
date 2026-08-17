@@ -777,8 +777,14 @@ def validate_returned(doc: dict, questions_path: Path, returned: dict) -> list[s
         problems.append(f"schema must be {KEY_SCHEMA!r}, got {returned.get('schema')!r}")
     if returned.get("status") != "OWNER_CONFIRMED":
         problems.append("status must be OWNER_CONFIRMED")
-    if returned.get("questions_sha256") != sha256(questions_path):
-        problems.append("questions_sha256 does not pin the current question manifest")
+    # A sheet export pins the file it was generated from. Confirming the
+    # manifest edits that file, so the hash the owner reviewed is also
+    # accepted, recorded in the manifest as reviewed_as_sha256.
+    accepted = {sha256(questions_path), doc.get("reviewed_as_sha256"),
+                json_sha256(doc["questions"])}
+    if returned.get("questions_sha256") not in accepted:
+        problems.append("questions_sha256 pins neither the current manifest "
+                        "nor the revision the owner reviewed")
 
     scene_id = returned.get("scene_id")
     if scene_id not in doc["scenes"]:
@@ -797,12 +803,19 @@ def validate_returned(doc: dict, questions_path: Path, returned: dict) -> list[s
         question = by_id.get(qid)
         if question is None:
             continue
-        if item.get("evidence_views") not in {c[0] for c in EVIDENCE_CHOICES}:
-            problems.append(f"{qid}: evidence_views must be one of 0 / 1 / 2+")
+        views = item.get("evidence_views")
         if item.get("ambiguous"):
+            # An excluded item is not in any tally and contributes nothing to
+            # the thin-evidence slice, so a visibility judgement is optional
+            # here. Demanding one would force the owner to invent a number for
+            # a question they have just said they cannot answer.
             if item.get("answer") is not None:
                 problems.append(f"{qid}: ambiguous items must carry a null answer")
+            if views is not None and views not in {c[0] for c in EVIDENCE_CHOICES}:
+                problems.append(f"{qid}: evidence_views must be 0 / 1 / 2+ or null")
             continue
+        if views not in {c[0] for c in EVIDENCE_CHOICES}:
+            problems.append(f"{qid}: evidence_views must be one of 0 / 1 / 2+")
         answer = item.get("answer")
         if answer is None:
             problems.append(f"{qid}: needs an answer or ambiguous=true")
@@ -864,6 +877,83 @@ def cmd_packets(args) -> int:
     return 0
 
 
+def merge_returned(doc: dict, questions_path: Path,
+                   returned: list[dict]) -> dict:
+    """Combine the per-scene sheets into the one key the scorer consumes.
+
+    Each review page emits its own scene's block, because one 58-region page
+    would not open. The scorer wants a single key spanning both scenes, so the
+    join happens here -- once, validated, and never by hand.
+
+    Only mappings the owner resolved to a uid are carried into the scored key.
+    `none / missing` and `ambiguous` are deliberately NOT converted into a
+    guess: they are dropped from the mapping table so the ceiling abstains on
+    anything that needs them, and they are preserved verbatim under
+    `unresolved_mappings` so the reason stays visible in the report.
+    """
+    problems = []
+    for block in returned:
+        problems += [f"{block.get('scene_id')}: {p}"
+                     for p in validate_returned(doc, questions_path, block)]
+    if problems:
+        raise ValueError("cannot merge invalid returns:\n  " + "\n  ".join(problems))
+
+    scenes = [b["scene_id"] for b in returned]
+    if sorted(scenes) != sorted(doc["scenes"]):
+        raise ValueError(f"expected one return per scene {sorted(doc['scenes'])}, "
+                         f"got {sorted(scenes)}")
+
+    uid_mappings, unresolved, truth = {}, {}, []
+    for block in returned:
+        scene_id = block["scene_id"]
+        resolved, missing = {}, []
+        for row in block["uid_mappings"]:
+            if row.get("uid") and not row.get("ambiguous") and not row.get("none_missing"):
+                resolved[row["object"]] = row["uid"]
+            else:
+                missing.append({
+                    "object": row["object"],
+                    "outcome": ("none_missing" if row.get("none_missing")
+                                else "ambiguous" if row.get("ambiguous")
+                                else "overmerged_into" if row.get("overmerged_into")
+                                else "unset"),
+                    "overmerged_into": row.get("overmerged_into"),
+                })
+        uid_mappings[scene_id] = resolved
+        unresolved[scene_id] = missing
+        truth += block["human_relation_truth"]
+
+    return {
+        "schema": KEY_SCHEMA,
+        "status": "OWNER_CONFIRMED",
+        "questions_sha256": sha256(questions_path),
+        "questions_content_sha256": json_sha256(doc["questions"]),
+        "reviewed_as_sha256": doc.get("reviewed_as_sha256"),
+        "scene_ids": sorted(scenes),
+        "merged_from": [f"{b['scene_id']} sheet export" for b in returned],
+        "uid_mappings": uid_mappings,
+        "unresolved_mappings": unresolved,
+        "human_relation_truth": truth,
+    }
+
+
+def cmd_merge(args) -> int:
+    doc = json.loads(args.questions.read_text())
+    returned = [json.loads(p.read_text()) for p in args.returned]
+    merged = merge_returned(doc, args.questions, returned)
+    args.merged_out.parent.mkdir(parents=True, exist_ok=True)
+    args.merged_out.write_text(json.dumps(merged, indent=1, sort_keys=True) + "\n")
+    n_unresolved = sum(len(v) for v in merged["unresolved_mappings"].values())
+    print(f"merged {len(returned)} scene returns -> {args.merged_out}")
+    print(f"    questions answered : {len(merged['human_relation_truth'])}")
+    print(f"    uid mappings kept  : "
+          f"{sum(len(v) for v in merged['uid_mappings'].values())}")
+    print(f"    unresolved, dropped: {n_unresolved} "
+          f"(the ceiling abstains rather than guessing on these)")
+    print("    nothing was scored")
+    return 0
+
+
 def cmd_validate(args) -> int:
     doc = json.loads(args.questions.read_text())
     returned = json.loads(args.returned.read_text())
@@ -889,13 +979,16 @@ def parser() -> argparse.ArgumentParser:
     sub.add_parser("packets")
     v = sub.add_parser("validate")
     v.add_argument("--returned", type=Path, required=True)
+    m = sub.add_parser("merge")
+    m.add_argument("--returned", type=Path, nargs="+", required=True)
+    m.add_argument("--merged-out", type=Path, required=True)
     return ap
 
 
 def main(argv: list[str] | None = None) -> int:
     args = parser().parse_args(argv)
     return {"sheet": cmd_sheet, "packets": cmd_packets,
-            "validate": cmd_validate}[args.command](args)
+            "validate": cmd_validate, "merge": cmd_merge}[args.command](args)
 
 
 if __name__ == "__main__":

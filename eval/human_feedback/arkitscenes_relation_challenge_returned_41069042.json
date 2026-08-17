@@ -1,0 +1,96 @@
+{
+ "schema": "arkitscenes_relation_challenge_key_v1",
+ "scene_id": "arkitscenes_41069042",
+ "status": "OWNER_CONFIRMED",
+ "questions_sha256": "f8835bfbc4ad541c03217daf004fbb9f0ce5e5be4947d1894de6ab453e63c299",
+ "uid_mappings": [
+  {
+   "object": "white radiator",
+   "uid": null,
+   "none_missing": true,
+   "overmerged_into": null,
+   "ambiguous": null
+  },
+  {
+   "object": "window",
+   "uid": "obj_17",
+   "none_missing": null,
+   "overmerged_into": null,
+   "ambiguous": null
+  },
+  {
+   "object": "white desk",
+   "uid": "obj_22",
+   "none_missing": null,
+   "overmerged_into": null,
+   "ambiguous": null
+  },
+  {
+   "object": "framed picture standing on the carpet",
+   "uid": "obj_3",
+   "none_missing": null,
+   "overmerged_into": null,
+   "ambiguous": null
+  },
+  {
+   "object": "chest of drawers",
+   "uid": "obj_9",
+   "none_missing": null,
+   "overmerged_into": null,
+   "ambiguous": null
+  },
+  {
+   "object": "bed",
+   "uid": "obj_6",
+   "none_missing": null,
+   "overmerged_into": null,
+   "ambiguous": null
+  },
+  {
+   "object": "cream curtain",
+   "uid": "obj_11",
+   "none_missing": null,
+   "overmerged_into": null,
+   "ambiguous": null
+  }
+ ],
+ "human_relation_truth": [
+  {
+   "id": "q42_cmp_radiator_window_vs_desk",
+   "answer": null,
+   "ambiguous": true,
+   "evidence_views": "0",
+   "notes": null
+  },
+  {
+   "id": "q42_cmp_picture_drawers_vs_bed",
+   "answer": "bed",
+   "ambiguous": false,
+   "evidence_views": "1",
+   "notes": "the frames picture is actually vertical on wall on top of he bed not on the floor "
+  },
+  {
+   "id": "q42_bin_desk_near_drawers",
+   "answer": true,
+   "ambiguous": false,
+   "evidence_views": "1",
+   "notes": null
+  },
+  {
+   "id": "q42_bin_bed_near_desk",
+   "answer": false,
+   "ambiguous": false,
+   "evidence_views": "0",
+   "notes": null
+  },
+  {
+   "id": "q42_set_near_window",
+   "answer": [
+    "cream curtain"
+   ],
+   "ambiguous": false,
+   "evidence_views": "2+",
+   "notes": null
+  }
+ ]
+}

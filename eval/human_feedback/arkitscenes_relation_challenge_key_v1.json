@@ -1,0 +1,144 @@
+{
+ "human_relation_truth": [
+  {
+   "ambiguous": false,
+   "answer": "sofa",
+   "evidence_views": "1",
+   "id": "q25_cmp_coffee_table_sofa_vs_dining",
+   "notes": null
+  },
+  {
+   "ambiguous": false,
+   "answer": "long narrow desk",
+   "evidence_views": "1",
+   "id": "q25_cmp_fan_desk_vs_counter",
+   "notes": null
+  },
+  {
+   "ambiguous": true,
+   "answer": null,
+   "evidence_views": null,
+   "id": "q25_cmp_rug_sofa_vs_counter",
+   "notes": null
+  },
+  {
+   "ambiguous": false,
+   "answer": true,
+   "evidence_views": "2+",
+   "id": "q25_bin_basket_near_desk",
+   "notes": null
+  },
+  {
+   "ambiguous": false,
+   "answer": true,
+   "evidence_views": "2+",
+   "id": "q25_bin_kitchenbin_near_counter",
+   "notes": null
+  },
+  {
+   "ambiguous": false,
+   "answer": false,
+   "evidence_views": "0",
+   "id": "q25_bin_kitchenbin_near_basket",
+   "notes": null
+  },
+  {
+   "ambiguous": false,
+   "answer": [
+    "striped rug",
+    "coffee table",
+    "white convector heater"
+   ],
+   "evidence_views": "2+",
+   "id": "q25_set_near_sofa",
+   "notes": null
+  },
+  {
+   "ambiguous": true,
+   "answer": null,
+   "evidence_views": "0",
+   "id": "q42_cmp_radiator_window_vs_desk",
+   "notes": null
+  },
+  {
+   "ambiguous": false,
+   "answer": "bed",
+   "evidence_views": "1",
+   "id": "q42_cmp_picture_drawers_vs_bed",
+   "notes": "the frames picture is actually vertical on wall on top of he bed not on the floor "
+  },
+  {
+   "ambiguous": false,
+   "answer": true,
+   "evidence_views": "1",
+   "id": "q42_bin_desk_near_drawers",
+   "notes": null
+  },
+  {
+   "ambiguous": false,
+   "answer": false,
+   "evidence_views": "0",
+   "id": "q42_bin_bed_near_desk",
+   "notes": null
+  },
+  {
+   "ambiguous": false,
+   "answer": [
+    "cream curtain"
+   ],
+   "evidence_views": "2+",
+   "id": "q42_set_near_window",
+   "notes": null
+  }
+ ],
+ "merged_from": [
+  "arkitscenes_41069025 sheet export",
+  "arkitscenes_41069042 sheet export"
+ ],
+ "questions_content_sha256": "0fe7037c1161e6af4aa718393f60a732ce65b62b03ccf78411c8ab4c2dcac52c",
+ "questions_sha256": "a199636109ef6e0e0ef1cd4e1b57c16f81b9655e20bb5c81795d34cdea11af50",
+ "reviewed_as_sha256": "f8835bfbc4ad541c03217daf004fbb9f0ce5e5be4947d1894de6ab453e63c299",
+ "scene_ids": [
+  "arkitscenes_41069025",
+  "arkitscenes_41069042"
+ ],
+ "schema": "arkitscenes_relation_challenge_key_v1",
+ "status": "OWNER_CONFIRMED",
+ "uid_mappings": {
+  "arkitscenes_41069025": {
+   "coffee table": "obj_34",
+   "kitchen counter": "obj_16",
+   "long narrow desk": "obj_14",
+   "pedestal fan": "obj_21",
+   "round dining table": "obj_5",
+   "small grey wastepaper basket under the desk": "obj_1",
+   "sofa": "obj_13",
+   "tall stainless kitchen bin": "obj_12",
+   "white convector heater": "obj_2"
+  },
+  "arkitscenes_41069042": {
+   "bed": "obj_6",
+   "chest of drawers": "obj_9",
+   "cream curtain": "obj_11",
+   "framed picture standing on the carpet": "obj_3",
+   "white desk": "obj_22",
+   "window": "obj_17"
+  }
+ },
+ "unresolved_mappings": {
+  "arkitscenes_41069025": [
+   {
+    "object": "striped rug",
+    "outcome": "none_missing",
+    "overmerged_into": null
+   }
+  ],
+  "arkitscenes_41069042": [
+   {
+    "object": "white radiator",
+    "outcome": "none_missing",
+    "overmerged_into": null
+   }
+  ]
+ }
+}

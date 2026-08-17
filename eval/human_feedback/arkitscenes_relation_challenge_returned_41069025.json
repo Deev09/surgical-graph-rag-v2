@@ -1,0 +1,133 @@
+{
+ "schema": "arkitscenes_relation_challenge_key_v1",
+ "scene_id": "arkitscenes_41069025",
+ "status": "OWNER_CONFIRMED",
+ "questions_sha256": "f8835bfbc4ad541c03217daf004fbb9f0ce5e5be4947d1894de6ab453e63c299",
+ "uid_mappings": [
+  {
+   "object": "coffee table",
+   "uid": "obj_34",
+   "none_missing": null,
+   "overmerged_into": null,
+   "ambiguous": null
+  },
+  {
+   "object": "sofa",
+   "uid": "obj_13",
+   "none_missing": null,
+   "overmerged_into": null,
+   "ambiguous": null
+  },
+  {
+   "object": "round dining table",
+   "uid": "obj_5",
+   "none_missing": null,
+   "overmerged_into": null,
+   "ambiguous": null
+  },
+  {
+   "object": "pedestal fan",
+   "uid": "obj_21",
+   "none_missing": null,
+   "overmerged_into": null,
+   "ambiguous": null
+  },
+  {
+   "object": "long narrow desk",
+   "uid": "obj_14",
+   "none_missing": null,
+   "overmerged_into": null,
+   "ambiguous": null
+  },
+  {
+   "object": "kitchen counter",
+   "uid": "obj_16",
+   "none_missing": null,
+   "overmerged_into": null,
+   "ambiguous": null
+  },
+  {
+   "object": "striped rug",
+   "uid": null,
+   "none_missing": true,
+   "overmerged_into": null,
+   "ambiguous": null
+  },
+  {
+   "object": "small grey wastepaper basket under the desk",
+   "uid": "obj_1",
+   "none_missing": null,
+   "overmerged_into": null,
+   "ambiguous": null
+  },
+  {
+   "object": "tall stainless kitchen bin",
+   "uid": "obj_12",
+   "none_missing": null,
+   "overmerged_into": null,
+   "ambiguous": null
+  },
+  {
+   "object": "white convector heater",
+   "uid": "obj_2",
+   "none_missing": null,
+   "overmerged_into": null,
+   "ambiguous": null
+  }
+ ],
+ "human_relation_truth": [
+  {
+   "id": "q25_cmp_coffee_table_sofa_vs_dining",
+   "answer": "sofa",
+   "ambiguous": false,
+   "evidence_views": "1",
+   "notes": null
+  },
+  {
+   "id": "q25_cmp_fan_desk_vs_counter",
+   "answer": "long narrow desk",
+   "ambiguous": false,
+   "evidence_views": "1",
+   "notes": null
+  },
+  {
+   "id": "q25_cmp_rug_sofa_vs_counter",
+   "answer": null,
+   "ambiguous": true,
+   "evidence_views": null,
+   "notes": null
+  },
+  {
+   "id": "q25_bin_basket_near_desk",
+   "answer": true,
+   "ambiguous": false,
+   "evidence_views": "2+",
+   "notes": null
+  },
+  {
+   "id": "q25_bin_kitchenbin_near_counter",
+   "answer": true,
+   "ambiguous": false,
+   "evidence_views": "2+",
+   "notes": null
+  },
+  {
+   "id": "q25_bin_kitchenbin_near_basket",
+   "answer": false,
+   "ambiguous": false,
+   "evidence_views": "0",
+   "notes": null
+  },
+  {
+   "id": "q25_set_near_sofa",
+   "answer": [
+    "striped rug",
+    "coffee table",
+    "white convector heater"
+   ],
+   "ambiguous": false,
+   "evidence_views": "2+",
+   "notes": null
+  }
+ ]
+}
