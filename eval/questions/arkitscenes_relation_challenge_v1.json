@@ -1,0 +1,232 @@
+{
+ "schema": "arkitscenes_relation_challenge_questions_v1",
+ "status": "DRAFT_AWAITING_OWNER",
+ "drafted": "2026-08-17",
+ "relation_under_test": "NEAR",
+ "purpose": "Test a relation the delivered representation can actually express, so that a failure can be attributed to geometry, labels, extraction or routing rather than guessed at. The previous six-question key could not test graph reasoning at all: its only relational item required ON_ENTITY_SURFACE, which the delivered graph does not emit.",
+ "near_convention": {
+  "statement": "Two objects are NEAR when the nearest points of their surfaces are within about one metre of each other -- close enough that a person standing at one could reach the other by leaning or taking a single step. Judge the gap between the objects themselves, not between their centres.",
+  "applies_to_forms": ["binary_near", "near_set"],
+  "not_applied_to": "comparative_near items are ordinal and use no threshold at all",
+  "declared_confound": "The delivered extractor's NEAR threshold is also 1.0 m (AABB surface-to-surface, strict less-than), recorded in each slice manifest as a 'provisional Replica-era constant; not a transfer claim'. One metre was chosen here because it is the natural human reading of 'near' at room scale, not because the extractor uses it -- but the coincidence is real and must be declared: a binary item the delivered system gets right cannot distinguish 'the representation is correct' from 'the threshold happens to match the convention'. This is the reason comparative items, which need no threshold, carry the discriminative weight of this set.",
+  "boundary_note": "Items whose true gap sits within 0.1 m of one metre are threshold-determined rather than geometry-determined. Which items those are will be reported only AFTER the key is returned; checking first would let edge distances influence question selection."
+ },
+ "selection_method": {
+  "sources": [
+   "raw ARKitScenes RGB frames for both scenes, sampled across the full capture and inspected directly",
+   "eval/human_feedback/arkitscenes_sealed_visual_review_2026-08-09.json, human_confirmed_scene_facts only"
+  ],
+  "not_consulted": "No graph edge, edge distance, learned display_label, entity manifest or obj_N identifier was consulted when choosing anchors or question pairs. Selecting pairs by what the graph already links would build a key that can only confirm the graph, which is the same trap the support review sheet was designed to avoid.",
+  "anchor_rule": "Every anchor is an object a careful human can identify and count confidently from the raw frames. Objects whose count could not be resolved from the imagery -- the number of pillows in 41069042, whether that room has one or two nightstands and one or two wall lamps, the exact door count in 41069025 -- were deliberately NOT used as anchors."
+ },
+ "excluded_question_classes": [
+  {"class": "object cardinality", "why": "excluded by the task; also the previous key's weakest items"},
+  {"class": "delivered obj_N identity as the user-facing question", "why": "raw RGB has no access to system-internal uids; asking it would favour the structured arms by definition"},
+  {"class": "support / on-surface / resting-on / attachment", "why": "the delivered graph emits no ON_ENTITY_SURFACE edge of any kind, so the question would again test an absent capability rather than graph reasoning"},
+  {"class": "appearance-only questions (colour, material, style)", "why": "no relation content; direct RGB would win by construction"},
+  {"class": "direction and orientation -- 'to the left of', 'across from', 'on the far side of', 'facing'", "why": "MEASURED CAPABILITY LIMIT: the graph frame records canonical_forward=null and canonical_right=null, and the slice manifest declares horizontal_direction unavailable. Only metric proximity transfers across views; a directional phrasing would silently exceed the evidence."},
+  {"class": "containment -- 'inside', 'in the drawer'", "why": "no containment relation exists in the delivered representation"},
+  {"class": "metric magnitude -- 'how far apart', 'by how many metres'", "why": "when only one edge of a pair is stored the ordering is derivable but the magnitude is not; asking for magnitude would be unanswerable for a large fraction of pairs"}
+ ],
+ "object_synonyms": {
+  "sofa": ["sofa", "couch"],
+  "striped rug": ["rug", "carpet"],
+  "coffee table": ["table", "coffee-table"],
+  "round dining table": ["table", "dining-table"],
+  "long narrow desk": ["desk"],
+  "wall-mounted television": ["tv-monitor", "monitor", "tv", "television"],
+  "kitchen counter": ["counter", "countertop"],
+  "tall stainless kitchen bin": ["trash-can", "trashcan", "bin", "garbage-can"],
+  "small grey wastepaper basket under the desk": ["trash-can", "trashcan", "basket", "wastebasket"],
+  "pedestal fan": ["fan"],
+  "white convector heater": ["radiator", "heater"],
+  "window curtains": ["curtain", "curtains", "drape", "drapes", "blinds"],
+  "bed": ["bed"],
+  "white desk": ["desk", "table"],
+  "chest of drawers": ["drawer", "chest-of-drawers", "dresser", "cabinet"],
+  "white radiator": ["radiator", "heater"],
+  "window": ["window"],
+  "cream curtain": ["curtain", "curtains", "blinds"],
+  "framed picture standing on the carpet": ["picture", "painting", "poster", "frame"]
+ },
+ "synonym_note": "These map a human anchor name onto the delivered closed vocabulary (global_indoor_v1). The mapping is a translation step, not a tuning step: it decides how an anchor NAME is looked up and never touches which relation is asked or which pair is tested. Several anchors deliberately share candidate labels -- both waste containers map to trash-can, both scene-25 tables map to table. When two delivered instances claim the same label the delivered arm ABSTAINS rather than guessing, and 'ambiguous' is reported separately from 'absent' because the two say different things about the label stage.",
+ "measured_label_resolution": {
+  "measured_on": "2026-08-17, before any key existed and after the questions were fixed",
+  "what_it_is": "Whether the DELIVERED label stage can resolve each anchor to exactly one instance. Measured after question selection, never before it, so it could not influence which questions were asked.",
+  "arkitscenes_41069025": {
+   "admitted_vocabulary": ["blinds", "cabinet", "chair", "counter", "cushion", "desk", "door", "lamp", "microwave", "stool", "table", "trash-can", "tv-monitor", "vase", "window"],
+   "resolves_to_one_instance": ["long narrow desk"],
+   "ambiguous_several_instances": ["kitchen counter", "tall stainless kitchen bin", "small grey wastepaper basket under the desk", "coffee table", "round dining table"],
+   "absent_from_admitted_labels": ["sofa", "striped rug", "pedestal fan", "white convector heater"]
+  },
+  "arkitscenes_41069042": {
+   "admitted_vocabulary": ["bed", "blinds", "box", "cushion", "drawer", "monitor", "nightstand", "refrigerator", "shelf", "tv-monitor", "whiteboard"],
+   "resolves_to_one_instance": [],
+   "ambiguous_several_instances": ["bed", "cream curtain", "chest of drawers"],
+   "absent_from_admitted_labels": ["white radiator", "window", "white desk", "framed picture standing on the carpet"]
+  },
+  "consequence": "As authored, the delivered_graph layer abstains on all twelve questions -- not because the relation is wrong but because the label stage cannot name the objects a human asks about. Delivered-graph-unique wins are therefore ZERO BY CONSTRUCTION and the continuation bar is unreachable on this set, in the same structural way the previous kill test's accuracy clause was unreachable. This is recorded here before the owner reviews anything, and it is the decision described in owner_decision_required below."
+ },
+ "scenes": {
+  "arkitscenes_41069025": {
+   "description": "Open-plan studio: kitchen run, dining zone, lounge with sofa and rug, desk and TV under a window.",
+   "n_questions": 7,
+   "capture_note": "Contains several genuinely wide frames, so a cross-view pair has to be chosen against what a wide frame already joins. This is the scene where the cross-view test actually bites."
+  },
+  "arkitscenes_41069042": {
+   "description": "Compact hotel-style bedroom: bed against a clad wall, window with blind and cream curtain, radiator, white desk, wall-mounted TV, chest of drawers.",
+   "n_questions": 5,
+   "capture_note": "Scanned at very close range, so almost every object pair is non-co-visible. Cross-view pairs are cheap here, which makes this scene a WEAK discriminator for persistent cross-view structure. Weight cross-view conclusions on 41069025.",
+   "owner_review_discrepancy": "The sealed visual review of 2026-08-09 records for this scene 'a couch/sofa facing the kitchen area' and 'the supplied views show the kitchen from the couch perspective'. Direct inspection of the raw frames for 41069042 found no couch, no sofa, no kitchen and no kitchen counter anywhere in the capture; those two facts are an accurate description of 41069025 instead. The questions below are authored from what 41069042's own imagery shows. The owner should adjudicate the mis-attribution during review."
+  }
+ },
+ "questions": [
+  {
+   "id": "q25_cmp_coffee_table_sofa_vs_dining",
+   "scene_id": "arkitscenes_41069025",
+   "form": "comparative_near",
+   "question": "Is the coffee table closer to the sofa, or closer to the round dining table?",
+   "subject": "coffee table",
+   "reference_a": "sofa",
+   "reference_b": "round dining table",
+   "cross_view": false,
+   "rationale": "Both references are real furniture in adjacent zones and the coffee table sits between them, so this is a genuine ordering rather than a giveaway. Threshold-free."
+  },
+  {
+   "id": "q25_cmp_fan_desk_vs_counter",
+   "scene_id": "arkitscenes_41069025",
+   "form": "comparative_near",
+   "question": "Is the pedestal fan closer to the long narrow desk, or closer to the kitchen counter?",
+   "subject": "pedestal fan",
+   "reference_a": "long narrow desk",
+   "reference_b": "kitchen counter",
+   "cross_view": true,
+   "rationale": "Spans the room end to end. The fan and the kitchen counter are at opposite ends and are not co-visible, so a single-view reasoner must integrate across frames while the graph reads one scalar comparison."
+  },
+  {
+   "id": "q25_cmp_rug_sofa_vs_counter",
+   "scene_id": "arkitscenes_41069025",
+   "form": "comparative_near",
+   "question": "Is the striped rug closer to the sofa, or closer to the kitchen counter?",
+   "subject": "striped rug",
+   "reference_a": "sofa",
+   "reference_b": "kitchen counter",
+   "cross_view": true,
+   "rationale": "The rug lies in front of the sofa at the lounge end; the kitchen is at the far end. Tests whether persistent structure preserves a cross-zone ordering."
+  },
+  {
+   "id": "q25_bin_basket_near_desk",
+   "scene_id": "arkitscenes_41069025",
+   "form": "binary_near",
+   "question": "Is the small grey wastepaper basket that stands under the long narrow desk near that desk?",
+   "subject": "small grey wastepaper basket under the desk",
+   "object": "long narrow desk",
+   "cross_view": false,
+   "rationale": "A deliberately easy positive that anchors the convention, and a control: any layer failing this is failing at identity resolution, not at spatial reasoning."
+  },
+  {
+   "id": "q25_bin_kitchenbin_near_counter",
+   "scene_id": "arkitscenes_41069025",
+   "form": "binary_near",
+   "question": "Is the tall stainless kitchen bin near the kitchen counter?",
+   "subject": "tall stainless kitchen bin",
+   "object": "kitchen counter",
+   "cross_view": false,
+   "rationale": "Co-visible positive in the kitchen zone. Pairs with the cross-view item below, which uses the same two waste containers."
+  },
+  {
+   "id": "q25_bin_kitchenbin_near_basket",
+   "scene_id": "arkitscenes_41069025",
+   "form": "binary_near",
+   "question": "Is the tall stainless kitchen bin near the small grey wastepaper basket that stands under the long narrow desk?",
+   "subject": "tall stainless kitchen bin",
+   "object": "small grey wastepaper basket under the desk",
+   "cross_view": true,
+   "rationale": "The strongest cross-view item in either scene. The two containers sit at opposite ends of the room and never appear in one frame, so a per-frame reasoner cannot see the pair at all, while a fused 3D representation stores their separation directly. They are also both waste containers, so a system that collapses them into one class will answer incoherently."
+  },
+  {
+   "id": "q25_set_near_sofa",
+   "scene_id": "arkitscenes_41069025",
+   "form": "near_set",
+   "question": "Which of the listed objects are near the sofa?",
+   "subject": "sofa",
+   "candidate_objects": ["striped rug", "coffee table", "white convector heater", "round dining table", "kitchen counter"],
+   "cross_view": true,
+   "rationale": "Closed roster spanning the lounge zone and the far kitchen, so the answer set has real negatives. The roster is fixed on the question so every layer answers the same closed question rather than an open-vocabulary one."
+  },
+  {
+   "id": "q42_cmp_radiator_window_vs_desk",
+   "scene_id": "arkitscenes_41069042",
+   "form": "comparative_near",
+   "question": "Is the white radiator closer to the window, or closer to the white desk?",
+   "subject": "white radiator",
+   "reference_a": "window",
+   "reference_b": "white desk",
+   "cross_view": true,
+   "rationale": "The radiator sits under the window; the desk is on the opposite side of the room. Threshold-free ordering across a non-co-visible span."
+  },
+  {
+   "id": "q42_cmp_picture_drawers_vs_bed",
+   "scene_id": "arkitscenes_41069042",
+   "form": "comparative_near",
+   "question": "Is the framed picture standing on the carpet closer to the chest of drawers, or closer to the bed?",
+   "subject": "framed picture standing on the carpet",
+   "reference_a": "chest of drawers",
+   "reference_b": "bed",
+   "cross_view": false,
+   "rationale": "A floor-standing leaning picture is a hard instance for segmentation and an easy one for a human, so it separates identity delivery from spatial reasoning."
+  },
+  {
+   "id": "q42_bin_desk_near_drawers",
+   "scene_id": "arkitscenes_41069042",
+   "form": "binary_near",
+   "question": "Is the white desk near the chest of drawers?",
+   "subject": "white desk",
+   "object": "chest of drawers",
+   "cross_view": false,
+   "rationale": "Adjacent along the same wall; a co-visible positive control for this scene."
+  },
+  {
+   "id": "q42_bin_bed_near_desk",
+   "scene_id": "arkitscenes_41069042",
+   "form": "binary_near",
+   "question": "Is the bed near the white desk?",
+   "subject": "bed",
+   "object": "white desk",
+   "cross_view": true,
+   "rationale": "Opposite sides of a small room. Expected to sit further from the convention boundary than the room's tightness suggests, which is exactly why the owner records the answer rather than the tool assuming it."
+  },
+  {
+   "id": "q42_set_near_window",
+   "scene_id": "arkitscenes_41069042",
+   "form": "near_set",
+   "question": "Which of the listed objects are near the window?",
+   "subject": "window",
+   "candidate_objects": ["white radiator", "cream curtain", "bed", "chest of drawers"],
+   "cross_view": false,
+   "rationale": "Closed roster mixing two near members at the window wall with at least one clear negative across the room."
+  }
+ ],
+ "owner_review_required": [
+  "Confirm or correct every UID mapping on the review sheet, including 'none/missing', 'overmerged into <uid>' and 'ambiguous' -- all four outcomes are first-class and the geometry ceiling abstains rather than guesses when identity is unresolved.",
+  "Record an answer, an ambiguity flag, an independent evidence-visibility count (0 / 1 / 2+ views) and notes for every question.",
+  "Adjudicate the 41069042 sealed-review mis-attribution described above.",
+  "Decide the counting convention for waste containers in 41069025, where two physically separate containers exist. This does NOT revise the frozen v3 key or its preserved 4/6 result; it fixes the convention for this and later keys."
+ ],
+ "owner_decision_required": {
+  "finding": "Measured before review: the delivered label stage resolves exactly one anchor across both scenes ('long narrow desk'). Everything else is ambiguous or absent, so the delivered_graph layer abstains on 12/12 and can produce no graph-unique win.",
+  "what_this_set_can_still_establish": [
+   "A decisive attribution: if the geometry ceiling answers questions the delivered graph cannot, INSTANCE NAMING is the binding stage, measured rather than argued.",
+   "Whether the representation could express these relations at all, given correct identity -- the ceiling versus blinded RGB comparison.",
+   "Whether the two-view sufficiency gate pays for its coverage cost, on whatever thin-evidence slice the owner's visibility judgements produce."
+  ],
+  "what_it_cannot_establish": "Whether persistent 3D structure uniquely answers what RGB misses IN A DEPLOYABLE PATH. That needs a delivered arm that can answer at all.",
+  "options": [
+   "A. Proceed as authored. The result is an identity-delivery verdict plus a ceiling-versus-RGB comparison. The continuation bar stays unreachable and must not be reported as a graph failure.",
+   "B. Proceed, and additionally authorize a supplementary question set whose anchors are restricted to classes the admitted vocabulary actually contains. This keeps relation selection blind but removes the guaranteed abstention. It biases toward objects the pipeline names well, which would have to be declared when reading any deployable number.",
+   "C. Treat label/vocabulary coverage as the binding stage now and fix it before spending a relation key at all -- the previous run already pointed at perception rather than representation."
+  ],
+  "recommendation": "A, with the caveat stated in the report: run it for the attribution, and do not read a zero delivered score as evidence about graphs. Option C is the honest reading of both experiments so far, but it is an engineering decision the owner owns."
+ },
+ "interpretation_limit": "Two human-reviewed scenes and twelve questions are a screening test. A pass is a reason to test more scenes, not a generalization claim, not an embodied-planning result, and not a claim about room understanding."
+}
