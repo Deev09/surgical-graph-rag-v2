@@ -43,20 +43,66 @@ pose-only farthest-point selection after the latter visibly wasted several of
 12 slots on blank walls. The final contact sheet includes the kitchen,
 counters, trash can, sofa, cushions, striped rug, table, TV and curtains.
 
-## Partial result
+## Result
 
-| arm | correct | wrong | unanswered | coverage | exact accuracy |
-|---|---:|---:|---:|---:|---:|
-| object/label map | 0 | 5 | 1 | 0.833 | 0.000 |
-| current typed graph | 0 | 5 | 1 | 0.833 | 0.000 |
-| direct visual VLM | pending | pending | pending | pending | pending |
-| evidence-aware hybrid | pending | pending | pending | pending | pending |
+Scored once, 2026-08-16, against a blinded response from a fresh Claude vision
+conversation (`anthropic / claude-opus-5`) that received only the contact sheet
+and `prompt.txt`.
 
-The current graph adds no answer value on this scope. Its 151 edges are all
+| arm | correct | wrong | unanswered | coverage | exact accuracy | false-confident rate |
+|---|---:|---:|---:|---:|---:|---:|
+| object/label map | 0 | 5 | 1 | 0.833 | 0.000 | 1.000 |
+| current typed graph | 0 | 5 | 1 | 0.833 | 0.000 | 1.000 |
+| direct visual VLM | 4 | 2 | 0 | 1.000 | 0.667 | 0.333 |
+| evidence-aware hybrid | 4 | 2 | 0 | 1.000 | 0.667 | 0.333 |
+
+Per question:
+
+| question | human key | object map | typed graph | direct VLM | hybrid |
+|---|---|---|---|---|---|
+| `q1_rug_cardinality` | 1 | 0 ✗ | 0 ✗ | **1 ✓** | **1 ✓** |
+| `q2_trash_can_cardinality` | 1 | 2 ✗ | 2 ✗ | 2 ✗ | 2 ✗ |
+| `q3_counter_cardinality` | 1 | 2 ✗ | 2 ✗ | 2 ✗ | 2 ✗ |
+| `q4_sofa_present` | true | false ✗ | false ✗ | **true ✓** | **true ✓** |
+| `q5_cushion_cardinality` | 2 | 3 ✗ | 3 ✗ | **2 ✓** | **2 ✓** |
+| `q6_cushion_on_sofa` | `cushion ON_ENTITY_SURFACE sofa` | unanswered | unanswered | **sofa ✓** | **sofa ✓** |
+
+Four findings, ordered by how much they should change what gets built next.
+
+**1. The graph contributed no uniquely correct answer.** Its 151 edges are all
 `NEAR`; the only relational key item asks for `ON_ENTITY_SURFACE`, so both
-structured arms leave it unanswered. This is not evidence that graphs are
-useless. It says the current graph does not yet contain the relation needed by
-the available human question.
+structured arms left it unanswered. The typed-graph arm is identical to the
+object-map arm on every question. This is not evidence that graphs are useless
+— it says the delivered graph does not contain the relation the available human
+question needs.
+
+**2. Direct RGB answered the one relation question the graph could not.** The
+support item (`q6`) is the graph's home turf, and RGB won it outright while
+citing two views. On this key, structure was not merely unhelpful; it was
+beaten on the question type it exists to serve.
+
+**3. The hybrid is exactly the direct arm.** The router never reached the
+graph, and the two-view abstention gate never fired — every visual answer cited
+at least two valid frames. Gain over the best single arm is 0.0000 and
+wrong-answer reduction is 0.0000. The gate cost nothing, and on this key it
+bought nothing, because the visual arm never produced a thinly-evidenced answer
+for it to catch.
+
+**4. Two failures are common to all four arms.** Every arm overcounted trash
+cans (2 vs 1) and kitchen counters (2 vs 1). No representation on offer repairs
+these: they survive both the object map and independent visual reasoning. That
+makes instance duplication the binding stage, not representation choice.
+
+### Decision
+
+`proceed = false`. Both clauses of the predeclared rule were missed at exactly
+zero. This is the decision table's *"direct RGB wins and hybrid is equal"* row:
+**use direct visual QA for the immediate demo, and make relation evidence the
+next engineering task — not a bigger router.**
+
+One scene, six questions, one blinded response. This is a screening result. It
+does not generalize, and it is not a claim about embodied planning or room
+understanding.
 
 ## What this run can and cannot establish
 
@@ -80,6 +126,11 @@ Two consequences follow:
 2. Only the safety clause can fire. A `proceed` here would therefore mean
    *evidence-sufficiency abstention reduced confident errors*, and would **not**
    mean the graph helped.
+
+Both held. The measured gain was exactly `0.0000`, and the safety clause also
+came in at `0.0000` because the abstention gate never fired. Recording this
+prediction before the score is what makes the `proceed = false` above a test
+outcome rather than a story fitted to the numbers afterwards.
 
 **This run cannot establish that explicit 3D structure improves spatial QA.**
 The graph is not being tested against a question it can answer: its only
@@ -107,13 +158,24 @@ The key must come from human inspection, not from the graph being scored. Do
 not expand the architecture until that relation-heavy test shows at least one
 reproducible graph advantage.
 
-## Pending blinded visual run
+## How the blinded visual run was obtained
 
-The repository has no configured vision-model runtime or credentials. The
-direct and hybrid rows are intentionally left pending rather than filled by a
-model that has seen the answer key in its conversation context.
+The repository has no configured vision-model runtime or credentials, and the
+direct arm must not be filled by a model that has seen the answer key in its
+conversation context. The repo-aware session had already read the key path and
+the partial report, so it was disqualified from answering.
 
-The generated handoff is under the gitignored run directory:
+The owner therefore ran it by hand on 2026-08-16: a fresh Claude vision
+conversation received the contact sheet and `prompt.txt` and nothing else — no
+repository context, no human key, no statement of the hypothesis. Its JSON was
+returned unedited and committed verbatim as `direct_claude.json`. It was not
+repaired after the key was visible.
+
+The blinding is procedural, not enforced by the repository. It rests on the
+owner's isolation of that conversation, which is why the provenance is written
+down here rather than assumed.
+
+The inputs are under the gitignored run directory:
 
 - `runs/arkit_representation_kill_test/41069025_common6/contact_sheet.jpg`
 - `runs/arkit_representation_kill_test/41069025_common6/prompt.txt`
