@@ -73,6 +73,10 @@ uid_sheet.CONTEXT_PX = 520
 uid_sheet.ISOLATED_PX = 520
 
 N_RGB_CROPS = 3
+# Renders are rasterised large, then downsampled for the page: sampling at 520
+# and showing at 400 keeps the splat legible without paying 4x the bytes.
+RENDER_PX = 400
+MAX_PAGE_MB = 9.0
 
 QUESTIONS_SCHEMA = "arkitscenes_relation_challenge_questions_v1"
 KEY_SCHEMA = "arkitscenes_relation_challenge_key_v1"
@@ -172,6 +176,22 @@ def jpeg_data_uri(image: Image.Image, quality: int = 82) -> str:
     return "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode("ascii")
 
 
+def recode_png_uri(uri: str, px: int, quality: int = 80) -> str:
+    """Re-encode a renderer PNG data URI as a smaller JPEG data URI.
+
+    The shared renderer emits PNG. For stippled point-splat images PNG is a
+    poor fit -- at 520 px, three renders per region across 35 regions pushed
+    the 41069025 page to 13 MB, past what the viewer would open at all. The
+    renders are secondary evidence behind a collapsed toggle, so they can pay
+    the lossy cost; the capture photographs, which are what the owner actually
+    identifies objects from, keep their size and quality.
+    """
+    raw = base64.b64decode(uri.split(",", 1)[1])
+    image = Image.open(io.BytesIO(raw))
+    image.thumbnail((px, px), Image.Resampling.LANCZOS)
+    return jpeg_data_uri(image, quality=quality)
+
+
 def context_frames(frames_dir: Path, n: int) -> list[dict]:
     rows = []
     for rank, path in enumerate(survey_frames(frames_dir, n)):
@@ -230,8 +250,8 @@ def delivered_regions(scene_id: str, paths: dict) -> list[dict]:
             "underside_above_floor_m": round(z0 - floor_z, 2),
             "photos": photos,
             "best_visible_fraction": coverage.get("best_visible_fraction"),
-            "ctx": renderer.context(vertices),
-            "iso": renderer.isolated(vertices),
+            "ctx": [recode_png_uri(u, RENDER_PX) for u in renderer.context(vertices)],
+            "iso": recode_png_uri(renderer.isolated(vertices), RENDER_PX),
         })
     regions.sort(key=lambda r: -r["n_vertices"])
     return regions
@@ -329,15 +349,23 @@ def region_cards(regions: list[dict]) -> str:
     cards = []
     for r in regions:
         if r.get("photos"):
-            photos = "".join(
-                f'<div><img src="{uri}" alt="capture photo {i + 1}">'
-                f'<span>photo {i + 1}</span></div>'
-                for i, uri in enumerate(r["photos"]))
+            # The best view gets the full card width. Three equal thumbnails in
+            # one row is ~140 px each, which is the same illegibility the splat
+            # renders had; the alternates are for disambiguation, not for
+            # first identification.
+            best, *rest = r["photos"]
+            alternates = "".join(
+                f'<div><img src="{uri}" alt="capture photo {i + 2}">'
+                f'<span>view {i + 2}</span></div>' for i, uri in enumerate(rest))
             visible = r.get("best_visible_fraction")
             caveat = ("" if visible is None else
                       f'<span class="dim">best view has {visible:.0%} of the '
                       f'region unoccluded</span>')
-            photo_block = (f'<div class="photos">{photos}</div>{caveat}')
+            photo_block = (
+                f'<div class="hero"><img src="{best}" alt="capture photo 1">'
+                f'<span>best capture view — the region is outlined</span></div>'
+                + (f'<div class="photos">{alternates}</div>' if alternates else "")
+                + caveat)
         else:
             photo_block = ('<p class="dim nophoto">No usable capture photo: '
                            'this region is never sufficiently visible in a '
@@ -399,6 +427,10 @@ textarea { width:100%; }
   margin:14px 0; }
 .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(430px,1fr));
   gap:16px; }
+.hero { margin-bottom:6px; text-align:center; }
+.hero img { width:100%; image-rendering:auto; border:1px solid var(--line);
+  border-radius:6px; display:block; }
+.hero span { font-size:11px; color:var(--mut); }
 .photos { display:flex; gap:6px; margin-bottom:6px; }
 .photos div { flex:1; text-align:center; }
 .photos img { width:100%; border:1px solid var(--line); border-radius:5px;
@@ -808,8 +840,12 @@ def cmd_sheet(args) -> int:
         (args.out / name).write_text(page)
         pages[scene_id] = name
         size = (args.out / name).stat().st_size / 1e6
+        flag = "  ** OVER LIMIT **" if size > MAX_PAGE_MB else ""
         print(f"    {scene_id}: {len(regions)} regions, {len(frames)} frames, "
-              f"{size:.1f} MB -> {name}")
+              f"{size:.1f} MB -> {name}{flag}")
+        if size > MAX_PAGE_MB:
+            print(f"      a page over ~{MAX_PAGE_MB:.0f} MB may not open in a "
+                  f"viewer at all; reduce RENDER_PX or N_RGB_CROPS")
     (args.out / "index.html").write_text(build_index(doc, pages, provenance))
     print(f"    index -> {args.out / 'index.html'}")
     return 0
