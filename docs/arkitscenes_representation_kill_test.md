@@ -76,10 +76,13 @@ object-map arm on every question. This is not evidence that graphs are useless
 — it says the delivered graph does not contain the relation the available human
 question needs.
 
-**2. Direct RGB answered the one relation question the graph could not.** The
-support item (`q6`) is the graph's home turf, and RGB won it outright while
-citing two views. On this key, structure was not merely unhelpful; it was
-beaten on the question type it exists to serve.
+**2. Graph support reasoning was never exercised — do not read `q6` as a
+loss.** RGB answered the support item correctly while the graph returned
+nothing, but the graph did not reason about support and lose. It emits no
+`ON_ENTITY_SURFACE` edge at all, so there was no support reasoning to evaluate.
+What `q6` measures is direct RGB against a **missing capability**, not against
+graph relation reasoning. An earlier revision of this document called it a loss
+on the graph's "home turf"; that was wrong and is corrected here.
 
 **3. The hybrid is exactly the direct arm.** The router never reached the
 graph, and the two-view abstention gate never fired — every visual answer cited
@@ -88,10 +91,27 @@ wrong-answer reduction is 0.0000. The gate cost nothing, and on this key it
 bought nothing, because the visual arm never produced a thinly-evidenced answer
 for it to catch.
 
-**4. Two failures are common to all four arms.** Every arm overcounted trash
-cans (2 vs 1) and kitchen counters (2 vs 1). No representation on offer repairs
-these: they survive both the object map and independent visual reasoning. That
-makes instance duplication the binding stage, not representation choice.
+**4. Two failures are common to all four arms, and look partly definitional.**
+Every arm answered 2 where the key says 1, for both trash cans and kitchen
+counters. A blinded model with no access to the object map independently
+reached the same count as the object map, on both items — which points at the
+question rather than at the representations. "One main counter" versus several
+connected counter surfaces, and one bin versus two bin-like objects, are
+counting conventions the key does not state.
+
+Preserve the 4/6 as measured; do not retro-fit the key to raise it. But settle
+these conventions explicitly before they are inherited by another benchmark,
+because right now they are the entire gap between direct RGB at 0.667 and a
+clean sweep.
+
+### What this establishes
+
+- Direct multi-view RGB is currently the strongest answer source, 4/6 vs 0/6.
+- The present graph contributes no QA value on this key.
+- The router contributes nothing, because every question falls back to RGB.
+- Evidence sufficiency was **not** meaningfully tested: every visual answer
+  cited enough views, so the gate never had a candidate to reject.
+- Do not invest in a larger hybrid architecture yet.
 
 ### Decision
 
@@ -145,18 +165,48 @@ Owner reading of the possible outcomes, recorded 2026-08-16:
 | hybrid makes fewer mistakes by abstaining | evidence sufficiency is valuable; the graph still has not helped |
 | any outcome | insufficient to claim graph benefit from this key |
 
-### Named next task
+### Named next task — the `NEAR` relation challenge
 
-A small, independently human-keyed **relation challenge** over relations the
-graph actually contains, starting with `NEAR` — e.g. which objects are near the
-TV, table, sofa or counter, asked across views. Compare direct RGB, object map
-and graph on it. That is the first test that can actually answer the main
-question: does persistent 3D structure uniquely answer spatial questions that
-bounded multi-view visual reasoning misses?
+A small, independently human-keyed relation challenge over a relation the graph
+**actually contains**. Today's key could not test graph reasoning at all; this
+one is designed so that it can.
 
-The key must come from human inspection, not from the graph being scored. Do
-not expand the architecture until that relation-heavy test shows at least one
-reproducible graph advantage.
+Start with `NEAR`, because the delivered graph already holds 151 such edges.
+
+Four layers, scored separately, so a failure can be attributed rather than
+guessed at:
+
+| layer | what it is | isolates |
+|---|---|---|
+| 1. geometry relation ceiling | human-verified object identities, 3D relations computed over them | whether the geometry itself supports the relation |
+| 2. delivered graph | current learned labels and relations | label and extraction error on top of layer 1 |
+| 3. direct RGB VLM | blinded multi-view reasoning | what bounded visual reasoning reaches without structure |
+| 4. hybrid | route only where graph evidence exists | whether routing adds anything over the best single layer |
+
+The four-layer split is the point. A layer-1 pass with a layer-2 failure means
+labels or extraction; a layer-1 failure means the geometry cannot support the
+relation and no amount of graph engineering fixes it. Today's design could not
+make that distinction.
+
+Scope: 8–12 independently reviewed questions across **both** `41069025` and
+`41069042`, including comparative items such as "which object is closer to the
+sofa?" — comparatives are where persistent metric structure should beat
+appearance-only reasoning, if it ever does.
+
+The key must come from human inspection, never derived from the graph being
+scored. State counting and adjacency conventions in the key itself, given
+finding 4 above.
+
+**Bar for expanding the graph architecture: at least two reproducible
+graph-unique wins, preferably one in each scene.** Below that bar, the answer
+to the main question is still "not demonstrated", and the architecture stays
+frozen.
+
+### Immediate demo guidance
+
+Use direct multi-view RGB with frame citations and honest abstention. Present
+the graph as an inspectable persistent evidence layer — not as the superior
+answer engine. Nothing measured here supports the latter claim.
 
 ## How the blinded visual run was obtained
 
