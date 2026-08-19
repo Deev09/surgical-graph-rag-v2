@@ -269,3 +269,296 @@ two legal values, "answer" or "unknown"; the answer itself goes in "answer":
   ]
 }}
 """
+
+
+# --------------------------------------------------------------------------
+# owner review sheet
+# --------------------------------------------------------------------------
+def jpeg_uri(path: Path, px: int = 420, quality: int = 84) -> str:
+    image = Image.open(path).convert("RGB")
+    image.thumbnail((px, px), Image.Resampling.LANCZOS)
+    buf = io.BytesIO()
+    image.save(buf, format="JPEG", quality=quality, optimize=True)
+    return "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode("ascii")
+
+
+EVIDENCE_CHOICES = (("2+", "2 or more independent views"),
+                    ("1", "exactly 1 view"),
+                    ("0", "0 views (not visible in the capture)"))
+
+
+def answer_control(question: dict) -> str:
+    qid = question["id"]
+    if question["answer_type"] == "integer":
+        return (f'<input class="pick num" type="number" min="0" step="1" '
+                f'inputmode="numeric" aria-label="count for {esc(qid)}">')
+    if question["answer_type"] == "boolean":
+        options = [("true", "yes"), ("false", "no")]
+    else:
+        options = [(question["reference_a"], f'closer to the {question["reference_a"]}'),
+                   (question["reference_b"], f'closer to the {question["reference_b"]}'),
+                   ("tie", "genuinely the same distance")]
+    return "".join(
+        f'<label class="chk"><input type="radio" name="{esc(qid)}" class="pick" '
+        f'value="{esc(v)}"> {esc(label)}</label>' for v, label in options)
+
+
+def build_sheet(scene: str, questions: list[dict], frames: list[dict],
+                frames_dir: Path, anchors: dict, provenance: dict) -> str:
+    figs = "".join(
+        f'<figure><img src="{jpeg_uri(frames_dir / f["file"].split("/")[-1])}" '
+        f'alt="{esc(f["id"])}"><figcaption>{esc(f["id"])}</figcaption></figure>'
+        for f in frames)
+
+    cards = []
+    for q in questions:
+        kind = {"cardinality": "count", "presence": "yes / no",
+                "comparative_near": "which is closer (no threshold)",
+                "binary_near": "near / not near"}[q["form"]]
+        cross = ('<span class="tag cross">cross-view — no supplied frame '
+                 'contains both objects</span>' if q.get("cross_view") else "")
+        ev = "".join(
+            f'<label class="chk"><input type="radio" name="ev_{esc(q["id"])}" '
+            f'class="ev" value="{esc(v)}"> {esc(label)}</label>'
+            for v, label in EVIDENCE_CHOICES)
+        cards.append(f"""
+    <section class="qcard" data-qid="{esc(q['id'])}"
+             data-type="{esc(q['answer_type'])}">
+      <h3>{esc(q['question'])}</h3>
+      <div class="qmeta"><code>{esc(q['id'])}</code>
+        <span class="tag">{esc(kind)}</span>{cross}</div>
+      <div class="field"><b>Your answer</b>{answer_control(q)}
+        <label class="chk amb"><input type="checkbox" class="ambiguous">
+          ambiguous / cannot answer — exclude this item</label></div>
+      <div class="field"><b>Evidence visibility</b>
+        <span class="hint">judged separately from the answer: in how many
+        distinct views can this be verified?</span>{ev}</div>
+      <div class="field"><b>Notes</b><textarea class="notes" rows="2"
+        placeholder="anything ambiguous, or a counting call you had to make"></textarea></div>
+    </section>""")
+
+    anchor_rows = "".join(
+        f'<tr><td>{esc(a["anchor"])}</td><td class="n">{a["n_passes"]}/3</td>'
+        f'<td class="n">{a["first_frame_rank"]}</td>'
+        f'<td class="n">{len(a["frame_ids"])}</td></tr>'
+        for a in anchors["admitted"])
+
+    return f"""<!DOCTYPE html>
+<meta charset="utf-8">
+<title>RGB transfer review — {esc(scene)}</title>
+<style>
+:root {{ --bg:#fff; --fg:#15171a; --mut:#666; --line:#e3e5e8; --hi:#c0158f;
+  --warn:#8a5a00; --warnbg:#fff6e0; }}
+@media (prefers-color-scheme: dark) {{ :root:not([data-theme="light"]) {{
+  --bg:#14161a; --fg:#e9ebee; --mut:#9aa1aa; --line:#2b2f36; --hi:#ff5cc8;
+  --warn:#f0c060; --warnbg:#2a2214; }} }}
+* {{ box-sizing:border-box; }}
+body {{ background:var(--bg); color:var(--fg); margin:0 auto;
+  padding:24px 20px 80px; max-width:1000px;
+  font:15px/1.55 ui-sans-serif,system-ui,-apple-system,sans-serif; }}
+h1 {{ font-size:21px; margin:0 0 4px; }}
+h2 {{ font-size:16px; margin:32px 0 10px; padding-top:14px;
+  border-top:1px solid var(--line); }}
+h3 {{ font-size:15px; margin:0 0 6px; }}
+.sub {{ color:var(--mut); font-size:13px; margin:0 0 14px; }}
+code {{ font:12px ui-monospace,Menlo,monospace; background:rgba(128,128,128,.13);
+  padding:.1em .35em; border-radius:3px; }}
+table {{ border-collapse:collapse; width:100%; font-size:14px; }}
+th,td {{ text-align:left; padding:6px 8px; border-bottom:1px solid var(--line); }}
+th {{ color:var(--mut); font-weight:600; }}
+td.n {{ font-variant-numeric:tabular-nums; }}
+.convention {{ border:1px solid var(--line); border-radius:8px;
+  padding:12px 16px; margin:14px 0; }}
+.warn {{ border-left:3px solid var(--warn); background:var(--warnbg);
+  padding:10px 14px; margin:14px 0; border-radius:0 6px 6px 0; font-size:13.5px; }}
+.frames {{ display:grid; gap:8px;
+  grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); }}
+figure {{ margin:0; }} figure img {{ width:100%; border:1px solid var(--line);
+  border-radius:5px; display:block; }}
+figcaption {{ font-size:10.5px; color:var(--mut); }}
+.qcard {{ border:1px solid var(--line); border-radius:8px; padding:14px 16px;
+  margin:0 0 12px; }}
+.qmeta {{ color:var(--mut); font-size:12px; margin-bottom:10px; display:flex;
+  gap:10px; flex-wrap:wrap; align-items:center; }}
+.tag {{ background:rgba(128,128,128,.14); padding:1px 7px; border-radius:10px; }}
+.tag.cross {{ background:rgba(192,21,143,.14); color:var(--hi); }}
+.field {{ margin:10px 0; }}
+.field > b {{ display:block; font-size:12.5px; margin-bottom:4px; }}
+.hint {{ display:block; color:var(--mut); font-size:12px; margin-bottom:5px; }}
+.chk {{ display:inline-flex; align-items:center; gap:5px; margin:0 14px 5px 0;
+  font-size:13.5px; }}
+.chk.amb {{ color:var(--warn); display:flex; margin-top:8px; }}
+input.num {{ font:inherit; padding:5px; width:7rem; background:var(--bg);
+  color:var(--fg); border:1px solid var(--line); border-radius:5px; }}
+textarea {{ font:inherit; padding:5px; width:100%; background:var(--bg);
+  color:var(--fg); border:1px solid var(--line); border-radius:5px; }}
+button {{ font:inherit; padding:8px 16px; border-radius:6px; cursor:pointer;
+  border:1px solid var(--line); background:var(--hi); color:#fff; }}
+pre {{ background:rgba(128,128,128,.10); padding:12px; border-radius:6px;
+  overflow-x:auto; font-size:12px; max-height:400px; }}
+</style>
+
+<h1>Direct-RGB transfer test — review sheet</h1>
+<p class="sub">scene <code>{esc(scene)}</code> · {len(questions)} questions ·
+{len(frames)} supplied views · about 20–30 minutes</p>
+
+<div class="warn"><b>This scene is new.</b> It has no delivered instances, no
+graph and no prior key, so there is nothing to map to <code>obj_N</code> and no
+mapping panel here. Answer from the room as the frames show it. The same
+questions and the same two conventions below were given to a blinded model in a
+separate context; your answers are the key its answers will be scored against.</div>
+
+<div class="convention"><b>Counting convention</b>
+  <p style="margin:6px 0">{esc(COUNTING_CONVENTION)}</p>
+  <b>NEAR convention</b>
+  <p style="margin:6px 0 0">{esc(NEAR_CONVENTION)}</p>
+</div>
+
+<h2>1 · The 18 supplied views</h2>
+<p class="sub">Selected by the frozen answer-free rule — 18 equal temporal bins,
+best-information frame in each. You may answer from the room as a whole.</p>
+<div class="frames">{figs}</div>
+
+<h2>2 · The questions</h2>
+<p class="sub">Record evidence visibility independently of your answer. If a
+question is unanswerable or the wording does not fit the room, mark it
+ambiguous rather than forcing an answer — excluded items cost nothing.</p>
+{"".join(cards)}
+
+<p><button onclick="emit()">Build JSON</button></p>
+<pre id="out">(fill in above, then press Build JSON)</pre>
+
+<h2>3 · How these questions were chosen</h2>
+<p class="sub">Three independent passes listed the objects they could see in
+the 18 views, with no access to each other, to any question, or to anything
+else in the project. An object became an anchor only when at least two of the
+three named it. Anchors were then ordered by first appearance and a fixed
+template allocation decided which ones fill which question. No question was
+chosen because a system could answer it.</p>
+<table><thead><tr><th>anchor</th><th>passes</th><th>first frame</th>
+  <th>frames seen in</th></tr></thead><tbody>{anchor_rows}</tbody></table>
+
+<script>
+function emit() {{
+  var truth = [];
+  document.querySelectorAll(".qcard").forEach(function (card) {{
+    var type = card.dataset.type;
+    var ambiguous = card.querySelector(".ambiguous").checked;
+    var answer = null;
+    if (type === "integer") {{
+      var box = card.querySelector("input.num");
+      if (box.value !== "") {{ answer = box.valueAsNumber; }}
+    }} else {{
+      var hit = card.querySelector(".pick:checked");
+      if (hit) {{ answer = (type === "boolean") ? (hit.value === "true") : hit.value; }}
+    }}
+    var ev = card.querySelector(".ev:checked");
+    truth.push({{
+      id: card.dataset.qid,
+      answer: ambiguous ? null : answer,
+      ambiguous: ambiguous,
+      evidence_views: ev ? ev.value : null,
+      notes: card.querySelector(".notes").value || null
+    }});
+  }});
+  var out = {{
+    schema: "{KEY_SCHEMA}",
+    scene_id: "{scene}",
+    status: "OWNER_CONFIRMED",
+    questions_content_sha256: "{provenance['questions_content_sha256']}",
+    counting_convention_confirmed: true,
+    human_truth: truth
+  }};
+  document.getElementById("out").textContent = JSON.stringify(out, null, 1);
+}}
+</script>
+"""
+
+
+# --------------------------------------------------------------------------
+def cmd_build(args) -> int:
+    """Merge passes, allocate questions, emit packet + prompt + review sheet."""
+    selected = json.loads((args.run_dir / "selected_frames.json").read_text())
+    frames = selected["frames"]
+    frame_order = [f["id"] for f in frames]
+    passes = [json.loads(p.read_text()) for p in args.passes]
+
+    anchors = merge_passes(passes, frame_order)
+    (args.run_dir / "anchors.json").write_text(
+        json.dumps(anchors, indent=1, sort_keys=True) + "\n")
+    print(f"    anchors admitted (>= {MIN_PASSES}/3): "
+          f"{len(anchors['admitted'])} of "
+          f"{len(anchors['admitted']) + len(anchors['rejected_single_pass'])}")
+
+    questions, notes = build_questions(anchors["admitted"])
+    doc = {
+        "schema": QUESTIONS_SCHEMA,
+        "status": "GENERATED_BY_FIXED_PROCEDURE",
+        "scene_id": selected["scene"],
+        "protocol": "docs/arkitscenes_rgb_transfer_test.md",
+        "counting_convention": COUNTING_CONVENTION,
+        "near_convention": NEAR_CONVENTION,
+        "generation": {
+            "anchor_rule": f"admitted on >= {MIN_PASSES} of 3 independent "
+                           "blind enumeration passes",
+            "ordering": "first appearance ascending, ties alphabetical",
+            "allocation": "3 presence/cardinality, 3 comparative, 2 cross-view",
+            "notes": notes,
+        },
+        "questions": questions,
+    }
+    doc["questions_content_sha256"] = json_sha256(questions)
+    questions_path = args.run_dir / "questions.json"
+    questions_path.write_text(json.dumps(doc, indent=1, sort_keys=True) + "\n")
+    print(f"    questions        : {len(questions)}")
+    for note in notes:
+        print(f"      note: {note}")
+
+    packet = {
+        "schema": PACKET_SCHEMA,
+        "stage": "prepared_no_answers",
+        "scene_id": selected["scene"],
+        "counting_convention": COUNTING_CONVENTION,
+        "near_convention": NEAR_CONVENTION,
+        "questions_content_sha256": doc["questions_content_sha256"],
+        "questions": questions,
+        "frames": frames,
+        "selection": selected["selection"],
+        "disclosures": [
+            "No expected answer, human key or system output is included.",
+            "The selected views may miss an object even when it exists.",
+            "This arm sees RGB only; there is no mesh, graph or entity map "
+            "for this scene and none was produced.",
+        ],
+    }
+    packet["packet_sha256"] = json_sha256(packet)
+    (args.run_dir / "packet.json").write_text(
+        json.dumps(packet, indent=1, sort_keys=True) + "\n")
+    (args.run_dir / "prompt.txt").write_text(prompt_text(packet))
+
+    sheet = build_sheet(selected["scene"], questions, frames,
+                        args.run_dir / "frames", anchors,
+                        {"questions_content_sha256": doc["questions_content_sha256"]})
+    sheet_path = args.run_dir / "review_sheet.html"
+    sheet_path.write_text(sheet)
+
+    print(f"    packet_sha256    : {packet['packet_sha256']}")
+    print(f"    questions_sha256 : {doc['questions_content_sha256']}")
+    print(f"    review sheet     : {sheet_path.stat().st_size / 1e6:.1f} MB")
+    print(f"    -> {args.run_dir}")
+    return 0
+
+
+def main(argv: list[str] | None = None) -> int:
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    ap.add_argument("--run-dir", type=Path,
+                    default=REPO_ROOT / "runs" / "arkit_rgb_transfer" / "47331972")
+    sub = ap.add_subparsers(dest="command", required=True)
+    b = sub.add_parser("build")
+    b.add_argument("--passes", type=Path, nargs="+", required=True)
+    args = ap.parse_args(argv)
+    return {"build": cmd_build}[args.command](args)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
