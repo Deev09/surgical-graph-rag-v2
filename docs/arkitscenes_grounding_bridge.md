@@ -233,10 +233,21 @@ as the identity oracle, while needing no mapping, no bridge and no graph.
 
 ## What this closes, and what it does not
 
-Closed: whether soft multimodal grounding over the *current* delivered entities
-can unlock the spatial information the graph already holds. On two scenes,
-seventeen anchors and one pinned encoder — it cannot, by a wide margin on all
-three gates.
+**Scope of the stop, stated precisely.** This closes **the pinned OpenCLIP
+crop-based grounding bridge** — one encoder, one crop configuration, one
+admission rule, on this key. It does **not** close grounding research in
+general, and no result here licenses the claim that language-to-entity
+grounding is impossible.
+
+What the stop rule does is prevent trying endless variants against the same
+seventeen anchors, where each variant would be selected on numbers it had
+already seen. That is the failure the rule exists to prevent, and it is a
+different thing from a claim about grounding as a field.
+
+Closed: whether soft multimodal grounding over the *current* delivered entities,
+with this encoder and this rule, can unlock the spatial information the graph
+already holds. On two scenes, seventeen anchors and one pinned encoder — it
+cannot, by a wide margin on all three gates.
 
 Not closed, and deliberately not attempted: whether a different grounding
 mechanism, a per-entity embedding persisted at delivery time, exclusivity

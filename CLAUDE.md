@@ -11,10 +11,41 @@ Current development target:
 - integration branch: `v2-calibration`
 - source dataset for the active slice: ARKitScenes
 - source perception backend: frozen Mask3D bundle
-- required outcome: an oracle-free mesh -> delivered entities -> graph ->
-  inspectable answer vertical slice
-- authoritative execution contract:
-  `docs/arkit_vertical_slice_72h.md`
+- required outcome: **direct multiview RGB as the product answer path**, with
+  the 3D layer retained as inspectable evidence and explicitly NOT the answer
+  engine
+- authoritative document: `docs/direct_rgb_product_path.md`
+- prior contract, now superseded: `docs/arkit_vertical_slice_72h.md`
+
+## Objective changed 2026-08-19, on owner authorization
+
+The previous objective was "an oracle-free mesh -> delivered entities -> graph
+-> inspectable answer vertical slice". It is closed on measured results, not
+abandoned. Owner: "The stop is justified. The current graph-centered product
+path should end here."
+
+What the three experiments established, over 10 scored items on the
+owner-confirmed relation key:
+
+| arm | correct | coverage | deployable |
+|---|---:|---:|---|
+| direct multiview RGB | 7/10 | 0.90 | yes |
+| stored graph + human identity | 7/10 | 0.80 | **no** — identity oracle |
+| grounded delivered graph | 2/10 | 0.20 | yes |
+| delivered graph | 0/10 | 0.00 | yes |
+
+Useful spatial information exists in the graph and is not deployably
+reachable. Relation extraction is cleared (stored-edge replay matched the
+geometry ceiling 12/12); the binding stage is identity, and the pinned
+OpenCLIP crop-based grounding bridge failed all three predeclared gates.
+
+The stop closes THAT bridge, not grounding research in general. Its purpose is
+to stop endless variants being fitted to the same seventeen anchors.
+
+Graph results are preserved as the measured negative comparison. Do not delete
+them and do not quietly restart the graph answer path; reopening it needs a
+persisted per-entity embedding at delivery time or a better instance-delivery
+stage, and a new key.
 
 Consolidated 2026-08-09: `codex/arkit-vertical-slice` was fast-forwarded
 into `v2-calibration` (no merge, linear history). That branch is retained
