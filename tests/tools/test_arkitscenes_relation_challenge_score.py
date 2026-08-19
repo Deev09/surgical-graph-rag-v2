@@ -710,6 +710,58 @@ def test_blinded_responses_merge_across_scenes():
         raise AssertionError("mixed models must not merge silently")
 
 
+
+# ------------------------------------------------------- grounded delivered
+def grounding_sidecar(uid="obj_0"):
+    return {"prediction_sha256": "d" * 64,
+            "scenes": [{"scene_id": SCENE, "anchors": [],
+                        "admitted": {"sofa": uid, "table": "obj_1",
+                                     "fridge": "obj_2"}}]}
+
+
+def test_grounded_layer_uses_the_sidecar_and_never_the_key():
+    rows = mod.answer_grounded_delivered_graph(questions(), scenes(),
+                                               grounding_sidecar())
+    binary = next(r for r in rows if r["id"] == "q1")
+    assert binary["answer"] is True and binary["uids"] == ["obj_0", "obj_1"]
+
+    tree = ast.parse(inspect.getsource(mod.answer_grounded_delivered_graph))
+    names = {n.id for n in ast.walk(tree) if isinstance(n, ast.Name)}
+    names |= {a.arg for n in ast.walk(tree)
+              if isinstance(n, ast.FunctionDef) for a in n.args.args}
+    assert not (names & {"key", "uid_mappings", "human_relation_truth"})
+
+
+def test_grounded_layer_abstains_where_the_bridge_abstained():
+    sidecar = {"prediction_sha256": "d" * 64,
+               "scenes": [{"scene_id": SCENE, "anchors": [], "admitted": {}}]}
+    rows = mod.answer_grounded_delivered_graph(questions(), scenes(), sidecar)
+    assert all(r["outcome_hint"] == "unanswered" for r in rows)
+    assert {r["reason"] for r in rows if r["form"] != "near_set"} == \
+        {mod.NO_GROUNDING}
+
+
+def test_anchor_precision_counts_an_undeliverable_admission_as_wrong():
+    """Admitting a uid for an object with no human mapping is the failure mode
+    most worth catching, so it must not be excluded from the denominator."""
+    grounding = {"scenes": [{"scene_id": SCENE, "anchors": [
+        {"anchor": "sofa", "admitted": True, "uid": "obj_0",
+         "agreeing_slots": 2, "top_uid": "obj_0"},
+        {"anchor": "ghost", "admitted": True, "uid": "obj_7",
+         "agreeing_slots": 3, "top_uid": "obj_7"},
+        {"anchor": "table", "admitted": False, "uid": None,
+         "agreeing_slots": 1, "top_uid": "obj_1", "reason": "one slot"},
+    ]}]}
+    key = {"uid_mappings": {SCENE: {"sofa": "obj_0", "table": "obj_1"}}}
+    out = mod.anchor_resolution(grounding, key, questions())
+    s = out["summary"]
+    assert s["n_admitted"] == 2 and s["n_correct"] == 1
+    assert s["precision"] == 0.5, "the ghost admission must be in the denominator"
+    assert s["admitted_but_not_human_resolvable"] == ["ghost"]
+    assert s["n_human_resolvable"] == 2
+    assert s["coverage"] == 0.5
+
+
 def main() -> None:
     tests = [v for k, v in sorted(globals().items())
              if k.startswith("test_") and callable(v)]

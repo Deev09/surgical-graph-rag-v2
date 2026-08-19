@@ -149,3 +149,100 @@ The striped rug and the white radiator are absent from the delivered
 partition. Grounding cannot invent an instance that was never delivered; those
 items stay lost until segmentation or delivery changes. That is a separate
 problem and is not what these gates measure.
+
+---
+
+# Result — scored 2026-08-19, after the prediction was sealed
+
+The sidecar was committed and pushed at `951269a` **before** the human
+mappings were opened. Prediction
+`51b56774262146de905ae8987f3fe8d5ddf970db6ae79a189b3854211a2a0f26`, reproduced
+identically across two independent runs.
+
+## All three gates fail
+
+| gate | required | measured | verdict |
+|---|---|---:|---|
+| anchor precision | ≥ 0.80 | **0.583** | fail |
+| anchor coverage | ≥ 0.60 | **0.467** | fail |
+| deployable graph-unique wins vs blinded RGB | ≥ 2 | **0** | fail |
+
+17 anchors, 15 human-resolvable, 12 admitted, 7 correct.
+
+Per scene the split is stark: `41069025` reaches precision 0.75 / coverage
+0.667, while `41069042` reaches **0.25 / 0.167**. A bridge that works in one
+room and not the other is not a bridge.
+
+## The bridge did move the arm, and it was not close to enough
+
+| layer | correct | wrong | unanswered | accuracy |
+|---|---:|---:|---:|---:|
+| `delivered_graph` (exact label match) | 0 | 0 | 10 | 0.000 |
+| **`grounded_delivered_graph`** | **2** | **0** | 8 | **0.200** |
+| `stored_graph_human_identity` (perfect identity) | 7 | 1 | 2 | 0.700 |
+| `blinded_rgb_vlm` | 7 | 2 | 1 | 0.700 |
+
+Grounding closed roughly a fifth of the gap between exact-label matching and
+perfect identity. Every question it answered, it answered correctly — but that
+is composition luck, not a safety property: a question abstains if **any** of
+its anchors abstains, so the five mis-grounded anchors mostly landed in
+questions that were already abstaining for another anchor. On a question whose
+anchors all resolved wrongly, this arm would answer confidently and wrongly.
+
+Zero grounded graph-unique wins. Every item the grounded arm answered, blinded
+RGB also answered correctly.
+
+## Four failures worth naming
+
+**Two anchors collided on one uid, twice.** `coffee table` and `round dining
+table` both grounded to `obj_5`; `white radiator` and `cream curtain` both
+grounded to `obj_2` in `41069042`. Nothing in the rule enforces that distinct
+anchors take distinct entities, and both scene-25 tables share the delivered
+label vocabulary's single `table`.
+
+**It confidently grounded an object that does not exist.** `white radiator` is
+`none / missing` in the owner's mapping, and the bridge admitted `obj_2` for it
+with **three** agreeing view slots — maximum cross-view agreement for an object
+that was never delivered. The protocol predeclared that this counts as a
+precision error rather than being suppressed, and it did. Cross-view agreement
+measures *consistency*, not *existence*.
+
+**The abstention rule mostly fired on things that do exist.** Of five
+abstentions, four (`long narrow desk`, `window`, `white desk`, `framed picture`)
+are human-resolvable objects the bridge failed to reach; only `striped rug` is
+a genuinely absent object it correctly declined. The rule is not selecting for
+existence.
+
+**`bed` grounded to `obj_18` rather than `obj_6`.** The single largest, most
+distinctive object in `41069042` — 54,217 vertices — was mis-grounded with two
+agreeing slots.
+
+## Predeclared stop: fires
+
+The protocol said, before any number existed:
+
+> If any gate fails: stop the graph-centered answer path and use direct
+> multiview RGB for the product. Do not tune prompts, thresholds, synonyms or
+> view rules and re-run.
+
+All three failed. **Stop.** Nothing was tuned and nothing was re-run after
+seeing these numbers, and no follow-on experiment is proposed here.
+
+Direct multiview RGB is the product path. It scored 0.700 on this key, the same
+as the identity oracle, while needing no mapping, no bridge and no graph.
+
+## What this closes, and what it does not
+
+Closed: whether soft multimodal grounding over the *current* delivered entities
+can unlock the spatial information the graph already holds. On two scenes,
+seventeen anchors and one pinned encoder — it cannot, by a wide margin on all
+three gates.
+
+Not closed, and deliberately not attempted: whether a different grounding
+mechanism, a per-entity embedding persisted at delivery time, exclusivity
+constraints across anchors, or better instance delivery would change this. Those
+are hypotheses, not findings, and the stop rule exists precisely so they are not
+tried on this key by whoever reads a 0.583 and feels close.
+
+The rug and the radiator remain an instance-delivery problem. Grounding never
+had a path to them.

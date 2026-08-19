@@ -82,6 +82,7 @@ LAYERS = (
     ("geometry_relation_ceiling", "ceiling", False),
     ("stored_graph_human_identity", "identity_oracle", False),
     ("delivered_graph", "delivered", True),
+    ("grounded_delivered_graph", "delivered", True),
     ("blinded_rgb_vlm", "delivered", True),
     ("evidence_aware_hybrid", "delivered", True),
 )
@@ -101,6 +102,7 @@ def json_sha256(value: object) -> str:
 # --------------------------------------------------------------------------
 NO_MAPPING = "no human-verified UID mapping for this object"
 NO_LABEL = "no delivered instance carries an admitted label for this object"
+NO_GROUNDING = "the grounding bridge abstained on this anchor"
 NO_DISTANCE = "neither pair has a stored distance, so no ordering is derivable"
 THIN_EVIDENCE = "fewer than two valid cited views"
 NO_GRAPH_FACT = "the delivered graph materializes no fact for this question"
@@ -327,6 +329,29 @@ def answer_delivered_graph(questions: list[dict], scenes: dict,
                              "delivered_graph")
 
 
+def answer_grounded_delivered_graph(questions: list[dict], scenes: dict,
+                                    grounding: dict) -> list[dict]:
+    """DEPLOYABLE. Identity from the oracle-free grounding sidecar, relations
+    from the serialized NEAR edges. Never reads the human key.
+
+    This is the arm the grounding bridge exists to move. It sits between the
+    two brackets already measured on this key: `delivered_graph`, which
+    resolves anchors by exact learned-label match, and
+    `stored_graph_human_identity`, which is handed perfect identity over the
+    same stored edges. It shares `_stored_edge_rows` with both, so identity is
+    again the only variable.
+    """
+    admitted = {scene["scene_id"]: scene["admitted"]
+                for scene in grounding["scenes"]}
+
+    def resolver(scene_id: str, name: str) -> str | None:
+        uid = admitted.get(scene_id, {}).get(name)
+        return uid if isinstance(uid, str) and uid in scenes[scene_id]["aabb_by_uid"] else None
+
+    return _stored_edge_rows(questions, scenes, resolver, NO_GROUNDING,
+                             "grounded_delivered_graph")
+
+
 def answer_stored_graph_human_identity(questions: list[dict], scenes: dict,
                                        uid_mappings: dict) -> list[dict]:
     """IDENTITY ORACLE. Human UID mappings for identity, serialized edges for
@@ -521,6 +546,72 @@ def grade(rows: list[dict], key: dict, questions: list[dict]) -> list[dict]:
                               else "wrong")
         graded.append(out)
     return graded
+
+
+def anchor_resolution(grounding: dict, key: dict, questions: list[dict]) -> dict:
+    """Score the bridge's admissions against the owner's mappings.
+
+    Definitions are the ones declared in the protocol before this ran:
+
+      human-resolvable  the owner returned a uid -- not none/missing, not
+                        ambiguous.
+      precision         correct admissions / ALL admissions. An admission for
+                        an anchor with no human uid is automatically wrong;
+                        the denominator is not quietly restricted to the
+                        resolvable ones, because admitting a uid for an object
+                        that was never delivered is exactly the failure mode
+                        worth catching.
+      coverage          correct, human-resolvable admissions / all
+                        human-resolvable anchors.
+    """
+    truth = key.get("uid_mappings", {})
+    rows, per_scene = [], {}
+    for scene in grounding["scenes"]:
+        scene_id = scene["scene_id"]
+        resolvable = truth.get(scene_id, {})
+        scene_rows = []
+        for entry in scene["anchors"]:
+            anchor = entry["anchor"]
+            human = resolvable.get(anchor)
+            row = {
+                "scene_id": scene_id, "anchor": anchor,
+                "admitted": entry["admitted"],
+                "predicted_uid": entry["uid"],
+                "human_uid": human,
+                "human_resolvable": human is not None,
+                "agreeing_slots": entry.get("agreeing_slots"),
+                "top_uid": entry.get("top_uid"),
+                "abstain_reason": entry.get("reason"),
+            }
+            if entry["admitted"]:
+                row["outcome"] = ("correct" if human is not None
+                                  and entry["uid"] == human else "wrong")
+            else:
+                row["outcome"] = "abstained"
+            scene_rows.append(row)
+        rows += scene_rows
+        per_scene[scene_id] = _resolution_summary(scene_rows)
+    return {"summary": _resolution_summary(rows), "per_scene": per_scene,
+            "rows": rows}
+
+
+def _resolution_summary(rows: list[dict]) -> dict:
+    admitted = [r for r in rows if r["admitted"]]
+    correct = [r for r in admitted if r["outcome"] == "correct"]
+    resolvable = [r for r in rows if r["human_resolvable"]]
+    wrong_on_undeliverable = [r["anchor"] for r in admitted
+                              if not r["human_resolvable"]]
+    return {
+        "n_anchors": len(rows),
+        "n_human_resolvable": len(resolvable),
+        "n_admitted": len(admitted),
+        "n_correct": len(correct),
+        "precision": round(len(correct) / len(admitted), 4) if admitted else None,
+        "coverage": (round(len(correct) / len(resolvable), 4)
+                     if resolvable else None),
+        "abstained": [r["anchor"] for r in rows if not r["admitted"]],
+        "admitted_but_not_human_resolvable": wrong_on_undeliverable,
+    }
 
 
 def summarize(rows: list[dict]) -> dict:
@@ -900,12 +991,14 @@ def load_packets(paths: list[Path]) -> dict:
 
 def run(questions_path: Path, key_path: Path, scene_inputs_path: Path,
         response_path: list[Path] | None, packets_path: list[Path] | None,
-        out: Path) -> Path:
+        out: Path, grounding_path: Path | None = None) -> Path:
     questions_doc = json.loads(questions_path.read_text())
     key = json.loads(key_path.read_text())
     check_ready(questions_doc, key, questions_path)
 
     questions = questions_doc["questions"]
+    grounding = (json.loads(grounding_path.read_text())
+                 if grounding_path is not None else None)
     scenes = load_scene_inputs(json.loads(scene_inputs_path.read_text()))
     synonyms = questions_doc.get("object_synonyms", {})
     # The merge step already dropped every unresolved mapping and kept the
@@ -926,6 +1019,11 @@ def run(questions_path: Path, key_path: Path, scene_inputs_path: Path,
                    key, questions)
     delivered = grade(answer_delivered_graph(questions, scenes, synonyms),
                       key, questions)
+    grounded = None
+    if grounding is not None:
+        grounded = grade(answer_grounded_delivered_graph(questions, scenes,
+                                                         grounding),
+                         key, questions)
     arms = {
         "geometry_relation_ceiling": {
             "layer_kind": "ceiling", "deployable": False,
@@ -948,6 +1046,14 @@ def run(questions_path: Path, key_path: Path, scene_inputs_path: Path,
             "per_scene": per_scene(delivered),
         },
     }
+    if grounded is not None:
+        arms["grounded_delivered_graph"] = {
+            "layer_kind": "delivered", "deployable": True,
+            "rows": grounded, "summary": summarize(grounded),
+            "per_scene": per_scene(grounded),
+            "identity_source": "oracle-free grounding sidecar "
+                               f"{grounding.get('prediction_sha256', '')[:16]}",
+        }
 
     rgb = hybrid = None
     if response_path is not None and packets_path is not None:
@@ -989,6 +1095,18 @@ def run(questions_path: Path, key_path: Path, scene_inputs_path: Path,
         "geometry_vs_stored_graph": layer_agreement(ceiling, stored),
         "attribution_stored_graph": attribution(stored, delivered),
         "graph_unique_wins": wins,
+        "grounded_graph_unique_wins": (unique_wins(grounded, rgb)
+                                       if grounded is not None and rgb is not None
+                                       else []),
+        "anchor_resolution": (anchor_resolution(grounding, key, questions)
+                              if grounding is not None else
+                              {"status": "no_grounding_sidecar"}),
+        "grounding_provenance": ({
+            "sidecar": str(grounding_path),
+            "prediction_sha256": grounding.get("prediction_sha256"),
+            "rules": grounding.get("rules"),
+            "model": grounding.get("model"),
+        } if grounding is not None else None),
         "ceiling_vs_rgb": ({
             "note": "DIAGNOSTIC ONLY. The ceiling consumes human identity, so a "
                     "ceiling-unique win is NOT a graph win and does not count "
@@ -1026,6 +1144,7 @@ def parser() -> argparse.ArgumentParser:
     ap.add_argument("--scene-inputs", type=Path)
     ap.add_argument("--blinded-responses", type=Path, nargs="+")
     ap.add_argument("--packets", type=Path, nargs="+")
+    ap.add_argument("--grounding", type=Path)
     ap.add_argument("--out", type=Path, required=True)
     ap.add_argument("--emit-scene-inputs", action="store_true",
                     help="write scene_inputs.json beside --out and exit; "
@@ -1044,7 +1163,8 @@ def main(argv: list[str] | None = None) -> int:
     if args.key is None:
         parser().error("--key is required unless --emit-scene-inputs is given")
     path = run(args.questions, args.key, args.scene_inputs,
-               args.blinded_responses, args.packets, args.out)
+               args.blinded_responses, args.packets, args.out,
+               args.grounding)
     report = json.loads(path.read_text())
     for name, arm in report["arms"].items():
         s = arm["summary"]
