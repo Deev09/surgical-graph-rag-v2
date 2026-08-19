@@ -189,6 +189,12 @@ def test_only_the_evaluator_reads_annotations() -> None:
         # And the detector-guided arm: asserts its mechanism module and CLI
         # stay annotation-free, which needs the literal to check for.
         "tests/segmenter/test_detector_guided_repair.py",
+        # Same reason for the grounding bridge: it AST-scans the bridge, its
+        # runner and their transitive first-party imports and fails if any of
+        # them names the annotation file, so it needs the literal to ban it.
+        # The one allowance it grants is adapters/arkitscenes.py, which is
+        # already on this list for defining the suffix without opening it.
+        "tests/extractors/test_arkitscenes_anchor_grounding.py",
     }
     offenders = []
     for p in sorted(REPO_ROOT.glob("**/*.py")):
