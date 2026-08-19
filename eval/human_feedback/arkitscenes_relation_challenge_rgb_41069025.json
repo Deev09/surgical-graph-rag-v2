@@ -1,0 +1,22 @@
+{
+  "schema": "arkitscenes_relation_challenge_rgb_responses_v1",
+  "scene_id": "arkitscenes_41069025",
+  "packet_sha256": {"arkitscenes_41069025": "2f7e0f77ea3658ab4cf3a3d02a4c1f580c3591b8e1cb66cd6839c67afacad450"},
+  "model": {"provider": "anthropic", "name": "claude-opus-5", "version": "claude-opus-5"},
+  "answers": [
+    {"id": "q25_cmp_coffee_table_sofa_vs_dining", "outcome": "sofa", "answer": "sofa", "confidence": 0.9,
+     "evidence_frame_ids": ["frame_14_722.706", "frame_13_717.658", "frame_05_641.773"]},
+    {"id": "q25_cmp_fan_desk_vs_counter", "outcome": "long narrow desk", "answer": "long narrow desk", "confidence": 0.88,
+     "evidence_frame_ids": ["frame_06_654.217", "frame_08_667.845", "frame_09_681.073"]},
+    {"id": "q25_cmp_rug_sofa_vs_counter", "outcome": "sofa", "answer": "sofa", "confidence": 0.9,
+     "evidence_frame_ids": ["frame_12_702.481", "frame_11_700.915", "frame_15_737.100"]},
+    {"id": "q25_bin_basket_near_desk", "outcome": "true", "answer": true, "confidence": 0.92,
+     "evidence_frame_ids": ["frame_07_655.783", "frame_06_654.217"]},
+    {"id": "q25_bin_kitchenbin_near_counter", "outcome": "true", "answer": true, "confidence": 0.85,
+     "evidence_frame_ids": ["frame_15_737.100", "frame_00_597.024"]},
+    {"id": "q25_bin_kitchenbin_near_basket", "outcome": "false", "answer": false, "confidence": 0.6,
+     "evidence_frame_ids": ["frame_15_737.100", "frame_07_655.783"]},
+    {"id": "q25_set_near_sofa", "outcome": "answer", "answer": ["striped rug", "coffee table", "white convector heater"], "confidence": 0.82,
+     "evidence_frame_ids": ["frame_11_700.915", "frame_12_702.481", "frame_14_722.706", "frame_13_717.658"]}
+  ]
+}

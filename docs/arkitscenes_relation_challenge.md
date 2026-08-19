@@ -1,7 +1,7 @@
 # ARKitScenes NEAR relation challenge — protocol
 
-Status: **owner key returned and scored for the structured layers.** The
-blinded RGB and hybrid layers are still pending. See the Result section.
+Status: **complete — all five layers scored 2026-08-17.** See the Result
+section. Continuation bar not met; naming binds.
 
 ## The question
 
@@ -146,16 +146,64 @@ This is a screening gate on two scenes, not a publication claim.
 
 ## Result — ceiling and delivered scored 2026-08-17
 
-Owner key returned per scene, validated, merged, scored once. The blinded RGB
-and hybrid layers have **not** run yet, so this is a partial report.
+Owner key returned per scene, validated, merged, scored once. Blinded RGB run
+in one fresh context per scene and scored in the same pass. Complete.
 
 | layer | identity from | relations from | correct | wrong | unans | excl | accuracy | deployable |
 |---|---|---|---:|---:|---:|---:|---:|---|
 | geometry_relation_ceiling | human UID map | recomputed `aabb_to_aabb_surface` | 7 | 1 | 2 | 2 | 0.700 | **no** |
 | stored_graph_human_identity | human UID map | **serialized NEAR edges + stored `distance_m`** | 7 | 1 | 2 | 2 | 0.700 | **no** |
 | delivered_graph | learned labels | serialized NEAR edges | 0 | 0 | 10 | 2 | 0.000 | yes |
-| blinded_rgb_vlm | the images | the images | — | — | — | — | pending | yes |
-| evidence_aware_hybrid | routed | routed | — | — | — | — | pending | yes |
+| blinded_rgb_vlm | the images | the images | 7 | 2 | 1 | 2 | 0.700 | yes |
+| evidence_aware_hybrid | routed | routed | 7 | 2 | 1 | 2 | 0.700 | yes |
+
+### The three-way tie is not a three-way agreement
+
+Structure and RGB both score 0.700, but **on different items**, and the two
+disagreements point in opposite directions:
+
+| item | ceiling / stored | blinded RGB | who wins |
+|---|---|---|---|
+| `q42_cmp_picture_drawers_vs_bed` | correct — "bed" | **unknown**, 0 citations | structure |
+| `q25_set_near_sofa` | **unanswered** — rug undelivered | correct | RGB |
+
+One structure-unique win and one RGB-unique win, and they have different
+characters. RGB declined the picture comparison outright. Structure could not
+answer the sofa roster because the striped rug is not in the delivered
+partition at all — so RGB's win is a win over an **instance-delivery hole**,
+not over spatial reasoning.
+
+Both arms got `q42_bin_bed_near_desk` wrong the same way, and RGB additionally
+got `q42_set_near_window` wrong by including the white radiator and the bed
+where the owner named only the cream curtain.
+
+**Neither of these is a graph-unique win.** The ceiling consumes human
+identity; the delivered graph answered nothing. `n_graph_unique_wins = 0`,
+`meets_bar = false`, exactly as pre-registered.
+
+### The sufficiency gate still could not be tested
+
+Seven of twelve items landed in the thin-evidence slice (0 or 1 owner-recorded
+view) — a real slice this time, unlike the previous run. But **the gate never
+fired**: every RGB answer cited at least two frames, and the one item RGB
+declined carried no citations to gate. `evidence_aware_hybrid` is therefore
+byte-identical to `blinded_rgb_vlm` again.
+
+The gate has now survived two experiments without ever being exercised. That is
+itself worth recording: on this evidence there is no measured case for keeping
+it, and no measured case against it either.
+
+### One repair, and it was to our own spec
+
+Ten of twelve responses returned `outcome` as the answer value rather than the
+literal flag. The prompt asked for `"outcome": "answer or unknown"`, which reads
+as *"put the answer, or unknown"* — an ambiguity in the packet spec, not a model
+error. `outcome` is a control flag fully determined by whether `answer` is null,
+so the scorer now derives it and records both `outcome_as_returned` and
+`outcome_normalized`. No answer, confidence or citation was altered, and the
+prompt has been reworded so it cannot recur. The scorer still rejects the two
+genuine contradictions: `unknown` with a non-null answer, and `answer` with a
+null one.
 
 ### Is relation extraction cleared, or is only the geometry sufficient?
 

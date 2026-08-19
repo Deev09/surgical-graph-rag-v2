@@ -395,10 +395,28 @@ def answer_blinded_rgb(questions: list[dict], packets: dict,
                 or not 0.0 <= float(confidence) <= 1.0):
             raise ValueError(f"{question['id']}: confidence must be in [0, 1]")
         outcome = answer.get("outcome")
+        normalized_from = None
         if outcome not in {"answer", "unknown"}:
-            raise ValueError(f"{question['id']}: outcome must be answer or unknown")
+            # `outcome` is a control flag whose only legal values are the two
+            # literals, and whose correct value is fully determined by whether
+            # `answer` is null. The prompt asked for it as `"answer or
+            # unknown"`, which reads as "put the answer, or unknown" -- an
+            # ambiguity in OUR spec, and responses took that reading. Deriving
+            # the flag repairs the spec error; it touches no answer, no
+            # confidence and no citation. The value as returned is preserved.
+            if not isinstance(outcome, str) or not outcome.strip():
+                raise ValueError(f"{question['id']}: outcome must be a string")
+            normalized_from = outcome
+            outcome = "unknown" if answer.get("answer") is None else "answer"
+        elif outcome == "unknown" and answer.get("answer") is not None:
+            raise ValueError(f"{question['id']}: outcome 'unknown' with a non-null answer")
+        elif outcome == "answer" and answer.get("answer") is None:
+            raise ValueError(f"{question['id']}: outcome 'answer' with a null answer")
         extra = {"confidence": float(confidence), "evidence_frame_ids": cited,
                  "evidence_sufficient": len(set(cited)) >= 2}
+        if normalized_from is not None:
+            extra["outcome_as_returned"] = normalized_from
+            extra["outcome_normalized"] = True
         if outcome == "unknown":
             row = _unanswered(question, "model returned unknown", "blinded_rgb_vlm")
             row.update(extra)
@@ -530,6 +548,22 @@ def graph_unique_wins(graph_rows: list[dict], rgb_rows: list[dict]) -> list[dict
                          "rgb_outcome": other["outcome"],
                          "rgb_answer": other.get("answer")})
     return wins
+
+
+def unique_wins(a_rows: list[dict], b_rows: list[dict]) -> list[dict]:
+    """Items `a` got right that `b` did not. Direction matters; report both."""
+    b = {r["id"]: r for r in b_rows}
+    out = []
+    for row in a_rows:
+        other = b.get(row["id"])
+        if row["outcome"] == "correct" and other is not None \
+                and other["outcome"] != "correct":
+            out.append({"id": row["id"], "scene_id": row["scene_id"],
+                        "form": row["form"], "answer": row.get("answer"),
+                        "other_outcome": other["outcome"],
+                        "other_answer": other.get("answer"),
+                        "other_reason": other.get("reason")})
+    return out
 
 
 def attribution(ceiling_rows: list[dict], graph_rows: list[dict]) -> dict:
@@ -812,8 +846,39 @@ def check_ready(questions_doc: dict, key: dict, questions_path: Path) -> None:
         raise ValueError("key must answer exactly the asked questions")
 
 
+def merge_blinded(paths: list[Path]) -> dict:
+    """Union the per-scene blinded responses into the one the scorer reads.
+
+    One fresh context per scene means one response file per scene; the packet
+    pin of each is carried through untouched so every scene is still verified
+    against the packet it was actually shown.
+    """
+    merged = {"schema": RESPONSE_SCHEMA, "packet_sha256": {}, "answers": []}
+    models = []
+    for path in paths:
+        block = json.loads(path.read_text())
+        if block.get("schema") != RESPONSE_SCHEMA:
+            raise ValueError(f"{path}: wrong blinded-response schema")
+        merged["packet_sha256"].update(block.get("packet_sha256", {}))
+        merged["answers"] += block.get("answers", [])
+        models.append(block.get("model"))
+    if any(m != models[0] for m in models):
+        raise ValueError("blinded responses disagree on the model that produced them")
+    merged["model"] = models[0]
+    merged["merged_from"] = [str(p) for p in paths]
+    return merged
+
+
+def load_packets(paths: list[Path]) -> dict:
+    packets = {}
+    for path in paths:
+        packet = json.loads(path.read_text())
+        packets[packet["scene_id"]] = packet
+    return packets
+
+
 def run(questions_path: Path, key_path: Path, scene_inputs_path: Path,
-        response_path: Path | None, packets_path: Path | None,
+        response_path: list[Path] | None, packets_path: list[Path] | None,
         out: Path) -> Path:
     questions_doc = json.loads(questions_path.read_text())
     key = json.loads(key_path.read_text())
@@ -865,8 +930,8 @@ def run(questions_path: Path, key_path: Path, scene_inputs_path: Path,
 
     rgb = hybrid = None
     if response_path is not None and packets_path is not None:
-        packets = json.loads(packets_path.read_text())
-        response = json.loads(response_path.read_text())
+        packets = load_packets(packets_path)
+        response = merge_blinded(response_path)
         rgb = grade(answer_blinded_rgb(questions, packets, response), key, questions)
         hybrid = grade(answer_hybrid(questions, delivered, rgb), key, questions)
         arms["blinded_rgb_vlm"] = {
@@ -894,7 +959,8 @@ def run(questions_path: Path, key_path: Path, scene_inputs_path: Path,
             "questions": str(questions_path),
             "questions_sha256": sha256(questions_path),
             "key": str(key_path), "key_sha256": sha256(key_path),
-            "blinded_responses": str(response_path) if response_path else None,
+            "blinded_responses": ([str(p) for p in response_path]
+                                  if response_path else None),
             "scenes": {s: scenes[s]["provenance"] for s in scenes},
         },
         "arms": arms,
@@ -902,6 +968,15 @@ def run(questions_path: Path, key_path: Path, scene_inputs_path: Path,
         "geometry_vs_stored_graph": layer_agreement(ceiling, stored),
         "attribution_stored_graph": attribution(stored, delivered),
         "graph_unique_wins": wins,
+        "ceiling_vs_rgb": ({
+            "note": "DIAGNOSTIC ONLY. The ceiling consumes human identity, so a "
+                    "ceiling-unique win is NOT a graph win and does not count "
+                    "toward the continuation bar. Reported because the "
+                    "delivered arm answered nothing, which leaves this the only "
+                    "comparison with content.",
+            "ceiling_unique_wins": unique_wins(ceiling, rgb),
+            "rgb_unique_wins": unique_wins(rgb, ceiling),
+        } if rgb is not None else {"status": "pending_blinded_rgb"}),
         "thin_evidence_subtest": (thin_evidence_slice(rgb, hybrid)
                                   if rgb is not None else
                                   {"status": "pending_blinded_rgb"}),
@@ -928,8 +1003,8 @@ def parser() -> argparse.ArgumentParser:
     ap.add_argument("--questions", type=Path, required=True)
     ap.add_argument("--key", type=Path)
     ap.add_argument("--scene-inputs", type=Path)
-    ap.add_argument("--blinded-responses", type=Path)
-    ap.add_argument("--packets", type=Path)
+    ap.add_argument("--blinded-responses", type=Path, nargs="+")
+    ap.add_argument("--packets", type=Path, nargs="+")
     ap.add_argument("--out", type=Path, required=True)
     ap.add_argument("--emit-scene-inputs", action="store_true",
                     help="write scene_inputs.json beside --out and exit; "

@@ -621,6 +621,76 @@ def test_attribution_refuses_to_emit_a_partial_partition():
         raise AssertionError("an incomplete partition must raise, not under-report")
 
 
+
+def test_outcome_flag_is_derived_when_the_response_restates_the_answer():
+    """Repairs our own ambiguous spec, never the model's answers.
+
+    The packet asked for `"outcome": "answer or unknown"`, which reads as "put
+    the answer, or unknown". Responses took that reading. The flag is fully
+    determined by whether `answer` is null, so it is derived and the returned
+    value is preserved -- while genuine contradictions still raise.
+    """
+    r = response()
+    r["answers"][0]["outcome"] = "false"        # restated the boolean answer
+    r["answers"][1]["outcome"] = "fridge"       # restated the comparative
+    rows = answer_blinded_rgb(questions(), packets(), r)
+    binary = next(x for x in rows if x["id"] == "q1")
+    assert binary["outcome_hint"] == "answered"
+    assert binary["answer"] is False            # untouched
+    assert binary["outcome_as_returned"] == "false"
+    assert binary["outcome_normalized"] is True
+
+    contradiction = response()
+    contradiction["answers"][0]["outcome"] = "unknown"   # but answer is False
+    try:
+        answer_blinded_rgb(questions(), packets(), contradiction)
+    except ValueError as exc:
+        assert "non-null" in str(exc)
+    else:
+        raise AssertionError("unknown with a real answer must still raise")
+
+    empty = response()
+    empty["answers"][2]["outcome"] = "answer"    # but answer is None
+    try:
+        answer_blinded_rgb(questions(), packets(), empty)
+    except ValueError as exc:
+        assert "null answer" in str(exc)
+    else:
+        raise AssertionError("answer with a null value must still raise")
+
+
+def test_unique_wins_is_directional():
+    a = [{"id": "q1", "scene_id": SCENE, "form": "binary_near",
+          "outcome": "correct", "answer": True}]
+    b = [{"id": "q1", "scene_id": SCENE, "form": "binary_near",
+          "outcome": "unanswered", "answer": None, "reason": NO_MAPPING}]
+    assert len(mod.unique_wins(a, b)) == 1
+    assert mod.unique_wins(b, a) == []
+    assert mod.unique_wins(a, b)[0]["other_reason"] == NO_MAPPING
+
+
+def test_blinded_responses_merge_across_scenes():
+    import tempfile as _tf
+    tmp = Path(_tf.mkdtemp())
+    one, two = response(), response()
+    two["packet_sha256"] = {"scene_b": "pkt_b"}
+    two["answers"] = [dict(a, id=a["id"] + "_b") for a in two["answers"]]
+    p1, p2 = tmp / "a.json", tmp / "b.json"
+    p1.write_text(json.dumps(one)); p2.write_text(json.dumps(two))
+    merged = mod.merge_blinded([p1, p2])
+    assert merged["packet_sha256"] == {SCENE: "pkt", "scene_b": "pkt_b"}
+    assert len(merged["answers"]) == 6
+
+    two["model"] = {"provider": "other", "name": "n", "version": "v"}
+    p2.write_text(json.dumps(two))
+    try:
+        mod.merge_blinded([p1, p2])
+    except ValueError as exc:
+        assert "disagree on the model" in str(exc)
+    else:
+        raise AssertionError("mixed models must not merge silently")
+
+
 def main() -> None:
     tests = [v for k, v in sorted(globals().items())
              if k.startswith("test_") and callable(v)]

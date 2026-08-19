@@ -679,7 +679,8 @@ Valid evidence frame ids: {frames}
 Questions:
 {chr(10).join(lines)}
 
-Return one JSON object and no prose:
+Return one JSON object and no prose. Note that "outcome" is a flag with only
+two legal values, "answer" or "unknown"; the answer itself goes in "answer".
 {{
   "schema": "{RESPONSE_SCHEMA}",
   "scene_id": "{packet['scene_id']}",
@@ -688,7 +689,7 @@ Return one JSON object and no prose:
   "answers": [
     {{
       "id": "question id",
-      "outcome": "answer or unknown",
+      "outcome": "the literal string \"answer\", or the literal string \"unknown\" -- not the answer itself",
       "answer": "boolean, object-name string, or array of object names; null if unknown",
       "confidence": 0.0,
       "evidence_frame_ids": ["at least two valid frame ids when answering"]

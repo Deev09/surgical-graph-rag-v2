@@ -1,0 +1,18 @@
+{
+  "schema": "arkitscenes_relation_challenge_rgb_responses_v1",
+  "scene_id": "arkitscenes_41069042",
+  "packet_sha256": {"arkitscenes_41069042": "4e688401cf7bbbcf20eaa17f11385228eac6da9ce8edd7b1629d9c00a1c21631"},
+  "model": {"provider": "anthropic", "name": "claude-opus-5", "version": "claude-opus-5"},
+  "answers": [
+    {"id": "q42_cmp_radiator_window_vs_desk", "outcome": "window", "answer": "window", "confidence": 0.5,
+     "evidence_frame_ids": ["frame_13_3118.108", "frame_14_3119.241"]},
+    {"id": "q42_cmp_picture_drawers_vs_bed", "outcome": "unknown", "answer": null, "confidence": 0.0,
+     "evidence_frame_ids": []},
+    {"id": "q42_bin_desk_near_drawers", "outcome": "true", "answer": true, "confidence": 0.6,
+     "evidence_frame_ids": ["frame_15_3129.453", "frame_16_3130.586", "frame_17_3138.766"]},
+    {"id": "q42_bin_bed_near_desk", "outcome": "true", "answer": true, "confidence": 0.55,
+     "evidence_frame_ids": ["frame_09_3097.017", "frame_10_3098.383", "frame_12_3108.145"]},
+    {"id": "q42_set_near_window", "outcome": "answered", "answer": ["white radiator", "cream curtain", "bed"], "confidence": 0.5,
+     "evidence_frame_ids": ["frame_00_3048.020", "frame_05_3071.844", "frame_13_3118.108", "frame_14_3119.241"]}
+  ]
+}
