@@ -431,13 +431,26 @@ def answer_blinded_rgb(questions: list[dict], packets: dict,
 # --------------------------------------------------------------------------
 def answer_hybrid(questions: list[dict], graph_rows: list[dict],
                   rgb_rows: list[dict]) -> list[dict]:
-    """Predeclared policy, fixed before any answer was seen.
+    """Predeclared routing. The two-view gate is TELEMETRY ONLY, not a rule.
 
     1. A relation question routes to the delivered graph whenever the graph
        materializes a fact for it.
-    2. Otherwise it falls back to blinded RGB, and is accepted only when the
-       response cites at least two distinct supplied views.
-    3. Otherwise it abstains. The hybrid never invents a graph fact.
+    2. Otherwise it falls back to blinded RGB.
+    3. The hybrid never invents a graph fact.
+
+    THE SUFFICIENCY GATE WAS PARKED 2026-08-17. It previously suppressed any
+    visual answer citing fewer than two distinct supplied views. Two
+    experiments produced no evidence that the hard rule helps: in the kill test
+    every answer cited two views, and in this challenge the gate never fired
+    even with seven items in the thin-evidence slice. It also rests on a claim
+    the citation count cannot support -- two cited frames from a 60 Hz handheld
+    sweep are not necessarily two independent pieces of evidence.
+
+    So the gate now only records what it WOULD have done, under
+    `sufficiency_gate`, and changes no answer. Because it never fired in either
+    experiment, parking it is provably inert on the existing results: the arm
+    re-scores identically. A future run in which `would_suppress` is true
+    somewhere is the first evidence that would justify re-arming it.
     """
     graph = {r["id"]: r for r in graph_rows}
     rgb = {r["id"]: r for r in rgb_rows}
@@ -451,12 +464,17 @@ def answer_hybrid(questions: list[dict], graph_rows: list[dict],
             rows.append(row)
             continue
         r = dict(rgb[question["id"]])
+        cited = len(set(r.get("evidence_frame_ids") or []))
         r.update(source="evidence_aware_hybrid", route="visual_evidence",
                  answered_by="blinded_rgb_vlm",
-                 graph_abstained_because=g.get("reason", NO_GRAPH_FACT))
-        if r["outcome_hint"] == "answered" and not r.get("evidence_sufficient"):
-            r.update(outcome_hint="unanswered", answer=None,
-                     reason=THIN_EVIDENCE, insufficiency=THIN_EVIDENCE)
+                 graph_abstained_because=g.get("reason", NO_GRAPH_FACT),
+                 sufficiency_gate={
+                     "status": "telemetry_only_parked_2026_08_17",
+                     "cited_views": cited,
+                     "would_suppress": bool(r["outcome_hint"] == "answered"
+                                            and cited < 2),
+                     "rule_if_armed": THIN_EVIDENCE,
+                 })
         rows.append(r)
     return rows
 
@@ -696,19 +714,22 @@ def thin_evidence_slice(rgb_rows: list[dict], hybrid_rows: list[dict]) -> dict:
                 "n_thin": 0}
     rgb = {r["id"]: r for r in rgb_rows if r["id"] in thin_ids}
     hybrid = {r["id"]: r for r in hybrid_rows if r["id"] in thin_ids}
+    # The gate is parked, so this reports what it WOULD have suppressed rather
+    # than what it did. Keeping the counterfactual is the whole reason to park
+    # it as telemetry instead of deleting it.
     gate_fired = [i for i in thin_ids
-                  if rgb[i]["outcome"] in {"correct", "wrong"}
-                  and hybrid[i]["outcome"] == "unanswered"]
+                  if (hybrid[i].get("sufficiency_gate") or {}).get("would_suppress")]
     return {
         "status": "measured",
         "n_thin": len(thin_ids),
         "thin_question_ids": sorted(thin_ids),
         "rgb_on_thin_slice": summarize(list(rgb.values())),
         "hybrid_on_thin_slice": summarize(list(hybrid.values())),
-        "gate_fired_on": sorted(gate_fired),
-        "wrong_answers_suppressed": sorted(
+        "gate_status": "telemetry_only_parked_2026_08_17",
+        "gate_would_fire_on": sorted(gate_fired),
+        "wrong_answers_it_would_suppress": sorted(
             i for i in gate_fired if rgb[i]["outcome"] == "wrong"),
-        "correct_answers_suppressed": sorted(
+        "correct_answers_it_would_suppress": sorted(
             i for i in gate_fired if rgb[i]["outcome"] == "correct"),
         "note": "coverage cost and error reduction are reported side by side; "
                 "suppressing a correct answer is a real cost, not a rounding term",

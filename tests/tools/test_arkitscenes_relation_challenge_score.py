@@ -286,7 +286,14 @@ def test_hybrid_routes_to_graph_when_the_graph_materializes_a_fact():
     assert next(r for r in rows if r["id"] == "q1")["answer"] is True
 
 
-def test_hybrid_falls_back_to_rgb_and_gates_thin_evidence():
+def test_hybrid_gate_is_telemetry_and_suppresses_nothing():
+    """Parked 2026-08-17: the gate records, it does not decide.
+
+    Two experiments gave no evidence the hard rule helps, and a citation count
+    cannot show that two frames from a 60 Hz handheld sweep are two
+    independent pieces of evidence. The counterfactual is kept so re-arming it
+    later remains a measurable decision rather than a guess.
+    """
     q = questions()
     scene = scenes()
     scene[SCENE]["label_index"] = {}          # graph cannot resolve anything
@@ -294,9 +301,18 @@ def test_hybrid_falls_back_to_rgb_and_gates_thin_evidence():
     rgb = answer_blinded_rgb(q, packets(), response(cited=("f0",)))
     rows = answer_hybrid(q, graph, rgb)
     assert all(r["route"] == "visual_evidence" for r in rows)
+
     answered = [r for r in rows if r["id"] in {"q1", "q2"}]
-    assert all(r["outcome_hint"] == "unanswered" for r in answered)
-    assert all(r["reason"] == THIN_EVIDENCE for r in answered)
+    assert all(r["outcome_hint"] == "answered" for r in answered), \
+        "the parked gate must not suppress an answer"
+    assert all(r["sufficiency_gate"]["would_suppress"] for r in answered), \
+        "but it must still record that it would have"
+    assert all(r["sufficiency_gate"]["cited_views"] == 1 for r in answered)
+    assert all("parked" in r["sufficiency_gate"]["status"] for r in rows)
+
+    # With two citations it would not have fired either way.
+    plenty = answer_hybrid(q, graph, answer_blinded_rgb(q, packets(), response()))
+    assert not any(r["sufficiency_gate"]["would_suppress"] for r in plenty)
 
 
 def test_hybrid_never_invents_a_graph_fact():
@@ -403,12 +419,15 @@ def test_thin_evidence_slice_reports_both_sides_of_the_gate():
         {"id": "q2", "scene_id": SCENE, "outcome": "correct", "evidence_views": "1"},
     ]
     hybrid = [
-        {"id": "q1", "scene_id": SCENE, "outcome": "unanswered", "evidence_views": "1"},
-        {"id": "q2", "scene_id": SCENE, "outcome": "unanswered", "evidence_views": "1"},
+        {"id": "q1", "scene_id": SCENE, "outcome": "wrong", "evidence_views": "1",
+         "sufficiency_gate": {"would_suppress": True, "cited_views": 1}},
+        {"id": "q2", "scene_id": SCENE, "outcome": "correct", "evidence_views": "1",
+         "sufficiency_gate": {"would_suppress": True, "cited_views": 1}},
     ]
     out = thin_evidence_slice(rgb, hybrid)
-    assert out["wrong_answers_suppressed"] == ["q1"]
-    assert out["correct_answers_suppressed"] == ["q2"], \
+    assert out["gate_status"].startswith("telemetry_only")
+    assert out["wrong_answers_it_would_suppress"] == ["q1"]
+    assert out["correct_answers_it_would_suppress"] == ["q2"], \
         "suppressing a correct answer is a cost and must be reported"
 
 

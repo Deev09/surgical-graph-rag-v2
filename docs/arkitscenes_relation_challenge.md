@@ -178,8 +178,43 @@ got `q42_set_near_window` wrong by including the white radiator and the bed
 where the owner named only the cream curtain.
 
 **Neither of these is a graph-unique win.** The ceiling consumes human
-identity; the delivered graph answered nothing. `n_graph_unique_wins = 0`,
+identity; the delivered graph got **0 correct**. `n_graph_unique_wins = 0`,
 `meets_bar = false`, exactly as pre-registered.
+
+## What this establishes
+
+**Explicit 3D structure contains useful cross-view information, but the
+deployable system cannot reach it, because natural-language objects are not
+grounded to graph entities.**
+
+That is the first statement across these experiments that actually answers the
+research question rather than reporting an absent capability. The evidence:
+
+1. The stored-edge replay matches the geometry ceiling 12/12. **Relation
+   extraction is cleared on this slice.**
+2. Structure uniquely answered `q42_cmp_picture_drawers_vs_bed`, an item the
+   owner recorded at **one** view and RGB declined outright — cross-view
+   content that the fused representation held and the images did not yield.
+3. RGB uniquely handled `q25_set_near_sofa` only because the graph has no rug
+   instance. That is an instance-delivery hole, not better spatial reasoning.
+4. The delivered graph produced **0 correct answers**, because its learned
+   names could not resolve the anchors.
+
+### Two precision corrections
+
+**"0 correct", not "answered nothing".** Across both keys the delivered
+structured arm has 0 correct of 18 items — but it did answer several, and
+answered them wrongly. In the kill test the typed graph returned 5 wrong and 1
+unanswered; here it abstained on 10 and was excluded on 2. Confident wrong
+answers and abstentions are different failures and collapsing them into
+"answered nothing" hides the earlier one.
+
+**Geometry is adequate only in a bounded sense.** It is adequate *for delivered
+objects that a human resolved to a UID, under the declared 1.0 m convention*.
+It is not universally adequate. Two items abstained because the object is not
+delivered at all, and the one ceiling error was a convention divergence at
+0.633 m true separation — the AABB proxy also understates that gap by 0.31 m
+on a large object. None of that is visible in the 0.700 headline.
 
 ### The sufficiency gate still could not be tested
 
@@ -189,9 +224,19 @@ fired**: every RGB answer cited at least two frames, and the one item RGB
 declined carried no citations to gate. `evidence_aware_hybrid` is therefore
 byte-identical to `blinded_rgb_vlm` again.
 
-The gate has now survived two experiments without ever being exercised. That is
-itself worth recording: on this evidence there is no measured case for keeping
-it, and no measured case against it either.
+The gate has now survived two experiments without ever being exercised.
+
+**Parked 2026-08-17 as experimental telemetry.** It no longer suppresses any
+answer; it records only what it would have done, under `sufficiency_gate`, and
+the thin-evidence subtest reports the counterfactual. Two reasons. There is no
+measured evidence the hard rule helps, and a citation count cannot establish
+what the rule assumes — two cited frames from a 60 Hz handheld sweep are not
+necessarily two independent pieces of evidence.
+
+Parking it is provably inert on these results: because it never fired, all five
+arms and the decision re-score byte-identically. Comparability with both
+earlier reports is preserved. The first run in which `would_suppress` is true
+somewhere is the evidence that would justify re-arming it.
 
 ### One repair, and it was to our own spec
 
@@ -449,9 +494,57 @@ manifest hash:
 .venv/bin/python3 tools/arkitscenes_relation_challenge_score.py --questions eval/questions/arkitscenes_relation_challenge_v1.json --key eval/human_feedback/arkitscenes_relation_challenge_key_v1.json --scene-inputs runs/arkit_relation_challenge/scene_inputs.json --out runs/arkit_relation_challenge/report.json
 ```
 
+## Named next task — an oracle-free language-to-entity grounding bridge
+
+Not more graph relations. Relation extraction is cleared on this slice; the
+information is already in the graph and the deployable path cannot address it.
+The missing stage is grounding a natural-language anchor to a delivered entity.
+
+    natural-language anchor
+            |
+    multiview RGB / entity embeddings + top-k hypotheses
+            |
+    UID candidate(s) with confidence, and abstention when unresolved
+            |
+    existing stored graph edges
+            |
+    answer
+
+**Frozen. Do not touch:** delivered instances, graph edges, relation
+thresholds, questions, keys. The bridge replaces exactly one stage — how an
+anchor name becomes a uid — and nothing downstream of it.
+
+Human UID mappings are **evaluation only**. They are the target the bridge is
+scored against; the bridge itself must never read them, the same separation the
+current scorer enforces by AST.
+
+The existing five layers already provide the two brackets this needs. The
+delivered arm is the floor: exact-match on a learned `display_label`, 0 correct
+of 12. `stored_graph_human_identity` is the ceiling: perfect identity over the
+same stored edges, 7 correct. **The bridge's whole job is the gap between
+those two numbers**, and both endpoints are already measured on this key.
+
+### Success bar, and the kill condition
+
+Success requires **both**: reliable anchor resolution, and **at least two
+deployable graph-unique QA wins** — items the grounded delivered path gets
+right that blinded RGB does not. A ceiling win still does not count.
+
+If that fails, the conclusion is not another experiment. **Use direct RGB for
+the product and stop pursuing the graph-centered answer path.** That is a
+predeclared stop, written before the work starts, for the same reason the
+reachability note was written before the last score.
+
+### What grounding cannot fix
+
+The striped rug and the white radiator are absent from the delivered partition.
+No amount of grounding recovers an object that was never delivered — that is a
+separate instance-delivery problem, and the four items it cost here stay lost
+until segmentation or delivery changes.
+
 ## Not started, deliberately
 
-Real scene scoring, key finalization, relation threshold tuning, graph
-extraction changes, perception or label changes, new Mask3D/SAM runs, the
-`47331972` download, ConceptGraphs, another dataset, router redesign, paper
-claims.
+The grounding bridge itself. Relation threshold tuning, graph extraction
+changes, perception or label changes, new Mask3D/SAM runs, the `47331972`
+download, ConceptGraphs, another dataset, paper claims. The questions, keys,
+instances, edges and thresholds used above are all frozen.
