@@ -1,0 +1,185 @@
+{
+ "counting_convention": "An instance is a physically separate object of the named class. Two objects of the same class in different parts of the room count as two even if they never appear in one frame together.",
+ "disclosures": [
+  "No expected answer, human key or system output is included.",
+  "The selected views may miss an object even when it exists.",
+  "This arm sees RGB only; there is no mesh, graph or entity map for this scene and none was produced."
+ ],
+ "frames": [
+  {
+   "file": "frames/frame_00_168619.987.png",
+   "id": "frame_00_168619.987",
+   "sha256": "1699eabfb4322fb6b7314a08910617717edf3dd3a43159aa21164db5676af808"
+  },
+  {
+   "file": "frames/frame_01_168631.716.png",
+   "id": "frame_01_168631.716",
+   "sha256": "5709de2f2558158a98be7d818782dc1abb7f157855b6013322337c758ea17ab6"
+  },
+  {
+   "file": "frames/frame_02_168633.431.png",
+   "id": "frame_02_168633.431",
+   "sha256": "1a44c41b22b3e9b27c2b37b2ab47a6a65ba266a0b152ac75b602c0a3202b3404"
+  },
+  {
+   "file": "frames/frame_03_168647.559.png",
+   "id": "frame_03_168647.559",
+   "sha256": "5ebf20389b18ae1f6e2c6e2e588248123a6748d401cce58cef353599fb292b61"
+  },
+  {
+   "file": "frames/frame_04_168649.958.png",
+   "id": "frame_04_168649.958",
+   "sha256": "b0e8523de3e0c97df8c6a1f599dd12b05888677e3345fbb52d03f618c0763a0a"
+  },
+  {
+   "file": "frames/frame_05_168664.419.png",
+   "id": "frame_05_168664.419",
+   "sha256": "da1cb5af71d802133a8c5800b4898c241e9b12274fb31b21fcb0a15b5bf5308a"
+  },
+  {
+   "file": "frames/frame_06_168667.185.png",
+   "id": "frame_06_168667.185",
+   "sha256": "5173050470207e43dafeb8f46e3d0a14e8bdbf3e7aa5277f58f2cd9bcad8858a"
+  },
+  {
+   "file": "frames/frame_07_168677.514.png",
+   "id": "frame_07_168677.514",
+   "sha256": "56e7db97830f45e0b290e732679a3f10fb958a07cd317d0ea8dd86098a300882"
+  },
+  {
+   "file": "frames/frame_08_168685.427.png",
+   "id": "frame_08_168685.427",
+   "sha256": "a848377be4558fa47ddc1f91d8882fe4778558a0237a22e8fc1af4facf5669f6"
+  },
+  {
+   "file": "frames/frame_09_168693.691.png",
+   "id": "frame_09_168693.691",
+   "sha256": "23e589fb99408c5943a39004ce959ac89cf1aaf57e36364d741a1b1eddf00e43"
+  },
+  {
+   "file": "frames/frame_10_168704.020.png",
+   "id": "frame_10_168704.020",
+   "sha256": "00d1cb285fb4c1e79350881f0c1bd4ef3c18448c7769a0d53e6871610c035683"
+  },
+  {
+   "file": "frames/frame_11_168707.468.png",
+   "id": "frame_11_168707.468",
+   "sha256": "d05857db98b305f1137912f2f7380d3409cebb3734897c53313b95732d8072d0"
+  },
+  {
+   "file": "frames/frame_12_168723.645.png",
+   "id": "frame_12_168723.645",
+   "sha256": "d31be9ce8c8ab0aaf317804594f0e7bea5b3d80c8c3b0195c9b4b4f7bf753845"
+  },
+  {
+   "file": "frames/frame_13_168726.394.png",
+   "id": "frame_13_168726.394",
+   "sha256": "15fc9cf2512025b5593fb2c4369b663b4addac99afe09d4ce91f0b032227536a"
+  },
+  {
+   "file": "frames/frame_14_168733.624.png",
+   "id": "frame_14_168733.624",
+   "sha256": "e64731c05ea0f41a8af0d427e9b0213c22288df09acc8058611467d3eb1911be"
+  },
+  {
+   "file": "frames/frame_15_168747.052.png",
+   "id": "frame_15_168747.052",
+   "sha256": "1f5a355ea63fe368b50fcc7ba4c740f7c2832edc03e2d42c76fbb2b8b55f3968"
+  },
+  {
+   "file": "frames/frame_16_168751.184.png",
+   "id": "frame_16_168751.184",
+   "sha256": "cccb58ad000f4960f52a054f5c7ce95fc519d1e564ad76541cfe26a0c934c90e"
+  },
+  {
+   "file": "frames/frame_17_168759.447.png",
+   "id": "frame_17_168759.447",
+   "sha256": "341e30a16b9e3bf0b6a5bdaa817606f2606894a68dbf88aec2c111efbd5bd0fe"
+  }
+ ],
+ "near_convention": "Two objects are NEAR when the nearest points of their surfaces are within about one metre of each other. Judge the gap between the objects themselves, not between their centres. Comparative questions ask only which is closer and need no threshold.",
+ "packet_sha256": "b0b13969a4d976e1eea35642fe9fa3b898f1f719f686a142116865167c41825d",
+ "questions": [
+  {
+   "answer_type": "integer",
+   "form": "cardinality",
+   "id": "t_card_1",
+   "question": "How many movie poster prints are in this room?",
+   "subject": "movie poster print",
+   "template_rank": 1
+  },
+  {
+   "answer_type": "boolean",
+   "form": "presence",
+   "id": "t_pres_2",
+   "question": "Is there a brown suede sofa in this room?",
+   "subject": "brown suede sofa",
+   "template_rank": 2
+  },
+  {
+   "answer_type": "boolean",
+   "form": "presence",
+   "id": "t_pres_3",
+   "question": "Is there a coffee table in this room?",
+   "subject": "coffee table",
+   "template_rank": 3
+  },
+  {
+   "answer_type": "object_name",
+   "form": "comparative_near",
+   "id": "t_cmp_1",
+   "question": "Is the movie poster print closer to the brown suede sofa, or closer to the coffee table?",
+   "reference_a": "brown suede sofa",
+   "reference_b": "coffee table",
+   "subject": "movie poster print",
+   "template_rank": 1
+  },
+  {
+   "answer_type": "object_name",
+   "form": "comparative_near",
+   "id": "t_cmp_2",
+   "question": "Is the brown suede sofa closer to the coffee table, or closer to the console table?",
+   "reference_a": "coffee table",
+   "reference_b": "console table",
+   "subject": "brown suede sofa",
+   "template_rank": 2
+  },
+  {
+   "answer_type": "object_name",
+   "form": "comparative_near",
+   "id": "t_cmp_3",
+   "question": "Is the coffee table closer to the cushion, or closer to the decorative bowl?",
+   "reference_a": "cushion",
+   "reference_b": "decorative bowl",
+   "subject": "coffee table",
+   "template_rank": 3
+  },
+  {
+   "answer_type": "boolean",
+   "cross_view": true,
+   "form": "binary_near",
+   "id": "t_xview_1",
+   "object": "coffee table",
+   "question": "Is the movie poster print near the coffee table?",
+   "subject": "movie poster print",
+   "template_rank": 1,
+   "why_cross_view": "no supplied frame contains both objects"
+  },
+  {
+   "answer_type": "boolean",
+   "cross_view": true,
+   "form": "binary_near",
+   "id": "t_xview_2",
+   "object": "console table",
+   "question": "Is the movie poster print near the console table?",
+   "subject": "movie poster print",
+   "template_rank": 2,
+   "why_cross_view": "no supplied frame contains both objects"
+  }
+ ],
+ "questions_content_sha256": "42a76fbc0d909b37cca19de8675875a1afe848b156c73e877bd2d98f93a7aa9f",
+ "scene_id": "47331972",
+ "schema": "arkitscenes_rgb_transfer_packet_v1",
+ "selection": "survey_frames: 18 equal temporal bins, best information score per bin",
+ "stage": "prepared_no_answers"
+}

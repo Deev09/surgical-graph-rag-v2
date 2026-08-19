@@ -118,9 +118,16 @@ Properties enforced by test rather than asserted:
   byte-identical page, `db4339fb9dd4731f…`;
 - the input hashes are disclosed in the page footer.
 
+## In progress: the untouched-scene transfer test
+
+`docs/arkitscenes_rgb_transfer_test.md`, protocol frozen at `95246f0` before
+`47331972` was downloaded or inspected. One room, one blinded run, two gates
+(exact accuracy ≥ 0.60, coverage ≥ 0.80), and a stopping rule that makes no
+transfer claim if either fails.
+
 ## Not started
 
-The live vision API option, and `47331972` — not downloaded, not looked at.
+The live vision API option.
 The option fork carries a credentials implication, so it stays the owner's
 call. The recommended next step remains one blinded direct-RGB run on
 `47331972` for actual transfer evidence, and no further graph-grounding cycles

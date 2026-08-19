@@ -1,0 +1,505 @@
+{
+ "notes": [
+  "Every frame is 256x192 pixels and stored rotated 90 degrees; I rotated each one upright and upscaled, and cropped/zoomed into detail regions. Even so the images are soft, so anything smaller than roughly a hand is at the edge of what can be named honestly. Confidence values reflect that.",
+  "The capture is an open-plan space. Frames 01-04 look across the living room into a dining area (white pedestal table, white chairs, tulips) and on into a kitchen (grey units) through a wide opening rather than a door. I included those items because they read as the same continuous space, but if the intended room boundary is the living area alone, the dining table, dining chairs, kitchen counter and vase of flowers should be dropped.",
+  "Frame 17 looks through an open doorway into a separate bedroom: a bed with a grey duvet on a dark base, a black nightstand, a framed portrait on a dark blue wall, and grey carpet. I deliberately did NOT list those as objects in this room, since they are clearly in an adjoining room.",
+  "Frames 05 and 06 (three garden windows, roman blinds, radiators, floor palm) cannot be geometrically tied back to the living-room frames from these stills alone. The flooring matches and they fall between the brick-wall frames and the fireplace frame in capture time, so I treated them as the same room, but this is an assumption.",
+  "Sofa counting is the least certain call here. I see a brown suede sofa with a grey pom-pom throw (frames 01-04), a brown suede sofa with navy and cream cushions (frames 10-12), and a third seat draped in a plain white sheet (frames 01, 04). They are never all in one frame, so I cannot fully exclude that two of these are the same sofa recorded at different times with the throw moved.",
+  "Two different glass-fronted display cabinets appear: an all-white four-panel one beside the staircase (frames 09, 12, 13) and a lower one with orange/pine-framed glass doors on the opposite side (frames 01, 03). They hold figurines, dolls and wine glasses, which I did not itemise individually.",
+  "A dark object with pale horizontal banding appears at the bottom-left of frame 08 and again to the right of the display cabinet in frame 09. It may be a carved wooden chest, a fire screen, or a magazine rack; I could not resolve it and left it off the list.",
+  "A black bag or box sits on the floor at the right edge of frame 03. Nameable as 'something black on the floor' but not confidently identifiable, so it is omitted.",
+  "A small glass dome or cloche with a red object inside sits on the fireplace hearth in frame 07; I folded the red item into the candle entry but the dome itself is too indistinct to name separately.",
+  "The two sheets lying on the floor (frames 00 and 17) are printed pictures on plain paper rather than hung artwork. They look like markers placed for the scan, but I have reported them literally as what is visible.",
+  "The framed-picture count of 9 is a best estimate: roughly 5-6 small frames plus a round decorative wall plate in the dining-area gallery wall, 2 white-framed watercolours on the dark panel, 1 above the chest of drawers, and 1 tall gilt piece on the brick wall. The gallery-wall frames are too small and blurred to count exactly.",
+  "White ceramic ornaments sit on the sill at the far-left edge of frame 05, but they are cut off and out of focus, so I did not name them.",
+  "Ceiling downlight and wall socket counts are lower bounds from what is framed; both fixture types almost certainly continue outside the visible field."
+ ],
+ "objects": [
+  {
+   "count": 3,
+   "count_confidence": "probable",
+   "description": "Brown suede sofas: one with a grey pom-pom throw and grey cushions near the patio doors, one with navy and cream cushions facing the TV, and a third seat draped in a white sheet against the brick wall",
+   "frame_ids": [
+    "frame_01_168631.716",
+    "frame_02_168633.431",
+    "frame_03_168647.559",
+    "frame_04_168649.958",
+    "frame_10_168704.020",
+    "frame_11_168707.468",
+    "frame_12_168723.645"
+   ],
+   "name": "sofa"
+  },
+  {
+   "count": 2,
+   "count_confidence": "probable",
+   "description": "Light grey throw with pom-pom trim draped over the sofa back; plus a plain white sheet thrown over the third sofa",
+   "frame_ids": [
+    "frame_01_168631.716",
+    "frame_02_168633.431",
+    "frame_03_168647.559",
+    "frame_04_168649.958"
+   ],
+   "name": "throw blanket"
+  },
+  {
+   "count": 4,
+   "count_confidence": "probable",
+   "description": "Two dark grey cushions on the throw-covered sofa; one navy and one cream cushion on the sofa by the stairs",
+   "frame_ids": [
+    "frame_01_168631.716",
+    "frame_02_168633.431",
+    "frame_03_168647.559",
+    "frame_10_168704.020",
+    "frame_11_168707.468",
+    "frame_12_168723.645"
+   ],
+   "name": "cushion"
+  },
+  {
+   "count": 1,
+   "count_confidence": "certain",
+   "description": "Low table with a dark glass top and pale wood/white base, in front of the sofa",
+   "frame_ids": [
+    "frame_03_168647.559",
+    "frame_04_168649.958"
+   ],
+   "name": "coffee table"
+  },
+  {
+   "count": 1,
+   "count_confidence": "probable",
+   "description": "Shallow tray on the coffee table holding a candle and remotes",
+   "frame_ids": [
+    "frame_03_168647.559"
+   ],
+   "name": "tray"
+  },
+  {
+   "count": 1,
+   "count_confidence": "certain",
+   "description": "Large flat-screen TV wall-mounted above the white sideboard",
+   "frame_ids": [
+    "frame_08_168685.427",
+    "frame_09_168693.691",
+    "frame_12_168723.645",
+    "frame_13_168726.394"
+   ],
+   "name": "television"
+  },
+  {
+   "count": 1,
+   "count_confidence": "certain",
+   "description": "Black soundbar mounted on the wall below the TV",
+   "frame_ids": [
+    "frame_08_168685.427",
+    "frame_12_168723.645"
+   ],
+   "name": "soundbar"
+  },
+  {
+   "count": 1,
+   "count_confidence": "probable",
+   "description": "Flat black media/AV box sitting on the sideboard under the soundbar",
+   "frame_ids": [
+    "frame_08_168685.427",
+    "frame_12_168723.645"
+   ],
+   "name": "set-top box"
+  },
+  {
+   "count": 1,
+   "count_confidence": "certain",
+   "description": "White cabinet with doors, drawers and brass knobs, standing under the TV",
+   "frame_ids": [
+    "frame_08_168685.427",
+    "frame_09_168693.691",
+    "frame_12_168723.645"
+   ],
+   "name": "sideboard"
+  },
+  {
+   "count": 2,
+   "count_confidence": "probable",
+   "description": "Tall white cabinet with four glass panels full of figurines and glassware; a second, lower cabinet with pine-framed glass doors and colourful ornaments sits on the far side of the room",
+   "frame_ids": [
+    "frame_01_168631.716",
+    "frame_03_168647.559",
+    "frame_09_168693.691",
+    "frame_12_168723.645",
+    "frame_13_168726.394"
+   ],
+   "name": "glass-fronted display cabinet"
+  },
+  {
+   "count": 1,
+   "count_confidence": "certain",
+   "description": "Open-tread wooden staircase with matching wooden banister and railings",
+   "frame_ids": [
+    "frame_09_168693.691",
+    "frame_10_168704.020",
+    "frame_11_168707.468",
+    "frame_12_168723.645",
+    "frame_13_168726.394",
+    "frame_14_168733.624"
+   ],
+   "name": "staircase"
+  },
+  {
+   "count": 1,
+   "count_confidence": "certain",
+   "description": "Black cast-iron fireplace with an arched surround and a black stone hearth shelf",
+   "frame_ids": [
+    "frame_07_168677.514",
+    "frame_12_168723.645"
+   ],
+   "name": "fireplace"
+  },
+  {
+   "count": 2,
+   "count_confidence": "probable",
+   "description": "A pale blue-grey rug with a white geometric border near the coffee table, and a dark charcoal rug with gold pattern and fringed edge by the fireplace",
+   "frame_ids": [
+    "frame_03_168647.559",
+    "frame_04_168649.958",
+    "frame_07_168677.514",
+    "frame_10_168704.020",
+    "frame_12_168723.645"
+   ],
+   "name": "rug"
+  },
+  {
+   "count": 1,
+   "count_confidence": "certain",
+   "description": "Large fan-palm in a terracotta pot standing on the floor in front of the windows",
+   "frame_ids": [
+    "frame_05_168664.419",
+    "frame_06_168667.185"
+   ],
+   "name": "potted palm"
+  },
+  {
+   "count": 3,
+   "count_confidence": "probable",
+   "description": "Upright-leaved snake plants: one on each of two windowsills in black pots, and one in a terracotta pot on the floor by the dining area",
+   "frame_ids": [
+    "frame_03_168647.559",
+    "frame_04_168649.958",
+    "frame_05_168664.419",
+    "frame_06_168667.185"
+   ],
+   "name": "snake plant"
+  },
+  {
+   "count": 1,
+   "count_confidence": "probable",
+   "description": "Columnar cactus in a white pot on the windowsill",
+   "frame_ids": [
+    "frame_06_168667.185"
+   ],
+   "name": "cactus"
+  },
+  {
+   "count": 1,
+   "count_confidence": "probable",
+   "description": "Flowering orchid in a pale ceramic pot on top of the white chest of drawers",
+   "frame_ids": [
+    "frame_01_168631.716",
+    "frame_02_168633.431"
+   ],
+   "name": "orchid"
+  },
+  {
+   "count": 3,
+   "count_confidence": "probable",
+   "description": "Other houseplants: a small plant in a black pot on the console table, a broad-leaved plant in a cream pot on the fireplace hearth, and a leafy plant in a teal pot on the dining-side cabinet",
+   "frame_ids": [
+    "frame_01_168631.716",
+    "frame_02_168633.431",
+    "frame_03_168647.559",
+    "frame_04_168649.958",
+    "frame_07_168677.514"
+   ],
+   "name": "potted plant"
+  },
+  {
+   "count": 2,
+   "count_confidence": "probable",
+   "description": "White panel radiators running under the windows",
+   "frame_ids": [
+    "frame_05_168664.419",
+    "frame_06_168667.185"
+   ],
+   "name": "radiator"
+  },
+  {
+   "count": 4,
+   "count_confidence": "unsure",
+   "description": "Dark-framed windows looking onto a garden with a fence; three along the window wall plus one over the kitchen/dining counter",
+   "frame_ids": [
+    "frame_03_168647.559",
+    "frame_05_168664.419",
+    "frame_06_168667.185"
+   ],
+   "name": "window"
+  },
+  {
+   "count": 3,
+   "count_confidence": "probable",
+   "description": "Brown/olive fabric roman blinds pulled up above the garden windows",
+   "frame_ids": [
+    "frame_05_168664.419",
+    "frame_06_168667.185"
+   ],
+   "name": "roman blind"
+  },
+  {
+   "count": 2,
+   "count_confidence": "probable",
+   "description": "Pale grey roller blinds above the patio doors and above the dining/kitchen window",
+   "frame_ids": [
+    "frame_01_168631.716",
+    "frame_02_168633.431",
+    "frame_03_168647.559"
+   ],
+   "name": "roller blind"
+  },
+  {
+   "count": 1,
+   "count_confidence": "certain",
+   "description": "Glazed wood-framed garden doors with a view of an outdoor table and bench",
+   "frame_ids": [
+    "frame_01_168631.716",
+    "frame_02_168633.431"
+   ],
+   "name": "patio doors"
+  },
+  {
+   "count": 1,
+   "count_confidence": "probable",
+   "description": "White three-drawer chest standing beside the patio doors",
+   "frame_ids": [
+    "frame_01_168631.716",
+    "frame_02_168633.431",
+    "frame_04_168649.958"
+   ],
+   "name": "chest of drawers"
+  },
+  {
+   "count": 1,
+   "count_confidence": "certain",
+   "description": "White console/side cabinet with an open lower shelf, set against the white brick wall",
+   "frame_ids": [
+    "frame_01_168631.716",
+    "frame_02_168633.431",
+    "frame_04_168649.958"
+   ],
+   "name": "console table"
+  },
+  {
+   "count": 2,
+   "count_confidence": "probable",
+   "description": "One lamp with a dark quilted shade and glass base on the console table; a second with a terracotta shade and ornate base on the fireplace hearth",
+   "frame_ids": [
+    "frame_01_168631.716",
+    "frame_02_168633.431",
+    "frame_04_168649.958",
+    "frame_07_168677.514"
+   ],
+   "name": "table lamp"
+  },
+  {
+   "count": 9,
+   "count_confidence": "unsure",
+   "description": "Framed pictures throughout: a townscape print above the chest of drawers, a tall gilt-framed piece on the brick wall, two white-framed watercolours on the dark wall panel, and a row of small frames on the dining-area wall",
+   "frame_ids": [
+    "frame_01_168631.716",
+    "frame_02_168633.431",
+    "frame_03_168647.559",
+    "frame_04_168649.958",
+    "frame_10_168704.020",
+    "frame_11_168707.468",
+    "frame_15_168747.052",
+    "frame_16_168751.184"
+   ],
+   "name": "framed picture"
+  },
+  {
+   "count": 1,
+   "count_confidence": "probable",
+   "description": "Wide cut-glass/crystal bowl on the console table",
+   "frame_ids": [
+    "frame_01_168631.716",
+    "frame_02_168633.431",
+    "frame_04_168649.958"
+   ],
+   "name": "decorative bowl"
+  },
+  {
+   "count": 1,
+   "count_confidence": "probable",
+   "description": "Tall gold glitter-covered bottle standing on the console table against the brick wall",
+   "frame_ids": [
+    "frame_01_168631.716",
+    "frame_02_168633.431",
+    "frame_04_168649.958"
+   ],
+   "name": "decorative bottle"
+  },
+  {
+   "count": 1,
+   "count_confidence": "certain",
+   "description": "Black padded dog bed with a grey cushion on the floor beside the console table",
+   "frame_ids": [
+    "frame_04_168649.958"
+   ],
+   "name": "pet bed"
+  },
+  {
+   "count": 1,
+   "count_confidence": "probable",
+   "description": "Dark bronze-coloured standing figure sculpture on the floor between the fireplace and the sideboard",
+   "frame_ids": [
+    "frame_12_168723.645"
+   ],
+   "name": "statue"
+  },
+  {
+   "count": 1,
+   "count_confidence": "probable",
+   "description": "Ornate metal wire basket (log/magazine basket) on the floor in front of the fireplace",
+   "frame_ids": [
+    "frame_07_168677.514"
+   ],
+   "name": "wire basket"
+  },
+  {
+   "count": 1,
+   "count_confidence": "probable",
+   "description": "White pedestal dining table in the adjoining dining area",
+   "frame_ids": [
+    "frame_03_168647.559",
+    "frame_04_168649.958"
+   ],
+   "name": "dining table"
+  },
+  {
+   "count": 4,
+   "count_confidence": "unsure",
+   "description": "White/cream high-backed dining chairs around the dining table",
+   "frame_ids": [
+    "frame_03_168647.559",
+    "frame_04_168649.958"
+   ],
+   "name": "dining chair"
+  },
+  {
+   "count": 1,
+   "count_confidence": "probable",
+   "description": "Grey base units with a white worktop, cluttered with bottles and jars, in the kitchen area beyond the dining table",
+   "frame_ids": [
+    "frame_03_168647.559",
+    "frame_04_168649.958"
+   ],
+   "name": "kitchen counter"
+  },
+  {
+   "count": 1,
+   "count_confidence": "probable",
+   "description": "Glass vase holding red and pink tulips on the dining table",
+   "frame_ids": [
+    "frame_03_168647.559",
+    "frame_04_168649.958"
+   ],
+   "name": "vase of flowers"
+  },
+  {
+   "count": 1,
+   "count_confidence": "probable",
+   "description": "Light wooden chair with a pale seat cushion standing in front of the patio doors",
+   "frame_ids": [
+    "frame_01_168631.716",
+    "frame_02_168633.431"
+   ],
+   "name": "wooden chair"
+  },
+  {
+   "count": 2,
+   "count_confidence": "unsure",
+   "description": "White panelled doors with pale sage/green inset panels \u2014 one beside the staircase, one at the bedroom doorway",
+   "frame_ids": [
+    "frame_10_168704.020",
+    "frame_11_168707.468",
+    "frame_13_168726.394",
+    "frame_17_168759.447"
+   ],
+   "name": "interior door"
+  },
+  {
+   "count": 3,
+   "count_confidence": "unsure",
+   "description": "White electrical sockets on the walls, one with a plug and cable feeding the TV",
+   "frame_ids": [
+    "frame_08_168685.427",
+    "frame_10_168704.020",
+    "frame_11_168707.468",
+    "frame_15_168747.052",
+    "frame_16_168751.184"
+   ],
+   "name": "wall socket"
+  },
+  {
+   "count": 5,
+   "count_confidence": "unsure",
+   "description": "Recessed circular spotlights in the ceiling",
+   "frame_ids": [
+    "frame_01_168631.716",
+    "frame_12_168723.645"
+   ],
+   "name": "ceiling downlight"
+  },
+  {
+   "count": 3,
+   "count_confidence": "unsure",
+   "description": "A cream pillar candle on the coffee-table tray, a small teal jar candle on the chest of drawers, and a red candle in a glass on the fireplace hearth",
+   "frame_ids": [
+    "frame_01_168631.716",
+    "frame_02_168633.431",
+    "frame_03_168647.559",
+    "frame_07_168677.514",
+    "frame_12_168723.645"
+   ],
+   "name": "candle"
+  },
+  {
+   "count": 2,
+   "count_confidence": "unsure",
+   "description": "Slim black remotes lying on the coffee-table tray and on top of the TV sideboard",
+   "frame_ids": [
+    "frame_03_168647.559",
+    "frame_08_168685.427"
+   ],
+   "name": "remote control"
+  },
+  {
+   "count": 1,
+   "count_confidence": "probable",
+   "description": "Small white ceramic elephant ornament on the windowsill next to the snake plant",
+   "frame_ids": [
+    "frame_06_168667.185"
+   ],
+   "name": "elephant figurine"
+  },
+  {
+   "count": 2,
+   "count_confidence": "probable",
+   "description": "Sheets of paper with printed pictures lying flat on the laminate floor \u2014 one a 'Blackmail' film poster, one a smaller colourful print near the bedroom doorway",
+   "frame_ids": [
+    "frame_00_168619.987",
+    "frame_17_168759.447"
+   ],
+   "name": "printed poster on the floor"
+  }
+ ],
+ "room_type": "living room (open-plan living/dining)"
+}
