@@ -40,10 +40,12 @@ from tools.arkitscenes_relation_challenge_score import (
     answer_geometry_ceiling,
     answer_hybrid,
     attribution,
+    answer_stored_graph_human_identity,
     check_ready,
     decision,
     grade,
     graph_unique_wins,
+    layer_agreement,
     summarize,
     thin_evidence_slice,
 )
@@ -110,7 +112,8 @@ def test_deployable_layers_never_bind_the_human_key():
     """
     forbidden = {"key", "expected", "human_relation_truth", "uid_mappings",
                  "truth", "answer_key"}
-    for fn in (answer_delivered_graph, answer_blinded_rgb, answer_hybrid):
+    for fn in (answer_delivered_graph, answer_blinded_rgb, answer_hybrid,
+               mod._stored_edge_rows):
         tree = ast.parse(inspect.getsource(fn))
         names = {n.id for n in ast.walk(tree) if isinstance(n, ast.Name)}
         names |= {n.attr for n in ast.walk(tree) if isinstance(n, ast.Attribute)}
@@ -524,6 +527,98 @@ def test_answers_are_deterministic():
     q, s, m = questions(), scenes(), mappings()
     assert answer_geometry_ceiling(q, s, m) == answer_geometry_ceiling(q, s, m)
     assert answer_delivered_graph(q, s, {}) == answer_delivered_graph(q, s, {})
+
+
+
+# ------------------------------------------------- identity-oracle stored graph
+def test_stored_graph_layer_recomputes_no_geometry():
+    """The whole point of this layer is that it reads only what was serialized.
+
+    If it recomputed aabb_to_aabb_surface it would silently become a second
+    copy of the geometry ceiling, and the agreement between them -- which is
+    the evidence that relation extraction is cleared -- would be circular.
+    """
+    for fn in (answer_stored_graph_human_identity, mod._stored_edge_rows):
+        tree = ast.parse(inspect.getsource(fn))
+        names = {n.id for n in ast.walk(tree) if isinstance(n, ast.Name)}
+        names |= {n.attr for n in ast.walk(tree) if isinstance(n, ast.Attribute)}
+        assert "aabb_to_aabb_surface" not in names, \
+            f"{fn.__name__} must not recompute geometry"
+        assert "aabb_by_uid" not in names or fn is answer_stored_graph_human_identity, \
+            "only the resolver may touch the uid table, and only to check membership"
+
+
+def test_stored_graph_layer_uses_human_identity_and_stored_edges():
+    rows = answer_stored_graph_human_identity(questions(), scenes(), mappings())
+    binary = next(r for r in rows if r["id"] == "q1")
+    assert binary["answer"] is True and binary["edge_present"] is True
+    assert binary["stored_distance_m"] == 0.5      # the serialized value, verbatim
+    assert "distance_m" not in binary              # not a recomputed one
+    comparative = next(r for r in rows if r["id"] == "q2")
+    assert comparative["ordering_basis"] == "one_edge_stored_one_beyond_threshold"
+
+
+def test_stored_graph_layer_abstains_without_a_human_mapping():
+    rows = answer_stored_graph_human_identity(questions(), scenes(),
+                                              {SCENE: {"sofa": "obj_0"}})
+    assert {r["reason"] for r in rows if r["form"] != "near_set"} == {NO_MAPPING}
+
+
+def test_identity_oracle_is_not_deployable():
+    kinds = {name: kind for name, kind, _ in mod.LAYERS}
+    deployable = {name: flag for name, _, flag in mod.LAYERS}
+    assert kinds["stored_graph_human_identity"] == "identity_oracle"
+    assert deployable["stored_graph_human_identity"] is False
+
+
+def test_layer_agreement_flags_a_divergence():
+    ceiling = [{"id": "q1", "scene_id": SCENE, "form": "binary_near",
+                "outcome": "correct", "answer": True}]
+    same = [{"id": "q1", "scene_id": SCENE, "form": "binary_near",
+             "outcome": "correct", "answer": True}]
+    assert layer_agreement(ceiling, same)["n_disagree"] == 0
+    differs = [{"id": "q1", "scene_id": SCENE, "form": "binary_near",
+                "outcome": "unanswered", "answer": None, "reason": NO_DISTANCE}]
+    out = layer_agreement(ceiling, differs)
+    assert out["n_disagree"] == 1
+    assert out["disagreements"][0]["stored_reason"] == NO_DISTANCE
+
+
+# ------------------------------------------------------------- attribution
+def test_attribution_buckets_partition_every_item():
+    """A bucket set that does not add up reads as a measured zero.
+
+    The first version dropped every ceiling abstention whose reason was not
+    NO_MAPPING, so it reported zero unanswerable items while the ceiling
+    summary showed two.
+    """
+    ceiling = [
+        {"id": "q1", "outcome": "unanswered", "reason": NO_EXHAUSTIVE_SET},
+        {"id": "q2", "outcome": "unanswered", "reason": NO_MAPPING},
+        {"id": "q3", "outcome": "unanswered", "reason": NO_DISTANCE},
+        {"id": "q4", "outcome": "excluded_no_human_answer"},
+        {"id": "q5", "outcome": "correct"},
+    ]
+    delivered = [{"id": f"q{i}", "outcome": "unanswered"} for i in range(1, 6)]
+    out = attribution(ceiling, delivered)
+    b = out["buckets"]
+    assert b["ceiling_unanswerable_no_exhaustive_set"] == ["q1"]
+    assert b["ceiling_unanswerable_no_uid_mapping"] == ["q2"]
+    assert b["ceiling_unanswerable_other"] == ["q3"]
+    assert b["excluded_no_human_answer"] == ["q4"]
+    assert out["n_bucketed"] == out["n_items"] == 5
+
+
+def test_attribution_refuses_to_emit_a_partial_partition():
+    ceiling = [{"id": "q1", "outcome": "correct"}]
+    delivered = [{"id": "q1", "outcome": "correct"},
+                 {"id": "q_orphan", "outcome": "wrong"}]
+    try:
+        attribution(ceiling, delivered)
+    except ValueError as exc:
+        assert "partition" in str(exc)
+    else:
+        raise AssertionError("an incomplete partition must raise, not under-report")
 
 
 def main() -> None:

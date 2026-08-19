@@ -1,8 +1,7 @@
 # ARKitScenes NEAR relation challenge — protocol
 
-Status: **scaffolding built, nothing scored.** The question manifest is
-`DRAFT_AWAITING_OWNER`. The four-layer scorer passes synthetic tests and
-refuses to run against a draft key.
+Status: **owner key returned and scored for the structured layers.** The
+blinded RGB and hybrid layers are still pending. See the Result section.
 
 ## The question
 
@@ -48,20 +47,30 @@ a knife-edge: the largest stored distance is 0.9919 / 0.9972 and the smallest
 pruned distance is 1.0137 / 1.0049. Only when *neither* pair is stored must the
 graph abstain.
 
-## Four layers
+## The layers
 
 Reported separately, always. A ceiling number is never deployable performance.
 
 | layer | identity from | relations from | deployable |
 |---|---|---|---|
 | `geometry_relation_ceiling` | human-verified UID mappings | delivered geometry, same `aabb_to_aabb_surface` function the extractor uses | **no** |
+| `stored_graph_human_identity` | human-verified UID mappings | serialized NEAR edges and their stored `distance_m` only; recomputes no geometry | **no** |
 | `delivered_graph` | learned `display_label` | delivered NEAR edges | yes |
 | `blinded_rgb_vlm` | the images | the images | yes |
 | `evidence_aware_hybrid` | routed | routed | yes |
 
-Only the identity source changes between layers 1 and 2. No new metric is
-introduced anywhere; the ceiling calls the extractor's own distance function
-and reads each scene's own recorded threshold.
+No new metric is introduced anywhere; the ceiling calls the extractor's own
+distance function and reads each scene's own recorded threshold.
+
+The identity-oracle layer exists to separate two things the ceiling alone
+cannot. The ceiling recomputes distances from the delivered boxes, so it
+measures whether the GEOMETRY supports the answer. The identity-oracle layer
+reads only what the extractor serialized, so it measures whether the RELATION
+EXTRACTION carries the same answer. It shares its answering code with
+`delivered_graph` verbatim, which makes identity the only variable between
+them: comparing the two says whether naming alone binds, and comparing the
+identity oracle against the geometry ceiling says whether extraction lost
+anything on the way to disk.
 
 ### Predeclared attribution
 
@@ -69,7 +78,8 @@ and reads each scene's own recorded threshold.
 |---|---|
 | ceiling correct, delivered wrong | naming, instance delivery or relation extraction binds |
 | ceiling correct, delivered unanswered | the fact is expressible but the delivered system cannot address it |
-| ceiling wrong | the current geometry/representation cannot answer the relation |
+| ceiling wrong | the geometry answer disagrees with the human answer — check whether the declared convention or the geometry is responsible before reading it as a representation limit |
+| geometry ceiling and identity oracle disagree | relation extraction lost something the geometry supports; only the underlying geometry would be sufficient |
 | ceiling unanswerable (no resolvable UID) | **instance delivery** binds — distinct from a geometry failure |
 | graph uniquely correct where RGB misses | first real evidence for a hybrid |
 | RGB matches or beats graph everywhere | do not expand the graph architecture |
@@ -139,12 +149,27 @@ This is a screening gate on two scenes, not a publication claim.
 Owner key returned per scene, validated, merged, scored once. The blinded RGB
 and hybrid layers have **not** run yet, so this is a partial report.
 
-| layer | correct | wrong | unanswered | excluded | accuracy | deployable |
-|---|---:|---:|---:|---:|---:|---|
-| geometry_relation_ceiling | 7 | 1 | 2 | 2 | 0.700 | **no** |
-| delivered_graph | 0 | 0 | 10 | 2 | 0.000 | yes |
-| blinded_rgb_vlm | — | — | — | — | pending | yes |
-| evidence_aware_hybrid | — | — | — | — | pending | yes |
+| layer | identity from | relations from | correct | wrong | unans | excl | accuracy | deployable |
+|---|---|---|---:|---:|---:|---:|---:|---|
+| geometry_relation_ceiling | human UID map | recomputed `aabb_to_aabb_surface` | 7 | 1 | 2 | 2 | 0.700 | **no** |
+| stored_graph_human_identity | human UID map | **serialized NEAR edges + stored `distance_m`** | 7 | 1 | 2 | 2 | 0.700 | **no** |
+| delivered_graph | learned labels | serialized NEAR edges | 0 | 0 | 10 | 2 | 0.000 | yes |
+| blinded_rgb_vlm | the images | the images | — | — | — | — | pending | yes |
+| evidence_aware_hybrid | routed | routed | — | — | — | — | pending | yes |
+
+### Is relation extraction cleared, or is only the geometry sufficient?
+
+**Cleared.** The identity-oracle replay reads *only* edges the extractor
+actually serialized and their stored `distance_m`; it recomputes no geometry,
+and a test AST-checks that it never calls `aabb_to_aabb_surface`. It shares its
+answering code with the delivered arm verbatim, so identity is the only
+variable.
+
+**Agreement with the recomputed geometry ceiling: 12 / 12, zero
+disagreements**, item for item, including both abstentions and the single
+error. Nothing was lost between the delivered boxes and the serialized graph.
+So the answer is not "only the underlying AABB geometry is sufficient" —
+the relation extraction carries the same content, and **naming alone binds.**
 
 Per scene, ceiling: `41069025` 5/6 correct, 0 wrong; `41069042` 2/4 correct,
 1 wrong. Two items excluded because the owner marked them ambiguous.
@@ -161,14 +186,39 @@ This is the attribution the four-layer split was built to produce, and it is
 unambiguous: **naming and instance delivery bind, not relation extraction and
 not geometry.**
 
-Three objects the owner could see are simply absent from the delivered
-partition — the striped rug in `41069025`, the white radiator in `41069042` —
-returned as `none / missing`. Their absence, not any scoring rule, is what
-killed four items: both `near_set` questions abstained rather than return a
-short set, and both ambiguous exclusions are questions whose subject the owner
-could not judge because the object is not delivered at all. On
-`q25_set_near_sofa` the owner's own answer names the striped rug, so the
-correct answer is *not expressible* in the delivered partition at any layer.
+**Two** objects the owner could see are absent from the delivered partition —
+the striped rug in `41069025` and the white radiator in `41069042`, both
+returned as `none / missing`. (An earlier revision of this document said
+"three" while naming two; corrected here.)
+
+Those two absences account for **four** of the twelve items:
+
+| item | effect | cause |
+|---|---|---|
+| `q25_set_near_sofa` | unanswered | roster contains the striped rug |
+| `q25_cmp_rug_sofa_vs_counter` | excluded, owner marked ambiguous | subject is the striped rug |
+| `q42_set_near_window` | unanswered | roster contains the white radiator |
+| `q42_cmp_radiator_window_vs_desk` | excluded, owner marked ambiguous | subject is the white radiator |
+
+Not a scoring rule — the objects are not there. On `q25_set_near_sofa` the
+owner's own answer names the striped rug, so the correct answer is *not
+expressible* in the delivered partition at any layer.
+
+### Attribution, as a partition
+
+An earlier revision reported zero unanswerable items while the ceiling summary
+showed two: the buckets silently dropped every ceiling abstention whose reason
+was not `NO_MAPPING`. A bucket set that does not add up reads as a measured
+zero, so the buckets now partition every item and the scorer raises if they do
+not.
+
+| bucket | n | items |
+|---|---:|---|
+| ceiling correct, delivered unanswered | 7 | the five 25-scene items plus `q42_cmp_picture_drawers_vs_bed`, `q42_bin_desk_near_drawers` |
+| ceiling unanswerable — no exhaustive set | 2 | `q25_set_near_sofa`, `q42_set_near_window` |
+| ceiling wrong | 1 | `q42_bin_bed_near_desk` |
+| excluded, no human answer | 2 | `q25_cmp_rug_sofa_vs_counter`, `q42_cmp_radiator_window_vs_desk` |
+| **total** | **12 / 12** | partition verified by the scorer |
 
 ### Cross-view proximity worked
 

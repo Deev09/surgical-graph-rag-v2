@@ -80,6 +80,7 @@ OUTCOMES = ("correct", "wrong", "unanswered")
 # can never be quoted as system performance without the flag travelling with it.
 LAYERS = (
     ("geometry_relation_ceiling", "ceiling", False),
+    ("stored_graph_human_identity", "identity_oracle", False),
     ("delivered_graph", "delivered", True),
     ("blinded_rgb_vlm", "delivered", True),
     ("evidence_aware_hybrid", "delivered", True),
@@ -226,23 +227,31 @@ def _resolve_delivered(name: str, index: dict[str, list[str]],
     return hits[0] if len(hits) == 1 else None
 
 
-def answer_delivered_graph(questions: list[dict], scenes: dict,
-                           synonyms: dict) -> list[dict]:
-    """Delivered entities + LEARNED labels + delivered edges. No human key.
+def _stored_edge_rows(questions: list[dict], scenes: dict, resolver,
+                      no_id_reason: str, source: str) -> list[dict]:
+    """Answer from the SERIALIZED graph alone: edge presence and stored distance_m.
+
+    This function recomputes no geometry. It never calls
+    `aabb_to_aabb_surface`, and a test asserts that. Everything it knows comes
+    from edges the extractor actually wrote out.
 
     Edge absence is informative, not missing data: the extractor evaluates
     every unordered pair and emits one iff surface distance < threshold, so a
     missing edge means "measured, and at least threshold apart".
+
+    `resolver` maps (scene_id, object name) -> uid or None. It is the ONLY
+    thing that differs between the delivered arm and the identity-oracle arm,
+    which is what makes the comparison between them a clean read on whether
+    naming alone is the binding stage.
     """
     rows = []
     for question in questions:
         scene = scenes[question["scene_id"]]
-        index = scene["label_index"]
         distances = scene["edge_distance"]
         threshold = scene["near_threshold_m"]
 
         def uid_for(name: str) -> str | None:
-            return _resolve_delivered(name, index, synonyms)
+            return resolver(question["scene_id"], name)
 
         def pair_distance(a: str, b: str) -> float | None:
             return distances.get(frozenset((a, b)))
@@ -250,14 +259,13 @@ def answer_delivered_graph(questions: list[dict], scenes: dict,
         if question["form"] == "binary_near":
             a, b = uid_for(question["subject"]), uid_for(question["object"])
             if a is None or b is None:
-                rows.append(_unanswered(question, NO_LABEL, "delivered_graph"))
+                rows.append(_unanswered(question, no_id_reason, source))
                 continue
             distance = pair_distance(a, b)
-            rows.append(_answered(question, distance is not None,
-                                  "delivered_graph",
+            rows.append(_answered(question, distance is not None, source,
                                   edge_present=distance is not None,
-                                  distance_m=(round(distance, 4)
-                                              if distance is not None else None),
+                                  stored_distance_m=(round(distance, 4)
+                                                     if distance is not None else None),
                                   uids=[a, b], threshold_m=threshold))
 
         elif question["form"] == "comparative_near":
@@ -265,13 +273,13 @@ def answer_delivered_graph(questions: list[dict], scenes: dict,
             a = uid_for(question["reference_a"])
             b = uid_for(question["reference_b"])
             if s is None or a is None or b is None:
-                rows.append(_unanswered(question, NO_LABEL, "delivered_graph"))
+                rows.append(_unanswered(question, no_id_reason, source))
                 continue
             da, db = pair_distance(s, a), pair_distance(s, b)
             if da is None and db is None:
                 # Both at least threshold apart; the graph stores no value for
                 # either, so it cannot order them. Abstain rather than guess.
-                rows.append(_unanswered(question, NO_DISTANCE, "delivered_graph"))
+                rows.append(_unanswered(question, NO_DISTANCE, source))
                 continue
             if da is not None and db is not None:
                 choice = question["reference_a"] if da < db else question["reference_b"]
@@ -282,32 +290,73 @@ def answer_delivered_graph(questions: list[dict], scenes: dict,
                 choice = (question["reference_a"] if da is not None
                           else question["reference_b"])
                 basis = "one_edge_stored_one_beyond_threshold"
-            rows.append(_answered(question, choice, "delivered_graph",
-                                  distance_a_m=(round(da, 4) if da is not None else None),
-                                  distance_b_m=(round(db, 4) if db is not None else None),
+            rows.append(_answered(question, choice, source,
+                                  stored_distance_a_m=(round(da, 4) if da is not None else None),
+                                  stored_distance_b_m=(round(db, 4) if db is not None else None),
                                   ordering_basis=basis, uids=[s, a, b]))
 
         elif question["form"] == "near_set":
             s = uid_for(question["subject"])
             if s is None:
-                rows.append(_unanswered(question, NO_LABEL, "delivered_graph"))
+                rows.append(_unanswered(question, no_id_reason, source))
                 continue
             unresolved = sorted(n for n in question["candidate_objects"]
                                 if uid_for(n) is None)
             if unresolved:
-                row = _unanswered(question, NO_EXHAUSTIVE_SET, "delivered_graph")
+                row = _unanswered(question, NO_EXHAUSTIVE_SET, source)
                 row["unresolved_candidates"] = unresolved
                 rows.append(row)
                 continue
             hits = [name for name in question["candidate_objects"]
                     if uid_for(name) != s
                     and pair_distance(s, uid_for(name)) is not None]
-            rows.append(_answered(question, sorted(hits), "delivered_graph",
+            rows.append(_answered(question, sorted(hits), source,
                                   uids=[s], threshold_m=threshold))
         else:
             rows.append(_unanswered(question, f"unknown form {question['form']}",
-                                    "delivered_graph"))
+                                    source))
     return rows
+
+
+def answer_delivered_graph(questions: list[dict], scenes: dict,
+                           synonyms: dict) -> list[dict]:
+    """Delivered entities + LEARNED labels + serialized edges. No human key."""
+    def resolver(scene_id: str, name: str) -> str | None:
+        return _resolve_delivered(name, scenes[scene_id]["label_index"], synonyms)
+    return _stored_edge_rows(questions, scenes, resolver, NO_LABEL,
+                             "delivered_graph")
+
+
+def answer_stored_graph_human_identity(questions: list[dict], scenes: dict,
+                                       uid_mappings: dict) -> list[dict]:
+    """IDENTITY ORACLE. Human UID mappings for identity, serialized edges for
+    every relation fact. NOT deployable, and not a geometry ceiling either.
+
+    This is the layer that separates two claims the previous report could not
+    tell apart:
+
+      geometry_relation_ceiling   recomputes aabb_to_aabb_surface from the
+                                  delivered boxes. It says whether the GEOMETRY
+                                  could support the answer.
+      this layer                  reads only edges the extractor actually
+                                  serialized, and their stored distance_m. It
+                                  says whether the RELATION EXTRACTION, as
+                                  written to disk, carries the same answer.
+
+    If both agree, relation extraction is genuinely cleared and naming alone
+    binds. If this layer is worse, the extractor lost something between the
+    geometry and the serialized graph, and 'only the underlying AABB geometry
+    is sufficient' would be the honest reading instead.
+
+    It recomputes no geometry: it shares `_stored_edge_rows` with the delivered
+    arm verbatim, so identity is the only variable between the two.
+    """
+    def resolver(scene_id: str, name: str) -> str | None:
+        mapped = uid_mappings.get(scene_id, {})
+        uid = mapped.get(name)
+        return uid if isinstance(uid, str) and uid in scenes[scene_id]["aabb_by_uid"] else None
+    return _stored_edge_rows(questions, scenes, resolver, NO_MAPPING,
+                             "stored_graph_human_identity")
 
 
 # --------------------------------------------------------------------------
@@ -484,41 +533,118 @@ def graph_unique_wins(graph_rows: list[dict], rgb_rows: list[dict]) -> list[dict
 
 
 def attribution(ceiling_rows: list[dict], graph_rows: list[dict]) -> dict:
-    """Which stage binds, per the predeclared interpretation table."""
+    """Which stage binds, per the predeclared interpretation table.
+
+    The buckets PARTITION the graded items. An earlier version silently
+    dropped every ceiling abstention whose reason was not NO_MAPPING, so the
+    report showed zero unanswerable items while the ceiling summary showed
+    two. A bucket set that does not add up is worse than no bucket set, because
+    it reads as a measured zero.
+    """
     ceiling = {r["id"]: r for r in ceiling_rows}
     buckets = {
+        "both_correct": [],
         "ceiling_correct_delivered_wrong": [],
         "ceiling_correct_delivered_unanswered": [],
         "ceiling_wrong": [],
         "ceiling_unanswerable_no_uid_mapping": [],
-        "both_correct": [],
+        "ceiling_unanswerable_no_exhaustive_set": [],
+        "ceiling_unanswerable_other": [],
+        "excluded_no_human_answer": [],
     }
     for row in graph_rows:
         c = ceiling.get(row["id"])
         if c is None:
             continue
-        if c["outcome"] == "unanswered" and c.get("reason") == NO_MAPPING:
-            buckets["ceiling_unanswerable_no_uid_mapping"].append(row["id"])
+        if c["outcome"] == "excluded_no_human_answer":
+            buckets["excluded_no_human_answer"].append(row["id"])
+        elif c["outcome"] == "unanswered":
+            reason = c.get("reason")
+            if reason == NO_MAPPING:
+                buckets["ceiling_unanswerable_no_uid_mapping"].append(row["id"])
+            elif reason == NO_EXHAUSTIVE_SET:
+                buckets["ceiling_unanswerable_no_exhaustive_set"].append(row["id"])
+            else:
+                buckets["ceiling_unanswerable_other"].append(row["id"])
         elif c["outcome"] == "wrong":
             buckets["ceiling_wrong"].append(row["id"])
-        elif c["outcome"] == "correct" and row["outcome"] == "wrong":
+        elif row["outcome"] == "wrong":
             buckets["ceiling_correct_delivered_wrong"].append(row["id"])
-        elif c["outcome"] == "correct" and row["outcome"] == "unanswered":
+        elif row["outcome"] == "unanswered":
             buckets["ceiling_correct_delivered_unanswered"].append(row["id"])
-        elif c["outcome"] == "correct" and row["outcome"] == "correct":
+        else:
             buckets["both_correct"].append(row["id"])
+
+    bucketed = sum(len(v) for v in buckets.values())
+    if bucketed != len(graph_rows):
+        raise ValueError(
+            f"attribution buckets do not partition the items: {bucketed} "
+            f"bucketed of {len(graph_rows)}")
+
     reading = {
         "ceiling_correct_delivered_wrong":
             "naming, instance delivery or relation extraction is binding",
         "ceiling_correct_delivered_unanswered":
             "the fact is expressible but the delivered system cannot address it",
         "ceiling_wrong":
-            "the current geometry/representation cannot answer the relation",
+            "the geometry answer disagrees with the human answer; check whether "
+            "the declared convention or the geometry is responsible before "
+            "reading this as a representation limit",
         "ceiling_unanswerable_no_uid_mapping":
             "no resolvable delivered instance exists; instance DELIVERY binds, "
             "which is distinct from a geometry failure",
+        "ceiling_unanswerable_no_exhaustive_set":
+            "an exhaustive-set item whose roster contains an object the owner "
+            "could not map to any delivered instance; the set cannot be "
+            "enumerated, so the item abstains rather than return a short set",
+        "excluded_no_human_answer":
+            "the owner marked the item ambiguous; it is in no tally",
     }
-    return {"buckets": buckets, "reading": reading}
+    return {"buckets": buckets,
+            "n_bucketed": bucketed,
+            "n_items": len(graph_rows),
+            "reading": reading}
+
+
+def layer_agreement(ceiling_rows: list[dict], stored_rows: list[dict]) -> dict:
+    """Does the SERIALIZED graph carry the same answers the geometry supports?
+
+    Same identity source on both sides, so the only variable is whether the
+    answer comes from recomputed `aabb_to_aabb_surface` or from edges the
+    extractor actually wrote out. Agreement clears relation extraction;
+    disagreement means the honest reading is that only the underlying geometry
+    is sufficient.
+    """
+    stored = {r["id"]: r for r in stored_rows}
+    rows, disagreements = [], []
+    for c in ceiling_rows:
+        s = stored.get(c["id"])
+        if s is None:
+            continue
+        agree = (c["outcome"] == s["outcome"]) and (c.get("answer") == s.get("answer"))
+        row = {"id": c["id"], "scene_id": c["scene_id"], "form": c["form"],
+               "ceiling_outcome": c["outcome"], "ceiling_answer": c.get("answer"),
+               "stored_outcome": s["outcome"], "stored_answer": s.get("answer"),
+               "agree": agree}
+        if not agree:
+            row["ceiling_reason"] = c.get("reason")
+            row["stored_reason"] = s.get("reason")
+            disagreements.append(row)
+        rows.append(row)
+    scored = [r for r in rows if r["ceiling_outcome"] in OUTCOMES]
+    return {
+        "n_compared": len(rows),
+        "n_agree": sum(1 for r in rows if r["agree"]),
+        "n_disagree": len(disagreements),
+        "agreement_rate": (round(sum(1 for r in scored if r["agree"]) / len(scored), 4)
+                           if scored else None),
+        "disagreements": disagreements,
+        "reading": ("identical answers mean relation extraction is cleared and "
+                    "naming alone binds; any disagreement means the serialized "
+                    "graph lost something the geometry supports, and only the "
+                    "underlying AABB geometry would be sufficient"),
+        "rows": rows,
+    }
 
 
 def thin_evidence_slice(rgb_rows: list[dict], hybrid_rows: list[dict]) -> dict:
@@ -709,6 +835,9 @@ def run(questions_path: Path, key_path: Path, scene_inputs_path: Path,
 
     ceiling = grade(answer_geometry_ceiling(questions, scenes, uid_mappings),
                     key, questions)
+    stored = grade(answer_stored_graph_human_identity(questions, scenes,
+                                                      uid_mappings),
+                   key, questions)
     delivered = grade(answer_delivered_graph(questions, scenes, synonyms),
                       key, questions)
     arms = {
@@ -718,6 +847,14 @@ def run(questions_path: Path, key_path: Path, scene_inputs_path: Path,
                        "deployable system performance",
             "rows": ceiling, "summary": summarize(ceiling),
             "per_scene": per_scene(ceiling),
+        },
+        "stored_graph_human_identity": {
+            "layer_kind": "identity_oracle", "deployable": False,
+            "warning": "consumes human-verified identity; diagnostic only. "
+                       "Answers come from serialized NEAR edges and their "
+                       "stored distance_m; no geometry is recomputed.",
+            "rows": stored, "summary": summarize(stored),
+            "per_scene": per_scene(stored),
         },
         "delivered_graph": {
             "layer_kind": "delivered", "deployable": True,
@@ -762,6 +899,8 @@ def run(questions_path: Path, key_path: Path, scene_inputs_path: Path,
         },
         "arms": arms,
         "attribution": attribution(ceiling, delivered),
+        "geometry_vs_stored_graph": layer_agreement(ceiling, stored),
+        "attribution_stored_graph": attribution(stored, delivered),
         "graph_unique_wins": wins,
         "thin_evidence_subtest": (thin_evidence_slice(rgb, hybrid)
                                   if rgb is not None else
