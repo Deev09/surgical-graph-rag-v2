@@ -1,0 +1,1284 @@
+{
+ "crop_config": {
+  "context_pad": 0.15,
+  "equals_label_stage_source": "arkitscenes_rgb_crop_pad0.15_mark0",
+  "mark_target": false,
+  "n_views": 3,
+  "stride": 6
+ },
+ "disclosures": [
+  "No human key, uid mapping, annotation box or oracle label was read.",
+  "embedding_ref is None on every delivered entity; crops were re-encoded with the pinned weights rather than reusing a vector.",
+  "Absent objects are not special-cased: if the cross-view rule admits a uid for an object that was never delivered, that is a precision error and is reported as one."
+ ],
+ "model": {
+  "name": "ViT-B-32-quickgelu",
+  "pretrained": "openai",
+  "prompts": [
+   "a photo of a {c}",
+   "a photo of a {c} in a room",
+   "a 3D render of a {c}"
+  ]
+ },
+ "prediction_hash_excludes": [
+  "runtime_s"
+ ],
+ "prediction_sha256": "51b56774262146de905ae8987f3fe8d5ddf970db6ae79a189b3854211a2a0f26",
+ "provenance": {
+  "questions": "/Users/deevyaswain/Desktop/surgical-graph-rag-v2/eval/questions/arkitscenes_relation_challenge_v1.json",
+  "questions_sha256": "a199636109ef6e0e0ef1cd4e1b57c16f81b9655e20bb5c81795d34cdea11af50",
+  "runtime_s": 9.6,
+  "scenes": {
+   "arkitscenes_41069025": {
+    "embedding_ref_present": false,
+    "entity_bundle_hash": "ent_openclip_global_indoor_labels_35de101d48b05a87",
+    "entity_manifest": "/Users/deevyaswain/Desktop/surgical-graph-rag-v2/runs/arkit_label_image_ab_41069025/rgb_tight/entities/manifest.json",
+    "entity_manifest_sha256": "a61f83f3eec75bff9950cef92cb7c3c3c8eb64692ae72b495ee14d521d3964e7",
+    "n_entities": 35
+   },
+   "arkitscenes_41069042": {
+    "embedding_ref_present": false,
+    "entity_bundle_hash": "ent_openclip_global_indoor_labels_dcf4b1c8fcdb2447",
+    "entity_manifest": "/Users/deevyaswain/Desktop/surgical-graph-rag-v2/runs/arkit_label_image_ab_41069042/rgb_tight/entities/manifest.json",
+    "entity_manifest_sha256": "3d24f91003f7bcce360f518b78df5e6f1b03284eb73df6abd2b4a9814bd6c153",
+    "n_entities": 23
+   }
+  },
+  "weights_sha256": "e6d1bd7789aa45192b3bf90570a789b478bae1b74ebcce7eddd908e83a2b7c31"
+ },
+ "rules": {
+  "admission": "top aggregate entity must also win at least 2 independent view slots",
+  "aggregate": "mean over the entity's available view slots",
+  "per_slot_score": "max over phrases of cosine(image, text)",
+  "phrase_set": "anchor name plus its declared synonyms from the frozen question manifest",
+  "ranking": "aggregate descending, ties by uid ascending",
+  "threshold": "none; no confidence cutoff is applied or swept"
+ },
+ "scenes": [
+  {
+   "admitted": {
+    "coffee table": "obj_5",
+    "kitchen counter": "obj_27",
+    "pedestal fan": "obj_21",
+    "round dining table": "obj_5",
+    "small grey wastepaper basket under the desk": "obj_1",
+    "sofa": "obj_13",
+    "tall stainless kitchen bin": "obj_12",
+    "white convector heater": "obj_2"
+   },
+   "anchors": [
+    {
+     "admitted": true,
+     "agreeing_slot_ids": [
+      "0",
+      "1"
+     ],
+     "agreeing_slots": 2,
+     "anchor": "coffee table",
+     "n_entities_ranked": 35,
+     "phrases": [
+      "coffee table",
+      "table",
+      "coffee-table"
+     ],
+     "ranking": [
+      {
+       "aggregate": 0.31428,
+       "slot_scores": [
+        0.317076,
+        0.311668,
+        0.314095
+       ],
+       "uid": "obj_5"
+      },
+      {
+       "aggregate": 0.297656,
+       "slot_scores": [
+        0.26145,
+        0.303829,
+        0.327689
+       ],
+       "uid": "obj_15"
+      },
+      {
+       "aggregate": 0.296837,
+       "slot_scores": [
+        0.308586,
+        0.287691,
+        0.294235
+       ],
+       "uid": "obj_34"
+      },
+      {
+       "aggregate": 0.284256,
+       "slot_scores": [
+        0.282994,
+        0.281187,
+        0.288587
+       ],
+       "uid": "obj_14"
+      },
+      {
+       "aggregate": 0.27618,
+       "slot_scores": [
+        0.265819,
+        0.283531,
+        0.279189
+       ],
+       "uid": "obj_0"
+      }
+     ],
+     "reason": null,
+     "slot_winners": {
+      "0": "obj_5",
+      "1": "obj_5",
+      "2": "obj_15"
+     },
+     "top_uid": "obj_5",
+     "uid": "obj_5"
+    },
+    {
+     "admitted": true,
+     "agreeing_slot_ids": [
+      "1",
+      "2"
+     ],
+     "agreeing_slots": 2,
+     "anchor": "sofa",
+     "n_entities_ranked": 35,
+     "phrases": [
+      "sofa",
+      "couch"
+     ],
+     "ranking": [
+      {
+       "aggregate": 0.29998,
+       "slot_scores": [
+        0.274221,
+        0.304837,
+        0.320883
+       ],
+       "uid": "obj_13"
+      },
+      {
+       "aggregate": 0.283151,
+       "slot_scores": [
+        0.305154,
+        0.275472,
+        0.268827
+       ],
+       "uid": "obj_15"
+      },
+      {
+       "aggregate": 0.271547,
+       "slot_scores": [
+        0.271286,
+        0.273832,
+        0.269522
+       ],
+       "uid": "obj_0"
+      },
+      {
+       "aggregate": 0.269344,
+       "slot_scores": [
+        0.273039,
+        0.2706,
+        0.264393
+       ],
+       "uid": "obj_9"
+      },
+      {
+       "aggregate": 0.253497,
+       "slot_scores": [
+        0.261178,
+        0.249,
+        0.250312
+       ],
+       "uid": "obj_34"
+      }
+     ],
+     "reason": null,
+     "slot_winners": {
+      "0": "obj_15",
+      "1": "obj_13",
+      "2": "obj_13"
+     },
+     "top_uid": "obj_13",
+     "uid": "obj_13"
+    },
+    {
+     "admitted": true,
+     "agreeing_slot_ids": [
+      "0",
+      "1"
+     ],
+     "agreeing_slots": 2,
+     "anchor": "round dining table",
+     "n_entities_ranked": 35,
+     "phrases": [
+      "round dining table",
+      "table",
+      "dining-table"
+     ],
+     "ranking": [
+      {
+       "aggregate": 0.31428,
+       "slot_scores": [
+        0.317076,
+        0.311668,
+        0.314095
+       ],
+       "uid": "obj_5"
+      },
+      {
+       "aggregate": 0.29762,
+       "slot_scores": [
+        0.261343,
+        0.303829,
+        0.327689
+       ],
+       "uid": "obj_15"
+      },
+      {
+       "aggregate": 0.296837,
+       "slot_scores": [
+        0.308586,
+        0.287691,
+        0.294235
+       ],
+       "uid": "obj_34"
+      },
+      {
+       "aggregate": 0.287882,
+       "slot_scores": [
+        0.284345,
+        0.287425,
+        0.291875
+       ],
+       "uid": "obj_14"
+      },
+      {
+       "aggregate": 0.27618,
+       "slot_scores": [
+        0.265819,
+        0.283531,
+        0.279189
+       ],
+       "uid": "obj_0"
+      }
+     ],
+     "reason": null,
+     "slot_winners": {
+      "0": "obj_5",
+      "1": "obj_5",
+      "2": "obj_15"
+     },
+     "top_uid": "obj_5",
+     "uid": "obj_5"
+    },
+    {
+     "admitted": true,
+     "agreeing_slot_ids": [
+      "0",
+      "1",
+      "2"
+     ],
+     "agreeing_slots": 3,
+     "anchor": "pedestal fan",
+     "n_entities_ranked": 35,
+     "phrases": [
+      "pedestal fan",
+      "fan"
+     ],
+     "ranking": [
+      {
+       "aggregate": 0.336911,
+       "slot_scores": [
+        0.340859,
+        0.335814,
+        0.33406
+       ],
+       "uid": "obj_21"
+      },
+      {
+       "aggregate": 0.300001,
+       "slot_scores": [
+        0.300744,
+        0.32539,
+        0.273868
+       ],
+       "uid": "obj_7"
+      },
+      {
+       "aggregate": 0.295556,
+       "slot_scores": [
+        0.289611,
+        0.297306,
+        0.299752
+       ],
+       "uid": "obj_12"
+      },
+      {
+       "aggregate": 0.281312,
+       "slot_scores": [
+        0.279128,
+        0.278275,
+        0.286532
+       ],
+       "uid": "obj_2"
+      },
+      {
+       "aggregate": 0.27965,
+       "slot_scores": [
+        0.284551,
+        0.275407,
+        0.278991
+       ],
+       "uid": "obj_8"
+      }
+     ],
+     "reason": null,
+     "slot_winners": {
+      "0": "obj_21",
+      "1": "obj_21",
+      "2": "obj_21"
+     },
+     "top_uid": "obj_21",
+     "uid": "obj_21"
+    },
+    {
+     "admitted": false,
+     "agreeing_slot_ids": [
+      "0"
+     ],
+     "agreeing_slots": 1,
+     "anchor": "long narrow desk",
+     "n_entities_ranked": 35,
+     "phrases": [
+      "long narrow desk",
+      "desk"
+     ],
+     "ranking": [
+      {
+       "aggregate": 0.30186,
+       "slot_scores": [
+        0.307728,
+        0.298276,
+        0.299577
+       ],
+       "uid": "obj_5"
+      },
+      {
+       "aggregate": 0.295807,
+       "slot_scores": [
+        0.303386,
+        0.295299,
+        0.288736
+       ],
+       "uid": "obj_14"
+      },
+      {
+       "aggregate": 0.289748,
+       "slot_scores": [
+        0.279135,
+        0.300565,
+        0.289544
+       ],
+       "uid": "obj_0"
+      },
+      {
+       "aggregate": 0.281571,
+       "slot_scores": [
+        0.240554,
+        0.284114,
+        0.320046
+       ],
+       "uid": "obj_15"
+      },
+      {
+       "aggregate": 0.269579,
+       "slot_scores": [
+        0.276372,
+        0.273278,
+        0.259088
+       ],
+       "uid": "obj_43"
+      }
+     ],
+     "reason": "top entity obj_5 won only 1 view slot(s); the rule requires 2",
+     "slot_winners": {
+      "0": "obj_5",
+      "1": "obj_0",
+      "2": "obj_15"
+     },
+     "top_uid": "obj_5",
+     "uid": null
+    },
+    {
+     "admitted": true,
+     "agreeing_slot_ids": [
+      "0",
+      "1"
+     ],
+     "agreeing_slots": 2,
+     "anchor": "kitchen counter",
+     "n_entities_ranked": 35,
+     "phrases": [
+      "kitchen counter",
+      "counter",
+      "countertop"
+     ],
+     "ranking": [
+      {
+       "aggregate": 0.310782,
+       "slot_scores": [
+        0.312971,
+        0.312117,
+        0.307259
+       ],
+       "uid": "obj_27"
+      },
+      {
+       "aggregate": 0.308538,
+       "slot_scores": [
+        0.309718,
+        0.302312,
+        0.313584
+       ],
+       "uid": "obj_16"
+      },
+      {
+       "aggregate": 0.294673,
+       "slot_scores": [
+        0.295137,
+        0.291744,
+        0.297138
+       ],
+       "uid": "obj_18"
+      },
+      {
+       "aggregate": 0.289132,
+       "slot_scores": [
+        0.292089,
+        0.296644,
+        0.278661
+       ],
+       "uid": "obj_12"
+      },
+      {
+       "aggregate": 0.287794,
+       "slot_scores": [
+        0.294615,
+        0.273862,
+        0.294905
+       ],
+       "uid": "obj_36"
+      }
+     ],
+     "reason": null,
+     "slot_winners": {
+      "0": "obj_27",
+      "1": "obj_27",
+      "2": "obj_16"
+     },
+     "top_uid": "obj_27",
+     "uid": "obj_27"
+    },
+    {
+     "admitted": false,
+     "agreeing_slot_ids": [
+      "2"
+     ],
+     "agreeing_slots": 1,
+     "anchor": "striped rug",
+     "n_entities_ranked": 35,
+     "phrases": [
+      "striped rug",
+      "rug",
+      "carpet"
+     ],
+     "ranking": [
+      {
+       "aggregate": 0.281644,
+       "slot_scores": [
+        0.291562,
+        0.263883,
+        0.289486
+       ],
+       "uid": "obj_6"
+      },
+      {
+       "aggregate": 0.275883,
+       "slot_scores": [
+        0.299295,
+        0.260272,
+        0.268082
+       ],
+       "uid": "obj_34"
+      },
+      {
+       "aggregate": 0.261468,
+       "slot_scores": [
+        0.264214,
+        0.263931,
+        0.256261
+       ],
+       "uid": "obj_17"
+      },
+      {
+       "aggregate": 0.2568,
+       "slot_scores": [
+        0.258876,
+        0.2547,
+        0.256826
+       ],
+       "uid": "obj_15"
+      },
+      {
+       "aggregate": 0.254207,
+       "slot_scores": [
+        0.243637,
+        0.267997,
+        0.250988
+       ],
+       "uid": "obj_22"
+      }
+     ],
+     "reason": "top entity obj_6 won only 1 view slot(s); the rule requires 2",
+     "slot_winners": {
+      "0": "obj_34",
+      "1": "obj_13",
+      "2": "obj_6"
+     },
+     "top_uid": "obj_6",
+     "uid": null
+    },
+    {
+     "admitted": true,
+     "agreeing_slot_ids": [
+      "0",
+      "2"
+     ],
+     "agreeing_slots": 2,
+     "anchor": "small grey wastepaper basket under the desk",
+     "n_entities_ranked": 35,
+     "phrases": [
+      "small grey wastepaper basket under the desk",
+      "trash-can",
+      "trashcan",
+      "basket",
+      "wastebasket"
+     ],
+     "ranking": [
+      {
+       "aggregate": 0.337148,
+       "slot_scores": [
+        0.340654,
+        0.3338,
+        0.33699
+       ],
+       "uid": "obj_1"
+      },
+      {
+       "aggregate": 0.33369,
+       "slot_scores": [
+        0.339746,
+        0.356029,
+        0.305295
+       ],
+       "uid": "obj_12"
+      },
+      {
+       "aggregate": 0.304036,
+       "slot_scores": [
+        0.302505,
+        0.302692,
+        0.306911
+       ],
+       "uid": "obj_3"
+      },
+      {
+       "aggregate": 0.28433,
+       "slot_scores": [
+        0.290358,
+        0.292249,
+        0.270384
+       ],
+       "uid": "obj_0"
+      },
+      {
+       "aggregate": 0.278366,
+       "slot_scores": [
+        0.27722,
+        0.282346,
+        0.275533
+       ],
+       "uid": "obj_17"
+      }
+     ],
+     "reason": null,
+     "slot_winners": {
+      "0": "obj_1",
+      "1": "obj_12",
+      "2": "obj_1"
+     },
+     "top_uid": "obj_1",
+     "uid": "obj_1"
+    },
+    {
+     "admitted": true,
+     "agreeing_slot_ids": [
+      "0",
+      "1",
+      "2"
+     ],
+     "agreeing_slots": 3,
+     "anchor": "tall stainless kitchen bin",
+     "n_entities_ranked": 35,
+     "phrases": [
+      "tall stainless kitchen bin",
+      "trash-can",
+      "trashcan",
+      "bin",
+      "garbage-can"
+     ],
+     "ranking": [
+      {
+       "aggregate": 0.343045,
+       "slot_scores": [
+        0.344812,
+        0.357702,
+        0.326621
+       ],
+       "uid": "obj_12"
+      },
+      {
+       "aggregate": 0.322069,
+       "slot_scores": [
+        0.325505,
+        0.316825,
+        0.323879
+       ],
+       "uid": "obj_1"
+      },
+      {
+       "aggregate": 0.307559,
+       "slot_scores": [
+        0.307969,
+        0.304641,
+        0.310067
+       ],
+       "uid": "obj_16"
+      },
+      {
+       "aggregate": 0.305671,
+       "slot_scores": [
+        0.304514,
+        0.306692,
+        0.305807
+       ],
+       "uid": "obj_27"
+      },
+      {
+       "aggregate": 0.298946,
+       "slot_scores": [
+        0.300818,
+        0.297531,
+        0.298487
+       ],
+       "uid": "obj_18"
+      }
+     ],
+     "reason": null,
+     "slot_winners": {
+      "0": "obj_12",
+      "1": "obj_12",
+      "2": "obj_12"
+     },
+     "top_uid": "obj_12",
+     "uid": "obj_12"
+    },
+    {
+     "admitted": true,
+     "agreeing_slot_ids": [
+      "0",
+      "1",
+      "2"
+     ],
+     "agreeing_slots": 3,
+     "anchor": "white convector heater",
+     "n_entities_ranked": 35,
+     "phrases": [
+      "white convector heater",
+      "radiator",
+      "heater"
+     ],
+     "ranking": [
+      {
+       "aggregate": 0.351945,
+       "slot_scores": [
+        0.351233,
+        0.356346,
+        0.348257
+       ],
+       "uid": "obj_2"
+      },
+      {
+       "aggregate": 0.311834,
+       "slot_scores": [
+        0.314182,
+        0.317768,
+        0.303552
+       ],
+       "uid": "obj_12"
+      },
+      {
+       "aggregate": 0.303034,
+       "slot_scores": [
+        0.313107,
+        0.310725,
+        0.285269
+       ],
+       "uid": "obj_7"
+      },
+      {
+       "aggregate": 0.292759,
+       "slot_scores": [
+        0.286026,
+        0.275898,
+        0.316353
+       ],
+       "uid": "obj_36"
+      },
+      {
+       "aggregate": 0.289033,
+       "slot_scores": [
+        0.284042,
+        0.291849,
+        0.291209
+       ],
+       "uid": "obj_3"
+      }
+     ],
+     "reason": null,
+     "slot_winners": {
+      "0": "obj_2",
+      "1": "obj_2",
+      "2": "obj_2"
+     },
+     "top_uid": "obj_2",
+     "uid": "obj_2"
+    }
+   ],
+   "n_entities": 35,
+   "n_entities_with_crops": 35,
+   "scene_id": "arkitscenes_41069025"
+  },
+  {
+   "admitted": {
+    "bed": "obj_18",
+    "chest of drawers": "obj_9",
+    "cream curtain": "obj_2",
+    "white radiator": "obj_2"
+   },
+   "anchors": [
+    {
+     "admitted": true,
+     "agreeing_slot_ids": [
+      "0",
+      "1",
+      "2"
+     ],
+     "agreeing_slots": 3,
+     "anchor": "white radiator",
+     "n_entities_ranked": 23,
+     "phrases": [
+      "white radiator",
+      "radiator",
+      "heater"
+     ],
+     "ranking": [
+      {
+       "aggregate": 0.313888,
+       "slot_scores": [
+        0.322557,
+        0.304673,
+        0.314435
+       ],
+       "uid": "obj_2"
+      },
+      {
+       "aggregate": 0.297612,
+       "slot_scores": [
+        0.307798,
+        0.281533,
+        0.303506
+       ],
+       "uid": "obj_11"
+      },
+      {
+       "aggregate": 0.291032,
+       "slot_scores": [
+        0.275457,
+        0.290599,
+        0.307041
+       ],
+       "uid": "obj_25"
+      },
+      {
+       "aggregate": 0.289172,
+       "slot_scores": [
+        0.283483,
+        0.291787,
+        0.292246
+       ],
+       "uid": "obj_17"
+      },
+      {
+       "aggregate": 0.282994,
+       "slot_scores": [
+        0.2896,
+        0.274755,
+        0.284627
+       ],
+       "uid": "obj_0"
+      }
+     ],
+     "reason": null,
+     "slot_winners": {
+      "0": "obj_2",
+      "1": "obj_2",
+      "2": "obj_2"
+     },
+     "top_uid": "obj_2",
+     "uid": "obj_2"
+    },
+    {
+     "admitted": false,
+     "agreeing_slot_ids": [
+      "0"
+     ],
+     "agreeing_slots": 1,
+     "anchor": "window",
+     "n_entities_ranked": 23,
+     "phrases": [
+      "window"
+     ],
+     "ranking": [
+      {
+       "aggregate": 0.276346,
+       "slot_scores": [
+        0.291725,
+        0.269872,
+        0.26744
+       ],
+       "uid": "obj_16"
+      },
+      {
+       "aggregate": 0.270679,
+       "slot_scores": [
+        0.284691,
+        0.270592,
+        0.256755
+       ],
+       "uid": "obj_14"
+      },
+      {
+       "aggregate": 0.262611,
+       "slot_scores": [
+        0.255068,
+        0.265114,
+        0.267649
+       ],
+       "uid": "obj_1"
+      },
+      {
+       "aggregate": 0.261409,
+       "slot_scores": [
+        0.270955,
+        0.264994,
+        0.248277
+       ],
+       "uid": "obj_5"
+      },
+      {
+       "aggregate": 0.260675,
+       "slot_scores": [
+        0.275064,
+        0.254381,
+        0.25258
+       ],
+       "uid": "obj_2"
+      }
+     ],
+     "reason": "top entity obj_16 won only 1 view slot(s); the rule requires 2",
+     "slot_winners": {
+      "0": "obj_16",
+      "1": "obj_25",
+      "2": "obj_1"
+     },
+     "top_uid": "obj_16",
+     "uid": null
+    },
+    {
+     "admitted": false,
+     "agreeing_slot_ids": [
+      "2"
+     ],
+     "agreeing_slots": 1,
+     "anchor": "white desk",
+     "n_entities_ranked": 23,
+     "phrases": [
+      "white desk",
+      "desk",
+      "table"
+     ],
+     "ranking": [
+      {
+       "aggregate": 0.279395,
+       "slot_scores": [
+        0.275239,
+        0.28019,
+        0.282755
+       ],
+       "uid": "obj_14"
+      },
+      {
+       "aggregate": 0.278375,
+       "slot_scores": [
+        0.269279,
+        0.290091,
+        0.275756
+       ],
+       "uid": "obj_16"
+      },
+      {
+       "aggregate": 0.277582,
+       "slot_scores": [
+        0.293437,
+        0.281054,
+        0.258255
+       ],
+       "uid": "obj_5"
+      },
+      {
+       "aggregate": 0.276183,
+       "slot_scores": [
+        0.275003,
+        0.279617,
+        0.273927
+       ],
+       "uid": "obj_25"
+      },
+      {
+       "aggregate": 0.274322,
+       "slot_scores": [
+        0.291235,
+        0.264092,
+        0.267641
+       ],
+       "uid": "obj_21"
+      }
+     ],
+     "reason": "top entity obj_14 won only 1 view slot(s); the rule requires 2",
+     "slot_winners": {
+      "0": "obj_5",
+      "1": "obj_16",
+      "2": "obj_14"
+     },
+     "top_uid": "obj_14",
+     "uid": null
+    },
+    {
+     "admitted": false,
+     "agreeing_slot_ids": [
+      "2"
+     ],
+     "agreeing_slots": 1,
+     "anchor": "framed picture standing on the carpet",
+     "n_entities_ranked": 23,
+     "phrases": [
+      "framed picture standing on the carpet",
+      "picture",
+      "painting",
+      "poster",
+      "frame"
+     ],
+     "ranking": [
+      {
+       "aggregate": 0.272503,
+       "slot_scores": [
+        0.278267,
+        0.267606,
+        0.271636
+       ],
+       "uid": "obj_16"
+      },
+      {
+       "aggregate": 0.27127,
+       "slot_scores": [
+        0.275357,
+        0.280366,
+        0.258087
+       ],
+       "uid": "obj_12"
+      },
+      {
+       "aggregate": 0.269252,
+       "slot_scores": [
+        0.280845,
+        0.263616,
+        0.263295
+       ],
+       "uid": "obj_14"
+      },
+      {
+       "aggregate": 0.267542,
+       "slot_scores": [
+        0.281759,
+        0.262196,
+        0.258669
+       ],
+       "uid": "obj_23"
+      },
+      {
+       "aggregate": 0.264741,
+       "slot_scores": [
+        0.25879,
+        0.264352,
+        0.271079
+       ],
+       "uid": "obj_1"
+      }
+     ],
+     "reason": "top entity obj_16 won only 1 view slot(s); the rule requires 2",
+     "slot_winners": {
+      "0": "obj_23",
+      "1": "obj_12",
+      "2": "obj_16"
+     },
+     "top_uid": "obj_16",
+     "uid": null
+    },
+    {
+     "admitted": true,
+     "agreeing_slot_ids": [
+      "0",
+      "1",
+      "2"
+     ],
+     "agreeing_slots": 3,
+     "anchor": "chest of drawers",
+     "n_entities_ranked": 23,
+     "phrases": [
+      "chest of drawers",
+      "drawer",
+      "chest-of-drawers",
+      "dresser",
+      "cabinet"
+     ],
+     "ranking": [
+      {
+       "aggregate": 0.301719,
+       "slot_scores": [
+        0.296954,
+        0.298527,
+        0.309676
+       ],
+       "uid": "obj_9"
+      },
+      {
+       "aggregate": 0.279608,
+       "slot_scores": [
+        0.267384,
+        0.289813,
+        0.281625
+       ],
+       "uid": "obj_16"
+      },
+      {
+       "aggregate": 0.277868,
+       "slot_scores": [
+        0.296259,
+        0.276442,
+        0.260902
+       ],
+       "uid": "obj_14"
+      },
+      {
+       "aggregate": 0.27751,
+       "slot_scores": [
+        0.273574,
+        0.291595,
+        0.26736
+       ],
+       "uid": "obj_8"
+      },
+      {
+       "aggregate": 0.270272,
+       "slot_scores": [
+        0.28319,
+        0.275713,
+        0.251912
+       ],
+       "uid": "obj_5"
+      }
+     ],
+     "reason": null,
+     "slot_winners": {
+      "0": "obj_9",
+      "1": "obj_9",
+      "2": "obj_9"
+     },
+     "top_uid": "obj_9",
+     "uid": "obj_9"
+    },
+    {
+     "admitted": true,
+     "agreeing_slot_ids": [
+      "0",
+      "2"
+     ],
+     "agreeing_slots": 2,
+     "anchor": "bed",
+     "n_entities_ranked": 23,
+     "phrases": [
+      "bed"
+     ],
+     "ranking": [
+      {
+       "aggregate": 0.303227,
+       "slot_scores": [
+        0.30446,
+        0.305412,
+        0.29981
+       ],
+       "uid": "obj_18"
+      },
+      {
+       "aggregate": 0.289874,
+       "slot_scores": [
+        0.284795,
+        0.297867,
+        0.286958
+       ],
+       "uid": "obj_4"
+      },
+      {
+       "aggregate": 0.286184,
+       "slot_scores": [
+        0.288325,
+        0.287804,
+        0.282422
+       ],
+       "uid": "obj_7"
+      },
+      {
+       "aggregate": 0.278169,
+       "slot_scores": [
+        0.25929,
+        0.30738,
+        0.267837
+       ],
+       "uid": "obj_6"
+      },
+      {
+       "aggregate": 0.272052,
+       "slot_scores": [
+        0.280363,
+        0.2811,
+        0.254695
+       ],
+       "uid": "obj_15"
+      }
+     ],
+     "reason": null,
+     "slot_winners": {
+      "0": "obj_18",
+      "1": "obj_6",
+      "2": "obj_18"
+     },
+     "top_uid": "obj_18",
+     "uid": "obj_18"
+    },
+    {
+     "admitted": true,
+     "agreeing_slot_ids": [
+      "0",
+      "1",
+      "2"
+     ],
+     "agreeing_slots": 3,
+     "anchor": "cream curtain",
+     "n_entities_ranked": 23,
+     "phrases": [
+      "cream curtain",
+      "curtain",
+      "curtains",
+      "blinds"
+     ],
+     "ranking": [
+      {
+       "aggregate": 0.302347,
+       "slot_scores": [
+        0.309961,
+        0.298971,
+        0.298108
+       ],
+       "uid": "obj_2"
+      },
+      {
+       "aggregate": 0.290177,
+       "slot_scores": [
+        0.303631,
+        0.278762,
+        0.288137
+       ],
+       "uid": "obj_16"
+      },
+      {
+       "aggregate": 0.288635,
+       "slot_scores": [
+        0.289094,
+        0.281992,
+        0.294819
+       ],
+       "uid": "obj_11"
+      },
+      {
+       "aggregate": 0.287329,
+       "slot_scores": [
+        0.285374,
+        0.281256,
+        0.295357
+       ],
+       "uid": "obj_0"
+      },
+      {
+       "aggregate": 0.28677,
+       "slot_scores": [
+        0.287403,
+        0.288287,
+        0.284622
+       ],
+       "uid": "obj_17"
+      }
+     ],
+     "reason": null,
+     "slot_winners": {
+      "0": "obj_2",
+      "1": "obj_2",
+      "2": "obj_2"
+     },
+     "top_uid": "obj_2",
+     "uid": "obj_2"
+    }
+   ],
+   "n_entities": 23,
+   "n_entities_with_crops": 23,
+   "scene_id": "arkitscenes_41069042"
+  }
+ ],
+ "schema": "arkitscenes_anchor_grounding_v1",
+ "stage": "oracle_free_prediction"
+}

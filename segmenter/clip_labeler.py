@@ -54,6 +54,24 @@ class ClipLabeler:
             self._text_cache[vocabulary] = emb
         return self._text_cache[vocabulary]
 
+    def text_embeddings(self, vocabulary: tuple[str, ...]):
+        """Public accessor for the pinned prompt-ensembled text embeddings."""
+        return self._text_embeddings(tuple(vocabulary))
+
+    def image_embeddings(self, images):
+        """Per-image L2-normalised embeddings, WITHOUT mean-pooling views.
+
+        `classify` mean-pools an instance's views before scoring, which is
+        right for assigning one label to one instance but destroys the
+        per-view detail a cross-view agreement rule needs. Additive: this
+        touches nothing `classify` does.
+        """
+        torch = self._torch
+        batch = torch.stack([self.preprocess(im) for im in images])
+        with torch.no_grad():
+            emb = self.model.encode_image(batch)
+        return emb / emb.norm(dim=-1, keepdim=True)
+
     def classify(self, images, vocabulary: list[str]) -> list[dict]:
         """images: list of PIL images (the instance's views).
         Returns the ranked vocabulary: [{label, score}, ...] best first."""
