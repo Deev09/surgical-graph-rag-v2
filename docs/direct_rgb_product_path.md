@@ -118,7 +118,19 @@ Properties enforced by test rather than asserted:
   byte-identical page, `db4339fb9dd4731f…`;
 - the input hashes are disclosed in the page footer.
 
-## In progress: the untouched-scene transfer test
+## The untouched-scene transfer test failed
+
+`docs/arkitscenes_rgb_transfer_test.md`. Scored once on `47331972`: exact
+accuracy **0.50** against a required 0.60, answer coverage **0.50** against a
+required 0.80. **No transfer claim is made and the demo remains a fixed
+evaluation replay.**
+
+The shape of the failure matters more than the number. Accuracy when answered
+was **1.000** — five answers, five correct, zero wrong. The model abstained on
+the other five: two comparatives and **all three cross-view items**. Its
+calibration transferred; its reach did not.
+
+Original protocol note:
 
 `docs/arkitscenes_rgb_transfer_test.md`, protocol frozen at `95246f0` before
 `47331972` was downloaded or inspected. One room, one blinded run, two gates

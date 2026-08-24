@@ -20,6 +20,9 @@ if str(REPO_ROOT) not in sys.path:
 from tools import arkitscenes_rgb_transfer as mod
 from tools.arkitscenes_rgb_transfer import (
     COUNTING_CONVENTION,
+    GATE_ACCURACY,
+    GATE_COVERAGE,
+    score_run,
     has_unique_referent,
     KEY_SCHEMA,
     MIN_ANCHORS,
@@ -299,6 +302,68 @@ def test_sheet_explains_how_questions_were_chosen():
 
 def test_sheet_generation_is_deterministic():
     assert sheet() == sheet()
+
+
+# ------------------------------------------------------------------ scoring
+def _score_fixture(model_answers):
+    q = build_questions(merge_passes(three_passes(), FRAMES)["admitted"])[0]
+    doc = {"scene_id": "s", "questions": q, "questions_content_sha256": "c"}
+    packet = {"packet_sha256": "p", "questions": q}
+    key = {"questions_content_sha256": "c", "human_truth": [
+        {"id": x["id"], "answer": _truth_for(x), "ambiguous": False,
+         "evidence_views": "2+"} for x in q]}
+    resp = {"packet_sha256": "p", "answers": [
+        dict(model_answers(x), id=x["id"]) for x in q]}
+    return score_run(doc, key, resp, packet)
+
+
+def _truth_for(q):
+    if q["answer_type"] == "boolean":
+        return True
+    if q["answer_type"] == "integer":
+        return 1
+    return q["reference_a"]
+
+
+def test_an_abstention_is_not_counted_as_correct():
+    """A perfect abstainer must fail the accuracy gate, not ace it."""
+    r = _score_fixture(lambda q: {"outcome": "unknown", "answer": None,
+                                  "confidence": 0.0, "evidence_frame_ids": []})
+    assert r["tally"]["correct"] == 0 and r["tally"]["wrong"] == 0
+    assert r["exact_accuracy"] == 0.0 and r["answer_coverage"] == 0.0
+    assert r["accuracy_when_answered"] is None
+    assert not r["all_gates_pass"]
+    assert "NO TRANSFER CLAIM" in r["claim"]
+
+
+def test_all_correct_passes_both_gates_and_licenses_one_sentence():
+    r = _score_fixture(lambda q: {"outcome": "answer", "answer": _truth_for(q),
+                                  "confidence": 0.9, "evidence_frame_ids": []})
+    assert r["exact_accuracy"] == 1.0 and r["answer_coverage"] == 1.0
+    assert r["all_gates_pass"]
+    assert r["claim"].startswith("Under a fixed procedure")
+    assert "transferred to one previously untouched" in r["claim"]
+
+
+def test_gates_are_the_predeclared_numbers():
+    assert (GATE_ACCURACY, GATE_COVERAGE) == (0.60, 0.80)
+    r = _score_fixture(lambda q: {"outcome": "answer", "answer": _truth_for(q),
+                                  "confidence": 0.9, "evidence_frame_ids": []})
+    assert r["gates"]["exact_accuracy"]["required"] == 0.60
+    assert r["gates"]["answer_coverage"]["required"] == 0.80
+
+
+def test_score_refuses_a_key_or_response_that_pins_something_else():
+    q = build_questions(merge_passes(three_passes(), FRAMES)["admitted"])[0]
+    doc = {"scene_id": "s", "questions": q, "questions_content_sha256": "c"}
+    packet = {"packet_sha256": "p", "questions": q}
+    key = {"questions_content_sha256": "OTHER", "human_truth": []}
+    try:
+        score_run(doc, key, {"packet_sha256": "p", "answers": []}, packet)
+    except ValueError as exc:
+        assert "pin" in str(exc)
+    else:
+        raise AssertionError("an unpinned key must not be scorable")
 
 
 def main() -> None:

@@ -596,6 +596,145 @@ def cmd_build(args) -> int:
     return 0
 
 
+# --------------------------------------------------------------------------
+# scoring -- exactly once, per the frozen protocol
+# --------------------------------------------------------------------------
+GATE_ACCURACY = 0.60
+GATE_COVERAGE = 0.80
+
+
+def _matches(question: dict, got: object, expected: object) -> bool:
+    kind = question["answer_type"]
+    if kind == "boolean":
+        return isinstance(got, bool) and got == expected
+    if kind == "integer":
+        return isinstance(got, int) and not isinstance(got, bool) and got == expected
+    return isinstance(got, str) and isinstance(expected, str) \
+        and got.strip().lower() == expected.strip().lower()
+
+
+def score_run(questions_doc: dict, key: dict, response: dict,
+              packet: dict) -> dict:
+    if key.get("questions_content_sha256") != questions_doc["questions_content_sha256"]:
+        raise ValueError("key does not pin these questions")
+    if response.get("packet_sha256") != packet["packet_sha256"]:
+        raise ValueError("response does not pin this packet")
+
+    by = {q["id"]: q for q in questions_doc["questions"]}
+    truth = {t["id"]: t for t in key["human_truth"]}
+    given = {a["id"]: a for a in response["answers"]}
+    if not (sorted(by) == sorted(truth) == sorted(given)):
+        raise ValueError("questions, key and response do not cover the same items")
+
+    rows = []
+    for qid, question in by.items():
+        t, a = truth[qid], given[qid]
+        row = {"id": qid, "form": question["form"], "question": question["question"],
+               "human_answer": t["answer"], "model_answer": a.get("answer"),
+               "confidence": a.get("confidence"),
+               "evidence_frame_ids": a.get("evidence_frame_ids", []),
+               "evidence_views": t.get("evidence_views"),
+               "cross_view": bool(question.get("cross_view"))}
+        if t.get("ambiguous"):
+            row["outcome"] = "excluded_owner_ambiguous"
+        elif a.get("outcome") == "unknown":
+            row["outcome"] = "unanswered"
+        else:
+            row["outcome"] = ("correct" if _matches(question, a.get("answer"),
+                                                    t["answer"]) else "wrong")
+        rows.append(row)
+
+    scored = [r for r in rows if r["outcome"] != "excluded_owner_ambiguous"]
+    correct = sum(1 for r in scored if r["outcome"] == "correct")
+    wrong = sum(1 for r in scored if r["outcome"] == "wrong")
+    unanswered = sum(1 for r in scored if r["outcome"] == "unanswered")
+    n = len(scored)
+    accuracy = round(correct / n, 4) if n else None
+    coverage = round((correct + wrong) / n, 4) if n else None
+
+    thin = [r for r in scored if r["evidence_views"] in {"0", "1"}]
+    thin_answered = [r for r in thin if r["outcome"] in {"correct", "wrong"}]
+
+    gates = {
+        "exact_accuracy": {"required": GATE_ACCURACY, "measured": accuracy,
+                           "pass": bool(accuracy is not None and accuracy >= GATE_ACCURACY)},
+        "answer_coverage": {"required": GATE_COVERAGE, "measured": coverage,
+                            "pass": bool(coverage is not None and coverage >= GATE_COVERAGE)},
+        "scored_items": {"required": MIN_SCORED, "measured": n,
+                         "pass": bool(n >= MIN_SCORED)},
+    }
+    passed = all(g["pass"] for g in gates.values())
+    return {
+        "schema": "arkitscenes_rgb_transfer_score_v1",
+        "scene_id": questions_doc["scene_id"],
+        "protocol": "docs/arkitscenes_rgb_transfer_test.md",
+        "amendments_applied": questions_doc.get("amendment"),
+        "model": response.get("model"),
+        "tally": {"correct": correct, "wrong": wrong, "unanswered": unanswered,
+                  "excluded_owner_ambiguous": len(rows) - n},
+        "n_scored": n,
+        "exact_accuracy": accuracy,
+        "answer_coverage": coverage,
+        "accuracy_when_answered": (round(correct / (correct + wrong), 4)
+                                   if correct + wrong else None),
+        "false_confident_rate": (round(wrong / (correct + wrong), 4)
+                                 if correct + wrong else None),
+        "gates": gates,
+        "all_gates_pass": passed,
+        "claim": ("Under a fixed procedure, direct multiview RGB transferred to "
+                  "one previously untouched ARKitScenes handheld room."
+                  if passed else
+                  "NO TRANSFER CLAIM. At least one predeclared gate failed, so "
+                  "the demo remains a fixed evaluation replay."),
+        "thin_evidence_slice": {
+            "n": len(thin),
+            "ids": [r["id"] for r in thin],
+            "answered": len(thin_answered),
+            "correct": sum(1 for r in thin_answered if r["outcome"] == "correct"),
+            "note": "owner-recorded 0- or 1-view items, judged independently "
+                    "of the answer",
+        },
+        "by_form": {
+            form: {
+                "n": sum(1 for r in scored if r["form"] == form),
+                "correct": sum(1 for r in scored
+                               if r["form"] == form and r["outcome"] == "correct"),
+                "unanswered": sum(1 for r in scored
+                                  if r["form"] == form and r["outcome"] == "unanswered"),
+            } for form in sorted({r["form"] for r in scored})
+        },
+        "rows": rows,
+        "limits": [
+            "One room, ten questions, one blinded response, one human reviewer.",
+            "A pass would support the single sentence above and nothing wider.",
+            "The reviewer is the project owner and is not blind to the "
+            "hypothesis; the human key is itself a measurement with error.",
+            "No graph, grounding or segmentation stage ran on this scene.",
+        ],
+    }
+
+
+def cmd_score(args) -> int:
+    d = args.run_dir
+    report = score_run(json.loads((d / "questions.json").read_text()),
+                       json.loads(args.key.read_text()),
+                       json.loads(args.response.read_text()),
+                       json.loads((d / "packet.json").read_text()))
+    args.out.parent.mkdir(parents=True, exist_ok=True)
+    args.out.write_text(json.dumps(report, indent=1, sort_keys=True) + "\n")
+    print(f"    scored items      : {report['n_scored']}")
+    print(f"    correct / wrong / unanswered : "
+          f"{report['tally']['correct']} / {report['tally']['wrong']} / "
+          f"{report['tally']['unanswered']}")
+    for name, gate in report["gates"].items():
+        print(f"    {name:16s} required {gate['required']}  measured "
+              f"{gate['measured']}  {'PASS' if gate['pass'] else 'FAIL'}")
+    print(f"    accuracy when answered : {report['accuracy_when_answered']}")
+    print(f"\n    {report['claim']}")
+    print(f"    -> {args.out}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--run-dir", type=Path,
@@ -603,8 +742,12 @@ def main(argv: list[str] | None = None) -> int:
     sub = ap.add_subparsers(dest="command", required=True)
     b = sub.add_parser("build")
     b.add_argument("--passes", type=Path, nargs="+", required=True)
+    s = sub.add_parser("score")
+    s.add_argument("--key", type=Path, required=True)
+    s.add_argument("--response", type=Path, required=True)
+    s.add_argument("--out", type=Path, required=True)
     args = ap.parse_args(argv)
-    return {"build": cmd_build}[args.command](args)
+    return {"build": cmd_build, "score": cmd_score}[args.command](args)
 
 
 if __name__ == "__main__":

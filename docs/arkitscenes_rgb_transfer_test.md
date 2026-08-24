@@ -1,6 +1,7 @@
 # Direct multiview RGB — one untouched-scene transfer test
 
-Status: **run 1 void; protocol amended and re-frozen before run 2 regenerated.**
+Status: **complete — run 2 scored 2026-08-23. Both gates failed; no transfer claim.**
+Run 1 void; protocol amended and re-frozen before run 2 regenerated.
 The original protocol below was written with no knowledge of the test room.
 See Amendment 1 at the end for what changed and why.
 
@@ -278,3 +279,74 @@ a finding about the fixed-procedure generator — that it does not produce a
 usable question set on this capture — and the transfer test is abandoned rather
 than amended a third time. The demo stays a recorded replay and no transfer
 claim is made.
+
+---
+
+# Result — run 2, scored once, 2026-08-23
+
+Blinded response hash-pinned at `e193e6f` before scoring. Key at `45f8ec9`.
+Packet `33355c8a…`, questions `520074c2…`. Scored exactly once.
+
+## Both gates fail. No transfer claim is made.
+
+| gate | required | measured | |
+|---|---:|---:|---|
+| exact accuracy | ≥ 0.60 | **0.50** | fail |
+| answer coverage | ≥ 0.80 | **0.50** | fail |
+| scored items | ≥ 6 | 10 | pass |
+
+**5 correct, 0 wrong, 5 unanswered.** Per the stopping rule: the demo remains a
+fixed evaluation replay, nothing is retuned, no third scene is tried, and no
+gate is softened.
+
+## What the failure actually is
+
+It is not an accuracy failure. **Accuracy when answered is 1.000** — every one
+of the five answers was right, and the model never once answered wrongly. The
+false-confident rate is zero.
+
+The failure is entirely coverage. The model abstained on half the set, and
+`exact_accuracy` counts an abstention as a non-correct item, so a perfectly
+calibrated abstainer fails the accuracy gate too. Both gates failed on the same
+underlying behaviour.
+
+| form | n | correct | unanswered |
+|---|---:|---:|---:|
+| presence | 3 | 3 | 0 |
+| comparative | 4 | 2 | 2 |
+| cross-view | 3 | **0** | **3** |
+
+The gradient is clean and it is the interesting result: presence answered and
+correct everywhere; comparative answered half; **cross-view answered not at
+all**. Confidence tracks it honestly — 0.96 and 0.93 on presence, 0.36 and 0.48
+on the two comparatives it did attempt.
+
+Both zero-view items are cross-view, and it declined both. On the six-item
+thin-evidence slice it answered only two, and got both right.
+
+## Reading this honestly
+
+Direct multiview RGB **did not transfer** under this procedure. What transferred
+is its *calibration*: on an unseen room it answered only what it could see and
+was right every time it spoke. What did not transfer is its *reach* — the
+spatial questions that motivate this work, the cross-view ones, it declined
+wholesale.
+
+That is a more useful negative than a noisy pass would have been. The previous
+scenes' 7/10 came from a set where cross-view items were answerable from
+co-visible evidence; here, with three genuinely non-co-visible pairs, the RGB
+path produced nothing at all.
+
+An honest abstainer is the right failure mode for a product — but a product
+that abstains on half the questions, and on all of the ones that make the
+product distinctive, is not yet a product.
+
+## What this does not license
+
+No claim that RGB cannot do this, from one room and ten questions. No comparison
+to the graph path, which did not run here. No retune-and-retry: the protocol
+forbids it and the result stands as measured.
+
+The prior results are untouched. `41069025` and `41069042` still stand exactly
+as reported, and the recorded-replay demo is unchanged and still valid for what
+it claims to be.
