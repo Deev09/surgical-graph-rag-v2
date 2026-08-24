@@ -36,11 +36,18 @@ RESPONSE_SCHEMA = "arkitscenes_rgb_transfer_responses_v1"
 
 MIN_PASSES = 2          # an object is an anchor only on 2-of-3 agreement
 MIN_ANCHORS = 6         # below this the protocol says the test does not run
+MIN_SCORED = 6          # amendment 1: below this the RUN is void, not scored
 
+SCOPE = "the captured space"
+SCOPE_DEFINITION = (
+    "\"The captured space\" means everywhere visible anywhere in the supplied "
+    "views. This capture covers a multi-room floor, not a single room, so "
+    "questions are scoped to the whole captured space rather than to \"this "
+    "room\", which would not pick out a definite area.")
 COUNTING_CONVENTION = (
     "An instance is a physically separate object of the named class. Two "
-    "objects of the same class in different parts of the room count as two "
-    "even if they never appear in one frame together.")
+    "objects of the same class in different parts of the captured space count "
+    "as two even if they never appear in one frame together. " + SCOPE_DEFINITION)
 NEAR_CONVENTION = (
     "Two objects are NEAR when the nearest points of their surfaces are "
     "within about one metre of each other. Judge the gap between the objects "
@@ -130,9 +137,14 @@ def merge_passes(passes: list[dict], frame_order: list[str]) -> dict:
         }
         (admitted if len(group["passes"]) >= MIN_PASSES else rejected).append(row)
 
-    # Mechanical: first appearance ascending, ties alphabetical. This ordering,
-    # not judgement about answerability, decides which anchors get used.
-    admitted.sort(key=lambda r: (r["first_frame_rank"], r["anchor"]))
+    # Mechanical: best-attested first. Amendment 1 replaced plain
+    # first-appearance ordering, which put a small wall print seen in three
+    # frames by two passes at rank 0, where it carried three of eight
+    # questions. Ordering by agreement then observation count stops a
+    # briefly-glimpsed object dominating, and still has nothing to do with
+    # whether any system can answer.
+    admitted.sort(key=lambda r: (-r["n_passes"], -len(r["frame_ids"]),
+                                 r["first_frame_rank"], r["anchor"]))
     rejected.sort(key=lambda r: r["anchor"])
     return {"admitted": admitted, "rejected_single_pass": rejected,
             "min_passes_required": MIN_PASSES}
@@ -158,7 +170,12 @@ def non_covisible_pairs(anchors: list[dict]) -> list[tuple[int, int]]:
 # fixed template allocation
 # --------------------------------------------------------------------------
 def build_questions(anchors: list[dict]) -> tuple[list[dict], list[str]]:
-    """3 presence/cardinality, 3 comparative, 2 cross-view. No discretion."""
+    """3 presence/cardinality, 4 comparative, 3 cross-view. No discretion.
+
+    Ten rather than eight since amendment 1, for headroom against exclusions.
+    Cross-view gains the extra slot because it lost both of its items in run 1
+    and it is the category this work turns on.
+    """
     notes: list[str] = []
     if len(anchors) < MIN_ANCHORS:
         raise ValueError(f"only {len(anchors)} anchors survived 2-of-3 "
@@ -172,7 +189,8 @@ def build_questions(anchors: list[dict]) -> tuple[list[dict], list[str]]:
             questions.append({
                 "id": f"t_card_{rank + 1}", "form": "cardinality",
                 "answer_type": "integer",
-                "question": f"How many {a['anchor']}s are in this room?",
+                "question": (f"How many {a['anchor']}s are in "
+                             f"{SCOPE}?"),
                 "subject": a["anchor"], "template_rank": rank + 1})
         else:
             # The passes disagreed or hedged on the count, so asking for a
@@ -180,13 +198,13 @@ def build_questions(anchors: list[dict]) -> tuple[list[dict], list[str]]:
             questions.append({
                 "id": f"t_pres_{rank + 1}", "form": "presence",
                 "answer_type": "boolean",
-                "question": f"Is there a {a['anchor']} in this room?",
+                "question": f"Is there a {a['anchor']} in {SCOPE}?",
                 "subject": a["anchor"], "template_rank": rank + 1})
             notes.append(f"{a['anchor']}: passes did not agree on a count, so "
                          f"the slot became a presence question")
 
     pool = anchors[:6]
-    triples = [(0, 1, 2), (1, 2, 3), (2, 4, 5)]
+    triples = [(0, 1, 2), (1, 2, 3), (2, 3, 4), (3, 4, 5)]
     for n, (s, x, y) in enumerate(triples, start=1):
         if max(s, x, y) >= len(pool):
             notes.append(f"comparative slot {n} dropped: fewer than "
@@ -206,7 +224,7 @@ def build_questions(anchors: list[dict]) -> tuple[list[dict], list[str]]:
         notes.append("no non-co-visible anchor pair exists in this capture, so "
                      "the cross-view slots are empty; the 'if naturally "
                      "present' condition of the protocol did not hold")
-    for n, (i, j) in enumerate(pairs[:2], start=1):
+    for n, (i, j) in enumerate(pairs[:3], start=1):
         questions.append({
             "id": f"t_xview_{n}", "form": "binary_near",
             "answer_type": "boolean",
@@ -215,7 +233,7 @@ def build_questions(anchors: list[dict]) -> tuple[list[dict], list[str]]:
             "subject": anchors[i]["anchor"], "object": anchors[j]["anchor"],
             "cross_view": True, "template_rank": n,
             "why_cross_view": "no supplied frame contains both objects"})
-    if len(pairs) < 2:
+    if len(pairs) < 3:
         notes.append(f"only {len(pairs)} non-co-visible pair(s) available; no "
                      f"substitute pair was invented")
     return questions, notes
@@ -498,11 +516,14 @@ def cmd_build(args) -> int:
         "protocol": "docs/arkitscenes_rgb_transfer_test.md",
         "counting_convention": COUNTING_CONVENTION,
         "near_convention": NEAR_CONVENTION,
+        "scope": SCOPE, "scope_definition": SCOPE_DEFINITION,
+        "amendment": "1 -- run 1 void; scope wording, anchor ordering and "
+                     "question count fixed before regenerating",
         "generation": {
             "anchor_rule": f"admitted on >= {MIN_PASSES} of 3 independent "
                            "blind enumeration passes",
-            "ordering": "first appearance ascending, ties alphabetical",
-            "allocation": "3 presence/cardinality, 3 comparative, 2 cross-view",
+            "ordering": "passes desc, frames-seen desc, first appearance asc",
+            "allocation": "3 presence/cardinality, 4 comparative, 3 cross-view",
             "notes": notes,
         },
         "questions": questions,

@@ -1,7 +1,8 @@
 # Direct multiview RGB — one untouched-scene transfer test
 
-Status: **protocol frozen before the scene is downloaded or inspected.**
-Nothing in this document was written with any knowledge of the test room.
+Status: **run 1 void; protocol amended and re-frozen before run 2 regenerated.**
+The original protocol below was written with no knowledge of the test room.
+See Amendment 1 at the end for what changed and why.
 
 ## The question
 
@@ -166,3 +167,76 @@ One room, 6–10 questions, one blinded response, one human reviewer.
 
 Mask3D, SAM, grounding, graph extraction, the live API. No existing result,
 key, packet, report or demo artifact is modified.
+
+---
+
+# Amendment 1 — run voided and regenerated, 2026-08-23
+
+**Run 1 is void. Nothing from it is scored, and no transfer claim rests on it.**
+
+## Why, and why this is not tuning
+
+The blinded model never ran. No response was requested, no answer existed, and
+nothing was scored. The no-adjustment rule exists to prevent selecting on
+outcomes; there was no outcome to select on. What is being fixed is a
+question-generation defect that was flagged **before** the owner answered.
+
+The returned key is preserved at
+`eval/human_feedback/arkitscenes_rgb_transfer_key_47331972.json` and in commit
+`6ee7715`. It is the evidence the defect was real, and it stays in the record.
+
+## What the defect was
+
+The owner marked 4 of 8 items ambiguous, leaving **n = 4**: one cardinality,
+two presence, one comparative, and **zero cross-view**. Two failures follow:
+
+1. **The coverage gate became an anti-abstention gate.** At n = 4, coverage
+   ≥ 0.80 requires 4 of 4 answered, because 3/4 = 0.75 fails. A single honest
+   `unknown` would fail the run. That gate was written to catch a model
+   abstaining its way out of being wrong; at this sample size it instead
+   punishes the exact behaviour the product path is built on.
+2. **The surviving mix could not support the claim.** Half the scored set was
+   presence — the easiest category and the least spatial — with no cross-view
+   item at all. A clean 4/4 would have licensed "RGB can tell whether a sofa
+   exists in an unseen room", not the intended sentence.
+
+Root cause of the exclusions: six of eight questions said "in this room", and
+the capture is a **9.99 × 13.53 m single-storey multi-space floor** with a
+staircase and adjoining rooms, not one room. The phrase does not denote, so
+several items had no determinate answer.
+
+## The three fixes, fixed before regenerating
+
+1. **Scope wording.** Cardinality and presence questions now say "in the
+   captured space", defined in the conventions as everything visible anywhere
+   in the supplied views. Comparative and near questions need no scope and are
+   unchanged.
+2. **Anchor ordering.** Was first-appearance ascending, which put a small
+   wall print — 2 of 3 passes, seen in 3 frames — at rank 0, where it carried
+   three of eight questions. Now ordered by **passes agreeing descending, then
+   frames-seen descending, then first appearance ascending**. Still entirely
+   mechanical, still nothing to do with whether any system can answer; it
+   simply stops a briefly-glimpsed object dominating the set.
+3. **Ten questions, not eight**, for headroom against exclusions: 3
+   presence/cardinality, 4 comparative, 3 cross-view. Cross-view gains a slot
+   because it lost both last time and it is the category the work turns on.
+
+Everything else is unchanged: the 18-view selection, the prompt composition,
+the answer schema, the conventions themselves, the gates, the stopping rule,
+one run only, and the interpretation limits.
+
+## The anchor passes are reused, not re-run
+
+The three blind enumeration passes are reused verbatim. They enumerated
+objects from the 18 frames with no access to any question, any wording, or any
+ordering rule, so none of the three fixes touches what they saw or reported.
+Re-running them would spend thirteen minutes to obtain the same evidence and
+would introduce sampling noise between run 1 and run 2 for no gain.
+
+## Gate arithmetic at the new size
+
+At n = 10, accuracy ≥ 0.60 needs 6 correct and coverage ≥ 0.80 needs 8
+answered, so up to two honest abstentions are affordable. If exclusions again
+drive the scored set below **six** items, the run is void and reported as
+such rather than scored — recorded here so it is a rule and not a judgement
+made afterwards.

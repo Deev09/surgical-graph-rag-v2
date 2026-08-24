@@ -100,11 +100,23 @@ def test_single_pass_sightings_are_discarded():
     assert merged["min_passes_required"] == MIN_PASSES
 
 
-def test_ordering_is_first_appearance_then_alphabetical():
+def test_ordering_is_best_attested_first():
+    """Amendment 1: agreement, then observation count, then first appearance.
+
+    Plain first-appearance put a small print seen in three frames by two
+    passes at rank 0, where it carried three of eight questions.
+    """
     merged = merge_passes(three_passes(), FRAMES)
-    ranks = [a["first_frame_rank"] for a in merged["admitted"]]
-    assert ranks == sorted(ranks)
-    assert merged["admitted"][0]["anchor"].endswith("sofa")
+    keys = [(-a["n_passes"], -len(a["frame_ids"]), a["first_frame_rank"],
+             a["anchor"]) for a in merged["admitted"]]
+    assert keys == sorted(keys)
+    # a 3/3 anchor must outrank a 2/3 one regardless of who appeared first
+    passes = three_passes()
+    passes[0]["objects"].insert(0, obj("early trinket", [FRAMES[0]]))
+    passes[1]["objects"].insert(0, obj("early trinket", [FRAMES[0]]))
+    merged = merge_passes(passes, FRAMES)
+    assert merged["admitted"][0]["n_passes"] == 3, \
+        "a briefly-seen 2/3 anchor must not take rank 0"
 
 
 def test_frame_sets_union_across_agreeing_passes():
@@ -121,7 +133,7 @@ def test_allocation_is_fixed_and_uses_the_ordered_anchors():
     merged = merge_passes(three_passes(), FRAMES)
     questions, _ = build_questions(merged["admitted"])
     forms = [q["form"] for q in questions]
-    assert forms.count("comparative_near") == 3
+    assert forms.count("comparative_near") == 4
     assert sum(1 for f in forms if f in {"cardinality", "presence"}) == 3
     top = [a["anchor"] for a in merged["admitted"][:3]]
     assert [q["subject"] for q in questions[:3]] == top
@@ -176,6 +188,8 @@ def test_prompt_carries_both_conventions_and_permits_unknown():
     text = prompt_text(packet)
     flat = " ".join(text.split())
     assert " ".join(COUNTING_CONVENTION.split()) in flat
+    assert "the captured space" in flat
+    assert "in this room" not in flat, "amendment 1 removed the room scoping"
     assert " ".join(NEAR_CONVENTION.split()) in flat
     assert "unknown" in flat and RESPONSE_SCHEMA in text
     assert "not the answer itself" in flat, "the outcome-flag fix must carry over"
@@ -205,7 +219,7 @@ def sheet():
 
 def test_sheet_forces_no_answer_and_records_visibility():
     html = sheet()
-    assert html.count('class="ambiguous"') == 8
+    assert html.count('class="ambiguous"') == 10
     for value in ("2+", "1", "0"):
         assert f'value="{value}"' in html
     assert not re.search(r"<input[^>]*\bchecked\b", html)
