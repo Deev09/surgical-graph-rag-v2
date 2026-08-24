@@ -1,0 +1,793 @@
+{
+ "background_vertex_frac_oracle": 0.0,
+ "bundle_dir": "runs/phase8_c1/bundles_ms02/office_0",
+ "g1_vertex_arrays_identical": true,
+ "matches": [
+  {
+   "iou": 0.8762,
+   "oracle_class": "ceiling",
+   "oracle_id": 10,
+   "oracle_size": 93384,
+   "overlap": 92053,
+   "pred_id": 5,
+   "pred_size": 103726
+  },
+  {
+   "iou": 0.5895,
+   "oracle_class": "undefined",
+   "oracle_id": 49,
+   "oracle_size": 38069,
+   "overlap": 35605,
+   "pred_id": 8,
+   "pred_size": 57936
+  },
+  {
+   "iou": 0.9768,
+   "oracle_class": "sofa",
+   "oracle_id": 9,
+   "oracle_size": 30276,
+   "overlap": 29937,
+   "pred_id": 11,
+   "pred_size": 30310
+  },
+  {
+   "iou": 0.959,
+   "oracle_class": "sofa",
+   "oracle_id": 7,
+   "oracle_size": 18343,
+   "overlap": 17651,
+   "pred_id": 6,
+   "pred_size": 17714
+  },
+  {
+   "iou": 0.8424,
+   "oracle_class": "table",
+   "oracle_id": 58,
+   "oracle_size": 12748,
+   "overlap": 12367,
+   "pred_id": 4,
+   "pred_size": 14299
+  },
+  {
+   "iou": 0.5375,
+   "oracle_class": "tv-screen",
+   "oracle_id": 66,
+   "oracle_size": 12266,
+   "overlap": 12019,
+   "pred_id": 17,
+   "pred_size": 22113
+  },
+  {
+   "iou": 0.5707,
+   "oracle_class": "blinds",
+   "oracle_id": 15,
+   "oracle_size": 7837,
+   "overlap": 7776,
+   "pred_id": 7,
+   "pred_size": 13565
+  },
+  {
+   "iou": 0.9157,
+   "oracle_class": "chair",
+   "oracle_id": 4,
+   "oracle_size": 7998,
+   "overlap": 7330,
+   "pred_id": 2,
+   "pred_size": 7337
+  },
+  {
+   "iou": 0.9265,
+   "oracle_class": "chair",
+   "oracle_id": 61,
+   "oracle_size": 7579,
+   "overlap": 7022,
+   "pred_id": 0,
+   "pred_size": 7022
+  },
+  {
+   "iou": 0.6854,
+   "oracle_class": "plant-stand",
+   "oracle_id": 23,
+   "oracle_size": 6571,
+   "overlap": 5577,
+   "pred_id": 10,
+   "pred_size": 7143
+  },
+  {
+   "iou": 0.5644,
+   "oracle_class": "undefined",
+   "oracle_id": 42,
+   "oracle_size": 9077,
+   "overlap": 5127,
+   "pred_id": 14,
+   "pred_size": 5134
+  },
+  {
+   "iou": 0.9596,
+   "oracle_class": "bin",
+   "oracle_id": 19,
+   "oracle_size": 4040,
+   "overlap": 3897,
+   "pred_id": 1,
+   "pred_size": 3918
+  },
+  {
+   "iou": 0.8043,
+   "oracle_class": "table",
+   "oracle_id": 12,
+   "oracle_size": 4733,
+   "overlap": 3810,
+   "pred_id": 16,
+   "pred_size": 3814
+  },
+  {
+   "iou": 0.9399,
+   "oracle_class": "bin",
+   "oracle_id": 34,
+   "oracle_size": 2938,
+   "overlap": 2829,
+   "pred_id": 3,
+   "pred_size": 2901
+  },
+  {
+   "iou": 0.8387,
+   "oracle_class": "vent",
+   "oracle_id": 17,
+   "oracle_size": 2502,
+   "overlap": 2444,
+   "pred_id": 19,
+   "pred_size": 2856
+  },
+  {
+   "iou": 0.1041,
+   "oracle_class": "indoor-plant",
+   "oracle_id": 22,
+   "oracle_size": 15769,
+   "overlap": 1642,
+   "pred_id": 13,
+   "pred_size": 1652
+  },
+  {
+   "iou": 0.0923,
+   "oracle_class": "door",
+   "oracle_id": 16,
+   "oracle_size": 8901,
+   "overlap": 851,
+   "pred_id": 12,
+   "pred_size": 1173
+  },
+  {
+   "iou": 0.875,
+   "oracle_class": "undefined",
+   "oracle_id": 48,
+   "oracle_size": 173,
+   "overlap": 168,
+   "pred_id": 26,
+   "pred_size": 187
+  },
+  {
+   "iou": 0.0775,
+   "oracle_class": "desk-organizer",
+   "oracle_id": 44,
+   "oracle_size": 1399,
+   "overlap": 109,
+   "pred_id": 15,
+   "pred_size": 116
+  },
+  {
+   "iou": 0.4493,
+   "oracle_class": "undefined",
+   "oracle_id": 55,
+   "oracle_size": 227,
+   "overlap": 102,
+   "pred_id": 18,
+   "pred_size": 102
+  },
+  {
+   "iou": 0.0011,
+   "oracle_class": "rug",
+   "oracle_id": 5,
+   "oracle_size": 69330,
+   "overlap": 78,
+   "pred_id": 21,
+   "pred_size": 165
+  }
+ ],
+ "n_entity_matches_at_iou": {
+  "0.25": 12,
+  "0.5": 12,
+  "0.75": 9
+ },
+ "n_matched": 21,
+ "n_matched_note": "any-overlap greedy 1:1 pairs incl. structural classes \u2014 NOT detection recall; see n_entity_matches_at_iou",
+ "n_oracle_entity_instances": 47,
+ "n_oracle_instances": 66,
+ "n_pred_instances": 23,
+ "n_unmatched_oracle": 45,
+ "n_unmatched_predictions": 2,
+ "n_vertices": 589517,
+ "oracle_coverage": {
+  "0": {
+   "class": "",
+   "covered_frac": 0.3333,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 15,
+   "top_pred": 13
+  },
+  "1": {
+   "class": "anonymize_text",
+   "covered_frac": 0.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 32,
+   "top_pred": null
+  },
+  "10": {
+   "class": "ceiling",
+   "covered_frac": 0.9857,
+   "greedy_iou": 0.8762,
+   "greedy_pred": 5,
+   "size": 93384,
+   "top_pred": 5
+  },
+  "11": {
+   "class": "camera",
+   "covered_frac": 0.921,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 329,
+   "top_pred": 17
+  },
+  "12": {
+   "class": "table",
+   "covered_frac": 0.805,
+   "greedy_iou": 0.8043,
+   "greedy_pred": 16,
+   "size": 4733,
+   "top_pred": 16
+  },
+  "13": {
+   "class": "anonymize_text",
+   "covered_frac": 0.12,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 25,
+   "top_pred": 4
+  },
+  "14": {
+   "class": "undefined",
+   "covered_frac": 0.7576,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 10067,
+   "top_pred": 5
+  },
+  "15": {
+   "class": "blinds",
+   "covered_frac": 0.9922,
+   "greedy_iou": 0.5707,
+   "greedy_pred": 7,
+   "size": 7837,
+   "top_pred": 7
+  },
+  "16": {
+   "class": "door",
+   "covered_frac": 0.6094,
+   "greedy_iou": 0.0923,
+   "greedy_pred": 12,
+   "size": 8901,
+   "top_pred": 7
+  },
+  "17": {
+   "class": "vent",
+   "covered_frac": 0.9768,
+   "greedy_iou": 0.8387,
+   "greedy_pred": 19,
+   "size": 2502,
+   "top_pred": 19
+  },
+  "18": {
+   "class": "wall",
+   "covered_frac": 0.55,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 40,
+   "top_pred": 12
+  },
+  "19": {
+   "class": "bin",
+   "covered_frac": 0.9646,
+   "greedy_iou": 0.9596,
+   "greedy_pred": 1,
+   "size": 4040,
+   "top_pred": 1
+  },
+  "2": {
+   "class": "anonymize_picture",
+   "covered_frac": 1.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 157,
+   "top_pred": 4
+  },
+  "20": {
+   "class": "blinds",
+   "covered_frac": 0.649,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 26142,
+   "top_pred": 8
+  },
+  "21": {
+   "class": "lamp",
+   "covered_frac": 1.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 1802,
+   "top_pred": 5
+  },
+  "22": {
+   "class": "indoor-plant",
+   "covered_frac": 0.1197,
+   "greedy_iou": 0.1041,
+   "greedy_pred": 13,
+   "size": 15769,
+   "top_pred": 8
+  },
+  "23": {
+   "class": "plant-stand",
+   "covered_frac": 0.8487,
+   "greedy_iou": 0.6854,
+   "greedy_pred": 10,
+   "size": 6571,
+   "top_pred": 10
+  },
+  "24": {
+   "class": "wall",
+   "covered_frac": 0.0027,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 56944,
+   "top_pred": 17
+  },
+  "25": {
+   "class": "wall-plug",
+   "covered_frac": 0.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 65,
+   "top_pred": null
+  },
+  "26": {
+   "class": "wall",
+   "covered_frac": 0.2682,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 12277,
+   "top_pred": 8
+  },
+  "27": {
+   "class": "wall-plug",
+   "covered_frac": 0.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 50,
+   "top_pred": null
+  },
+  "28": {
+   "class": "tissue-paper",
+   "covered_frac": 0.2843,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 394,
+   "top_pred": 4
+  },
+  "29": {
+   "class": "undefined",
+   "covered_frac": 1.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 124,
+   "top_pred": 4
+  },
+  "3": {
+   "class": "anonymize_picture",
+   "covered_frac": 1.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 4778,
+   "top_pred": 17
+  },
+  "30": {
+   "class": "anonymize_picture",
+   "covered_frac": 1.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 4858,
+   "top_pred": 17
+  },
+  "31": {
+   "class": "wall-plug",
+   "covered_frac": 0.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 30,
+   "top_pred": null
+  },
+  "32": {
+   "class": "undefined",
+   "covered_frac": 0.0824,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 255,
+   "top_pred": 5
+  },
+  "33": {
+   "class": "wall-plug",
+   "covered_frac": 0.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 42,
+   "top_pred": null
+  },
+  "34": {
+   "class": "bin",
+   "covered_frac": 0.9629,
+   "greedy_iou": 0.9399,
+   "greedy_pred": 3,
+   "size": 2938,
+   "top_pred": 3
+  },
+  "35": {
+   "class": "panel",
+   "covered_frac": 0.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 128,
+   "top_pred": null
+  },
+  "36": {
+   "class": "switch",
+   "covered_frac": 0.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 60,
+   "top_pred": null
+  },
+  "37": {
+   "class": "lamp",
+   "covered_frac": 1.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 1912,
+   "top_pred": 5
+  },
+  "38": {
+   "class": "wall-plug",
+   "covered_frac": 0.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 94,
+   "top_pred": null
+  },
+  "39": {
+   "class": "wall-plug",
+   "covered_frac": 0.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 43,
+   "top_pred": null
+  },
+  "4": {
+   "class": "chair",
+   "covered_frac": 0.9165,
+   "greedy_iou": 0.9157,
+   "greedy_pred": 2,
+   "size": 7998,
+   "top_pred": 2
+  },
+  "40": {
+   "class": "undefined",
+   "covered_frac": 1.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 54,
+   "top_pred": 5
+  },
+  "42": {
+   "class": "undefined",
+   "covered_frac": 0.5648,
+   "greedy_iou": 0.5644,
+   "greedy_pred": 14,
+   "size": 9077,
+   "top_pred": 14
+  },
+  "44": {
+   "class": "desk-organizer",
+   "covered_frac": 0.9014,
+   "greedy_iou": 0.0775,
+   "greedy_pred": 15,
+   "size": 1399,
+   "top_pred": 4
+  },
+  "45": {
+   "class": "wall-plug",
+   "covered_frac": 0.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 41,
+   "top_pred": null
+  },
+  "46": {
+   "class": "undefined",
+   "covered_frac": 0.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 64,
+   "top_pred": null
+  },
+  "47": {
+   "class": "",
+   "covered_frac": 0.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 1,
+   "top_pred": null
+  },
+  "48": {
+   "class": "undefined",
+   "covered_frac": 0.9711,
+   "greedy_iou": 0.875,
+   "greedy_pred": 26,
+   "size": 173,
+   "top_pred": 26
+  },
+  "49": {
+   "class": "undefined",
+   "covered_frac": 0.9353,
+   "greedy_iou": 0.5895,
+   "greedy_pred": 8,
+   "size": 38069,
+   "top_pred": 8
+  },
+  "5": {
+   "class": "rug",
+   "covered_frac": 0.0027,
+   "greedy_iou": 0.0011,
+   "greedy_pred": 21,
+   "size": 69330,
+   "top_pred": 8
+  },
+  "50": {
+   "class": "switch",
+   "covered_frac": 0.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 73,
+   "top_pred": null
+  },
+  "51": {
+   "class": "wall",
+   "covered_frac": 0.0083,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 42610,
+   "top_pred": 7
+  },
+  "52": {
+   "class": "other-leaf",
+   "covered_frac": 1.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 6,
+   "top_pred": 4
+  },
+  "53": {
+   "class": "other-leaf",
+   "covered_frac": 0.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 25,
+   "top_pred": null
+  },
+  "54": {
+   "class": "undefined",
+   "covered_frac": 0.3774,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 106,
+   "top_pred": 4
+  },
+  "55": {
+   "class": "undefined",
+   "covered_frac": 0.4493,
+   "greedy_iou": 0.4493,
+   "greedy_pred": 18,
+   "size": 227,
+   "top_pred": 18
+  },
+  "56": {
+   "class": "pillar",
+   "covered_frac": 0.0003,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 3630,
+   "top_pred": 5
+  },
+  "57": {
+   "class": "clock",
+   "covered_frac": 0.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 283,
+   "top_pred": null
+  },
+  "58": {
+   "class": "table",
+   "covered_frac": 0.9701,
+   "greedy_iou": 0.8424,
+   "greedy_pred": 4,
+   "size": 12748,
+   "top_pred": 4
+  },
+  "59": {
+   "class": "other-leaf",
+   "covered_frac": 0.1,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 10,
+   "top_pred": 5
+  },
+  "6": {
+   "class": "anonymize_text",
+   "covered_frac": 0.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 32,
+   "top_pred": null
+  },
+  "60": {
+   "class": "other-leaf",
+   "covered_frac": 0.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 10,
+   "top_pred": null
+  },
+  "61": {
+   "class": "chair",
+   "covered_frac": 0.9265,
+   "greedy_iou": 0.9265,
+   "greedy_pred": 0,
+   "size": 7579,
+   "top_pred": 0
+  },
+  "62": {
+   "class": "other-leaf",
+   "covered_frac": 1.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 7,
+   "top_pred": 14
+  },
+  "63": {
+   "class": "floor",
+   "covered_frac": 0.0031,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 7507,
+   "top_pred": 3
+  },
+  "64": {
+   "class": "tablet",
+   "covered_frac": 1.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 194,
+   "top_pred": 4
+  },
+  "65": {
+   "class": "other-leaf",
+   "covered_frac": 1.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 1,
+   "top_pred": 13
+  },
+  "66": {
+   "class": "tv-screen",
+   "covered_frac": 0.9799,
+   "greedy_iou": 0.5375,
+   "greedy_pred": 17,
+   "size": 12266,
+   "top_pred": 17
+  },
+  "67": {
+   "class": "other-leaf",
+   "covered_frac": 0.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 6,
+   "top_pred": null
+  },
+  "7": {
+   "class": "sofa",
+   "covered_frac": 0.9623,
+   "greedy_iou": 0.959,
+   "greedy_pred": 6,
+   "size": 18343,
+   "top_pred": 6
+  },
+  "8": {
+   "class": "wall",
+   "covered_frac": 0.0038,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 60034,
+   "top_pred": 11
+  },
+  "9": {
+   "class": "sofa",
+   "covered_frac": 0.9888,
+   "greedy_iou": 0.9768,
+   "greedy_pred": 11,
+   "size": 30276,
+   "top_pred": 11
+  }
+ },
+ "oracle_recall_matched_frac": 0.3181818181818182,
+ "over_segmentation": {
+  "n_oracle_objects_split": 2,
+  "split_oracle_ids": [
+   22,
+   42
+  ]
+ },
+ "recall_at_iou": {
+  "0.25": 0.2553191489361702,
+  "0.5": 0.2553191489361702,
+  "0.75": 0.19148936170212766
+ },
+ "scene_dir": "/Users/deevyaswain/Desktop/datasets/replica/office_0",
+ "schema": "c1_exact_eval_v1",
+ "segmenter": {
+  "config_params_json": "{\"checkpoint_gdrive_id\": \"1rD2Uvbsi89X4lSkont_jUTT7X9iaox9y\", \"checkpoint_sha256\": \"da4b68cb52c7f204e6ba9f226ffc1d48693de238ed1d4749d7207fde6a12c4a2\", \"dbscan_eps\": 0.95, \"deviations_from_upstream_env\": [\"trainer.py patched to also save pred_scores (upstream saves only _masks.pt)\", \"model runs in a dedicated python 3.10 conda env (m3d) instead of the pinned conda setup; Colab kernel untouched\", \"nvcc 11.3 from nvidia/label/cuda-11.3.1 conda channel for the MinkowskiEngine build\"], \"min_score\": 0.4, \"min_vertices\": 20, \"num_queries\": 150, \"reresolved_locally\": {\"min_score\": 0.2, \"min_vertices\": 20, \"note\": \"operating-point re-resolution from raw_masks.npz; benchmark-definition choice, not a model change\", \"source_bundle_output_sha256\": \"76914988e13f95edded517a6630073da786e4246be4d51b99d2bbaf706bfcacf\"}, \"use_dbscan\": \"true\"}",
+  "name": "openmask3d_class_agnostic_mask3d",
+  "output_sha256": "7bd513b0710181535265482e17d7a4c54f08d61e804354aa132f5685154ad405",
+  "version": "3bc3fc52693b"
+ },
+ "support_owner": {
+  "classes": [
+   "table",
+   "desk",
+   "shelf",
+   "counter",
+   "stool",
+   "bench",
+   "sofa",
+   "chair",
+   "plant-stand"
+  ],
+  "n_oracle_objects": 7,
+  "note": "recovery of the SUPPORTING furniture only, not of the objects on it (see c1_run per-question answer recall)",
+  "recall_at_iou": {
+   "0.25": 1.0,
+   "0.5": 1.0,
+   "0.75": 0.8571428571428571
+  }
+ },
+ "unassigned_vertex_frac_pred": 0.4801405218170129,
+ "under_segmentation": {
+  "merging_pred_ids": [
+   4,
+   5,
+   7,
+   8,
+   13,
+   14,
+   17
+  ],
+  "n_predictions_merging": 7
+ }
+}

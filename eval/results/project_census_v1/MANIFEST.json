@@ -1,0 +1,95 @@
+{
+ "excluded_by_policy": [
+  "raw masks",
+  "meshes",
+  "images",
+  "point clouds",
+  "the runs/ tree as a whole",
+  "any dataset file"
+ ],
+ "files": [
+  {
+   "original_bytes": 15480,
+   "original_path": "runs/phase8_c1/ms02/replica_office_0_exact_eval.json",
+   "original_sha256": "78b5b2a6dc6fbd375e3199020e141ed57773a59ba0dc094dca4d646dcc9b33ad",
+   "pack_file": "replica_office_0_exact_eval_ms02.json",
+   "producing_commit": "untracked (runs/ is gitignored)",
+   "sanitization": "keys dropped if present: ['embedding', 'embeddings', 'image', 'images', 'masks', 'point_indices', 'rows_raw', 'vertex_ids', 'vertices']; lists over 4000 elements elided",
+   "sanitized_sha256": "d3e57af7c6b64b7761d26b6c383f6e235c674c28cf2316ff386fa4f475ab9709",
+   "why_included": "A: office_0 delivery counts + IoU columns"
+  },
+  {
+   "original_bytes": 14692,
+   "original_path": "runs/phase8_c1/ms02/replica_room_1_exact_eval.json",
+   "original_sha256": "48a6bafaafb22cb9e1d8ebc88c63f4da607e6d50acb47aa3dc9a8493fadda638",
+   "pack_file": "replica_room_1_exact_eval_ms02.json",
+   "producing_commit": "untracked (runs/ is gitignored)",
+   "sanitization": "keys dropped if present: ['embedding', 'embeddings', 'image', 'images', 'masks', 'point_indices', 'rows_raw', 'vertex_ids', 'vertices']; lists over 4000 elements elided",
+   "sanitized_sha256": "aa1aac1e467f145726c96bf76f933ca98e36243c9ba81dd448894be6e3272317",
+   "why_included": "A: room_1 delivery counts + IoU columns"
+  },
+  {
+   "original_bytes": 14817,
+   "original_path": "runs/phase8_c1/ms02/replica_room_2_exact_eval.json",
+   "original_sha256": "156b9a32c2a31a64c7cb56b17948170e5bc6cec8af2c869436efca979a1e4e10",
+   "pack_file": "replica_room_2_exact_eval_ms02.json",
+   "producing_commit": "untracked (runs/ is gitignored)",
+   "sanitization": "keys dropped if present: ['embedding', 'embeddings', 'image', 'images', 'masks', 'point_indices', 'rows_raw', 'vertex_ids', 'vertices']; lists over 4000 elements elided",
+   "sanitized_sha256": "fc97435e00b7fb0743829ba09d759550de4047d3b8bfd05cd85251d3a1d5b314",
+   "why_included": "A: room_2 delivery counts + IoU columns"
+  },
+  {
+   "original_bytes": 68857,
+   "original_path": "runs/arkit_relation_challenge/report.json",
+   "original_sha256": "58cf5755debbf629a466d06c938e50514e39f4159b4784607a07d6701932098b",
+   "pack_file": "arkit_relation_challenge_report.json",
+   "producing_commit": "untracked (runs/ is gitignored)",
+   "sanitization": "keys dropped if present: ['embedding', 'embeddings', 'image', 'images', 'masks', 'point_indices', 'rows_raw', 'vertex_ids', 'vertices']; lists over 4000 elements elided",
+   "sanitized_sha256": "58cf5755debbf629a466d06c938e50514e39f4159b4784607a07d6701932098b",
+   "why_included": "F: five-layer relation QA + anchor resolution"
+  },
+  {
+   "original_bytes": 5561,
+   "original_path": "runs/arkit_rgb_transfer/47331972/score.json",
+   "original_sha256": "d23c70d5c8ee4a4dc7f2ba31ead94aa640448a07c4086c722057af8ac3f58e19",
+   "pack_file": "arkit_rgb_transfer_47331972_score.json",
+   "producing_commit": "c8e200d",
+   "sanitization": "keys dropped if present: ['embedding', 'embeddings', 'image', 'images', 'masks', 'point_indices', 'rows_raw', 'vertex_ids', 'vertices']; lists over 4000 elements elided",
+   "sanitized_sha256": "d23c70d5c8ee4a4dc7f2ba31ead94aa640448a07c4086c722057af8ac3f58e19",
+   "why_included": "F: unseen-scene transfer score"
+  },
+  {
+   "original_bytes": 12746,
+   "original_path": "runs/arkit_representation_kill_test/41069025_common6/report.json",
+   "original_sha256": "aaeb6d6281c0f4ce76f2eaa12ad09859a3adfec6b476337e9138911b6cf1f97a",
+   "pack_file": "arkit_kill_test_report.json",
+   "producing_commit": "untracked (runs/ is gitignored)",
+   "sanitization": "keys dropped if present: ['embedding', 'embeddings', 'image', 'images', 'masks', 'point_indices', 'rows_raw', 'vertex_ids', 'vertices']; lists over 4000 elements elided",
+   "sanitized_sha256": "aaeb6d6281c0f4ce76f2eaa12ad09859a3adfec6b476337e9138911b6cf1f97a",
+   "why_included": "F: 6-question kill test"
+  },
+  {
+   "original_bytes": 5238,
+   "original_path": "runs/semantics_v2/s2_report.json",
+   "original_sha256": "d6e83555a997dfbcee8b0f820e98c6706049ddea683735e304dc83a9723c60c3",
+   "pack_file": "replica_semantics_v2_s2_report.json",
+   "producing_commit": "untracked (runs/ is gitignored)",
+   "sanitization": "keys dropped if present: ['embedding', 'embeddings', 'image', 'images', 'masks', 'point_indices', 'rows_raw', 'vertex_ids', 'vertices']; lists over 4000 elements elided",
+   "sanitized_sha256": "d6e83555a997dfbcee8b0f820e98c6706049ddea683735e304dc83a9723c60c3",
+   "why_included": "E1: Replica support precision/recall per scene"
+  },
+  {
+   "original_bytes": 3948,
+   "original_path": "(produced by this reconciliation pass)",
+   "original_sha256": "\u2014",
+   "pack_file": "camera_convention_depth_diagnostic.json",
+   "producing_commit": "58af9cd",
+   "sanitization": "none; numeric only by construction",
+   "sanitized_sha256": "fce259ba264b21a57b1a639a0e594a97af4a0dcf693159a194956cdd32e4311d",
+   "why_included": "D: the one authoritative camera-convention depth measurement"
+  }
+ ],
+ "missing_at_pack_time": [],
+ "purpose": "Numeric reports needed to reproduce published claims whose primary artifact lives under the gitignored runs/ tree. Copied and sanitized, never regenerated.",
+ "schema": "project_census_evidence_pack_v1"
+}

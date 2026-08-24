@@ -1,0 +1,762 @@
+{
+ "background_vertex_frac_oracle": 0.0,
+ "bundle_dir": "runs/phase8_c1/bundles_ms02/room_2",
+ "g1_vertex_arrays_identical": true,
+ "matches": [
+  {
+   "iou": 0.8434,
+   "oracle_class": "ceiling",
+   "oracle_id": 37,
+   "oracle_size": 113531,
+   "overlap": 112461,
+   "pred_id": 8,
+   "pred_size": 132266
+  },
+  {
+   "iou": 0.8551,
+   "oracle_class": "table",
+   "oracle_id": 5,
+   "oracle_size": 29405,
+   "overlap": 27554,
+   "pred_id": 7,
+   "pred_size": 30372
+  },
+  {
+   "iou": 0.72,
+   "oracle_class": "shelf",
+   "oracle_id": 4,
+   "oracle_size": 17559,
+   "overlap": 15893,
+   "pred_id": 23,
+   "pred_size": 20408
+  },
+  {
+   "iou": 0.5435,
+   "oracle_class": "blinds",
+   "oracle_id": 32,
+   "oracle_size": 15558,
+   "overlap": 15063,
+   "pred_id": 16,
+   "pred_size": 27221
+  },
+  {
+   "iou": 0.888,
+   "oracle_class": "door",
+   "oracle_id": 54,
+   "oracle_size": 13745,
+   "overlap": 12262,
+   "pred_id": 11,
+   "pred_size": 12325
+  },
+  {
+   "iou": 0.9691,
+   "oracle_class": "anonymize_picture",
+   "oracle_id": 58,
+   "oracle_size": 11048,
+   "overlap": 11022,
+   "pred_id": 13,
+   "pred_size": 11347
+  },
+  {
+   "iou": 0.9782,
+   "oracle_class": "chair",
+   "oracle_id": 7,
+   "oracle_size": 9442,
+   "overlap": 9411,
+   "pred_id": 1,
+   "pred_size": 9590
+  },
+  {
+   "iou": 0.9956,
+   "oracle_class": "chair",
+   "oracle_id": 12,
+   "oracle_size": 9381,
+   "overlap": 9371,
+   "pred_id": 0,
+   "pred_size": 9402
+  },
+  {
+   "iou": 0.9897,
+   "oracle_class": "chair",
+   "oracle_id": 9,
+   "oracle_size": 9433,
+   "overlap": 9346,
+   "pred_id": 2,
+   "pred_size": 9356
+  },
+  {
+   "iou": 0.9758,
+   "oracle_class": "chair",
+   "oracle_id": 48,
+   "oracle_size": 9295,
+   "overlap": 9264,
+   "pred_id": 3,
+   "pred_size": 9463
+  },
+  {
+   "iou": 0.9529,
+   "oracle_class": "chair",
+   "oracle_id": 3,
+   "oracle_size": 9470,
+   "overlap": 9131,
+   "pred_id": 6,
+   "pred_size": 9243
+  },
+  {
+   "iou": 0.9695,
+   "oracle_class": "chair",
+   "oracle_id": 13,
+   "oracle_size": 9157,
+   "overlap": 9127,
+   "pred_id": 4,
+   "pred_size": 9384
+  },
+  {
+   "iou": 0.9617,
+   "oracle_class": "chair",
+   "oracle_id": 11,
+   "oracle_size": 9009,
+   "overlap": 8921,
+   "pred_id": 5,
+   "pred_size": 9188
+  },
+  {
+   "iou": 0.9432,
+   "oracle_class": "chair",
+   "oracle_id": 6,
+   "oracle_size": 9104,
+   "overlap": 8664,
+   "pred_id": 9,
+   "pred_size": 8746
+  },
+  {
+   "iou": 0.3996,
+   "oracle_class": "blinds",
+   "oracle_id": 29,
+   "oracle_size": 13541,
+   "overlap": 6231,
+   "pred_id": 15,
+   "pred_size": 8285
+  },
+  {
+   "iou": 0.7742,
+   "oracle_class": "window",
+   "oracle_id": 10,
+   "oracle_size": 7315,
+   "overlap": 5663,
+   "pred_id": 14,
+   "pred_size": 5663
+  },
+  {
+   "iou": 0.922,
+   "oracle_class": "vase",
+   "oracle_id": 17,
+   "oracle_size": 2436,
+   "overlap": 2258,
+   "pred_id": 10,
+   "pred_size": 2271
+  },
+  {
+   "iou": 0.8818,
+   "oracle_class": "vase",
+   "oracle_id": 40,
+   "oracle_size": 1173,
+   "overlap": 1097,
+   "pred_id": 19,
+   "pred_size": 1168
+  },
+  {
+   "iou": 0.7738,
+   "oracle_class": "sculpture",
+   "oracle_id": 49,
+   "oracle_size": 1383,
+   "overlap": 1074,
+   "pred_id": 12,
+   "pred_size": 1079
+  },
+  {
+   "iou": 0.6395,
+   "oracle_class": "vase",
+   "oracle_id": 14,
+   "oracle_size": 1150,
+   "overlap": 1073,
+   "pred_id": 18,
+   "pred_size": 1601
+  },
+  {
+   "iou": 0.273,
+   "oracle_class": "indoor-plant",
+   "oracle_id": 47,
+   "oracle_size": 2008,
+   "overlap": 1046,
+   "pred_id": 26,
+   "pred_size": 2870
+  },
+  {
+   "iou": 0.3537,
+   "oracle_class": "bottle",
+   "oracle_id": 26,
+   "oracle_size": 318,
+   "overlap": 312,
+   "pred_id": 20,
+   "pred_size": 876
+  }
+ ],
+ "n_entity_matches_at_iou": {
+  "0.25": 21,
+  "0.5": 18,
+  "0.75": 15
+ },
+ "n_matched": 22,
+ "n_matched_note": "any-overlap greedy 1:1 pairs incl. structural classes \u2014 NOT detection recall; see n_entity_matches_at_iou",
+ "n_oracle_entity_instances": 53,
+ "n_oracle_instances": 61,
+ "n_pred_instances": 23,
+ "n_unmatched_oracle": 39,
+ "n_unmatched_predictions": 1,
+ "n_vertices": 722496,
+ "oracle_coverage": {
+  "1": {
+   "class": "rug",
+   "covered_frac": 0.0005,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 43939,
+   "top_pred": 0
+  },
+  "10": {
+   "class": "window",
+   "covered_frac": 0.7742,
+   "greedy_iou": 0.7742,
+   "greedy_pred": 14,
+   "size": 7315,
+   "top_pred": 14
+  },
+  "11": {
+   "class": "chair",
+   "covered_frac": 0.9902,
+   "greedy_iou": 0.9617,
+   "greedy_pred": 5,
+   "size": 9009,
+   "top_pred": 5
+  },
+  "12": {
+   "class": "chair",
+   "covered_frac": 0.9989,
+   "greedy_iou": 0.9956,
+   "greedy_pred": 0,
+   "size": 9381,
+   "top_pred": 0
+  },
+  "13": {
+   "class": "chair",
+   "covered_frac": 0.9967,
+   "greedy_iou": 0.9695,
+   "greedy_pred": 4,
+   "size": 9157,
+   "top_pred": 4
+  },
+  "14": {
+   "class": "vase",
+   "covered_frac": 0.933,
+   "greedy_iou": 0.6395,
+   "greedy_pred": 18,
+   "size": 1150,
+   "top_pred": 18
+  },
+  "15": {
+   "class": "vent",
+   "covered_frac": 1.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 1078,
+   "top_pred": 8
+  },
+  "16": {
+   "class": "wall",
+   "covered_frac": 0.0705,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 42903,
+   "top_pred": 16
+  },
+  "17": {
+   "class": "vase",
+   "covered_frac": 0.9269,
+   "greedy_iou": 0.922,
+   "greedy_pred": 10,
+   "size": 2436,
+   "top_pred": 10
+  },
+  "18": {
+   "class": "plate",
+   "covered_frac": 0.9996,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 2317,
+   "top_pred": 7
+  },
+  "19": {
+   "class": "blinds",
+   "covered_frac": 0.0249,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 6493,
+   "top_pred": 15
+  },
+  "2": {
+   "class": "box",
+   "covered_frac": 0.8889,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 216,
+   "top_pred": 20
+  },
+  "20": {
+   "class": "wall",
+   "covered_frac": 0.0062,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 52515,
+   "top_pred": 13
+  },
+  "21": {
+   "class": "sculpture",
+   "covered_frac": 1.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 383,
+   "top_pred": 23
+  },
+  "22": {
+   "class": "box",
+   "covered_frac": 0.8387,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 124,
+   "top_pred": 20
+  },
+  "23": {
+   "class": "wall-plug",
+   "covered_frac": 0.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 45,
+   "top_pred": null
+  },
+  "24": {
+   "class": "box",
+   "covered_frac": 0.9176,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 267,
+   "top_pred": 20
+  },
+  "25": {
+   "class": "wall-plug",
+   "covered_frac": 0.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 48,
+   "top_pred": null
+  },
+  "26": {
+   "class": "bottle",
+   "covered_frac": 0.9811,
+   "greedy_iou": 0.3537,
+   "greedy_pred": 20,
+   "size": 318,
+   "top_pred": 20
+  },
+  "27": {
+   "class": "vase",
+   "covered_frac": 0.6025,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 1698,
+   "top_pred": 26
+  },
+  "28": {
+   "class": "box",
+   "covered_frac": 0.9801,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 603,
+   "top_pred": 23
+  },
+  "29": {
+   "class": "blinds",
+   "covered_frac": 0.4602,
+   "greedy_iou": 0.3996,
+   "greedy_pred": 15,
+   "size": 13541,
+   "top_pred": 15
+  },
+  "3": {
+   "class": "chair",
+   "covered_frac": 0.9642,
+   "greedy_iou": 0.9529,
+   "greedy_pred": 6,
+   "size": 9470,
+   "top_pred": 6
+  },
+  "30": {
+   "class": "wall",
+   "covered_frac": 0.0185,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 58942,
+   "top_pred": 23
+  },
+  "31": {
+   "class": "plate",
+   "covered_frac": 0.9789,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 758,
+   "top_pred": 23
+  },
+  "32": {
+   "class": "blinds",
+   "covered_frac": 0.9682,
+   "greedy_iou": 0.5435,
+   "greedy_pred": 16,
+   "size": 15558,
+   "top_pred": 16
+  },
+  "33": {
+   "class": "undefined",
+   "covered_frac": 0.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 16,
+   "top_pred": null
+  },
+  "34": {
+   "class": "undefined",
+   "covered_frac": 1.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 150,
+   "top_pred": 8
+  },
+  "35": {
+   "class": "box",
+   "covered_frac": 1.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 521,
+   "top_pred": 23
+  },
+  "36": {
+   "class": "lamp",
+   "covered_frac": 1.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 4324,
+   "top_pred": 8
+  },
+  "37": {
+   "class": "ceiling",
+   "covered_frac": 0.9906,
+   "greedy_iou": 0.8434,
+   "greedy_pred": 8,
+   "size": 113531,
+   "top_pred": 8
+  },
+  "38": {
+   "class": "blinds",
+   "covered_frac": 0.1604,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 7577,
+   "top_pred": 15
+  },
+  "39": {
+   "class": "lamp",
+   "covered_frac": 1.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 4073,
+   "top_pred": 8
+  },
+  "4": {
+   "class": "shelf",
+   "covered_frac": 0.9051,
+   "greedy_iou": 0.72,
+   "greedy_pred": 23,
+   "size": 17559,
+   "top_pred": 23
+  },
+  "40": {
+   "class": "vase",
+   "covered_frac": 0.9352,
+   "greedy_iou": 0.8818,
+   "greedy_pred": 19,
+   "size": 1173,
+   "top_pred": 19
+  },
+  "41": {
+   "class": "wall-plug",
+   "covered_frac": 0.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 45,
+   "top_pred": null
+  },
+  "42": {
+   "class": "vent",
+   "covered_frac": 1.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 512,
+   "top_pred": 8
+  },
+  "43": {
+   "class": "wall",
+   "covered_frac": 0.0003,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 75217,
+   "top_pred": 11
+  },
+  "44": {
+   "class": "lamp",
+   "covered_frac": 1.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 4095,
+   "top_pred": 8
+  },
+  "45": {
+   "class": "wall-plug",
+   "covered_frac": 0.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 40,
+   "top_pred": null
+  },
+  "46": {
+   "class": "vase",
+   "covered_frac": 0.9888,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 802,
+   "top_pred": 26
+  },
+  "47": {
+   "class": "indoor-plant",
+   "covered_frac": 0.5209,
+   "greedy_iou": 0.273,
+   "greedy_pred": 26,
+   "size": 2008,
+   "top_pred": 26
+  },
+  "48": {
+   "class": "chair",
+   "covered_frac": 0.9967,
+   "greedy_iou": 0.9758,
+   "greedy_pred": 3,
+   "size": 9295,
+   "top_pred": 3
+  },
+  "49": {
+   "class": "sculpture",
+   "covered_frac": 0.7766,
+   "greedy_iou": 0.7738,
+   "greedy_pred": 12,
+   "size": 1383,
+   "top_pred": 12
+  },
+  "5": {
+   "class": "table",
+   "covered_frac": 0.9371,
+   "greedy_iou": 0.8551,
+   "greedy_pred": 7,
+   "size": 29405,
+   "top_pred": 7
+  },
+  "50": {
+   "class": "window",
+   "covered_frac": 0.9276,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 1935,
+   "top_pred": 16
+  },
+  "51": {
+   "class": "bowl",
+   "covered_frac": 0.9681,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 814,
+   "top_pred": 23
+  },
+  "52": {
+   "class": "blinds",
+   "covered_frac": 1.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 7307,
+   "top_pred": 16
+  },
+  "53": {
+   "class": "switch",
+   "covered_frac": 0.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 35,
+   "top_pred": null
+  },
+  "54": {
+   "class": "door",
+   "covered_frac": 0.8921,
+   "greedy_iou": 0.888,
+   "greedy_pred": 11,
+   "size": 13745,
+   "top_pred": 11
+  },
+  "55": {
+   "class": "lamp",
+   "covered_frac": 1.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 4072,
+   "top_pred": 8
+  },
+  "56": {
+   "class": "indoor-plant",
+   "covered_frac": 1.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 528,
+   "top_pred": 18
+  },
+  "57": {
+   "class": "blinds",
+   "covered_frac": 0.0054,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 3679,
+   "top_pred": 15
+  },
+  "58": {
+   "class": "anonymize_picture",
+   "covered_frac": 0.9976,
+   "greedy_iou": 0.9691,
+   "greedy_pred": 13,
+   "size": 11048,
+   "top_pred": 13
+  },
+  "59": {
+   "class": "vent",
+   "covered_frac": 1.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 433,
+   "top_pred": 8
+  },
+  "6": {
+   "class": "chair",
+   "covered_frac": 0.9517,
+   "greedy_iou": 0.9432,
+   "greedy_pred": 9,
+   "size": 9104,
+   "top_pred": 9
+  },
+  "60": {
+   "class": "window",
+   "covered_frac": 0.2032,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 3233,
+   "top_pred": 15
+  },
+  "61": {
+   "class": "vent",
+   "covered_frac": 1.0,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 979,
+   "top_pred": 8
+  },
+  "7": {
+   "class": "chair",
+   "covered_frac": 0.9967,
+   "greedy_iou": 0.9782,
+   "greedy_pred": 1,
+   "size": 9442,
+   "top_pred": 1
+  },
+  "8": {
+   "class": "floor",
+   "covered_frac": 0.0004,
+   "greedy_iou": 0.0,
+   "greedy_pred": null,
+   "size": 85319,
+   "top_pred": 11
+  },
+  "9": {
+   "class": "chair",
+   "covered_frac": 0.9908,
+   "greedy_iou": 0.9897,
+   "greedy_pred": 2,
+   "size": 9433,
+   "top_pred": 2
+  }
+ },
+ "oracle_recall_matched_frac": 0.36065573770491804,
+ "over_segmentation": {
+  "n_oracle_objects_split": 1,
+  "split_oracle_ids": [
+   49
+  ]
+ },
+ "recall_at_iou": {
+  "0.25": 0.39622641509433965,
+  "0.5": 0.33962264150943394,
+  "0.75": 0.2830188679245283
+ },
+ "scene_dir": "/Users/deevyaswain/Desktop/datasets/replica/room_2",
+ "schema": "c1_exact_eval_v1",
+ "segmenter": {
+  "config_params_json": "{\"checkpoint_gdrive_id\": \"1rD2Uvbsi89X4lSkont_jUTT7X9iaox9y\", \"checkpoint_sha256\": \"da4b68cb52c7f204e6ba9f226ffc1d48693de238ed1d4749d7207fde6a12c4a2\", \"dbscan_eps\": 0.95, \"deviations_from_upstream_env\": [\"trainer.py patched to also save pred_scores (upstream saves only _masks.pt)\", \"model runs in a dedicated python 3.10 conda env (m3d) instead of the pinned conda setup; Colab kernel untouched\", \"nvcc 11.3 from nvidia/label/cuda-11.3.1 conda channel for the MinkowskiEngine build\"], \"min_score\": 0.4, \"min_vertices\": 20, \"num_queries\": 150, \"reresolved_locally\": {\"min_score\": 0.2, \"min_vertices\": 20, \"note\": \"operating-point re-resolution from raw_masks.npz; benchmark-definition choice, not a model change\", \"source_bundle_output_sha256\": \"326c29036f878c727aae716731fb5aa050586ea54078265f7637788ab2459de8\"}, \"use_dbscan\": \"true\"}",
+  "name": "openmask3d_class_agnostic_mask3d",
+  "output_sha256": "2d994fbf1d4b08da8f027ae1e048d05617d9af8f08297b1ed4754d061f8817db",
+  "version": "3bc3fc52693b"
+ },
+ "support_owner": {
+  "classes": [
+   "table",
+   "desk",
+   "shelf",
+   "counter",
+   "stool",
+   "bench",
+   "sofa",
+   "chair",
+   "plant-stand"
+  ],
+  "n_oracle_objects": 10,
+  "note": "recovery of the SUPPORTING furniture only, not of the objects on it (see c1_run per-question answer recall)",
+  "recall_at_iou": {
+   "0.25": 1.0,
+   "0.5": 1.0,
+   "0.75": 0.9
+  }
+ },
+ "unassigned_vertex_frac_pred": 0.5402452055097883,
+ "under_segmentation": {
+  "merging_pred_ids": [
+   7,
+   8,
+   15,
+   16,
+   18,
+   20,
+   23,
+   26
+  ],
+  "n_predictions_merging": 8
+ }
+}

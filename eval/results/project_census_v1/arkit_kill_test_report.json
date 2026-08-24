@@ -1,0 +1,471 @@
+{
+ "arms": {
+  "direct_vlm": {
+   "rows": [
+    {
+     "answer": 1,
+     "confidence": 0.72,
+     "evidence_frame_ids": [
+      "frame_12_702.664",
+      "frame_11_700.865"
+     ],
+     "evidence_sufficient": true,
+     "expected": 1,
+     "id": "q1_rug_cardinality",
+     "kind": "class_cardinality",
+     "outcome": "correct",
+     "question": "How many rugs are in this scene?",
+     "source": "direct_vlm"
+    },
+    {
+     "answer": 2,
+     "confidence": 0.6,
+     "evidence_frame_ids": [
+      "frame_07_655.267",
+      "frame_15_736.867",
+      "frame_17_757.258"
+     ],
+     "evidence_sufficient": true,
+     "expected": 1,
+     "id": "q2_trash_can_cardinality",
+     "kind": "class_cardinality",
+     "outcome": "wrong",
+     "question": "How many trash cans are in this scene?",
+     "source": "direct_vlm"
+    },
+    {
+     "answer": 2,
+     "confidence": 0.55,
+     "evidence_frame_ids": [
+      "frame_17_757.258",
+      "frame_01_606.054",
+      "frame_04_631.260",
+      "frame_00_597.058"
+     ],
+     "evidence_sufficient": true,
+     "expected": 1,
+     "id": "q3_counter_cardinality",
+     "kind": "class_cardinality",
+     "outcome": "wrong",
+     "question": "How many kitchen counters are in this scene?",
+     "source": "direct_vlm"
+    },
+    {
+     "answer": true,
+     "confidence": 0.95,
+     "evidence_frame_ids": [
+      "frame_11_700.865",
+      "frame_13_717.658",
+      "frame_12_702.664"
+     ],
+     "evidence_sufficient": true,
+     "expected": true,
+     "id": "q4_sofa_present",
+     "kind": "class_presence",
+     "outcome": "correct",
+     "question": "Is there a sofa or couch in this scene?",
+     "source": "direct_vlm"
+    },
+    {
+     "answer": 2,
+     "confidence": 0.8,
+     "evidence_frame_ids": [
+      "frame_11_700.865",
+      "frame_13_717.658"
+     ],
+     "evidence_sufficient": true,
+     "expected": 2,
+     "id": "q5_cushion_cardinality",
+     "kind": "class_cardinality",
+     "outcome": "correct",
+     "question": "How many visible sofa cushions are in this scene?",
+     "source": "direct_vlm"
+    },
+    {
+     "answer": "sofa",
+     "confidence": 0.9,
+     "evidence_frame_ids": [
+      "frame_11_700.865",
+      "frame_13_717.658"
+     ],
+     "evidence_sufficient": true,
+     "expected": "sofa",
+     "id": "q6_cushion_on_sofa",
+     "kind": "support_relation",
+     "outcome": "correct",
+     "question": "What do the sofa cushions rest on?",
+     "source": "direct_vlm"
+    }
+   ],
+   "summary": {
+    "accuracy_when_answered": 0.6667,
+    "coverage": 1.0,
+    "exact_accuracy_all": 0.6667,
+    "false_confident_rate": 0.3333,
+    "n_questions": 6,
+    "tally": {
+     "correct": 4,
+     "unanswered": 0,
+     "wrong": 2
+    }
+   }
+  },
+  "hybrid": {
+   "rows": [
+    {
+     "answer": 1,
+     "confidence": 0.72,
+     "evidence_frame_ids": [
+      "frame_12_702.664",
+      "frame_11_700.865"
+     ],
+     "evidence_sufficient": true,
+     "expected": 1,
+     "id": "q1_rug_cardinality",
+     "kind": "class_cardinality",
+     "outcome": "correct",
+     "question": "How many rugs are in this scene?",
+     "route": "visual_evidence",
+     "source": "direct_vlm"
+    },
+    {
+     "answer": 2,
+     "confidence": 0.6,
+     "evidence_frame_ids": [
+      "frame_07_655.267",
+      "frame_15_736.867",
+      "frame_17_757.258"
+     ],
+     "evidence_sufficient": true,
+     "expected": 1,
+     "id": "q2_trash_can_cardinality",
+     "kind": "class_cardinality",
+     "outcome": "wrong",
+     "question": "How many trash cans are in this scene?",
+     "route": "visual_evidence",
+     "source": "direct_vlm"
+    },
+    {
+     "answer": 2,
+     "confidence": 0.55,
+     "evidence_frame_ids": [
+      "frame_17_757.258",
+      "frame_01_606.054",
+      "frame_04_631.260",
+      "frame_00_597.058"
+     ],
+     "evidence_sufficient": true,
+     "expected": 1,
+     "id": "q3_counter_cardinality",
+     "kind": "class_cardinality",
+     "outcome": "wrong",
+     "question": "How many kitchen counters are in this scene?",
+     "route": "visual_evidence",
+     "source": "direct_vlm"
+    },
+    {
+     "answer": true,
+     "confidence": 0.95,
+     "evidence_frame_ids": [
+      "frame_11_700.865",
+      "frame_13_717.658",
+      "frame_12_702.664"
+     ],
+     "evidence_sufficient": true,
+     "expected": true,
+     "id": "q4_sofa_present",
+     "kind": "class_presence",
+     "outcome": "correct",
+     "question": "Is there a sofa or couch in this scene?",
+     "route": "visual_evidence",
+     "source": "direct_vlm"
+    },
+    {
+     "answer": 2,
+     "confidence": 0.8,
+     "evidence_frame_ids": [
+      "frame_11_700.865",
+      "frame_13_717.658"
+     ],
+     "evidence_sufficient": true,
+     "expected": 2,
+     "id": "q5_cushion_cardinality",
+     "kind": "class_cardinality",
+     "outcome": "correct",
+     "question": "How many visible sofa cushions are in this scene?",
+     "route": "visual_evidence",
+     "source": "direct_vlm"
+    },
+    {
+     "answer": "sofa",
+     "confidence": 0.9,
+     "evidence_frame_ids": [
+      "frame_11_700.865",
+      "frame_13_717.658"
+     ],
+     "evidence_sufficient": true,
+     "expected": "sofa",
+     "id": "q6_cushion_on_sofa",
+     "kind": "support_relation",
+     "outcome": "correct",
+     "question": "What do the sofa cushions rest on?",
+     "route": "visual_evidence",
+     "source": "direct_vlm"
+    }
+   ],
+   "summary": {
+    "accuracy_when_answered": 0.6667,
+    "coverage": 1.0,
+    "exact_accuracy_all": 0.6667,
+    "false_confident_rate": 0.3333,
+    "n_questions": 6,
+    "tally": {
+     "correct": 4,
+     "unanswered": 0,
+     "wrong": 2
+    }
+   }
+  },
+  "object_retrieval": {
+   "rows": [
+    {
+     "answer": 0,
+     "expected": 1,
+     "id": "q1_rug_cardinality",
+     "kind": "class_cardinality",
+     "matched_uids": [],
+     "outcome": "wrong",
+     "question": "How many rugs are in this scene?",
+     "source": "object_retrieval"
+    },
+    {
+     "answer": 2,
+     "expected": 1,
+     "id": "q2_trash_can_cardinality",
+     "kind": "class_cardinality",
+     "matched_uids": [
+      "obj_1",
+      "obj_12"
+     ],
+     "outcome": "wrong",
+     "question": "How many trash cans are in this scene?",
+     "source": "object_retrieval"
+    },
+    {
+     "answer": 2,
+     "expected": 1,
+     "id": "q3_counter_cardinality",
+     "kind": "class_cardinality",
+     "matched_uids": [
+      "obj_16",
+      "obj_27"
+     ],
+     "outcome": "wrong",
+     "question": "How many kitchen counters are in this scene?",
+     "source": "object_retrieval"
+    },
+    {
+     "answer": false,
+     "expected": true,
+     "id": "q4_sofa_present",
+     "kind": "class_presence",
+     "matched_uids": [],
+     "outcome": "wrong",
+     "question": "Is there a sofa or couch in this scene?",
+     "source": "object_retrieval"
+    },
+    {
+     "answer": 3,
+     "expected": 2,
+     "id": "q5_cushion_cardinality",
+     "kind": "class_cardinality",
+     "matched_uids": [
+      "obj_9",
+      "obj_13",
+      "obj_23"
+     ],
+     "outcome": "wrong",
+     "question": "How many visible sofa cushions are in this scene?",
+     "source": "object_retrieval"
+    },
+    {
+     "answer": null,
+     "expected": "cushion ON_ENTITY_SURFACE sofa",
+     "id": "q6_cushion_on_sofa",
+     "kind": "support_relation",
+     "outcome": "unanswered",
+     "question": "What do the sofa cushions rest on?",
+     "reason": "the delivered graph emits no ON_ENTITY_SURFACE edge of any kind",
+     "source": "object_retrieval"
+    }
+   ],
+   "summary": {
+    "accuracy_when_answered": 0.0,
+    "coverage": 0.8333,
+    "exact_accuracy_all": 0.0,
+    "false_confident_rate": 1.0,
+    "n_questions": 6,
+    "tally": {
+     "correct": 0,
+     "unanswered": 1,
+     "wrong": 5
+    }
+   }
+  },
+  "typed_graph": {
+   "rows": [
+    {
+     "answer": 0,
+     "expected": 1,
+     "id": "q1_rug_cardinality",
+     "kind": "class_cardinality",
+     "matched_uids": [],
+     "outcome": "wrong",
+     "question": "How many rugs are in this scene?",
+     "source": "typed_graph"
+    },
+    {
+     "answer": 2,
+     "expected": 1,
+     "id": "q2_trash_can_cardinality",
+     "kind": "class_cardinality",
+     "matched_uids": [
+      "obj_1",
+      "obj_12"
+     ],
+     "outcome": "wrong",
+     "question": "How many trash cans are in this scene?",
+     "source": "typed_graph"
+    },
+    {
+     "answer": 2,
+     "expected": 1,
+     "id": "q3_counter_cardinality",
+     "kind": "class_cardinality",
+     "matched_uids": [
+      "obj_16",
+      "obj_27"
+     ],
+     "outcome": "wrong",
+     "question": "How many kitchen counters are in this scene?",
+     "source": "typed_graph"
+    },
+    {
+     "answer": false,
+     "expected": true,
+     "id": "q4_sofa_present",
+     "kind": "class_presence",
+     "matched_uids": [],
+     "outcome": "wrong",
+     "question": "Is there a sofa or couch in this scene?",
+     "source": "typed_graph"
+    },
+    {
+     "answer": 3,
+     "expected": 2,
+     "id": "q5_cushion_cardinality",
+     "kind": "class_cardinality",
+     "matched_uids": [
+      "obj_9",
+      "obj_13",
+      "obj_23"
+     ],
+     "outcome": "wrong",
+     "question": "How many visible sofa cushions are in this scene?",
+     "source": "typed_graph"
+    },
+    {
+     "answer": null,
+     "expected": "cushion ON_ENTITY_SURFACE sofa",
+     "id": "q6_cushion_on_sofa",
+     "kind": "support_relation",
+     "outcome": "unanswered",
+     "question": "What do the sofa cushions rest on?",
+     "reason": "the delivered graph emits no ON_ENTITY_SURFACE edge of any kind",
+     "source": "typed_graph"
+    }
+   ],
+   "summary": {
+    "accuracy_when_answered": 0.0,
+    "coverage": 0.8333,
+    "exact_accuracy_all": 0.0,
+    "false_confident_rate": 1.0,
+    "n_questions": 6,
+    "tally": {
+     "correct": 0,
+     "unanswered": 1,
+     "wrong": 5
+    }
+   }
+  }
+ },
+ "decision": {
+  "absolute_accuracy_gain_vs_best_single": 0.0,
+  "hybrid_coverage": 1.0,
+  "proceed": false,
+  "rules": {
+   "accuracy": "gain >= 0.10",
+   "interpretation": "screening decision only; one scene is not a claim",
+   "safety": "wrong-answer reduction >= 0.30 at coverage >= 0.60"
+  },
+  "status": "measured",
+  "wrong_answer_reduction_vs_lowest_single": 0.0
+ },
+ "inputs": {
+  "direct_responses": "runs/arkit_representation_kill_test/41069025_common6/direct_claude.json",
+  "entities": {
+   "bundle_hash": "ent_openclip_global_indoor_labels_35de101d48b05a87",
+   "entity_manifest": "runs/arkit_label_image_ab_41069025/rgb_tight/entities/manifest.json",
+   "entity_manifest_sha256": "a61f83f3eec75bff9950cef92cb7c3c3c8eb64692ae72b495ee14d521d3964e7",
+   "image_source": "arkitscenes_rgb_crop_pad0.15_mark0",
+   "label_stage": "openclip_global_indoor_labels",
+   "n_entities": 35
+  },
+  "graph": {
+   "bundle_hash": "graph_7082ce66d84ba59b",
+   "edge_types": {
+    "NEAR": 151
+   },
+   "entity_bundle_hash": "ent_openclip_global_indoor_labels_bb17e4e07c7a3994",
+   "graph_manifest": "runs/arkit_vertical_slice/sealed_pair/41069025/graph/manifest.json",
+   "graph_manifest_sha256": "adb53b800ae666287ab25cd131aee71c56b4bf196d0018d8c01b02d3c0b47865",
+   "n_edges": 151
+  },
+  "graph_geometry_compatibility": {
+   "geometry_signature": "f717194a42a7384aa7f2f9617a7c10e0708303b117a9f03f127328a191ff9bfd",
+   "graph_source_entity_manifest": "runs/arkit_vertical_slice/sealed_pair/41069025/entities/manifest.json",
+   "graph_source_entity_manifest_sha256": "398ae31ea1bb283bbf3645c97033a6afe4e44112d355b216abf28e1cac8a97ef",
+   "note": "labels differ by arm; reused relation edges are geometry-only",
+   "status": "exact_geometry_match"
+  },
+  "key": "eval/human_feedback/arkitscenes_41069025_spatial_qa_key_v3_final.json",
+  "key_sha256": "5f007f0d3cdb3f4d5fcf8a64b4f5620566ff53aa9b5e8df11916bd36e2adcac0",
+  "packet": "runs/arkit_representation_kill_test/41069025_common6/packet.json",
+  "packet_sha256": "3d6edb30e12b67e0bc7fc68ceeec2731c07ce0424bae6d87baebd42d5cf7acd7"
+ },
+ "limits": [
+  "One human-reviewed scene is a screening test, not generalization.",
+  "Object retrieval and graph arms share the same delivered instances and labels.",
+  "System-output diagnostics such as reported-region extent are excluded from the common score.",
+  "The direct arm sees selected RGB views and may miss objects outside them.",
+  "No arm changes perception or the human key."
+ ],
+ "question_scope": {
+  "excluded": [
+   "q7_counter_is_object_scale",
+   "q8_cushion_instance_identity"
+  ],
+  "included": [
+   "q1_rug_cardinality",
+   "q2_trash_can_cardinality",
+   "q3_counter_cardinality",
+   "q4_sofa_present",
+   "q5_cushion_cardinality",
+   "q6_cushion_on_sofa"
+  ],
+  "reason": "room-observable questions only; delivered-UID and system-output diagnostics excluded"
+ },
+ "scene_id": "arkitscenes_41069025",
+ "schema": "arkitscenes_representation_kill_test_v1",
+ "stage": "scored"
+}

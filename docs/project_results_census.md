@@ -1,6 +1,7 @@
 # Spatial project — facts-only results census
 
-Compiled 2026-08-23 at repository HEAD `c8e200d`. **No experiment was run, no
+Compiled 2026-08-23 at repository HEAD `c8e200d`; **reconciliation pass applied
+2026-08-24 from `58af9cd`** (see [Reconciliation pass](#reconciliation-pass)). **No experiment was run, no
 threshold, key, evaluation module or system behaviour was changed, and no result
 was reinterpreted or retuned to produce this document.** It records what the
 committed artifacts already state.
@@ -14,7 +15,8 @@ Companion registry: [`docs/project_results_registry.csv`](project_results_regist
 
 | scope | meaning |
 |---|---|
-| `deployable` | a path that could ship: no human key, no oracle in the answer path |
+| `deployable` | a path that could ship, evaluated end-to-end: no human key, no oracle in the answer path, and the metric's denominator is not oracle-selected |
+| `oracle_free_component_eval` | the prediction path is oracle-free, but the **denominator is oracle-selected** — a component evaluation of one stage, **not** end-to-end deployable performance |
 | `delivered` | the delivered pipeline's own output, scored against an oracle or key |
 | `proposal_ceiling` | oracle-evaluated upper bound on proposals — **not** delivered instances, **not** a QA gain |
 | `identity_oracle` | consumes human-supplied identity or mapping — a bound, **never** system performance |
@@ -99,19 +101,23 @@ three different questions with the same denominator.
 
 ARKitScenes. **Matched-instance classification — not detection, and not
 human-ground-truth spatial QA.** The denominator is instances already matched to an
-annotation box; an arm cannot gain by detecting more.
+annotation box by the evaluator, so every row here is
+`oracle_free_component_eval`: the prediction path uses no oracle, but the
+denominator does. **These rows are not end-to-end deployable performance and must
+not be quoted as such.** Reclassified from `deployable`/`delivered` in the
+reconciliation pass.
 
 | scene | arm | top-1 | top-3 | admission precision | scope |
 |---|---|---|---|---|---|
-| 41069021 | splat | 0/7 `[C05]` | 0/7 `[C06]` | 0.00 `[C19]` | delivered |
-| 41069021 | **rgb_tight** | 5/7 `[C07]` | 7/7 `[C08]` | 0.71 `[C20]` | deployable |
-| 41069021 | rgb_context | 3/7 `[C17]` | 5/7 `[C18]` | 0.43 `[C21]` | deployable |
-| 41069025 | splat | 1/9 `[C09]` | 4/9 `[C10]` | 0.20 `[C22]` | delivered |
-| 41069025 | **rgb_tight** | 5/9 `[C11]` | 8/9 `[C12]` | 0.56 `[C23]` | deployable |
-| 41069042 | splat | 0/5 `[C13]` | 0/5 `[C14]` | 0.00 `[C24]` | delivered |
-| 41069042 | **rgb_tight** | 2/5 `[C15]` | 3/5 `[C16]` | 0.50 `[C25]` | deployable |
-| **pooled** | splat | 1/21 `[C01]` | 4/21 `[C03]` | — | delivered |
-| **pooled** | **rgb_tight** | 12/21 `[C02]` | 18/21 `[C04]` | — | deployable |
+| 41069021 | splat | 0/7 `[C05]` | 0/7 `[C06]` | 0.00 `[C19]` | oracle_free_component_eval |
+| 41069021 | **rgb_tight** | 5/7 `[C07]` | 7/7 `[C08]` | 0.71 `[C20]` | oracle_free_component_eval |
+| 41069021 | rgb_context | 3/7 `[C17]` | 5/7 `[C18]` | 0.43 `[C21]` | oracle_free_component_eval |
+| 41069025 | splat | 1/9 `[C09]` | 4/9 `[C10]` | 0.20 `[C22]` | oracle_free_component_eval |
+| 41069025 | **rgb_tight** | 5/9 `[C11]` | 8/9 `[C12]` | 0.56 `[C23]` | oracle_free_component_eval |
+| 41069042 | splat | 0/5 `[C13]` | 0/5 `[C14]` | 0.00 `[C24]` | oracle_free_component_eval |
+| 41069042 | **rgb_tight** | 2/5 `[C15]` | 3/5 `[C16]` | 0.50 `[C25]` | oracle_free_component_eval |
+| **pooled** | splat | 1/21 `[C01]` | 4/21 `[C03]` | — | oracle_free_component_eval |
+| **pooled** | **rgb_tight** | 12/21 `[C02]` | 18/21 `[C04]` | — | oracle_free_component_eval |
 
 Source: `docs/arkitscenes_rgb_label_results.md` (c700df3). Per-scene top-1 sums to the
 pooled figure exactly (0+1+0 = 1/21; 5+5+2 = 12/21), as does top-3 (0+4+0 = 4/21;
@@ -474,6 +480,118 @@ Each is written `—` wherever it would otherwise appear. **None was inferred.**
 
 ---
 
+## Reconciliation pass
+
+Applied 2026-08-24 from `58af9cd`. **No experiment was run and no system behaviour
+changed.** One deterministic diagnostic was re-measured with an existing tracked tool
+— see D below — and every other change is a document correction or a scope label.
+
+### Reclassification of all 25 reported items
+
+| id | class | disposition |
+|---|---|---|
+| A-1 | superseded artifact | original 0.4 Colab reports superseded by frozen `ms02`; precedence below |
+| A-2 | different operating point | inference threshold vs local re-resolution; relationship below |
+| A-3 | different metric | three distinct match criteria, already separate registry rows |
+| A-4 | different metric | best-single-mask vs jointly compatible; relationship below |
+| B-1 | different metric | viable-raw proposal ceiling vs delivered dense assignment |
+| B-2 | different metric | two decompositions of one pooled max; relationship below |
+| C-1 | stale prose | **resolved** — table said *sealed*, Scope said *held-out*; now *held-out* |
+| C-2 | stale prose | **resolved** — model tag corrected to `ViT-B-32-quickgelu` |
+| C-3 | stale prose | **resolved** — the flat *E2E has not been run* claim withdrawn |
+| C-4 | different metric | two different pipelines: Replica C2 scene vocabulary vs ARKit 41-class global |
+| D-1 | missing tracked evidence | **resolved** — unprovenanced range withdrawn, authoritative report created |
+| D-2 | missing tracked evidence | **resolved** — same |
+| D-3 | stale prose | **resolved** — duplicate of C-3 |
+| E-1 – E-5 | superseded artifact | returned review form superseded by the FINAL owner-corrected key; precedence below |
+| E-6 | stale prose | **resolved** — `0.58` relabelled as scene aggregate, not support precision |
+| E-7 | stale prose | **resolved** — the two quantities that both round to `0.94` separated |
+| E-8 | stale prose | **resolved** — room_0 at 0.79 added to the floor-failure list |
+| F-1 | stale prose | **resolved** — the *Still pending* section withdrawn |
+| F-2 | stale prose | **resolved** — thin-evidence slice is **seven**, matching the report |
+| F-3 | stale prose | **resolved** — the run-1 key is in commit `6ee7715`, not at that path |
+| F-4 | stale prose | **resolved** — doc's *cross-view* vs scorer's `binary_near`; counts identical |
+
+### The five pairs that are not contradictions — relationship and precedence
+
+**A-2 · inference threshold 0.4 vs local re-resolution 0.2.** Two different stages of one
+pipeline. Mask3D *inference* ran at `min_score = 0.4`, which is what
+`segmenter.config_params_json` records; the delivered bundle was then *locally
+re-resolved* at `0.2`, which is what `docs/c1_closeout.md` records and what
+`meta.json.reresolved_locally` confirms. **Precedence:** for any delivered-instance
+claim, `0.2` is the operating point. Both numbers are correct about different stages.
+
+**A-4 · best-single-mask 20/53 vs jointly compatible 19/53.** Two different selection
+ceilings on the same proposals. `20/53` allows the best single mask per entity
+independently; `19/53` requires a jointly compatible nomination materialised through the
+frozen resolver. **Precedence:** quote `20/53` for what the proposals contain, `19/53`
+for what a resolver can simultaneously deliver. Never as a before/after.
+
+**B-2 · P1's +13 vs Mask3D's +8.** Both describe the same pooled `33/53` as a per-entity
+max over two banks. From Mask3D's `20/53`, P1 adds 13. From P1's `25/53`, Mask3D adds 8.
+**Precedence:** the pooled figure is the only headline; neither increment may be quoted
+as one arm's contribution without naming the baseline it is measured from.
+
+**A-1 · original 0.4 reports vs frozen `ms02` reports.** Two report sets exist per scene
+under `runs/phase8_c1/`. **Precedence: the `ms02` set supersedes the original.** It is
+the frozen reference bundle every downstream artifact is pinned to, and it is the set
+copied into the evidence pack. The original set is historical and must not be cited.
+
+**E-1 – E-5 · returned review forms vs the FINAL owner-corrected key.** The returned form
+is the raw review capture; the key is the owner's corrected, finalised judgement, with
+each change carrying `source: owner_correction`, the superseded value, and a rationale.
+**Precedence: the FINAL key governs all E2 numbers.** One residual evidentiary caveat,
+recorded rather than resolved: the two cushion pairs carrying the entire E2 recall
+denominator are absent from the returned form and present only in the key, which
+attributes the omission to a form defect (*“the sheet's Build JSON only emits rows with
+a checked radio”*). The 1/3 headline therefore rests on pairs with no independent
+second capture.
+
+### D · one authoritative camera-convention measurement
+
+The two circulating ranges were **not** adjudicated by choosing between them, because
+neither source recorded frames, masks and aggregation for both. Instead one authoritative
+measurement was produced with the already-tracked tool
+`tools/arkitscenes_camera_alignment.depth_alignment_metrics` — the same call the
+dataset-guarded regression executes on every suite run — and recorded at
+`eval/results/project_census_v1/camera_convention_depth_diagnostic.json`.
+
+| | direct (OpenCV) | legacy `[1,-1,-1]` flip |
+|---|---|---|
+| authoritative measurement, 3 named frames | **2.5 – 4.1 cm** | **36.9 – 98.2 cm** |
+| `extractors/arkitscenes_rgb_crops.py` docstring | 2.5 – 4.1 cm | 36.9 – 98.2 cm |
+| `docs/arkitscenes_rgb_label_results.md`, before this pass | 1.4 – 5.2 cm | 23.8 – 68.3 cm |
+
+Frames 305.377 / 380.363 / 455.366 on `41069021`, exact pose match within 0.001 s,
+median absolute error over common pixels, no instance mask. The docstring values
+reproduce exactly. **The document's ranges do not**, and that document recorded no frame
+set, scene or aggregation, so they are classified as *missing tracked evidence* and
+withdrawn rather than reconciled — they may have measured a different set, and nothing
+tracked establishes what. The regression pins only *bounds* (direct ≤ 0.06 m, legacy ≥ 4×
+direct), which both ranges satisfy, so the test never adjudicated them.
+
+### Evidence pack
+
+`eval/results/project_census_v1/` — 8 numeric JSON reports, 0.15 MB total, each with its
+original path, original sha256 and producing commit in `MANIFEST.json`. **No raw masks,
+meshes, images, point clouds or dataset files, and not the `runs/` tree.** Large arrays
+are elided and geometry keys dropped; the manifest records the sanitisation applied.
+Seven of the eight originals live under the gitignored `runs/` tree, which is why they
+are copied here at all.
+
+### Genuine unresolved contradictions remaining: **0**
+
+Of 25 reported items: 11 resolved as stale prose or missing evidence and corrected in
+the source documents; 14 reclassified as different metrics, different operating points,
+or superseded artifacts, each with its relationship and precedence written down.
+
+This is not a claim that the evidence base is complete. **52 unverifiable values remain
+unchanged** and are listed above; 28 registry rows still cite untracked primary sources,
+now reduced in practice for the 7 reports copied into the evidence pack; and the E-4/E-5
+provenance caveat above is recorded, not closed.
+
+---
+
 ## Consistency checks run
 
 | check | result |
@@ -519,38 +637,40 @@ serve as the headline.
 
 ## Five sentences
 
-**Problem:** Answering a spatial question about a real handheld room capture requires
-resolving a natural-language object reference to a delivered 3D instance and then
-reading a relation off that instance, and this project measured those stages separately
-rather than collapsing them into one score `[A05]`, `[F40]`, `[F67]`.
+Revised in the reconciliation pass; the context control is described as *supporting* the
+interpretation rather than confirming it.
 
-**Existing limitation:** The delivered pipeline recovers 12/47, 17/45 and 18/53 oracle
-entities at IoU 0.50 on the three Replica scenes `[A05]`, `[A25]`, `[A48]`, and on
-ARKitScenes the delivered structured arm answered 0 of 10 relation questions `[F40]`
-while the same stored edges under human-supplied identity answered 7 of 10 `[F35]`.
+**Problem:** Answering a spatial question about a real handheld room capture requires
+resolving a natural-language object reference to a delivered 3D instance and then reading
+a relation off that instance, and this project measured those stages separately rather
+than collapsing them into one score `[A05]`, `[F40]`, `[F67]`.
+
+**Existing limitation:** On the two ARKitScenes rooms the delivered structured arm
+answered 0 of 10 relation questions `[F40]` and an oracle-free grounding bridge raised
+that only to 2 of 10 `[F45]`, while the same stored relations under human-supplied
+identity answered 7 of 10 `[F35]`.
 
 **Method:** Each experiment changed exactly one variable — labeler input images
-`[C01→C02]`, proposal source `[B01→B03]`, relation definition `[E01→E02]`, identity
-source `[F40→F35]` and `[F40→F45]`, or scene `[F50→F76]` — and every arm consuming
-human-supplied identity is recorded as `identity_oracle` rather than as performance
-`[F28]`, `[F35]`.
+`[C01→C02]`, proposal source `[B01→B03]`, relation definition `[E01→E02]`, identity source
+`[F40→F35]` and `[F40→F45]`, or scene `[F50→F76]` — and each arm is scoped so that an
+identity oracle `[F28]`, `[F35]`, a proposal ceiling `[B01]`, and an oracle-free component
+evaluation `[C02]` are never quoted as end-to-end deployable performance.
 
 **Strongest result:** Replacing only the labeler's input images, with OpenCLIP weights,
-vocabulary, admission threshold, evaluator, delivered partitions and IoU matching all
-held fixed, raised pooled matched-instance top-1 from 1/21 to 12/21 and top-3 from 4/21
-to 18/21 across three scenes with no tuning between them `[C01]`, `[C02]`, `[C03]`,
-`[C04]`, with a control in the opposite direction confirming the gain comes from object
-texture rather than room context `[C07]`, `[C17]`.
+vocabulary, admission threshold, evaluator, delivered partitions and IoU matching all held
+fixed, raised pooled matched-instance top-1 from 1/21 to 12/21 and top-3 from 4/21 to
+18/21 across three scenes with no tuning between them `[C01]`, `[C02]`, `[C03]`, `[C04]`,
+and a context control in the opposite direction supports the interpretation that the gain
+comes from object texture rather than room gist `[C07]`, `[C17]` — noting this is an
+oracle-free component evaluation on an oracle-selected denominator, not end-to-end
+performance.
 
-**Meaning:** The registry supports the claim that correct relational information exists
-in the representation and is unreachable through the deployed identity stage `[F35]`,
-`[F40]`, `[F63]`, `[F64]`, and that oracle-free grounding did not close that gap
-`[F45]`, `[F67]`, `[F68]`, `[F69]`; it does **not** yet support the object-delivery half
-of that claim on the ARKit scenes where the QA was run, because no row records
-instances absent from those partitions, and the cross-view conclusion rests on a single
-unseen scene `[F79]`, so the interpretation is adopted only in that qualified form.
-
----
+**Meaning:** Correct relational information is present in the representation and
+unreachable through the deployed identity stage `[F35]`, `[F40]`, `[F63]`, `[F64]`, and
+grounding did not close that gap `[F45]`, `[F67]`, `[F68]`, `[F69]`; on a previously
+unseen room the direct-RGB path answered 5 of 10 with zero wrong answers and 0 of 3
+cross-view items `[F76]`, `[F77]`, `[F79]`, so neither path yet answers non-co-visible
+spatial questions deployably.
 
 ## On the proposed interpretation
 

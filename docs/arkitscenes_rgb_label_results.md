@@ -16,7 +16,9 @@ deliberately numpy + Pillow only.)
 
 ## What varied
 
-**Only the images.** Same OpenCLIP ViT-B-32/openai weights, same 41-class
+**Only the images.** Same OpenCLIP `ViT-B-32-quickgelu` / `openai` weights
+(the exact tag in `segmenter/clip_labeler.py` and in every run manifest; earlier
+revisions of this file wrote `ViT-B-32`, which is a different open_clip tag), same 41-class
 `GLOBAL_INDOOR_VOCABULARY_V1`, same `top_k=3`, same `min_top1_score=0.28`,
 same evaluator, same delivered Mask3D partitions, same greedy IoU≥0.50
 matching.
@@ -34,9 +36,9 @@ matching.
 | 41069021 (dev) | splat | 0/7 | 0/7 | 1 | 0.00 | — |
 | 41069021 | **rgb_tight** | **5/7** | **7/7** | 7 | **0.71** | 34/34 (med 0.99) |
 | 41069021 | rgb_context | 3/7 | 5/7 | 7 | 0.43 | 34/34 |
-| 41069025 (sealed) | splat | 1/9 | 4/9 | 5 | 0.20 | — |
+| 41069025 (held-out) | splat | 1/9 | 4/9 | 5 | 0.20 | — |
 | 41069025 | **rgb_tight** | **5/9** | **8/9** | 9 | **0.56** | 35/35 (med 0.97) |
-| 41069042 (sealed) | splat | 0/5 | 0/5 | 3 | 0.00 | — |
+| 41069042 (held-out) | splat | 0/5 | 0/5 | 3 | 0.00 | — |
 | 41069042 | **rgb_tight** | **2/5** | **3/5** | 4 | **0.50** | 23/23 (med 0.99) |
 | **pooled** | splat | **1/21** | **4/21** | | | |
 | **pooled** | **rgb_tight** | **12/21** | **18/21** | | | |
@@ -91,9 +93,12 @@ pooled gain without that row would overstate the result.
   arm.
 * `min_top1_score=0.28` was chosen against splat scores. It is retained for a
   controlled comparison and is **not** calibrated for RGB.
-* Matched-instance accuracy only. **End-to-end QA has not been run** — the
-  RGB image source is not yet wired into `tools/arkit_vertical_slice.py`,
-  which still labels from splats.
+* Matched-instance accuracy only **for the table above**. The RGB image source
+  is not wired into `tools/arkit_vertical_slice.py`, which still labels from
+  splats. **Corrected 2026-08-24:** an earlier revision said flatly that
+  end-to-end QA had not been run, which contradicted the graph-consistency QA
+  section further down this same file. That section exists and its numbers
+  stand; it is graph-consistency QA, not human-ground-truth spatial QA.
 * This fixes naming, not detection. It cannot split the overmerged plane or
   add an instance Mask3D never proposed.
 
@@ -103,8 +108,15 @@ Recorded because both were silent and both produced confident wrong results.
 
 1. **Wrong camera convention.** ARKitScenes poses are plain pinhole/OpenCV;
    an ARKit-native `[1,-1,-1]` axis flip was applied. Fixed in
-   `codex/camera-convention`, verified against synchronized sensor depth
-   (1.4–5.2 cm median error direct, 23.8–68.3 cm flipped).
+   `codex/camera-convention`, verified against synchronized sensor depth.
+   **Authoritative measurement:**
+   `eval/results/project_census_v1/camera_convention_depth_diagnostic.json` —
+   direct median 2.5–4.1 cm, legacy axis flip 36.9–98.2 cm, over the three
+   exactly-posed frames 305.377 / 380.363 / 455.366 on `41069021`, median
+   absolute error over common pixels. An earlier revision of this file quoted
+   `1.4–5.2 cm` and `23.8–68.3 cm` with no frame set, scene or aggregation
+   recorded; those ranges are **not reproducible** by the tracked tool on the
+   named frames and are withdrawn rather than reconciled.
 2. **Stride applied before pose matching.** `load_frames` strided the raw
    60 Hz frame list, then filtered to the ~10 Hz posed subset, intersecting
    two unrelated subsamples and leaving 122 usable frames instead of 1878.

@@ -358,12 +358,15 @@ that description is wrong. The item itself stands: the owner mapped it to
 `obj_3` and answered "bed", and the ceiling agreed. The anchor NAME in the
 manifest is inaccurate and should be corrected before reuse.
 
-### Still pending
+### Resolved, previously listed as pending
 
-The blinded RGB and hybrid layers. Six of the twelve items carry an
-owner-recorded visibility of 0 or 1 view, which is a substantial natural
-thin-evidence slice — but the sufficiency gate applies only to the RGB arm, so
-the secondary subtest cannot run until that arm does.
+**Corrected 2026-08-24.** This section formerly said the blinded RGB and hybrid
+layers were still pending. They were scored in the same pass and appear in the
+Result table above; the section is stale and its claim is withdrawn. The
+thin-evidence slice is **seven** of the twelve items, matching
+`thin_evidence_subtest.n_thin = 7` in the report — an earlier revision said six.
+The sufficiency gate never fired, so the secondary subtest remains untested for
+that reason and not because an arm was missing.
 
 ## Pre-registered: the delivered arm will abstain on every question
 

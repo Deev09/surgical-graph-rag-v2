@@ -238,7 +238,18 @@ Gate outcomes: aggregate recall (0.612 ≥ 0.55) and aggregate precision
 (0.94) PASS; support hits **16/20 @ P 0.94** PASS (v1: 5/20 — D2's
 contained-rest works exactly as designed on the dev scene); attached
 **0/14, zero citations** FAIL; all-scenes precision floor FAIL (office_0
-0.36, room_1 0.58). **STOP_TRACK per the frozen rule: the v1 track
+0.36, room_1 0.58, **and room_0 0.79**). **Two label corrections, 2026-08-24.** (1) The `0.94` in the sentence above is
+the **scene aggregate micro-precision** for room_2 (0.9375). The
+`ON_ENTITY_SURFACE` citation precision for the same scene is a *different*
+number, 0.9412, and both round to 0.94; earlier revisions used the single figure
+for both quantities. The same applies to the transfer figures: `0.58` on room_1
+and `0.36` on office_0 are **scene aggregate micro-precision**, not the support
+relation's own precision, which is 0.5294 on room_1. (2) The prose named only
+office_0 and room_1 as failing the 0.80 all-scenes floor; **room_0 at 0.79 also
+fails it** and was omitted. Source for all values:
+`eval/results/project_census_v1/replica_semantics_v2_s2_report.json`.
+
+**STOP_TRACK per the frozen rule: the v1 track
 remains the project's only benchmark; S3 is cancelled unspent.**
 
 **Why attached scored ZERO (read-only census of all 14 keyed attached

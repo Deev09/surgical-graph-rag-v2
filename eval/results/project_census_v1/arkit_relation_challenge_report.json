@@ -1,0 +1,2332 @@
+{
+ "anchor_resolution": {
+  "per_scene": {
+   "arkitscenes_41069025": {
+    "abstained": [
+     "long narrow desk",
+     "striped rug"
+    ],
+    "admitted_but_not_human_resolvable": [],
+    "coverage": 0.6667,
+    "n_admitted": 8,
+    "n_anchors": 10,
+    "n_correct": 6,
+    "n_human_resolvable": 9,
+    "precision": 0.75
+   },
+   "arkitscenes_41069042": {
+    "abstained": [
+     "window",
+     "white desk",
+     "framed picture standing on the carpet"
+    ],
+    "admitted_but_not_human_resolvable": [
+     "white radiator"
+    ],
+    "coverage": 0.1667,
+    "n_admitted": 4,
+    "n_anchors": 7,
+    "n_correct": 1,
+    "n_human_resolvable": 6,
+    "precision": 0.25
+   }
+  },
+  "rows": [
+   {
+    "abstain_reason": null,
+    "admitted": true,
+    "agreeing_slots": 2,
+    "anchor": "coffee table",
+    "human_resolvable": true,
+    "human_uid": "obj_34",
+    "outcome": "wrong",
+    "predicted_uid": "obj_5",
+    "scene_id": "arkitscenes_41069025",
+    "top_uid": "obj_5"
+   },
+   {
+    "abstain_reason": null,
+    "admitted": true,
+    "agreeing_slots": 2,
+    "anchor": "sofa",
+    "human_resolvable": true,
+    "human_uid": "obj_13",
+    "outcome": "correct",
+    "predicted_uid": "obj_13",
+    "scene_id": "arkitscenes_41069025",
+    "top_uid": "obj_13"
+   },
+   {
+    "abstain_reason": null,
+    "admitted": true,
+    "agreeing_slots": 2,
+    "anchor": "round dining table",
+    "human_resolvable": true,
+    "human_uid": "obj_5",
+    "outcome": "correct",
+    "predicted_uid": "obj_5",
+    "scene_id": "arkitscenes_41069025",
+    "top_uid": "obj_5"
+   },
+   {
+    "abstain_reason": null,
+    "admitted": true,
+    "agreeing_slots": 3,
+    "anchor": "pedestal fan",
+    "human_resolvable": true,
+    "human_uid": "obj_21",
+    "outcome": "correct",
+    "predicted_uid": "obj_21",
+    "scene_id": "arkitscenes_41069025",
+    "top_uid": "obj_21"
+   },
+   {
+    "abstain_reason": "top entity obj_5 won only 1 view slot(s); the rule requires 2",
+    "admitted": false,
+    "agreeing_slots": 1,
+    "anchor": "long narrow desk",
+    "human_resolvable": true,
+    "human_uid": "obj_14",
+    "outcome": "abstained",
+    "predicted_uid": null,
+    "scene_id": "arkitscenes_41069025",
+    "top_uid": "obj_5"
+   },
+   {
+    "abstain_reason": null,
+    "admitted": true,
+    "agreeing_slots": 2,
+    "anchor": "kitchen counter",
+    "human_resolvable": true,
+    "human_uid": "obj_16",
+    "outcome": "wrong",
+    "predicted_uid": "obj_27",
+    "scene_id": "arkitscenes_41069025",
+    "top_uid": "obj_27"
+   },
+   {
+    "abstain_reason": "top entity obj_6 won only 1 view slot(s); the rule requires 2",
+    "admitted": false,
+    "agreeing_slots": 1,
+    "anchor": "striped rug",
+    "human_resolvable": false,
+    "human_uid": null,
+    "outcome": "abstained",
+    "predicted_uid": null,
+    "scene_id": "arkitscenes_41069025",
+    "top_uid": "obj_6"
+   },
+   {
+    "abstain_reason": null,
+    "admitted": true,
+    "agreeing_slots": 2,
+    "anchor": "small grey wastepaper basket under the desk",
+    "human_resolvable": true,
+    "human_uid": "obj_1",
+    "outcome": "correct",
+    "predicted_uid": "obj_1",
+    "scene_id": "arkitscenes_41069025",
+    "top_uid": "obj_1"
+   },
+   {
+    "abstain_reason": null,
+    "admitted": true,
+    "agreeing_slots": 3,
+    "anchor": "tall stainless kitchen bin",
+    "human_resolvable": true,
+    "human_uid": "obj_12",
+    "outcome": "correct",
+    "predicted_uid": "obj_12",
+    "scene_id": "arkitscenes_41069025",
+    "top_uid": "obj_12"
+   },
+   {
+    "abstain_reason": null,
+    "admitted": true,
+    "agreeing_slots": 3,
+    "anchor": "white convector heater",
+    "human_resolvable": true,
+    "human_uid": "obj_2",
+    "outcome": "correct",
+    "predicted_uid": "obj_2",
+    "scene_id": "arkitscenes_41069025",
+    "top_uid": "obj_2"
+   },
+   {
+    "abstain_reason": null,
+    "admitted": true,
+    "agreeing_slots": 3,
+    "anchor": "white radiator",
+    "human_resolvable": false,
+    "human_uid": null,
+    "outcome": "wrong",
+    "predicted_uid": "obj_2",
+    "scene_id": "arkitscenes_41069042",
+    "top_uid": "obj_2"
+   },
+   {
+    "abstain_reason": "top entity obj_16 won only 1 view slot(s); the rule requires 2",
+    "admitted": false,
+    "agreeing_slots": 1,
+    "anchor": "window",
+    "human_resolvable": true,
+    "human_uid": "obj_17",
+    "outcome": "abstained",
+    "predicted_uid": null,
+    "scene_id": "arkitscenes_41069042",
+    "top_uid": "obj_16"
+   },
+   {
+    "abstain_reason": "top entity obj_14 won only 1 view slot(s); the rule requires 2",
+    "admitted": false,
+    "agreeing_slots": 1,
+    "anchor": "white desk",
+    "human_resolvable": true,
+    "human_uid": "obj_22",
+    "outcome": "abstained",
+    "predicted_uid": null,
+    "scene_id": "arkitscenes_41069042",
+    "top_uid": "obj_14"
+   },
+   {
+    "abstain_reason": "top entity obj_16 won only 1 view slot(s); the rule requires 2",
+    "admitted": false,
+    "agreeing_slots": 1,
+    "anchor": "framed picture standing on the carpet",
+    "human_resolvable": true,
+    "human_uid": "obj_3",
+    "outcome": "abstained",
+    "predicted_uid": null,
+    "scene_id": "arkitscenes_41069042",
+    "top_uid": "obj_16"
+   },
+   {
+    "abstain_reason": null,
+    "admitted": true,
+    "agreeing_slots": 3,
+    "anchor": "chest of drawers",
+    "human_resolvable": true,
+    "human_uid": "obj_9",
+    "outcome": "correct",
+    "predicted_uid": "obj_9",
+    "scene_id": "arkitscenes_41069042",
+    "top_uid": "obj_9"
+   },
+   {
+    "abstain_reason": null,
+    "admitted": true,
+    "agreeing_slots": 2,
+    "anchor": "bed",
+    "human_resolvable": true,
+    "human_uid": "obj_6",
+    "outcome": "wrong",
+    "predicted_uid": "obj_18",
+    "scene_id": "arkitscenes_41069042",
+    "top_uid": "obj_18"
+   },
+   {
+    "abstain_reason": null,
+    "admitted": true,
+    "agreeing_slots": 3,
+    "anchor": "cream curtain",
+    "human_resolvable": true,
+    "human_uid": "obj_11",
+    "outcome": "wrong",
+    "predicted_uid": "obj_2",
+    "scene_id": "arkitscenes_41069042",
+    "top_uid": "obj_2"
+   }
+  ],
+  "summary": {
+   "abstained": [
+    "long narrow desk",
+    "striped rug",
+    "window",
+    "white desk",
+    "framed picture standing on the carpet"
+   ],
+   "admitted_but_not_human_resolvable": [
+    "white radiator"
+   ],
+   "coverage": 0.4667,
+   "n_admitted": 12,
+   "n_anchors": 17,
+   "n_correct": 7,
+   "n_human_resolvable": 15,
+   "precision": 0.5833
+  }
+ },
+ "arms": {
+  "blinded_rgb_vlm": {
+   "deployable": true,
+   "layer_kind": "delivered",
+   "model": {
+    "name": "claude-opus-5",
+    "provider": "anthropic",
+    "version": "claude-opus-5"
+   },
+   "per_scene": {
+    "arkitscenes_41069025": {
+     "accuracy_when_answered": 1.0,
+     "coverage": 1.0,
+     "exact_accuracy_all": 1.0,
+     "false_confident_rate": 0.0,
+     "n_excluded_no_human_answer": 1,
+     "n_questions_scored": 6,
+     "tally": {
+      "correct": 6,
+      "unanswered": 0,
+      "wrong": 0
+     }
+    },
+    "arkitscenes_41069042": {
+     "accuracy_when_answered": 0.3333,
+     "coverage": 0.75,
+     "exact_accuracy_all": 0.25,
+     "false_confident_rate": 0.6667,
+     "n_excluded_no_human_answer": 1,
+     "n_questions_scored": 4,
+     "tally": {
+      "correct": 1,
+      "unanswered": 1,
+      "wrong": 2
+     }
+    }
+   },
+   "rows": [
+    {
+     "answer": "sofa",
+     "confidence": 0.9,
+     "evidence_frame_ids": [
+      "frame_14_722.706",
+      "frame_13_717.658",
+      "frame_05_641.773"
+     ],
+     "evidence_sufficient": true,
+     "evidence_views": "1",
+     "expected": "sofa",
+     "form": "comparative_near",
+     "human_marked_ambiguous": false,
+     "id": "q25_cmp_coffee_table_sofa_vs_dining",
+     "outcome": "correct",
+     "outcome_as_returned": "sofa",
+     "outcome_hint": "answered",
+     "outcome_normalized": true,
+     "scene_id": "arkitscenes_41069025",
+     "source": "blinded_rgb_vlm"
+    },
+    {
+     "answer": "long narrow desk",
+     "confidence": 0.88,
+     "evidence_frame_ids": [
+      "frame_06_654.217",
+      "frame_08_667.845",
+      "frame_09_681.073"
+     ],
+     "evidence_sufficient": true,
+     "evidence_views": "1",
+     "expected": "long narrow desk",
+     "form": "comparative_near",
+     "human_marked_ambiguous": false,
+     "id": "q25_cmp_fan_desk_vs_counter",
+     "outcome": "correct",
+     "outcome_as_returned": "long narrow desk",
+     "outcome_hint": "answered",
+     "outcome_normalized": true,
+     "scene_id": "arkitscenes_41069025",
+     "source": "blinded_rgb_vlm"
+    },
+    {
+     "answer": "sofa",
+     "confidence": 0.9,
+     "evidence_frame_ids": [
+      "frame_12_702.481",
+      "frame_11_700.915",
+      "frame_15_737.100"
+     ],
+     "evidence_sufficient": true,
+     "evidence_views": null,
+     "expected": null,
+     "form": "comparative_near",
+     "human_marked_ambiguous": true,
+     "id": "q25_cmp_rug_sofa_vs_counter",
+     "outcome": "excluded_no_human_answer",
+     "outcome_as_returned": "sofa",
+     "outcome_hint": "answered",
+     "outcome_normalized": true,
+     "scene_id": "arkitscenes_41069025",
+     "source": "blinded_rgb_vlm"
+    },
+    {
+     "answer": true,
+     "confidence": 0.92,
+     "evidence_frame_ids": [
+      "frame_07_655.783",
+      "frame_06_654.217"
+     ],
+     "evidence_sufficient": true,
+     "evidence_views": "2+",
+     "expected": true,
+     "form": "binary_near",
+     "human_marked_ambiguous": false,
+     "id": "q25_bin_basket_near_desk",
+     "outcome": "correct",
+     "outcome_as_returned": "true",
+     "outcome_hint": "answered",
+     "outcome_normalized": true,
+     "scene_id": "arkitscenes_41069025",
+     "source": "blinded_rgb_vlm"
+    },
+    {
+     "answer": true,
+     "confidence": 0.85,
+     "evidence_frame_ids": [
+      "frame_15_737.100",
+      "frame_00_597.024"
+     ],
+     "evidence_sufficient": true,
+     "evidence_views": "2+",
+     "expected": true,
+     "form": "binary_near",
+     "human_marked_ambiguous": false,
+     "id": "q25_bin_kitchenbin_near_counter",
+     "outcome": "correct",
+     "outcome_as_returned": "true",
+     "outcome_hint": "answered",
+     "outcome_normalized": true,
+     "scene_id": "arkitscenes_41069025",
+     "source": "blinded_rgb_vlm"
+    },
+    {
+     "answer": false,
+     "confidence": 0.6,
+     "evidence_frame_ids": [
+      "frame_15_737.100",
+      "frame_07_655.783"
+     ],
+     "evidence_sufficient": true,
+     "evidence_views": "0",
+     "expected": false,
+     "form": "binary_near",
+     "human_marked_ambiguous": false,
+     "id": "q25_bin_kitchenbin_near_basket",
+     "outcome": "correct",
+     "outcome_as_returned": "false",
+     "outcome_hint": "answered",
+     "outcome_normalized": true,
+     "scene_id": "arkitscenes_41069025",
+     "source": "blinded_rgb_vlm"
+    },
+    {
+     "answer": [
+      "striped rug",
+      "coffee table",
+      "white convector heater"
+     ],
+     "confidence": 0.82,
+     "evidence_frame_ids": [
+      "frame_11_700.915",
+      "frame_12_702.481",
+      "frame_14_722.706",
+      "frame_13_717.658"
+     ],
+     "evidence_sufficient": true,
+     "evidence_views": "2+",
+     "expected": [
+      "striped rug",
+      "coffee table",
+      "white convector heater"
+     ],
+     "form": "near_set",
+     "human_marked_ambiguous": false,
+     "id": "q25_set_near_sofa",
+     "outcome": "correct",
+     "outcome_hint": "answered",
+     "scene_id": "arkitscenes_41069025",
+     "source": "blinded_rgb_vlm"
+    },
+    {
+     "answer": "window",
+     "confidence": 0.5,
+     "evidence_frame_ids": [
+      "frame_13_3118.108",
+      "frame_14_3119.241"
+     ],
+     "evidence_sufficient": true,
+     "evidence_views": "0",
+     "expected": null,
+     "form": "comparative_near",
+     "human_marked_ambiguous": true,
+     "id": "q42_cmp_radiator_window_vs_desk",
+     "outcome": "excluded_no_human_answer",
+     "outcome_as_returned": "window",
+     "outcome_hint": "answered",
+     "outcome_normalized": true,
+     "scene_id": "arkitscenes_41069042",
+     "source": "blinded_rgb_vlm"
+    },
+    {
+     "answer": null,
+     "confidence": 0.0,
+     "evidence_frame_ids": [],
+     "evidence_sufficient": false,
+     "evidence_views": "1",
+     "expected": "bed",
+     "form": "comparative_near",
+     "human_marked_ambiguous": false,
+     "id": "q42_cmp_picture_drawers_vs_bed",
+     "outcome": "unanswered",
+     "outcome_hint": "unanswered",
+     "reason": "model returned unknown",
+     "scene_id": "arkitscenes_41069042",
+     "source": "blinded_rgb_vlm"
+    },
+    {
+     "answer": true,
+     "confidence": 0.6,
+     "evidence_frame_ids": [
+      "frame_15_3129.453",
+      "frame_16_3130.586",
+      "frame_17_3138.766"
+     ],
+     "evidence_sufficient": true,
+     "evidence_views": "1",
+     "expected": true,
+     "form": "binary_near",
+     "human_marked_ambiguous": false,
+     "id": "q42_bin_desk_near_drawers",
+     "outcome": "correct",
+     "outcome_as_returned": "true",
+     "outcome_hint": "answered",
+     "outcome_normalized": true,
+     "scene_id": "arkitscenes_41069042",
+     "source": "blinded_rgb_vlm"
+    },
+    {
+     "answer": true,
+     "confidence": 0.55,
+     "evidence_frame_ids": [
+      "frame_09_3097.017",
+      "frame_10_3098.383",
+      "frame_12_3108.145"
+     ],
+     "evidence_sufficient": true,
+     "evidence_views": "0",
+     "expected": false,
+     "form": "binary_near",
+     "human_marked_ambiguous": false,
+     "id": "q42_bin_bed_near_desk",
+     "outcome": "wrong",
+     "outcome_as_returned": "true",
+     "outcome_hint": "answered",
+     "outcome_normalized": true,
+     "scene_id": "arkitscenes_41069042",
+     "source": "blinded_rgb_vlm"
+    },
+    {
+     "answer": [
+      "white radiator",
+      "cream curtain",
+      "bed"
+     ],
+     "confidence": 0.5,
+     "evidence_frame_ids": [
+      "frame_00_3048.020",
+      "frame_05_3071.844",
+      "frame_13_3118.108",
+      "frame_14_3119.241"
+     ],
+     "evidence_sufficient": true,
+     "evidence_views": "2+",
+     "expected": [
+      "cream curtain"
+     ],
+     "form": "near_set",
+     "human_marked_ambiguous": false,
+     "id": "q42_set_near_window",
+     "outcome": "wrong",
+     "outcome_as_returned": "answered",
+     "outcome_hint": "answered",
+     "outcome_normalized": true,
+     "scene_id": "arkitscenes_41069042",
+     "source": "blinded_rgb_vlm"
+    }
+   ],
+   "summary": {
+    "accuracy_when_answered": 0.7778,
+    "coverage": 0.9,
+    "exact_accuracy_all": 0.7,
+    "false_confident_rate": 0.2222,
+    "n_excluded_no_human_answer": 2,
+    "n_questions_scored": 10,
+    "tally": {
+     "correct": 7,
+     "unanswered": 1,
+     "wrong": 2
+    }
+   }
+  },
+  "delivered_graph": {
+   "deployable": true,
+   "layer_kind": "delivered",
+   "per_scene": {
+    "arkitscenes_41069025": {
+     "accuracy_when_answered": null,
+     "coverage": 0.0,
+     "exact_accuracy_all": 0.0,
+     "false_confident_rate": null,
+     "n_excluded_no_human_answer": 1,
+     "n_questions_scored": 6,
+     "tally": {
+      "correct": 0,
+      "unanswered": 6,
+      "wrong": 0
+     }
+    },
+    "arkitscenes_41069042": {
+     "accuracy_when_answered": null,
+     "coverage": 0.0,
+     "exact_accuracy_all": 0.0,
+     "false_confident_rate": null,
+     "n_excluded_no_human_answer": 1,
+     "n_questions_scored": 4,
+     "tally": {
+      "correct": 0,
+      "unanswered": 4,
+      "wrong": 0
+     }
+    }
+   },
+   "rows": [
+    {
+     "answer": null,
+     "evidence_views": "1",
+     "expected": "sofa",
+     "form": "comparative_near",
+     "human_marked_ambiguous": false,
+     "id": "q25_cmp_coffee_table_sofa_vs_dining",
+     "outcome": "unanswered",
+     "outcome_hint": "unanswered",
+     "reason": "no delivered instance carries an admitted label for this object",
+     "scene_id": "arkitscenes_41069025",
+     "source": "delivered_graph"
+    },
+    {
+     "answer": null,
+     "evidence_views": "1",
+     "expected": "long narrow desk",
+     "form": "comparative_near",
+     "human_marked_ambiguous": false,
+     "id": "q25_cmp_fan_desk_vs_counter",
+     "outcome": "unanswered",
+     "outcome_hint": "unanswered",
+     "reason": "no delivered instance carries an admitted label for this object",
+     "scene_id": "arkitscenes_41069025",
+     "source": "delivered_graph"
+    },
+    {
+     "answer": null,
+     "evidence_views": null,
+     "expected": null,
+     "form": "comparative_near",
+     "human_marked_ambiguous": true,
+     "id": "q25_cmp_rug_sofa_vs_counter",
+     "outcome": "excluded_no_human_answer",
+     "outcome_hint": "unanswered",
+     "reason": "no delivered instance carries an admitted label for this object",
+     "scene_id": "arkitscenes_41069025",
+     "source": "delivered_graph"
+    },
+    {
+     "answer": null,
+     "evidence_views": "2+",
+     "expected": true,
+     "form": "binary_near",
+     "human_marked_ambiguous": false,
+     "id": "q25_bin_basket_near_desk",
+     "outcome": "unanswered",
+     "outcome_hint": "unanswered",
+     "reason": "no delivered instance carries an admitted label for this object",
+     "scene_id": "arkitscenes_41069025",
+     "source": "delivered_graph"
+    },
+    {
+     "answer": null,
+     "evidence_views": "2+",
+     "expected": true,
+     "form": "binary_near",
+     "human_marked_ambiguous": false,
+     "id": "q25_bin_kitchenbin_near_counter",
+     "outcome": "unanswered",
+     "outcome_hint": "unanswered",
+     "reason": "no delivered instance carries an admitted label for this object",
+     "scene_id": "arkitscenes_41069025",
+     "source": "delivered_graph"
+    },
+    {
+     "answer": null,
+     "evidence_views": "0",
+     "expected": false,
+     "form": "binary_near",
+     "human_marked_ambiguous": false,
+     "id": "q25_bin_kitchenbin_near_basket",
+     "outcome": "unanswered",
+     "outcome_hint": "unanswered",
+     "reason": "no delivered instance carries an admitted label for this object",
+     "scene_id": "arkitscenes_41069025",
+     "source": "delivered_graph"
+    },
+    {
+     "answer": null,
+     "evidence_views": "2+",
+     "expected": [
+      "striped rug",
+      "coffee table",
+      "white convector heater"
+     ],
+     "form": "near_set",
+     "human_marked_ambiguous": false,
+     "id": "q25_set_near_sofa",
+     "outcome": "unanswered",
+     "outcome_hint": "unanswered",
+     "reason": "no delivered instance carries an admitted label for this object",
+     "scene_id": "arkitscenes_41069025",
+     "source": "delivered_graph"
+    },
+    {
+     "answer": null,
+     "evidence_views": "0",
+     "expected": null,
+     "form": "comparative_near",
+     "human_marked_ambiguous": true,
+     "id": "q42_cmp_radiator_window_vs_desk",
+     "outcome": "excluded_no_human_answer",
+     "outcome_hint": "unanswered",
+     "reason": "no delivered instance carries an admitted label for this object",
+     "scene_id": "arkitscenes_41069042",
+     "source": "delivered_graph"
+    },
+    {
+     "answer": null,
+     "evidence_views": "1",
+     "expected": "bed",
+     "form": "comparative_near",
+     "human_marked_ambiguous": false,
+     "id": "q42_cmp_picture_drawers_vs_bed",
+     "outcome": "unanswered",
+     "outcome_hint": "unanswered",
+     "reason": "no delivered instance carries an admitted label for this object",
+     "scene_id": "arkitscenes_41069042",
+     "source": "delivered_graph"
+    },
+    {
+     "answer": null,
+     "evidence_views": "1",
+     "expected": true,
+     "form": "binary_near",
+     "human_marked_ambiguous": false,
+     "id": "q42_bin_desk_near_drawers",
+     "outcome": "unanswered",
+     "outcome_hint": "unanswered",
+     "reason": "no delivered instance carries an admitted label for this object",
+     "scene_id": "arkitscenes_41069042",
+     "source": "delivered_graph"
+    },
+    {
+     "answer": null,
+     "evidence_views": "0",
+     "expected": false,
+     "form": "binary_near",
+     "human_marked_ambiguous": false,
+     "id": "q42_bin_bed_near_desk",
+     "outcome": "unanswered",
+     "outcome_hint": "unanswered",
+     "reason": "no delivered instance carries an admitted label for this object",
+     "scene_id": "arkitscenes_41069042",
+     "source": "delivered_graph"
+    },
+    {
+     "answer": null,
+     "evidence_views": "2+",
+     "expected": [
+      "cream curtain"
+     ],
+     "form": "near_set",
+     "human_marked_ambiguous": false,
+     "id": "q42_set_near_window",
+     "outcome": "unanswered",
+     "outcome_hint": "unanswered",
+     "reason": "no delivered instance carries an admitted label for this object",
+     "scene_id": "arkitscenes_41069042",
+     "source": "delivered_graph"
+    }
+   ],
+   "summary": {
+    "accuracy_when_answered": null,
+    "coverage": 0.0,
+    "exact_accuracy_all": 0.0,
+    "false_confident_rate": null,
+    "n_excluded_no_human_answer": 2,
+    "n_questions_scored": 10,
+    "tally": {
+     "correct": 0,
+     "unanswered": 10,
+     "wrong": 0
+    }
+   }
+  },
+  "evidence_aware_hybrid": {
+   "deployable": true,
+   "layer_kind": "delivered",
+   "per_scene": {
+    "arkitscenes_41069025": {
+     "accuracy_when_answered": 1.0,
+     "coverage": 1.0,
+     "exact_accuracy_all": 1.0,
+     "false_confident_rate": 0.0,
+     "n_excluded_no_human_answer": 1,
+     "n_questions_scored": 6,
+     "tally": {
+      "correct": 6,
+      "unanswered": 0,
+      "wrong": 0
+     }
+    },
+    "arkitscenes_41069042": {
+     "accuracy_when_answered": 0.3333,
+     "coverage": 0.75,
+     "exact_accuracy_all": 0.25,
+     "false_confident_rate": 0.6667,
+     "n_excluded_no_human_answer": 1,
+     "n_questions_scored": 4,
+     "tally": {
+      "correct": 1,
+      "unanswered": 1,
+      "wrong": 2
+     }
+    }
+   },
+   "rows": [
+    {
+     "answer": "sofa",
+     "answered_by": "blinded_rgb_vlm",
+     "confidence": 0.9,
+     "evidence_frame_ids": [
+      "frame_14_722.706",
+      "frame_13_717.658",
+      "frame_05_641.773"
+     ],
+     "evidence_sufficient": true,
+     "evidence_views": "1",
+     "expected": "sofa",
+     "form": "comparative_near",
+     "graph_abstained_because": "no delivered instance carries an admitted label for this object",
+     "human_marked_ambiguous": false,
+     "id": "q25_cmp_coffee_table_sofa_vs_dining",
+     "outcome": "correct",
+     "outcome_as_returned": "sofa",
+     "outcome_hint": "answered",
+     "outcome_normalized": true,
+     "route": "visual_evidence",
+     "scene_id": "arkitscenes_41069025",
+     "source": "evidence_aware_hybrid",
+     "sufficiency_gate": {
+      "cited_views": 3,
+      "rule_if_armed": "fewer than two valid cited views",
+      "status": "telemetry_only_parked_2026_08_17",
+      "would_suppress": false
+     }
+    },
+    {
+     "answer": "long narrow desk",
+     "answered_by": "blinded_rgb_vlm",
+     "confidence": 0.88,
+     "evidence_frame_ids": [
+      "frame_06_654.217",
+      "frame_08_667.845",
+      "frame_09_681.073"
+     ],
+     "evidence_sufficient": true,
+     "evidence_views": "1",
+     "expected": "long narrow desk",
+     "form": "comparative_near",
+     "graph_abstained_because": "no delivered instance carries an admitted label for this object",
+     "human_marked_ambiguous": false,
+     "id": "q25_cmp_fan_desk_vs_counter",
+     "outcome": "correct",
+     "outcome_as_returned": "long narrow desk",
+     "outcome_hint": "answered",
+     "outcome_normalized": true,
+     "route": "visual_evidence",
+     "scene_id": "arkitscenes_41069025",
+     "source": "evidence_aware_hybrid",
+     "sufficiency_gate": {
+      "cited_views": 3,
+      "rule_if_armed": "fewer than two valid cited views",
+      "status": "telemetry_only_parked_2026_08_17",
+      "would_suppress": false
+     }
+    },
+    {
+     "answer": "sofa",
+     "answered_by": "blinded_rgb_vlm",
+     "confidence": 0.9,
+     "evidence_frame_ids": [
+      "frame_12_702.481",
+      "frame_11_700.915",
+      "frame_15_737.100"
+     ],
+     "evidence_sufficient": true,
+     "evidence_views": null,
+     "expected": null,
+     "form": "comparative_near",
+     "graph_abstained_because": "no delivered instance carries an admitted label for this object",
+     "human_marked_ambiguous": true,
+     "id": "q25_cmp_rug_sofa_vs_counter",
+     "outcome": "excluded_no_human_answer",
+     "outcome_as_returned": "sofa",
+     "outcome_hint": "answered",
+     "outcome_normalized": true,
+     "route": "visual_evidence",
+     "scene_id": "arkitscenes_41069025",
+     "source": "evidence_aware_hybrid",
+     "sufficiency_gate": {
+      "cited_views": 3,
+      "rule_if_armed": "fewer than two valid cited views",
+      "status": "telemetry_only_parked_2026_08_17",
+      "would_suppress": false
+     }
+    },
+    {
+     "answer": true,
+     "answered_by": "blinded_rgb_vlm",
+     "confidence": 0.92,
+     "evidence_frame_ids": [
+      "frame_07_655.783",
+      "frame_06_654.217"
+     ],
+     "evidence_sufficient": true,
+     "evidence_views": "2+",
+     "expected": true,
+     "form": "binary_near",
+     "graph_abstained_because": "no delivered instance carries an admitted label for this object",
+     "human_marked_ambiguous": false,
+     "id": "q25_bin_basket_near_desk",
+     "outcome": "correct",
+     "outcome_as_returned": "true",
+     "outcome_hint": "answered",
+     "outcome_normalized": true,
+     "route": "visual_evidence",
+     "scene_id": "arkitscenes_41069025",
+     "source": "evidence_aware_hybrid",
+     "sufficiency_gate": {
+      "cited_views": 2,
+      "rule_if_armed": "fewer than two valid cited views",
+      "status": "telemetry_only_parked_2026_08_17",
+      "would_suppress": false
+     }
+    },
+    {
+     "answer": true,
+     "answered_by": "blinded_rgb_vlm",
+     "confidence": 0.85,
+     "evidence_frame_ids": [
+      "frame_15_737.100",
+      "frame_00_597.024"
+     ],
+     "evidence_sufficient": true,
+     "evidence_views": "2+",
+     "expected": true,
+     "form": "binary_near",
+     "graph_abstained_because": "no delivered instance carries an admitted label for this object",
+     "human_marked_ambiguous": false,
+     "id": "q25_bin_kitchenbin_near_counter",
+     "outcome": "correct",
+     "outcome_as_returned": "true",
+     "outcome_hint": "answered",
+     "outcome_normalized": true,
+     "route": "visual_evidence",
+     "scene_id": "arkitscenes_41069025",
+     "source": "evidence_aware_hybrid",
+     "sufficiency_gate": {
+      "cited_views": 2,
+      "rule_if_armed": "fewer than two valid cited views",
+      "status": "telemetry_only_parked_2026_08_17",
+      "would_suppress": false
+     }
+    },
+    {
+     "answer": false,
+     "answered_by": "blinded_rgb_vlm",
+     "confidence": 0.6,
+     "evidence_frame_ids": [
+      "frame_15_737.100",
+      "frame_07_655.783"
+     ],
+     "evidence_sufficient": true,
+     "evidence_views": "0",
+     "expected": false,
+     "form": "binary_near",
+     "graph_abstained_because": "no delivered instance carries an admitted label for this object",
+     "human_marked_ambiguous": false,
+     "id": "q25_bin_kitchenbin_near_basket",
+     "outcome": "correct",
+     "outcome_as_returned": "false",
+     "outcome_hint": "answered",
+     "outcome_normalized": true,
+     "route": "visual_evidence",
+     "scene_id": "arkitscenes_41069025",
+     "source": "evidence_aware_hybrid",
+     "sufficiency_gate": {
+      "cited_views": 2,
+      "rule_if_armed": "fewer than two valid cited views",
+      "status": "telemetry_only_parked_2026_08_17",
+      "would_suppress": false
+     }
+    },
+    {
+     "answer": [
+      "striped rug",
+      "coffee table",
+      "white convector heater"
+     ],
+     "answered_by": "blinded_rgb_vlm",
+     "confidence": 0.82,
+     "evidence_frame_ids": [
+      "frame_11_700.915",
+      "frame_12_702.481",
+      "frame_14_722.706",
+      "frame_13_717.658"
+     ],
+     "evidence_sufficient": true,
+     "evidence_views": "2+",
+     "expected": [
+      "striped rug",
+      "coffee table",
+      "white convector heater"
+     ],
+     "form": "near_set",
+     "graph_abstained_because": "no delivered instance carries an admitted label for this object",
+     "human_marked_ambiguous": false,
+     "id": "q25_set_near_sofa",
+     "outcome": "correct",
+     "outcome_hint": "answered",
+     "route": "visual_evidence",
+     "scene_id": "arkitscenes_41069025",
+     "source": "evidence_aware_hybrid",
+     "sufficiency_gate": {
+      "cited_views": 4,
+      "rule_if_armed": "fewer than two valid cited views",
+      "status": "telemetry_only_parked_2026_08_17",
+      "would_suppress": false
+     }
+    },
+    {
+     "answer": "window",
+     "answered_by": "blinded_rgb_vlm",
+     "confidence": 0.5,
+     "evidence_frame_ids": [
+      "frame_13_3118.108",
+      "frame_14_3119.241"
+     ],
+     "evidence_sufficient": true,
+     "evidence_views": "0",
+     "expected": null,
+     "form": "comparative_near",
+     "graph_abstained_because": "no delivered instance carries an admitted label for this object",
+     "human_marked_ambiguous": true,
+     "id": "q42_cmp_radiator_window_vs_desk",
+     "outcome": "excluded_no_human_answer",
+     "outcome_as_returned": "window",
+     "outcome_hint": "answered",
+     "outcome_normalized": true,
+     "route": "visual_evidence",
+     "scene_id": "arkitscenes_41069042",
+     "source": "evidence_aware_hybrid",
+     "sufficiency_gate": {
+      "cited_views": 2,
+      "rule_if_armed": "fewer than two valid cited views",
+      "status": "telemetry_only_parked_2026_08_17",
+      "would_suppress": false
+     }
+    },
+    {
+     "answer": null,
+     "answered_by": "blinded_rgb_vlm",
+     "confidence": 0.0,
+     "evidence_frame_ids": [],
+     "evidence_sufficient": false,
+     "evidence_views": "1",
+     "expected": "bed",
+     "form": "comparative_near",
+     "graph_abstained_because": "no delivered instance carries an admitted label for this object",
+     "human_marked_ambiguous": false,
+     "id": "q42_cmp_picture_drawers_vs_bed",
+     "outcome": "unanswered",
+     "outcome_hint": "unanswered",
+     "reason": "model returned unknown",
+     "route": "visual_evidence",
+     "scene_id": "arkitscenes_41069042",
+     "source": "evidence_aware_hybrid",
+     "sufficiency_gate": {
+      "cited_views": 0,
+      "rule_if_armed": "fewer than two valid cited views",
+      "status": "telemetry_only_parked_2026_08_17",
+      "would_suppress": false
+     }
+    },
+    {
+     "answer": true,
+     "answered_by": "blinded_rgb_vlm",
+     "confidence": 0.6,
+     "evidence_frame_ids": [
+      "frame_15_3129.453",
+      "frame_16_3130.586",
+      "frame_17_3138.766"
+     ],
+     "evidence_sufficient": true,
+     "evidence_views": "1",
+     "expected": true,
+     "form": "binary_near",
+     "graph_abstained_because": "no delivered instance carries an admitted label for this object",
+     "human_marked_ambiguous": false,
+     "id": "q42_bin_desk_near_drawers",
+     "outcome": "correct",
+     "outcome_as_returned": "true",
+     "outcome_hint": "answered",
+     "outcome_normalized": true,
+     "route": "visual_evidence",
+     "scene_id": "arkitscenes_41069042",
+     "source": "evidence_aware_hybrid",
+     "sufficiency_gate": {
+      "cited_views": 3,
+      "rule_if_armed": "fewer than two valid cited views",
+      "status": "telemetry_only_parked_2026_08_17",
+      "would_suppress": false
+     }
+    },
+    {
+     "answer": true,
+     "answered_by": "blinded_rgb_vlm",
+     "confidence": 0.55,
+     "evidence_frame_ids": [
+      "frame_09_3097.017",
+      "frame_10_3098.383",
+      "frame_12_3108.145"
+     ],
+     "evidence_sufficient": true,
+     "evidence_views": "0",
+     "expected": false,
+     "form": "binary_near",
+     "graph_abstained_because": "no delivered instance carries an admitted label for this object",
+     "human_marked_ambiguous": false,
+     "id": "q42_bin_bed_near_desk",
+     "outcome": "wrong",
+     "outcome_as_returned": "true",
+     "outcome_hint": "answered",
+     "outcome_normalized": true,
+     "route": "visual_evidence",
+     "scene_id": "arkitscenes_41069042",
+     "source": "evidence_aware_hybrid",
+     "sufficiency_gate": {
+      "cited_views": 3,
+      "rule_if_armed": "fewer than two valid cited views",
+      "status": "telemetry_only_parked_2026_08_17",
+      "would_suppress": false
+     }
+    },
+    {
+     "answer": [
+      "white radiator",
+      "cream curtain",
+      "bed"
+     ],
+     "answered_by": "blinded_rgb_vlm",
+     "confidence": 0.5,
+     "evidence_frame_ids": [
+      "frame_00_3048.020",
+      "frame_05_3071.844",
+      "frame_13_3118.108",
+      "frame_14_3119.241"
+     ],
+     "evidence_sufficient": true,
+     "evidence_views": "2+",
+     "expected": [
+      "cream curtain"
+     ],
+     "form": "near_set",
+     "graph_abstained_because": "no delivered instance carries an admitted label for this object",
+     "human_marked_ambiguous": false,
+     "id": "q42_set_near_window",
+     "outcome": "wrong",
+     "outcome_as_returned": "answered",
+     "outcome_hint": "answered",
+     "outcome_normalized": true,
+     "route": "visual_evidence",
+     "scene_id": "arkitscenes_41069042",
+     "source": "evidence_aware_hybrid",
+     "sufficiency_gate": {
+      "cited_views": 4,
+      "rule_if_armed": "fewer than two valid cited views",
+      "status": "telemetry_only_parked_2026_08_17",
+      "would_suppress": false
+     }
+    }
+   ],
+   "summary": {
+    "accuracy_when_answered": 0.7778,
+    "coverage": 0.9,
+    "exact_accuracy_all": 0.7,
+    "false_confident_rate": 0.2222,
+    "n_excluded_no_human_answer": 2,
+    "n_questions_scored": 10,
+    "tally": {
+     "correct": 7,
+     "unanswered": 1,
+     "wrong": 2
+    }
+   }
+  },
+  "geometry_relation_ceiling": {
+   "deployable": false,
+   "layer_kind": "ceiling",
+   "per_scene": {
+    "arkitscenes_41069025": {
+     "accuracy_when_answered": 1.0,
+     "coverage": 0.8333,
+     "exact_accuracy_all": 0.8333,
+     "false_confident_rate": 0.0,
+     "n_excluded_no_human_answer": 1,
+     "n_questions_scored": 6,
+     "tally": {
+      "correct": 5,
+      "unanswered": 1,
+      "wrong": 0
+     }
+    },
+    "arkitscenes_41069042": {
+     "accuracy_when_answered": 0.6667,
+     "coverage": 0.75,
+     "exact_accuracy_all": 0.5,
+     "false_confident_rate": 0.3333,
+     "n_excluded_no_human_answer": 1,
+     "n_questions_scored": 4,
+     "tally": {
+      "correct": 2,
+      "unanswered": 1,
+      "wrong": 1
+     }
+    }
+   },
+   "rows": [
+    {
+     "answer": "sofa",
+     "distance_a_m": 0.0,
+     "distance_b_m": 0.5924,
+     "evidence_views": "1",
+     "expected": "sofa",
+     "form": "comparative_near",
+     "human_marked_ambiguous": false,
+     "id": "q25_cmp_coffee_table_sofa_vs_dining",
+     "outcome": "correct",
+     "outcome_hint": "answered",
+     "scene_id": "arkitscenes_41069025",
+     "source": "geometry_ceiling",
+     "uids": [
+      "obj_34",
+      "obj_13",
+      "obj_5"
+     ]
+    },
+    {
+     "answer": "long narrow desk",
+     "distance_a_m": 0.0507,
+     "distance_b_m": 3.8838,
+     "evidence_views": "1",
+     "expected": "long narrow desk",
+     "form": "comparative_near",
+     "human_marked_ambiguous": false,
+     "id": "q25_cmp_fan_desk_vs_counter",
+     "outcome": "correct",
+     "outcome_hint": "answered",
+     "scene_id": "arkitscenes_41069025",
+     "source": "geometry_ceiling",
+     "uids": [
+      "obj_21",
+      "obj_14",
+      "obj_16"
+     ]
+    },
+    {
+     "answer": null,
+     "evidence_views": null,
+     "expected": null,
+     "form": "comparative_near",
+     "human_marked_ambiguous": true,
+     "id": "q25_cmp_rug_sofa_vs_counter",
+     "outcome": "excluded_no_human_answer",
+     "outcome_hint": "unanswered",
+     "reason": "no human-verified UID mapping for this object",
+     "scene_id": "arkitscenes_41069025",
+     "source": "geometry_ceiling"
+    },
+    {
+     "answer": true,
+     "distance_m": 0.0,
+     "evidence_views": "2+",
+     "expected": true,
+     "form": "binary_near",
+     "human_marked_ambiguous": false,
+     "id": "q25_bin_basket_near_desk",
+     "outcome": "correct",
+     "outcome_hint": "answered",
+     "scene_id": "arkitscenes_41069025",
+     "source": "geometry_ceiling",
+     "threshold_m": 1.0,
+     "uids": [
+      "obj_1",
+      "obj_14"
+     ]
+    },
+    {
+     "answer": true,
+     "distance_m": 0.5788,
+     "evidence_views": "2+",
+     "expected": true,
+     "form": "binary_near",
+     "human_marked_ambiguous": false,
+     "id": "q25_bin_kitchenbin_near_counter",
+     "outcome": "correct",
+     "outcome_hint": "answered",
+     "scene_id": "arkitscenes_41069025",
+     "source": "geometry_ceiling",
+     "threshold_m": 1.0,
+     "uids": [
+      "obj_12",
+      "obj_16"
+     ]
+    },
+    {
+     "answer": false,
+     "distance_m": 4.4556,
+     "evidence_views": "0",
+     "expected": false,
+     "form": "binary_near",
+     "human_marked_ambiguous": false,
+     "id": "q25_bin_kitchenbin_near_basket",
+     "outcome": "correct",
+     "outcome_hint": "answered",
+     "scene_id": "arkitscenes_41069025",
+     "source": "geometry_ceiling",
+     "threshold_m": 1.0,
+     "uids": [
+      "obj_12",
+      "obj_1"
+     ]
+    },
+    {
+     "answer": null,
+     "evidence_views": "2+",
+     "expected": [
+      "striped rug",
+      "coffee table",
+      "white convector heater"
+     ],
+     "form": "near_set",
+     "human_marked_ambiguous": false,
+     "id": "q25_set_near_sofa",
+     "outcome": "unanswered",
+     "outcome_hint": "unanswered",
+     "reason": "cannot enumerate an exhaustive set: one or more candidate objects are unresolvable",
+     "scene_id": "arkitscenes_41069025",
+     "source": "geometry_ceiling",
+     "unresolved_candidates": [
+      "striped rug"
+     ]
+    },
+    {
+     "answer": null,
+     "evidence_views": "0",
+     "expected": null,
+     "form": "comparative_near",
+     "human_marked_ambiguous": true,
+     "id": "q42_cmp_radiator_window_vs_desk",
+     "outcome": "excluded_no_human_answer",
+     "outcome_hint": "unanswered",
+     "reason": "no human-verified UID mapping for this object",
+     "scene_id": "arkitscenes_41069042",
+     "source": "geometry_ceiling"
+    },
+    {
+     "answer": "bed",
+     "distance_a_m": 2.024,
+     "distance_b_m": 0.1506,
+     "evidence_views": "1",
+     "expected": "bed",
+     "form": "comparative_near",
+     "human_marked_ambiguous": false,
+     "id": "q42_cmp_picture_drawers_vs_bed",
+     "outcome": "correct",
+     "outcome_hint": "answered",
+     "scene_id": "arkitscenes_41069042",
+     "source": "geometry_ceiling",
+     "uids": [
+      "obj_3",
+      "obj_9",
+      "obj_6"
+     ]
+    },
+    {
+     "answer": true,
+     "distance_m": 0.0,
+     "evidence_views": "1",
+     "expected": true,
+     "form": "binary_near",
+     "human_marked_ambiguous": false,
+     "id": "q42_bin_desk_near_drawers",
+     "outcome": "correct",
+     "outcome_hint": "answered",
+     "scene_id": "arkitscenes_41069042",
+     "source": "geometry_ceiling",
+     "threshold_m": 1.0,
+     "uids": [
+      "obj_22",
+      "obj_9"
+     ]
+    },
+    {
+     "answer": true,
+     "distance_m": 0.3204,
+     "evidence_views": "0",
+     "expected": false,
+     "form": "binary_near",
+     "human_marked_ambiguous": false,
+     "id": "q42_bin_bed_near_desk",
+     "outcome": "wrong",
+     "outcome_hint": "answered",
+     "scene_id": "arkitscenes_41069042",
+     "source": "geometry_ceiling",
+     "threshold_m": 1.0,
+     "uids": [
+      "obj_6",
+      "obj_22"
+     ]
+    },
+    {
+     "answer": null,
+     "evidence_views": "2+",
+     "expected": [
+      "cream curtain"
+     ],
+     "form": "near_set",
+     "human_marked_ambiguous": false,
+     "id": "q42_set_near_window",
+     "outcome": "unanswered",
+     "outcome_hint": "unanswered",
+     "reason": "cannot enumerate an exhaustive set: one or more candidate objects are unresolvable",
+     "scene_id": "arkitscenes_41069042",
+     "source": "geometry_ceiling",
+     "unresolved_candidates": [
+      "white radiator"
+     ]
+    }
+   ],
+   "summary": {
+    "accuracy_when_answered": 0.875,
+    "coverage": 0.8,
+    "exact_accuracy_all": 0.7,
+    "false_confident_rate": 0.125,
+    "n_excluded_no_human_answer": 2,
+    "n_questions_scored": 10,
+    "tally": {
+     "correct": 7,
+     "unanswered": 2,
+     "wrong": 1
+    }
+   },
+   "warning": "consumes human-verified identity; never quote as deployable system performance"
+  },
+  "grounded_delivered_graph": {
+   "deployable": true,
+   "identity_source": "oracle-free grounding sidecar 51b56774262146de",
+   "layer_kind": "delivered",
+   "per_scene": {
+    "arkitscenes_41069025": {
+     "accuracy_when_answered": 1.0,
+     "coverage": 0.3333,
+     "exact_accuracy_all": 0.3333,
+     "false_confident_rate": 0.0,
+     "n_excluded_no_human_answer": 1,
+     "n_questions_scored": 6,
+     "tally": {
+      "correct": 2,
+      "unanswered": 4,
+      "wrong": 0
+     }
+    },
+    "arkitscenes_41069042": {
+     "accuracy_when_answered": null,
+     "coverage": 0.0,
+     "exact_accuracy_all": 0.0,
+     "false_confident_rate": null,
+     "n_excluded_no_human_answer": 1,
+     "n_questions_scored": 4,
+     "tally": {
+      "correct": 0,
+      "unanswered": 4,
+      "wrong": 0
+     }
+    }
+   },
+   "rows": [
+    {
+     "answer": null,
+     "evidence_views": "1",
+     "expected": "sofa",
+     "form": "comparative_near",
+     "human_marked_ambiguous": false,
+     "id": "q25_cmp_coffee_table_sofa_vs_dining",
+     "outcome": "unanswered",
+     "outcome_hint": "unanswered",
+     "reason": "neither pair has a stored distance, so no ordering is derivable",
+     "scene_id": "arkitscenes_41069025",
+     "source": "grounded_delivered_graph"
+    },
+    {
+     "answer": null,
+     "evidence_views": "1",
+     "expected": "long narrow desk",
+     "form": "comparative_near",
+     "human_marked_ambiguous": false,
+     "id": "q25_cmp_fan_desk_vs_counter",
+     "outcome": "unanswered",
+     "outcome_hint": "unanswered",
+     "reason": "the grounding bridge abstained on this anchor",
+     "scene_id": "arkitscenes_41069025",
+     "source": "grounded_delivered_graph"
+    },
+    {
+     "answer": null,
+     "evidence_views": null,
+     "expected": null,
+     "form": "comparative_near",
+     "human_marked_ambiguous": true,
+     "id": "q25_cmp_rug_sofa_vs_counter",
+     "outcome": "excluded_no_human_answer",
+     "outcome_hint": "unanswered",
+     "reason": "the grounding bridge abstained on this anchor",
+     "scene_id": "arkitscenes_41069025",
+     "source": "grounded_delivered_graph"
+    },
+    {
+     "answer": null,
+     "evidence_views": "2+",
+     "expected": true,
+     "form": "binary_near",
+     "human_marked_ambiguous": false,
+     "id": "q25_bin_basket_near_desk",
+     "outcome": "unanswered",
+     "outcome_hint": "unanswered",
+     "reason": "the grounding bridge abstained on this anchor",
+     "scene_id": "arkitscenes_41069025",
+     "source": "grounded_delivered_graph"
+    },
+    {
+     "answer": true,
+     "edge_present": true,
+     "evidence_views": "2+",
+     "expected": true,
+     "form": "binary_near",
+     "human_marked_ambiguous": false,
+     "id": "q25_bin_kitchenbin_near_counter",
+     "outcome": "correct",
+     "outcome_hint": "answered",
+     "scene_id": "arkitscenes_41069025",
+     "source": "grounded_delivered_graph",
+     "stored_distance_m": 0.0,
+     "threshold_m": 1.0,
+     "uids": [
+      "obj_12",
+      "obj_27"
+     ]
+    },
+    {
+     "answer": false,
+     "edge_present": false,
+     "evidence_views": "0",
+     "expected": false,
+     "form": "binary_near",
+     "human_marked_ambiguous": false,
+     "id": "q25_bin_kitchenbin_near_basket",
+     "outcome": "correct",
+     "outcome_hint": "answered",
+     "scene_id": "arkitscenes_41069025",
+     "source": "grounded_delivered_graph",
+     "stored_distance_m": null,
+     "threshold_m": 1.0,
+     "uids": [
+      "obj_12",
+      "obj_1"
+     ]
+    },
+    {
+     "answer": null,
+     "evidence_views": "2+",
+     "expected": [
+      "striped rug",
+      "coffee table",
+      "white convector heater"
+     ],
+     "form": "near_set",
+     "human_marked_ambiguous": false,
+     "id": "q25_set_near_sofa",
+     "outcome": "unanswered",
+     "outcome_hint": "unanswered",
+     "reason": "cannot enumerate an exhaustive set: one or more candidate objects are unresolvable",
+     "scene_id": "arkitscenes_41069025",
+     "source": "grounded_delivered_graph",
+     "unresolved_candidates": [
+      "striped rug"
+     ]
+    },
+    {
+     "answer": null,
+     "evidence_views": "0",
+     "expected": null,
+     "form": "comparative_near",
+     "human_marked_ambiguous": true,
+     "id": "q42_cmp_radiator_window_vs_desk",
+     "outcome": "excluded_no_human_answer",
+     "outcome_hint": "unanswered",
+     "reason": "the grounding bridge abstained on this anchor",
+     "scene_id": "arkitscenes_41069042",
+     "source": "grounded_delivered_graph"
+    },
+    {
+     "answer": null,
+     "evidence_views": "1",
+     "expected": "bed",
+     "form": "comparative_near",
+     "human_marked_ambiguous": false,
+     "id": "q42_cmp_picture_drawers_vs_bed",
+     "outcome": "unanswered",
+     "outcome_hint": "unanswered",
+     "reason": "the grounding bridge abstained on this anchor",
+     "scene_id": "arkitscenes_41069042",
+     "source": "grounded_delivered_graph"
+    },
+    {
+     "answer": null,
+     "evidence_views": "1",
+     "expected": true,
+     "form": "binary_near",
+     "human_marked_ambiguous": false,
+     "id": "q42_bin_desk_near_drawers",
+     "outcome": "unanswered",
+     "outcome_hint": "unanswered",
+     "reason": "the grounding bridge abstained on this anchor",
+     "scene_id": "arkitscenes_41069042",
+     "source": "grounded_delivered_graph"
+    },
+    {
+     "answer": null,
+     "evidence_views": "0",
+     "expected": false,
+     "form": "binary_near",
+     "human_marked_ambiguous": false,
+     "id": "q42_bin_bed_near_desk",
+     "outcome": "unanswered",
+     "outcome_hint": "unanswered",
+     "reason": "the grounding bridge abstained on this anchor",
+     "scene_id": "arkitscenes_41069042",
+     "source": "grounded_delivered_graph"
+    },
+    {
+     "answer": null,
+     "evidence_views": "2+",
+     "expected": [
+      "cream curtain"
+     ],
+     "form": "near_set",
+     "human_marked_ambiguous": false,
+     "id": "q42_set_near_window",
+     "outcome": "unanswered",
+     "outcome_hint": "unanswered",
+     "reason": "the grounding bridge abstained on this anchor",
+     "scene_id": "arkitscenes_41069042",
+     "source": "grounded_delivered_graph"
+    }
+   ],
+   "summary": {
+    "accuracy_when_answered": 1.0,
+    "coverage": 0.2,
+    "exact_accuracy_all": 0.2,
+    "false_confident_rate": 0.0,
+    "n_excluded_no_human_answer": 2,
+    "n_questions_scored": 10,
+    "tally": {
+     "correct": 2,
+     "unanswered": 8,
+     "wrong": 0
+    }
+   }
+  },
+  "stored_graph_human_identity": {
+   "deployable": false,
+   "layer_kind": "identity_oracle",
+   "per_scene": {
+    "arkitscenes_41069025": {
+     "accuracy_when_answered": 1.0,
+     "coverage": 0.8333,
+     "exact_accuracy_all": 0.8333,
+     "false_confident_rate": 0.0,
+     "n_excluded_no_human_answer": 1,
+     "n_questions_scored": 6,
+     "tally": {
+      "correct": 5,
+      "unanswered": 1,
+      "wrong": 0
+     }
+    },
+    "arkitscenes_41069042": {
+     "accuracy_when_answered": 0.6667,
+     "coverage": 0.75,
+     "exact_accuracy_all": 0.5,
+     "false_confident_rate": 0.3333,
+     "n_excluded_no_human_answer": 1,
+     "n_questions_scored": 4,
+     "tally": {
+      "correct": 2,
+      "unanswered": 1,
+      "wrong": 1
+     }
+    }
+   },
+   "rows": [
+    {
+     "answer": "sofa",
+     "evidence_views": "1",
+     "expected": "sofa",
+     "form": "comparative_near",
+     "human_marked_ambiguous": false,
+     "id": "q25_cmp_coffee_table_sofa_vs_dining",
+     "ordering_basis": "both_edges_stored",
+     "outcome": "correct",
+     "outcome_hint": "answered",
+     "scene_id": "arkitscenes_41069025",
+     "source": "stored_graph_human_identity",
+     "stored_distance_a_m": 0.0,
+     "stored_distance_b_m": 0.5924,
+     "uids": [
+      "obj_34",
+      "obj_13",
+      "obj_5"
+     ]
+    },
+    {
+     "answer": "long narrow desk",
+     "evidence_views": "1",
+     "expected": "long narrow desk",
+     "form": "comparative_near",
+     "human_marked_ambiguous": false,
+     "id": "q25_cmp_fan_desk_vs_counter",
+     "ordering_basis": "one_edge_stored_one_beyond_threshold",
+     "outcome": "correct",
+     "outcome_hint": "answered",
+     "scene_id": "arkitscenes_41069025",
+     "source": "stored_graph_human_identity",
+     "stored_distance_a_m": 0.0507,
+     "stored_distance_b_m": null,
+     "uids": [
+      "obj_21",
+      "obj_14",
+      "obj_16"
+     ]
+    },
+    {
+     "answer": null,
+     "evidence_views": null,
+     "expected": null,
+     "form": "comparative_near",
+     "human_marked_ambiguous": true,
+     "id": "q25_cmp_rug_sofa_vs_counter",
+     "outcome": "excluded_no_human_answer",
+     "outcome_hint": "unanswered",
+     "reason": "no human-verified UID mapping for this object",
+     "scene_id": "arkitscenes_41069025",
+     "source": "stored_graph_human_identity"
+    },
+    {
+     "answer": true,
+     "edge_present": true,
+     "evidence_views": "2+",
+     "expected": true,
+     "form": "binary_near",
+     "human_marked_ambiguous": false,
+     "id": "q25_bin_basket_near_desk",
+     "outcome": "correct",
+     "outcome_hint": "answered",
+     "scene_id": "arkitscenes_41069025",
+     "source": "stored_graph_human_identity",
+     "stored_distance_m": 0.0,
+     "threshold_m": 1.0,
+     "uids": [
+      "obj_1",
+      "obj_14"
+     ]
+    },
+    {
+     "answer": true,
+     "edge_present": true,
+     "evidence_views": "2+",
+     "expected": true,
+     "form": "binary_near",
+     "human_marked_ambiguous": false,
+     "id": "q25_bin_kitchenbin_near_counter",
+     "outcome": "correct",
+     "outcome_hint": "answered",
+     "scene_id": "arkitscenes_41069025",
+     "source": "stored_graph_human_identity",
+     "stored_distance_m": 0.5788,
+     "threshold_m": 1.0,
+     "uids": [
+      "obj_12",
+      "obj_16"
+     ]
+    },
+    {
+     "answer": false,
+     "edge_present": false,
+     "evidence_views": "0",
+     "expected": false,
+     "form": "binary_near",
+     "human_marked_ambiguous": false,
+     "id": "q25_bin_kitchenbin_near_basket",
+     "outcome": "correct",
+     "outcome_hint": "answered",
+     "scene_id": "arkitscenes_41069025",
+     "source": "stored_graph_human_identity",
+     "stored_distance_m": null,
+     "threshold_m": 1.0,
+     "uids": [
+      "obj_12",
+      "obj_1"
+     ]
+    },
+    {
+     "answer": null,
+     "evidence_views": "2+",
+     "expected": [
+      "striped rug",
+      "coffee table",
+      "white convector heater"
+     ],
+     "form": "near_set",
+     "human_marked_ambiguous": false,
+     "id": "q25_set_near_sofa",
+     "outcome": "unanswered",
+     "outcome_hint": "unanswered",
+     "reason": "cannot enumerate an exhaustive set: one or more candidate objects are unresolvable",
+     "scene_id": "arkitscenes_41069025",
+     "source": "stored_graph_human_identity",
+     "unresolved_candidates": [
+      "striped rug"
+     ]
+    },
+    {
+     "answer": null,
+     "evidence_views": "0",
+     "expected": null,
+     "form": "comparative_near",
+     "human_marked_ambiguous": true,
+     "id": "q42_cmp_radiator_window_vs_desk",
+     "outcome": "excluded_no_human_answer",
+     "outcome_hint": "unanswered",
+     "reason": "no human-verified UID mapping for this object",
+     "scene_id": "arkitscenes_41069042",
+     "source": "stored_graph_human_identity"
+    },
+    {
+     "answer": "bed",
+     "evidence_views": "1",
+     "expected": "bed",
+     "form": "comparative_near",
+     "human_marked_ambiguous": false,
+     "id": "q42_cmp_picture_drawers_vs_bed",
+     "ordering_basis": "one_edge_stored_one_beyond_threshold",
+     "outcome": "correct",
+     "outcome_hint": "answered",
+     "scene_id": "arkitscenes_41069042",
+     "source": "stored_graph_human_identity",
+     "stored_distance_a_m": null,
+     "stored_distance_b_m": 0.1506,
+     "uids": [
+      "obj_3",
+      "obj_9",
+      "obj_6"
+     ]
+    },
+    {
+     "answer": true,
+     "edge_present": true,
+     "evidence_views": "1",
+     "expected": true,
+     "form": "binary_near",
+     "human_marked_ambiguous": false,
+     "id": "q42_bin_desk_near_drawers",
+     "outcome": "correct",
+     "outcome_hint": "answered",
+     "scene_id": "arkitscenes_41069042",
+     "source": "stored_graph_human_identity",
+     "stored_distance_m": 0.0,
+     "threshold_m": 1.0,
+     "uids": [
+      "obj_22",
+      "obj_9"
+     ]
+    },
+    {
+     "answer": true,
+     "edge_present": true,
+     "evidence_views": "0",
+     "expected": false,
+     "form": "binary_near",
+     "human_marked_ambiguous": false,
+     "id": "q42_bin_bed_near_desk",
+     "outcome": "wrong",
+     "outcome_hint": "answered",
+     "scene_id": "arkitscenes_41069042",
+     "source": "stored_graph_human_identity",
+     "stored_distance_m": 0.3204,
+     "threshold_m": 1.0,
+     "uids": [
+      "obj_6",
+      "obj_22"
+     ]
+    },
+    {
+     "answer": null,
+     "evidence_views": "2+",
+     "expected": [
+      "cream curtain"
+     ],
+     "form": "near_set",
+     "human_marked_ambiguous": false,
+     "id": "q42_set_near_window",
+     "outcome": "unanswered",
+     "outcome_hint": "unanswered",
+     "reason": "cannot enumerate an exhaustive set: one or more candidate objects are unresolvable",
+     "scene_id": "arkitscenes_41069042",
+     "source": "stored_graph_human_identity",
+     "unresolved_candidates": [
+      "white radiator"
+     ]
+    }
+   ],
+   "summary": {
+    "accuracy_when_answered": 0.875,
+    "coverage": 0.8,
+    "exact_accuracy_all": 0.7,
+    "false_confident_rate": 0.125,
+    "n_excluded_no_human_answer": 2,
+    "n_questions_scored": 10,
+    "tally": {
+     "correct": 7,
+     "unanswered": 2,
+     "wrong": 1
+    }
+   },
+   "warning": "consumes human-verified identity; diagnostic only. Answers come from serialized NEAR edges and their stored distance_m; no geometry is recomputed."
+  }
+ },
+ "attribution": {
+  "buckets": {
+   "both_correct": [],
+   "ceiling_correct_delivered_unanswered": [
+    "q25_cmp_coffee_table_sofa_vs_dining",
+    "q25_cmp_fan_desk_vs_counter",
+    "q25_bin_basket_near_desk",
+    "q25_bin_kitchenbin_near_counter",
+    "q25_bin_kitchenbin_near_basket",
+    "q42_cmp_picture_drawers_vs_bed",
+    "q42_bin_desk_near_drawers"
+   ],
+   "ceiling_correct_delivered_wrong": [],
+   "ceiling_unanswerable_no_exhaustive_set": [
+    "q25_set_near_sofa",
+    "q42_set_near_window"
+   ],
+   "ceiling_unanswerable_no_uid_mapping": [],
+   "ceiling_unanswerable_other": [],
+   "ceiling_wrong": [
+    "q42_bin_bed_near_desk"
+   ],
+   "excluded_no_human_answer": [
+    "q25_cmp_rug_sofa_vs_counter",
+    "q42_cmp_radiator_window_vs_desk"
+   ]
+  },
+  "n_bucketed": 12,
+  "n_items": 12,
+  "reading": {
+   "ceiling_correct_delivered_unanswered": "the fact is expressible but the delivered system cannot address it",
+   "ceiling_correct_delivered_wrong": "naming, instance delivery or relation extraction is binding",
+   "ceiling_unanswerable_no_exhaustive_set": "an exhaustive-set item whose roster contains an object the owner could not map to any delivered instance; the set cannot be enumerated, so the item abstains rather than return a short set",
+   "ceiling_unanswerable_no_uid_mapping": "no resolvable delivered instance exists; instance DELIVERY binds, which is distinct from a geometry failure",
+   "ceiling_wrong": "the geometry answer disagrees with the human answer; check whether the declared convention or the geometry is responsible before reading this as a representation limit",
+   "excluded_no_human_answer": "the owner marked the item ambiguous; it is in no tally"
+  }
+ },
+ "attribution_stored_graph": {
+  "buckets": {
+   "both_correct": [],
+   "ceiling_correct_delivered_unanswered": [
+    "q25_cmp_coffee_table_sofa_vs_dining",
+    "q25_cmp_fan_desk_vs_counter",
+    "q25_bin_basket_near_desk",
+    "q25_bin_kitchenbin_near_counter",
+    "q25_bin_kitchenbin_near_basket",
+    "q42_cmp_picture_drawers_vs_bed",
+    "q42_bin_desk_near_drawers"
+   ],
+   "ceiling_correct_delivered_wrong": [],
+   "ceiling_unanswerable_no_exhaustive_set": [
+    "q25_set_near_sofa",
+    "q42_set_near_window"
+   ],
+   "ceiling_unanswerable_no_uid_mapping": [],
+   "ceiling_unanswerable_other": [],
+   "ceiling_wrong": [
+    "q42_bin_bed_near_desk"
+   ],
+   "excluded_no_human_answer": [
+    "q25_cmp_rug_sofa_vs_counter",
+    "q42_cmp_radiator_window_vs_desk"
+   ]
+  },
+  "n_bucketed": 12,
+  "n_items": 12,
+  "reading": {
+   "ceiling_correct_delivered_unanswered": "the fact is expressible but the delivered system cannot address it",
+   "ceiling_correct_delivered_wrong": "naming, instance delivery or relation extraction is binding",
+   "ceiling_unanswerable_no_exhaustive_set": "an exhaustive-set item whose roster contains an object the owner could not map to any delivered instance; the set cannot be enumerated, so the item abstains rather than return a short set",
+   "ceiling_unanswerable_no_uid_mapping": "no resolvable delivered instance exists; instance DELIVERY binds, which is distinct from a geometry failure",
+   "ceiling_wrong": "the geometry answer disagrees with the human answer; check whether the declared convention or the geometry is responsible before reading this as a representation limit",
+   "excluded_no_human_answer": "the owner marked the item ambiguous; it is in no tally"
+  }
+ },
+ "ceiling_vs_rgb": {
+  "ceiling_unique_wins": [
+   {
+    "answer": "bed",
+    "form": "comparative_near",
+    "id": "q42_cmp_picture_drawers_vs_bed",
+    "other_answer": null,
+    "other_outcome": "unanswered",
+    "other_reason": "model returned unknown",
+    "scene_id": "arkitscenes_41069042"
+   }
+  ],
+  "note": "DIAGNOSTIC ONLY. The ceiling consumes human identity, so a ceiling-unique win is NOT a graph win and does not count toward the continuation bar. Reported because the delivered arm answered nothing, which leaves this the only comparison with content.",
+  "rgb_unique_wins": [
+   {
+    "answer": [
+     "striped rug",
+     "coffee table",
+     "white convector heater"
+    ],
+    "form": "near_set",
+    "id": "q25_set_near_sofa",
+    "other_answer": null,
+    "other_outcome": "unanswered",
+    "other_reason": "cannot enumerate an exhaustive set: one or more candidate objects are unresolvable",
+    "scene_id": "arkitscenes_41069025"
+   }
+  ]
+ },
+ "decision": {
+  "bar": "at least two delivered-graph-unique correct answers, preferably at least one in each scene",
+  "graph_unique_wins_per_scene": {
+   "arkitscenes_41069025": 0,
+   "arkitscenes_41069042": 0
+  },
+  "interpretation": "screening gate on two scenes; not generalization and not a publication claim",
+  "meets_bar": false,
+  "n_graph_unique_wins": 0,
+  "proceed_to_larger_hybrid": false,
+  "reproduced_across_scenes": false
+ },
+ "evaluation_only": true,
+ "geometry_vs_stored_graph": {
+  "agreement_rate": 1.0,
+  "disagreements": [],
+  "n_agree": 12,
+  "n_compared": 12,
+  "n_disagree": 0,
+  "reading": "identical answers mean relation extraction is cleared and naming alone binds; any disagreement means the serialized graph lost something the geometry supports, and only the underlying AABB geometry would be sufficient",
+  "rows": [
+   {
+    "agree": true,
+    "ceiling_answer": "sofa",
+    "ceiling_outcome": "correct",
+    "form": "comparative_near",
+    "id": "q25_cmp_coffee_table_sofa_vs_dining",
+    "scene_id": "arkitscenes_41069025",
+    "stored_answer": "sofa",
+    "stored_outcome": "correct"
+   },
+   {
+    "agree": true,
+    "ceiling_answer": "long narrow desk",
+    "ceiling_outcome": "correct",
+    "form": "comparative_near",
+    "id": "q25_cmp_fan_desk_vs_counter",
+    "scene_id": "arkitscenes_41069025",
+    "stored_answer": "long narrow desk",
+    "stored_outcome": "correct"
+   },
+   {
+    "agree": true,
+    "ceiling_answer": null,
+    "ceiling_outcome": "excluded_no_human_answer",
+    "form": "comparative_near",
+    "id": "q25_cmp_rug_sofa_vs_counter",
+    "scene_id": "arkitscenes_41069025",
+    "stored_answer": null,
+    "stored_outcome": "excluded_no_human_answer"
+   },
+   {
+    "agree": true,
+    "ceiling_answer": true,
+    "ceiling_outcome": "correct",
+    "form": "binary_near",
+    "id": "q25_bin_basket_near_desk",
+    "scene_id": "arkitscenes_41069025",
+    "stored_answer": true,
+    "stored_outcome": "correct"
+   },
+   {
+    "agree": true,
+    "ceiling_answer": true,
+    "ceiling_outcome": "correct",
+    "form": "binary_near",
+    "id": "q25_bin_kitchenbin_near_counter",
+    "scene_id": "arkitscenes_41069025",
+    "stored_answer": true,
+    "stored_outcome": "correct"
+   },
+   {
+    "agree": true,
+    "ceiling_answer": false,
+    "ceiling_outcome": "correct",
+    "form": "binary_near",
+    "id": "q25_bin_kitchenbin_near_basket",
+    "scene_id": "arkitscenes_41069025",
+    "stored_answer": false,
+    "stored_outcome": "correct"
+   },
+   {
+    "agree": true,
+    "ceiling_answer": null,
+    "ceiling_outcome": "unanswered",
+    "form": "near_set",
+    "id": "q25_set_near_sofa",
+    "scene_id": "arkitscenes_41069025",
+    "stored_answer": null,
+    "stored_outcome": "unanswered"
+   },
+   {
+    "agree": true,
+    "ceiling_answer": null,
+    "ceiling_outcome": "excluded_no_human_answer",
+    "form": "comparative_near",
+    "id": "q42_cmp_radiator_window_vs_desk",
+    "scene_id": "arkitscenes_41069042",
+    "stored_answer": null,
+    "stored_outcome": "excluded_no_human_answer"
+   },
+   {
+    "agree": true,
+    "ceiling_answer": "bed",
+    "ceiling_outcome": "correct",
+    "form": "comparative_near",
+    "id": "q42_cmp_picture_drawers_vs_bed",
+    "scene_id": "arkitscenes_41069042",
+    "stored_answer": "bed",
+    "stored_outcome": "correct"
+   },
+   {
+    "agree": true,
+    "ceiling_answer": true,
+    "ceiling_outcome": "correct",
+    "form": "binary_near",
+    "id": "q42_bin_desk_near_drawers",
+    "scene_id": "arkitscenes_41069042",
+    "stored_answer": true,
+    "stored_outcome": "correct"
+   },
+   {
+    "agree": true,
+    "ceiling_answer": true,
+    "ceiling_outcome": "wrong",
+    "form": "binary_near",
+    "id": "q42_bin_bed_near_desk",
+    "scene_id": "arkitscenes_41069042",
+    "stored_answer": true,
+    "stored_outcome": "wrong"
+   },
+   {
+    "agree": true,
+    "ceiling_answer": null,
+    "ceiling_outcome": "unanswered",
+    "form": "near_set",
+    "id": "q42_set_near_window",
+    "scene_id": "arkitscenes_41069042",
+    "stored_answer": null,
+    "stored_outcome": "unanswered"
+   }
+  ]
+ },
+ "graph_unique_wins": [],
+ "grounded_graph_unique_wins": [],
+ "grounding_provenance": {
+  "model": {
+   "name": "ViT-B-32-quickgelu",
+   "pretrained": "openai",
+   "prompts": [
+    "a photo of a {c}",
+    "a photo of a {c} in a room",
+    "a 3D render of a {c}"
+   ]
+  },
+  "prediction_sha256": "51b56774262146de905ae8987f3fe8d5ddf970db6ae79a189b3854211a2a0f26",
+  "rules": {
+   "admission": "top aggregate entity must also win at least 2 independent view slots",
+   "aggregate": "mean over the entity's available view slots",
+   "per_slot_score": "max over phrases of cosine(image, text)",
+   "phrase_set": "anchor name plus its declared synonyms from the frozen question manifest",
+   "ranking": "aggregate descending, ties by uid ascending",
+   "threshold": "none; no confidence cutoff is applied or swept"
+  },
+  "sidecar": "runs/arkit_relation_challenge/grounding.json"
+ },
+ "inputs": {
+  "blinded_responses": [
+   "eval/human_feedback/arkitscenes_relation_challenge_rgb_41069025.json",
+   "eval/human_feedback/arkitscenes_relation_challenge_rgb_41069042.json"
+  ],
+  "key": "eval/human_feedback/arkitscenes_relation_challenge_key_v1.json",
+  "key_sha256": "83c555df63a68de0808c4ac4038da29aba2677054db18c77a5efcc4ea1ff9d53",
+  "questions": "eval/questions/arkitscenes_relation_challenge_v1.json",
+  "questions_sha256": "a199636109ef6e0e0ef1cd4e1b57c16f81b9655e20bb5c81795d34cdea11af50",
+  "scenes": {
+   "arkitscenes_41069025": {
+    "entities": "/Users/deevyaswain/Desktop/surgical-graph-rag-v2/runs/arkit_label_image_ab_41069025/rgb_tight/entities/manifest.json",
+    "entities_sha256": "a61f83f3eec75bff9950cef92cb7c3c3c8eb64692ae72b495ee14d521d3964e7",
+    "entity_bundle_hash": "ent_openclip_global_indoor_labels_35de101d48b05a87",
+    "graph": "/Users/deevyaswain/Desktop/surgical-graph-rag-v2/runs/arkit_vertical_slice/sealed_pair/41069025/graph/manifest.json",
+    "graph_bundle_hash": "graph_7082ce66d84ba59b",
+    "graph_sha256": "adb53b800ae666287ab25cd131aee71c56b4bf196d0018d8c01b02d3c0b47865",
+    "n_entities": 35,
+    "n_near_edges": 151,
+    "near_metric": "aabb_surface",
+    "near_threshold_m": 1.0,
+    "slice_manifest": "/Users/deevyaswain/Desktop/surgical-graph-rag-v2/runs/arkit_vertical_slice/sealed_pair/41069025/manifest.json",
+    "stored_distance_m": {
+     "max": 0.9919,
+     "median": 0.3524,
+     "min": 0.0
+    },
+    "threshold_status": "provisional Replica-era constant; not a transfer claim"
+   },
+   "arkitscenes_41069042": {
+    "entities": "/Users/deevyaswain/Desktop/surgical-graph-rag-v2/runs/arkit_label_image_ab_41069042/rgb_tight/entities/manifest.json",
+    "entities_sha256": "3d24f91003f7bcce360f518b78df5e6f1b03284eb73df6abd2b4a9814bd6c153",
+    "entity_bundle_hash": "ent_openclip_global_indoor_labels_dcf4b1c8fcdb2447",
+    "graph": "/Users/deevyaswain/Desktop/surgical-graph-rag-v2/runs/arkit_vertical_slice/sealed_pair/41069042/graph/manifest.json",
+    "graph_bundle_hash": "graph_0f9cfacd73755302",
+    "graph_sha256": "b3a03d7105813fd380fca2438f97c4a22cbc9b5ca606e7c23c273ff612432c96",
+    "n_entities": 23,
+    "n_near_edges": 100,
+    "near_metric": "aabb_surface",
+    "near_threshold_m": 1.0,
+    "slice_manifest": "/Users/deevyaswain/Desktop/surgical-graph-rag-v2/runs/arkit_vertical_slice/sealed_pair/41069042/manifest.json",
+    "stored_distance_m": {
+     "max": 0.9972,
+     "median": 0.1821,
+     "min": 0.0
+    },
+    "threshold_status": "provisional Replica-era constant; not a transfer claim"
+   }
+  }
+ },
+ "limits": [
+  "Two human-reviewed scenes are a screening test, not generalization.",
+  "The geometry ceiling consumes human-verified identity and is NOT a deployable result; it bounds what the representation could express.",
+  "Binary and set questions depend on the delivered NEAR threshold, recorded as a provisional constant; comparative questions do not.",
+  "Questions the owner marked ambiguous are excluded from every tally rather than resolved by the system's own answer.",
+  "No arm changes perception, labels, thresholds or the human key."
+ ],
+ "near_convention": {
+  "applies_to_forms": [
+   "binary_near",
+   "near_set"
+  ],
+  "boundary_note": "Items whose true gap sits within 0.1 m of one metre are threshold-determined rather than geometry-determined. Which items those are will be reported only AFTER the key is returned; checking first would let edge distances influence question selection.",
+  "declared_confound": "The delivered extractor's NEAR threshold is also 1.0 m (AABB surface-to-surface, strict less-than), recorded in each slice manifest as a 'provisional Replica-era constant; not a transfer claim'. One metre was chosen here because it is the natural human reading of 'near' at room scale, not because the extractor uses it -- but the coincidence is real and must be declared: a binary item the delivered system gets right cannot distinguish 'the representation is correct' from 'the threshold happens to match the convention'. This is the reason comparative items, which need no threshold, carry the discriminative weight of this set.",
+  "not_applied_to": "comparative_near items are ordinal and use no threshold at all",
+  "statement": "Two objects are NEAR when the nearest points of their surfaces are within about one metre of each other -- close enough that a person standing at one could reach the other by leaning or taking a single step. Judge the gap between the objects themselves, not between their centres."
+ },
+ "perception_changed": false,
+ "relation_under_test": "NEAR",
+ "scene_ids": [
+  "arkitscenes_41069025",
+  "arkitscenes_41069042"
+ ],
+ "schema": "arkitscenes_relation_challenge_score_v1",
+ "stage": "scored",
+ "thin_evidence_subtest": {
+  "correct_answers_it_would_suppress": [],
+  "gate_status": "telemetry_only_parked_2026_08_17",
+  "gate_would_fire_on": [],
+  "hybrid_on_thin_slice": {
+   "accuracy_when_answered": 0.8,
+   "coverage": 0.8333,
+   "exact_accuracy_all": 0.6667,
+   "false_confident_rate": 0.2,
+   "n_excluded_no_human_answer": 1,
+   "n_questions_scored": 6,
+   "tally": {
+    "correct": 4,
+    "unanswered": 1,
+    "wrong": 1
+   }
+  },
+  "n_thin": 7,
+  "note": "coverage cost and error reduction are reported side by side; suppressing a correct answer is a real cost, not a rounding term",
+  "rgb_on_thin_slice": {
+   "accuracy_when_answered": 0.8,
+   "coverage": 0.8333,
+   "exact_accuracy_all": 0.6667,
+   "false_confident_rate": 0.2,
+   "n_excluded_no_human_answer": 1,
+   "n_questions_scored": 6,
+   "tally": {
+    "correct": 4,
+    "unanswered": 1,
+    "wrong": 1
+   }
+  },
+  "status": "measured",
+  "thin_question_ids": [
+   "q25_bin_kitchenbin_near_basket",
+   "q25_cmp_coffee_table_sofa_vs_dining",
+   "q25_cmp_fan_desk_vs_counter",
+   "q42_bin_bed_near_desk",
+   "q42_bin_desk_near_drawers",
+   "q42_cmp_picture_drawers_vs_bed",
+   "q42_cmp_radiator_window_vs_desk"
+  ],
+  "wrong_answers_it_would_suppress": []
+ }
+}

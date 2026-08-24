@@ -1,0 +1,218 @@
+{
+ "accuracy_when_answered": 1.0,
+ "all_gates_pass": false,
+ "amendments_applied": "1 -- run 1 void; scope wording, anchor ordering and question count fixed. 2 -- relational slots restricted to unique-referent anchors. Both applied before any blinded response existed.",
+ "answer_coverage": 0.5,
+ "by_form": {
+  "binary_near": {
+   "correct": 0,
+   "n": 3,
+   "unanswered": 3
+  },
+  "comparative_near": {
+   "correct": 2,
+   "n": 4,
+   "unanswered": 2
+  },
+  "presence": {
+   "correct": 3,
+   "n": 3,
+   "unanswered": 0
+  }
+ },
+ "claim": "NO TRANSFER CLAIM. At least one predeclared gate failed, so the demo remains a fixed evaluation replay.",
+ "exact_accuracy": 0.5,
+ "false_confident_rate": 0.0,
+ "gates": {
+  "answer_coverage": {
+   "measured": 0.5,
+   "pass": false,
+   "required": 0.8
+  },
+  "exact_accuracy": {
+   "measured": 0.5,
+   "pass": false,
+   "required": 0.6
+  },
+  "scored_items": {
+   "measured": 10,
+   "pass": true,
+   "required": 6
+  }
+ },
+ "limits": [
+  "One room, ten questions, one blinded response, one human reviewer.",
+  "A pass would support the single sentence above and nothing wider.",
+  "The reviewer is the project owner and is not blind to the hypothesis; the human key is itself a measurement with error.",
+  "No graph, grounding or segmentation stage ran on this scene."
+ ],
+ "model": {
+  "name": "claude-opus-5",
+  "provider": "anthropic",
+  "version": "claude-opus-5"
+ },
+ "n_scored": 10,
+ "protocol": "docs/arkitscenes_rgb_transfer_test.md",
+ "rows": [
+  {
+   "confidence": 0.96,
+   "cross_view": false,
+   "evidence_frame_ids": [
+    "frame_15_168747.052",
+    "frame_16_168751.184",
+    "frame_17_168759.447"
+   ],
+   "evidence_views": "2+",
+   "form": "presence",
+   "human_answer": true,
+   "id": "t_pres_1",
+   "model_answer": true,
+   "outcome": "correct",
+   "question": "Is there a framed picture in the captured space?"
+  },
+  {
+   "confidence": 0.93,
+   "cross_view": false,
+   "evidence_frame_ids": [
+    "frame_02_168633.431",
+    "frame_03_168647.559",
+    "frame_10_168704.020",
+    "frame_11_168707.468"
+   ],
+   "evidence_views": "2+",
+   "form": "presence",
+   "human_answer": true,
+   "id": "t_pres_2",
+   "model_answer": true,
+   "outcome": "correct",
+   "question": "Is there a brown suede sofa in the captured space?"
+  },
+  {
+   "confidence": 0.68,
+   "cross_view": false,
+   "evidence_frame_ids": [
+    "frame_08_168685.427",
+    "frame_15_168747.052"
+   ],
+   "evidence_views": "1",
+   "form": "presence",
+   "human_answer": true,
+   "id": "t_pres_3",
+   "model_answer": true,
+   "outcome": "correct",
+   "question": "Is there a wall power socket in the captured space?"
+  },
+  {
+   "confidence": 0.36,
+   "cross_view": false,
+   "evidence_frame_ids": [
+    "frame_12_168723.645",
+    "frame_09_168693.691"
+   ],
+   "evidence_views": "2+",
+   "form": "comparative_near",
+   "human_answer": "white sideboard",
+   "id": "t_cmp_1",
+   "model_answer": "white sideboard",
+   "outcome": "correct",
+   "question": "Is the wooden staircase closer to the wall mounted television, or closer to the white sideboard?"
+  },
+  {
+   "confidence": 0.48,
+   "cross_view": false,
+   "evidence_frame_ids": [
+    "frame_08_168685.427",
+    "frame_09_168693.691"
+   ],
+   "evidence_views": "1",
+   "form": "comparative_near",
+   "human_answer": "white sideboard",
+   "id": "t_cmp_2",
+   "model_answer": "white sideboard",
+   "outcome": "correct",
+   "question": "Is the wall mounted television closer to the white sideboard, or closer to the coffee table?"
+  },
+  {
+   "confidence": 0.0,
+   "cross_view": false,
+   "evidence_frame_ids": [],
+   "evidence_views": "2+",
+   "form": "comparative_near",
+   "human_answer": "console table",
+   "id": "t_cmp_3",
+   "model_answer": null,
+   "outcome": "unanswered",
+   "question": "Is the white sideboard closer to the coffee table, or closer to the console table?"
+  },
+  {
+   "confidence": 0.0,
+   "cross_view": false,
+   "evidence_frame_ids": [],
+   "evidence_views": "1",
+   "form": "comparative_near",
+   "human_answer": "white chest of drawer",
+   "id": "t_cmp_4",
+   "model_answer": null,
+   "outcome": "unanswered",
+   "question": "Is the coffee table closer to the console table, or closer to the white chest of drawer?"
+  },
+  {
+   "confidence": 0.0,
+   "cross_view": true,
+   "evidence_frame_ids": [],
+   "evidence_views": "0",
+   "form": "binary_near",
+   "human_answer": false,
+   "id": "t_xview_1",
+   "model_answer": null,
+   "outcome": "unanswered",
+   "question": "Is the wooden staircase near the coffee table?"
+  },
+  {
+   "confidence": 0.0,
+   "cross_view": true,
+   "evidence_frame_ids": [],
+   "evidence_views": "1",
+   "form": "binary_near",
+   "human_answer": true,
+   "id": "t_xview_2",
+   "model_answer": null,
+   "outcome": "unanswered",
+   "question": "Is the wooden staircase near the console table?"
+  },
+  {
+   "confidence": 0.0,
+   "cross_view": true,
+   "evidence_frame_ids": [],
+   "evidence_views": "0",
+   "form": "binary_near",
+   "human_answer": false,
+   "id": "t_xview_3",
+   "model_answer": null,
+   "outcome": "unanswered",
+   "question": "Is the wall mounted television near the coffee table?"
+  }
+ ],
+ "scene_id": "47331972",
+ "schema": "arkitscenes_rgb_transfer_score_v1",
+ "tally": {
+  "correct": 5,
+  "excluded_owner_ambiguous": 0,
+  "unanswered": 5,
+  "wrong": 0
+ },
+ "thin_evidence_slice": {
+  "answered": 2,
+  "correct": 2,
+  "ids": [
+   "t_pres_3",
+   "t_cmp_2",
+   "t_cmp_4",
+   "t_xview_1",
+   "t_xview_2",
+   "t_xview_3"
+  ],
+  "n": 6,
+  "note": "owner-recorded 0- or 1-view items, judged independently of the answer"
+ }
+}

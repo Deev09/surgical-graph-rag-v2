@@ -1,0 +1,116 @@
+{
+ "aggregation": "median absolute error over common pixels, per frame",
+ "comparison": "reconstructed mesh vertices projected into the frame vs synchronized lowres_depth sensor depth",
+ "frame_selection": "exact pose match within 0.001 s of the three timestamps named in extractors/arkitscenes_rgb_crops.py and in the tracked regression test",
+ "frames": [
+  305.377,
+  380.363,
+  455.366
+ ],
+ "is_experiment": false,
+ "mask": "none beyond common-pixel intersection; no instance mask, no annotation",
+ "measured": [
+  {
+   "direct": {
+    "common_share_of_sensor": 0.595561,
+    "median_abs_error_m": 0.040922,
+    "median_signed_error_m": -0.039896,
+    "n_common": 29273.0,
+    "n_sensor_valid": 49152.0,
+    "p90_abs_error_m": 0.146282,
+    "share_abs_error_le_0_10m": 0.807809,
+    "share_abs_error_le_0_20m": 0.944556,
+    "timestamp": 305.377
+   },
+   "legacy_axis_flip": {
+    "common_share_of_sensor": 0.991292,
+    "median_abs_error_m": 0.967662,
+    "median_signed_error_m": 0.967662,
+    "n_common": 48724.0,
+    "n_sensor_valid": 49152.0,
+    "p90_abs_error_m": 1.202093,
+    "share_abs_error_le_0_10m": 0.0,
+    "share_abs_error_le_0_20m": 0.004207,
+    "timestamp": 305.377
+   },
+   "timestamp": 305.377
+  },
+  {
+   "direct": {
+    "common_share_of_sensor": 0.739583,
+    "median_abs_error_m": 0.031475,
+    "median_signed_error_m": 0.029206,
+    "n_common": 36352.0,
+    "n_sensor_valid": 49152.0,
+    "p90_abs_error_m": 0.565425,
+    "share_abs_error_le_0_10m": 0.670692,
+    "share_abs_error_le_0_20m": 0.740537,
+    "timestamp": 380.363
+   },
+   "legacy_axis_flip": {
+    "common_share_of_sensor": 0.995931,
+    "median_abs_error_m": 0.982288,
+    "median_signed_error_m": 0.982288,
+    "n_common": 48952.0,
+    "n_sensor_valid": 49152.0,
+    "p90_abs_error_m": 2.12478,
+    "share_abs_error_le_0_10m": 0.0,
+    "share_abs_error_le_0_20m": 0.0,
+    "timestamp": 380.363
+   },
+   "timestamp": 380.363
+  },
+  {
+   "direct": {
+    "common_share_of_sensor": 0.973653,
+    "median_abs_error_m": 0.025015,
+    "median_signed_error_m": -0.013604,
+    "n_common": 47857.0,
+    "n_sensor_valid": 49152.0,
+    "p90_abs_error_m": 0.100509,
+    "share_abs_error_le_0_10m": 0.898928,
+    "share_abs_error_le_0_20m": 0.965501,
+    "timestamp": 455.366
+   },
+   "legacy_axis_flip": {
+    "common_share_of_sensor": 0.999186,
+    "median_abs_error_m": 0.368765,
+    "median_signed_error_m": 0.340994,
+    "n_common": 49112.0,
+    "n_sensor_valid": 49152.0,
+    "p90_abs_error_m": 1.173288,
+    "share_abs_error_le_0_10m": 0.027509,
+    "share_abs_error_le_0_20m": 0.079573,
+    "timestamp": 455.366
+   },
+   "timestamp": 455.366
+  }
+ ],
+ "provenance": {
+  "depth": "lowres_depth/*.png (dataset, not tracked)",
+  "measured_at_repo_commit": "58af9cd",
+  "mesh": "41069021_3dod_mesh.ply (dataset, not tracked)",
+  "tool": "tools/arkitscenes_camera_alignment.py",
+  "tool_commit": "fbf163c"
+ },
+ "purpose": "One authoritative measurement of the camera-convention depth error, so the two ranges circulating in prose can be compared against a single recorded set.",
+ "scene": "arkitscenes_41069021",
+ "schema": "arkitscenes_camera_convention_depth_diagnostic_v1",
+ "summary_cm": {
+  "direct_median_range": [
+   2.5,
+   4.1
+  ],
+  "legacy_flip_median_range": [
+   36.9,
+   98.2
+  ]
+ },
+ "tracked_test_bounds": {
+  "direct_median_abs_error_m_max": 0.06,
+  "legacy_over_direct_min_ratio": 4.0,
+  "note": "The regression pins BOUNDS, not values. Both circulating ranges satisfy the direct bound, so the test does not adjudicate between them.",
+  "share_abs_error_le_0_10m_min": 0.6
+ },
+ "what_this_is": "Deterministic re-measurement using the tracked function tools/arkitscenes_camera_alignment.depth_alignment_metrics, the same call the dataset-guarded regression tests/extractors/test_arkitscenes_rgb_crops.py::test_synchronized_depth_pins_camera_convention already executes on every suite run. No model ran, no threshold or system behaviour changed."
+}

@@ -182,9 +182,11 @@ nothing was scored. The no-adjustment rule exists to prevent selecting on
 outcomes; there was no outcome to select on. What is being fixed is a
 question-generation defect that was flagged **before** the owner answered.
 
-The returned key is preserved at
-`eval/human_feedback/arkitscenes_rgb_transfer_key_47331972.json` and in commit
-`6ee7715`. It is the evidence the defect was real, and it stays in the record.
+The run-1 key is preserved **in commit `6ee7715`**. It is the evidence the
+defect was real and it stays in the record. **Corrected 2026-08-24:** that path,
+`eval/human_feedback/arkitscenes_rgb_transfer_key_47331972.json`, now holds the
+**run-2** key (10 items, none ambiguous, questions hash `520074c2…`), which
+overwrote the run-1 key at HEAD. To read the run-1 key, check out `6ee7715`.
 
 ## What the defect was
 
@@ -323,6 +325,12 @@ on the two comparatives it did attempt.
 
 Both zero-view items are cross-view, and it declined both. On the six-item
 thin-evidence slice it answered only two, and got both right.
+
+**Form naming, clarified 2026-08-24.** The three non-co-visible items are called
+*cross-view* in this document; the scorer emits them under the form name
+`binary_near` with `cross_view = true` on each row. Counts are identical (3 items,
+0 correct, 3 unanswered); only the label differs. Source:
+`eval/results/project_census_v1/arkit_rgb_transfer_47331972_score.json`.
 
 ## Reading this honestly
 
