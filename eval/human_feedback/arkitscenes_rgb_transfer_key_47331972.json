@@ -1,0 +1,17 @@
+{
+ "schema": "arkitscenes_rgb_transfer_key_v1",
+ "scene_id": "47331972",
+ "status": "OWNER_CONFIRMED",
+ "questions_content_sha256": "42a76fbc0d909b37cca19de8675875a1afe848b156c73e877bd2d98f93a7aa9f",
+ "counting_convention_confirmed": true,
+ "human_truth": [
+  {"id": "t_card_1", "answer": 1, "ambiguous": false, "evidence_views": "2+", "notes": null},
+  {"id": "t_pres_2", "answer": true, "ambiguous": false, "evidence_views": "2+", "notes": null},
+  {"id": "t_pres_3", "answer": true, "ambiguous": false, "evidence_views": "1", "notes": null},
+  {"id": "t_cmp_1", "answer": null, "ambiguous": true, "evidence_views": "0", "notes": null},
+  {"id": "t_cmp_2", "answer": "coffee table", "ambiguous": false, "evidence_views": "1", "notes": null},
+  {"id": "t_cmp_3", "answer": null, "ambiguous": true, "evidence_views": null, "notes": null},
+  {"id": "t_xview_1", "answer": null, "ambiguous": true, "evidence_views": null, "notes": null},
+  {"id": "t_xview_2", "answer": null, "ambiguous": true, "evidence_views": null, "notes": null}
+ ]
+}
