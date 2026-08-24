@@ -3,7 +3,7 @@ Use ONLY visible evidence in the supplied frames. Do not fill gaps with common
 room expectations. A repeated object across views counts once. If the answer
 cannot be verified, return outcome "unknown" instead of guessing.
 
-An instance is a physically separate object of the named class. Two objects of the same class in different parts of the room count as two even if they never appear in one frame together.
+An instance is a physically separate object of the named class. Two objects of the same class in different parts of the captured space count as two even if they never appear in one frame together. "The captured space" means everywhere visible anywhere in the supplied views. This capture covers a multi-room floor, not a single room, so questions are scoped to the whole captured space rather than to "this room", which would not pick out a definite area.
 
 Two objects are NEAR when the nearest points of their surfaces are within about one metre of each other. Judge the gap between the objects themselves, not between their centres. Comparative questions ask only which is closer and need no threshold.
 
@@ -14,21 +14,23 @@ frame. Answer those from the room's layout as a whole if you can, or return
 Valid evidence frame ids: frame_00_168619.987, frame_01_168631.716, frame_02_168633.431, frame_03_168647.559, frame_04_168649.958, frame_05_168664.419, frame_06_168667.185, frame_07_168677.514, frame_08_168685.427, frame_09_168693.691, frame_10_168704.020, frame_11_168707.468, frame_12_168723.645, frame_13_168726.394, frame_14_168733.624, frame_15_168747.052, frame_16_168751.184, frame_17_168759.447
 
 Questions:
-- t_card_1 [integer]: How many movie poster prints are in this room?
-- t_pres_2 [true or false]: Is there a brown suede sofa in this room?
-- t_pres_3 [true or false]: Is there a coffee table in this room?
-- t_cmp_1 [exactly one of "brown suede sofa" or "coffee table"]: Is the movie poster print closer to the brown suede sofa, or closer to the coffee table?
-- t_cmp_2 [exactly one of "coffee table" or "console table"]: Is the brown suede sofa closer to the coffee table, or closer to the console table?
-- t_cmp_3 [exactly one of "cushion" or "decorative bowl"]: Is the coffee table closer to the cushion, or closer to the decorative bowl?
-- t_xview_1 [true or false]: Is the movie poster print near the coffee table?
-- t_xview_2 [true or false]: Is the movie poster print near the console table?
+- t_pres_1 [true or false]: Is there a framed picture in the captured space?
+- t_pres_2 [true or false]: Is there a brown suede sofa in the captured space?
+- t_pres_3 [true or false]: Is there a wall power socket in the captured space?
+- t_cmp_1 [exactly one of "wall mounted television" or "white sideboard"]: Is the wooden staircase closer to the wall mounted television, or closer to the white sideboard?
+- t_cmp_2 [exactly one of "white sideboard" or "coffee table"]: Is the wall mounted television closer to the white sideboard, or closer to the coffee table?
+- t_cmp_3 [exactly one of "coffee table" or "console table"]: Is the white sideboard closer to the coffee table, or closer to the console table?
+- t_cmp_4 [exactly one of "console table" or "white chest of drawer"]: Is the coffee table closer to the console table, or closer to the white chest of drawer?
+- t_xview_1 [true or false]: Is the wooden staircase near the coffee table?
+- t_xview_2 [true or false]: Is the wooden staircase near the console table?
+- t_xview_3 [true or false]: Is the wall mounted television near the coffee table?
 
 Return one JSON object and no prose. Note that "outcome" is a flag with only
 two legal values, "answer" or "unknown"; the answer itself goes in "answer":
 {
   "schema": "arkitscenes_rgb_transfer_responses_v1",
   "scene_id": "47331972",
-  "packet_sha256": "b0b13969a4d976e1eea35642fe9fa3b898f1f719f686a142116865167c41825d",
+  "packet_sha256": "33355c8a74d3039aca14a3f1a10e1b1bd1ad0f4deb94436ebe8756da3f346c96",
   "model": {"provider": "...", "name": "...", "version": "..."},
   "answers": [
     {

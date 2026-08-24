@@ -240,3 +240,41 @@ answered, so up to two honest abstentions are affordable. If exclusions again
 drive the scored set below **six** items, the run is void and reported as
 such rather than scored — recorded here so it is a rule and not a judgement
 made afterwards.
+
+# Amendment 2 — relational slots restricted to unique-referent anchors
+
+Applied immediately after amendment 1 regenerated, before any blinded response
+existed, and before the owner was asked to review anything.
+
+Amendment 1's ordering fix promoted the best-attested anchors — but
+best-attested turns out to correlate with *numerous*. Of the top twelve
+anchors, exactly one had a unique referent. Six of the ten regenerated
+questions read "the cushion", "the framed picture", "the wall power socket",
+where the three passes counted four, about nine, and three.
+
+A singular definite description with no unique referent is ill-posed in the
+same way "in this room" was ill-posed on a multi-room floor. It is detectable
+without any model output, and it would have collapsed the scored set a second
+time.
+
+**The rule:** comparative and cross-view slots draw only from anchors where all
+three passes agreed there is **exactly one**. 27 of the 48 admitted anchors
+qualify, so the constraint costs nothing. Presence and cardinality slots are
+untouched — "how many framed pictures are in the captured space" is a good
+question precisely *because* there are several.
+
+Nothing about answerability enters: the filter is a count agreed by three
+observers who never saw a question.
+
+## A limit on amending
+
+This is the second structural amendment. Repeated amendment is itself a risk —
+at some point "fix the generator" becomes "iterate until the questions look
+right", which is the behaviour the protocol exists to prevent.
+
+So: **no further structural amendment to this generator on this scene.** If
+run 2's returned key again drives the scored set below six, that is reported as
+a finding about the fixed-procedure generator — that it does not produce a
+usable question set on this capture — and the transfer test is abandoned rather
+than amended a third time. The demo stays a recorded replay and no transfer
+claim is made.

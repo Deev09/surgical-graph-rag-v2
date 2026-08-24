@@ -89,6 +89,13 @@ def test_annotation_boxes_land_inside_the_mesh() -> None:
         print("  SKIP (ARKitScenes data not on disk)")
         return
     for scene in scenes:
+        # A scene fetched for an RGB-only experiment has a mesh but no
+        # annotation on purpose -- 47331972 is under a blinded transfer test,
+        # and pulling its annotation would park oracle material beside a run
+        # whose whole point is not having seen it. Skip rather than demand it.
+        if not (scene / f"{scene.name}{ANNOTATION_SUFFIX}").is_file():
+            print(f"  SKIP {scene.name} (RGB-only scene, no annotation fetched)")
+            continue
         mesh, R, _ = load_canonical_geometry(scene)
         ents = load_oracle_entities(scene, mesh.xyz, R)
         if not ents:

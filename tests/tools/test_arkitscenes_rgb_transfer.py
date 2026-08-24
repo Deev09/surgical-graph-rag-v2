@@ -20,6 +20,7 @@ if str(REPO_ROOT) not in sys.path:
 from tools import arkitscenes_rgb_transfer as mod
 from tools.arkitscenes_rgb_transfer import (
     COUNTING_CONVENTION,
+    has_unique_referent,
     KEY_SCHEMA,
     MIN_ANCHORS,
     MIN_PASSES,
@@ -45,13 +46,15 @@ def three_passes():
     a = [obj("sofa", FRAMES[:2]), obj("kitchen counter", FRAMES[1:3]),
          obj("lamp", FRAMES[2:4]), obj("bed", FRAMES[3:5]),
          obj("rug", FRAMES[4:6]), obj("kettle", FRAMES[5:]),
-         obj("ghost", FRAMES[:1])]
+         obj("stool", FRAMES[2:5]), obj("ghost", FRAMES[:1])]
     b = [obj("couch-like sofa", FRAMES[:2]), obj("counter", FRAMES[1:3]),
          obj("lamps", FRAMES[2:4]), obj("bed", FRAMES[3:5]),
-         obj("rug", FRAMES[4:6]), obj("kettle", FRAMES[5:])]
+         obj("rug", FRAMES[4:6]), obj("kettle", FRAMES[5:]),
+         obj("stool", FRAMES[2:5])]
     c = [obj("sofa", FRAMES[:2]), obj("counter", FRAMES[1:3]),
          obj("lamp", FRAMES[2:4]), obj("bed", FRAMES[3:5]),
-         obj("rug", FRAMES[4:6]), obj("kettle", FRAMES[5:])]
+         obj("rug", FRAMES[4:6]), obj("kettle", FRAMES[5:]),
+         obj("stool", FRAMES[2:5])]
     return [{"objects": a}, {"objects": b}, {"objects": c}]
 
 
@@ -144,8 +147,15 @@ def test_a_hedged_count_degrades_to_a_presence_question():
     passes = three_passes()
     passes[0]["objects"][0] = obj("sofa", FRAMES[:2], count=2, conf="unsure")
     questions, notes = build_questions(merge_passes(passes, FRAMES)["admitted"])
-    first = questions[0]
-    assert first["form"] == "presence" and first["answer_type"] == "boolean"
+    # position is not assumed: amendment 1 reordered anchors, so find the item
+    # about the hedged anchor rather than the first slot.
+    # the merged anchor keeps the most specific surface form seen, which here
+    # is pass 2's "couch-like sofa" rather than bare "sofa"
+    hedged = [q for q in questions if "sofa" in str(q.get("subject", ""))
+              and q["form"] in {"presence", "cardinality"}]
+    assert hedged, "the hedged anchor should still occupy a presence/cardinality slot"
+    assert hedged[0]["form"] == "presence"
+    assert hedged[0]["answer_type"] == "boolean"
     assert any("presence question" in n for n in notes)
 
 
@@ -176,6 +186,47 @@ def test_too_few_anchors_stops_the_test():
         assert str(MIN_ANCHORS) in str(exc)
     else:
         raise AssertionError("fewer than six anchors must stop the test")
+
+
+def test_relational_slots_use_only_unique_referent_anchors():
+    """Amendment 2: "the cushion" picks out nothing when there are four.
+
+    Presence and cardinality slots are deliberately exempt -- several framed
+    pictures is exactly what makes "how many" worth asking.
+    """
+    passes = three_passes()
+    for block in passes:                      # make the first anchor plural
+        block["objects"][0] = obj(block["objects"][0]["name"], FRAMES[:2], count=4)
+    merged = merge_passes(passes, FRAMES)
+    anchors = merged["admitted"]
+    plural = {a["anchor"] for a in anchors if not has_unique_referent(a)}
+    assert plural, "fixture must contain a multi-instance anchor"
+
+    questions, _ = build_questions(anchors)
+    for q in questions:
+        if q["form"] not in {"comparative_near", "binary_near"}:
+            continue
+        used = {q.get(k) for k in ("subject", "object", "reference_a",
+                                   "reference_b") if q.get(k)}
+        assert not (used & plural), f"{q['id']} names a multi-instance anchor"
+
+
+def test_unique_referent_needs_unanimous_agreement_on_exactly_one():
+    assert has_unique_referent({"counts": [{"count": 1}, {"count": 1}, {"count": 1}]})
+    assert not has_unique_referent({"counts": [{"count": 1}, {"count": 2}]})
+    assert not has_unique_referent({"counts": [{"count": 2}, {"count": 2}]})
+    assert not has_unique_referent({"counts": []})
+
+
+def test_too_few_unique_referent_anchors_stops_the_test():
+    plural = [{"objects": [obj(n, FRAMES, count=3) for n in
+               ("a bed", "b bed", "c bed", "d bed", "e bed", "f bed")]}] * 3
+    try:
+        build_questions(merge_passes(plural, FRAMES)["admitted"])
+    except ValueError as exc:
+        assert "unique-referent" in str(exc)
+    else:
+        raise AssertionError("comparative slots need six unique-referent anchors")
 
 
 # --------------------------------------------------------------- the prompt

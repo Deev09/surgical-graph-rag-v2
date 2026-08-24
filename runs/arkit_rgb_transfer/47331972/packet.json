@@ -1,5 +1,5 @@
 {
- "counting_convention": "An instance is a physically separate object of the named class. Two objects of the same class in different parts of the room count as two even if they never appear in one frame together.",
+ "counting_convention": "An instance is a physically separate object of the named class. Two objects of the same class in different parts of the captured space count as two even if they never appear in one frame together. \"The captured space\" means everywhere visible anywhere in the supplied views. This capture covers a multi-room floor, not a single room, so questions are scoped to the whole captured space rather than to \"this room\", which would not pick out a definite area.",
  "disclosures": [
   "No expected answer, human key or system output is included.",
   "The selected views may miss an object even when it exists.",
@@ -98,21 +98,21 @@
   }
  ],
  "near_convention": "Two objects are NEAR when the nearest points of their surfaces are within about one metre of each other. Judge the gap between the objects themselves, not between their centres. Comparative questions ask only which is closer and need no threshold.",
- "packet_sha256": "b0b13969a4d976e1eea35642fe9fa3b898f1f719f686a142116865167c41825d",
+ "packet_sha256": "33355c8a74d3039aca14a3f1a10e1b1bd1ad0f4deb94436ebe8756da3f346c96",
  "questions": [
   {
-   "answer_type": "integer",
-   "form": "cardinality",
-   "id": "t_card_1",
-   "question": "How many movie poster prints are in this room?",
-   "subject": "movie poster print",
+   "answer_type": "boolean",
+   "form": "presence",
+   "id": "t_pres_1",
+   "question": "Is there a framed picture in the captured space?",
+   "subject": "framed picture",
    "template_rank": 1
   },
   {
    "answer_type": "boolean",
    "form": "presence",
    "id": "t_pres_2",
-   "question": "Is there a brown suede sofa in this room?",
+   "question": "Is there a brown suede sofa in the captured space?",
    "subject": "brown suede sofa",
    "template_rank": 2
   },
@@ -120,39 +120,49 @@
    "answer_type": "boolean",
    "form": "presence",
    "id": "t_pres_3",
-   "question": "Is there a coffee table in this room?",
-   "subject": "coffee table",
+   "question": "Is there a wall power socket in the captured space?",
+   "subject": "wall power socket",
    "template_rank": 3
   },
   {
    "answer_type": "object_name",
    "form": "comparative_near",
    "id": "t_cmp_1",
-   "question": "Is the movie poster print closer to the brown suede sofa, or closer to the coffee table?",
-   "reference_a": "brown suede sofa",
-   "reference_b": "coffee table",
-   "subject": "movie poster print",
+   "question": "Is the wooden staircase closer to the wall mounted television, or closer to the white sideboard?",
+   "reference_a": "wall mounted television",
+   "reference_b": "white sideboard",
+   "subject": "wooden staircase",
    "template_rank": 1
   },
   {
    "answer_type": "object_name",
    "form": "comparative_near",
    "id": "t_cmp_2",
-   "question": "Is the brown suede sofa closer to the coffee table, or closer to the console table?",
-   "reference_a": "coffee table",
-   "reference_b": "console table",
-   "subject": "brown suede sofa",
+   "question": "Is the wall mounted television closer to the white sideboard, or closer to the coffee table?",
+   "reference_a": "white sideboard",
+   "reference_b": "coffee table",
+   "subject": "wall mounted television",
    "template_rank": 2
   },
   {
    "answer_type": "object_name",
    "form": "comparative_near",
    "id": "t_cmp_3",
-   "question": "Is the coffee table closer to the cushion, or closer to the decorative bowl?",
-   "reference_a": "cushion",
-   "reference_b": "decorative bowl",
-   "subject": "coffee table",
+   "question": "Is the white sideboard closer to the coffee table, or closer to the console table?",
+   "reference_a": "coffee table",
+   "reference_b": "console table",
+   "subject": "white sideboard",
    "template_rank": 3
+  },
+  {
+   "answer_type": "object_name",
+   "form": "comparative_near",
+   "id": "t_cmp_4",
+   "question": "Is the coffee table closer to the console table, or closer to the white chest of drawer?",
+   "reference_a": "console table",
+   "reference_b": "white chest of drawer",
+   "subject": "coffee table",
+   "template_rank": 4
   },
   {
    "answer_type": "boolean",
@@ -160,8 +170,8 @@
    "form": "binary_near",
    "id": "t_xview_1",
    "object": "coffee table",
-   "question": "Is the movie poster print near the coffee table?",
-   "subject": "movie poster print",
+   "question": "Is the wooden staircase near the coffee table?",
+   "subject": "wooden staircase",
    "template_rank": 1,
    "why_cross_view": "no supplied frame contains both objects"
   },
@@ -171,13 +181,24 @@
    "form": "binary_near",
    "id": "t_xview_2",
    "object": "console table",
-   "question": "Is the movie poster print near the console table?",
-   "subject": "movie poster print",
+   "question": "Is the wooden staircase near the console table?",
+   "subject": "wooden staircase",
    "template_rank": 2,
+   "why_cross_view": "no supplied frame contains both objects"
+  },
+  {
+   "answer_type": "boolean",
+   "cross_view": true,
+   "form": "binary_near",
+   "id": "t_xview_3",
+   "object": "coffee table",
+   "question": "Is the wall mounted television near the coffee table?",
+   "subject": "wall mounted television",
+   "template_rank": 3,
    "why_cross_view": "no supplied frame contains both objects"
   }
  ],
- "questions_content_sha256": "42a76fbc0d909b37cca19de8675875a1afe848b156c73e877bd2d98f93a7aa9f",
+ "questions_content_sha256": "520074c2b34a5122afc17b754eaac1488e85ef1e71435184d9804e3c6ec5c9e2",
  "scene_id": "47331972",
  "schema": "arkitscenes_rgb_transfer_packet_v1",
  "selection": "survey_frames: 18 equal temporal bins, best information score per bin",

@@ -1,33 +1,46 @@
 {
  "admitted": [
   {
-   "anchor": "movie poster print",
+   "anchor": "framed picture",
    "counts": [
     {
-     "confidence": "certain",
-     "count": 1,
+     "confidence": "unsure",
+     "count": 12,
      "pass": 0
     },
     {
-     "confidence": "certain",
-     "count": 1,
+     "confidence": "unsure",
+     "count": 8,
      "pass": 1
+    },
+    {
+     "confidence": "unsure",
+     "count": 9,
+     "pass": 2
     }
    ],
-   "counts_agree": true,
-   "first_frame_rank": 0,
+   "counts_agree": false,
+   "first_frame_rank": 1,
    "frame_ids": [
-    "frame_00_168619.987",
+    "frame_01_168631.716",
+    "frame_02_168633.431",
+    "frame_03_168647.559",
+    "frame_04_168649.958",
     "frame_10_168704.020",
+    "frame_11_168707.468",
+    "frame_12_168723.645",
+    "frame_15_168747.052",
+    "frame_16_168751.184",
     "frame_17_168759.447"
    ],
-   "n_passes": 2,
+   "n_passes": 3,
    "passes": [
     0,
-    1
+    1,
+    2
    ],
    "surface_forms": [
-    "movie poster print"
+    "framed picture"
    ]
   },
   {
@@ -73,30 +86,34 @@
    ]
   },
   {
-   "anchor": "coffee table",
+   "anchor": "wall power socket",
    "counts": [
     {
-     "confidence": "probable",
-     "count": 1,
+     "confidence": "unsure",
+     "count": 4,
      "pass": 0
     },
     {
-     "confidence": "certain",
-     "count": 1,
+     "confidence": "unsure",
+     "count": 3,
      "pass": 1
     },
     {
-     "confidence": "certain",
-     "count": 1,
+     "confidence": "unsure",
+     "count": 3,
      "pass": 2
     }
    ],
-   "counts_agree": true,
-   "first_frame_rank": 1,
+   "counts_agree": false,
+   "first_frame_rank": 8,
    "frame_ids": [
-    "frame_01_168631.716",
-    "frame_03_168647.559",
-    "frame_04_168649.958"
+    "frame_08_168685.427",
+    "frame_09_168693.691",
+    "frame_10_168704.020",
+    "frame_11_168707.468",
+    "frame_12_168723.645",
+    "frame_15_168747.052",
+    "frame_16_168751.184"
    ],
    "n_passes": 3,
    "passes": [
@@ -105,43 +122,8 @@
     2
    ],
    "surface_forms": [
-    "coffee table"
-   ]
-  },
-  {
-   "anchor": "console table",
-   "counts": [
-    {
-     "confidence": "probable",
-     "count": 1,
-     "pass": 0
-    },
-    {
-     "confidence": "certain",
-     "count": 1,
-     "pass": 1
-    },
-    {
-     "confidence": "certain",
-     "count": 1,
-     "pass": 2
-    }
-   ],
-   "counts_agree": true,
-   "first_frame_rank": 1,
-   "frame_ids": [
-    "frame_01_168631.716",
-    "frame_02_168633.431",
-    "frame_04_168649.958"
-   ],
-   "n_passes": 3,
-   "passes": [
-    0,
-    1,
-    2
-   ],
-   "surface_forms": [
-    "console table"
+    "wall power socket",
+    "wall socket"
    ]
   },
   {
@@ -184,67 +166,33 @@
    ]
   },
   {
-   "anchor": "decorative bowl",
+   "anchor": "wooden staircase",
    "counts": [
     {
-     "confidence": "probable",
+     "confidence": "certain",
+     "count": 1,
+     "pass": 0
+    },
+    {
+     "confidence": "certain",
      "count": 1,
      "pass": 1
     },
     {
-     "confidence": "probable",
+     "confidence": "certain",
      "count": 1,
      "pass": 2
     }
    ],
    "counts_agree": true,
-   "first_frame_rank": 1,
+   "first_frame_rank": 9,
    "frame_ids": [
-    "frame_01_168631.716",
-    "frame_02_168633.431",
-    "frame_04_168649.958"
-   ],
-   "n_passes": 2,
-   "passes": [
-    1,
-    2
-   ],
-   "surface_forms": [
-    "decorative bowl"
-   ]
-  },
-  {
-   "anchor": "framed picture",
-   "counts": [
-    {
-     "confidence": "unsure",
-     "count": 12,
-     "pass": 0
-    },
-    {
-     "confidence": "unsure",
-     "count": 8,
-     "pass": 1
-    },
-    {
-     "confidence": "unsure",
-     "count": 9,
-     "pass": 2
-    }
-   ],
-   "counts_agree": false,
-   "first_frame_rank": 1,
-   "frame_ids": [
-    "frame_01_168631.716",
-    "frame_02_168633.431",
-    "frame_03_168647.559",
-    "frame_04_168649.958",
+    "frame_09_168693.691",
     "frame_10_168704.020",
     "frame_11_168707.468",
     "frame_12_168723.645",
-    "frame_15_168747.052",
-    "frame_16_168751.184",
-    "frame_17_168759.447"
+    "frame_13_168726.394",
+    "frame_14_168733.624"
    ],
    "n_passes": 3,
    "passes": [
@@ -253,111 +201,8 @@
     2
    ],
    "surface_forms": [
-    "framed picture"
-   ]
-  },
-  {
-   "anchor": "glass patio door",
-   "counts": [
-    {
-     "confidence": "certain",
-     "count": 1,
-     "pass": 0
-    },
-    {
-     "confidence": "certain",
-     "count": 1,
-     "pass": 1
-    },
-    {
-     "confidence": "certain",
-     "count": 1,
-     "pass": 2
-    }
-   ],
-   "counts_agree": true,
-   "first_frame_rank": 1,
-   "frame_ids": [
-    "frame_01_168631.716",
-    "frame_02_168633.431"
-   ],
-   "n_passes": 3,
-   "passes": [
-    0,
-    1,
-    2
-   ],
-   "surface_forms": [
-    "glass patio door",
-    "patio door",
-    "patio doors"
-   ]
-  },
-  {
-   "anchor": "gold decorative bottle",
-   "counts": [
-    {
-     "confidence": "probable",
-     "count": 1,
-     "pass": 0
-    },
-    {
-     "confidence": "unsure",
-     "count": 2,
-     "pass": 1
-    },
-    {
-     "confidence": "probable",
-     "count": 1,
-     "pass": 2
-    }
-   ],
-   "counts_agree": false,
-   "first_frame_rank": 1,
-   "frame_ids": [
-    "frame_01_168631.716",
-    "frame_02_168633.431",
-    "frame_04_168649.958"
-   ],
-   "n_passes": 3,
-   "passes": [
-    0,
-    1,
-    2
-   ],
-   "surface_forms": [
-    "decorative bottle",
-    "gold decorative bottle"
-   ]
-  },
-  {
-   "anchor": "orchid",
-   "counts": [
-    {
-     "confidence": "probable",
-     "count": 1,
-     "pass": 0
-    },
-    {
-     "confidence": "probable",
-     "count": 1,
-     "pass": 2
-    }
-   ],
-   "counts_agree": true,
-   "first_frame_rank": 1,
-   "frame_ids": [
-    "frame_01_168631.716",
-    "frame_02_168633.431",
-    "frame_04_168649.958"
-   ],
-   "n_passes": 2,
-   "passes": [
-    0,
-    2
-   ],
-   "surface_forms": [
-    "orchid"
+    "staircase",
+    "wooden staircase"
    ]
   },
   {
@@ -435,6 +280,83 @@
    ],
    "surface_forms": [
     "potted plant"
+   ]
+  },
+  {
+   "anchor": "area rug",
+   "counts": [
+    {
+     "confidence": "unsure",
+     "count": 2,
+     "pass": 0
+    },
+    {
+     "confidence": "unsure",
+     "count": 2,
+     "pass": 1
+    },
+    {
+     "confidence": "probable",
+     "count": 2,
+     "pass": 2
+    }
+   ],
+   "counts_agree": true,
+   "first_frame_rank": 3,
+   "frame_ids": [
+    "frame_03_168647.559",
+    "frame_04_168649.958",
+    "frame_07_168677.514",
+    "frame_10_168704.020",
+    "frame_12_168723.645"
+   ],
+   "n_passes": 3,
+   "passes": [
+    0,
+    1,
+    2
+   ],
+   "surface_forms": [
+    "area rug",
+    "rug"
+   ]
+  },
+  {
+   "anchor": "interior door",
+   "counts": [
+    {
+     "confidence": "unsure",
+     "count": 2,
+     "pass": 0
+    },
+    {
+     "confidence": "unsure",
+     "count": 3,
+     "pass": 1
+    },
+    {
+     "confidence": "unsure",
+     "count": 2,
+     "pass": 2
+    }
+   ],
+   "counts_agree": false,
+   "first_frame_rank": 10,
+   "frame_ids": [
+    "frame_10_168704.020",
+    "frame_11_168707.468",
+    "frame_13_168726.394",
+    "frame_14_168733.624",
+    "frame_17_168759.447"
+   ],
+   "n_passes": 3,
+   "passes": [
+    0,
+    1,
+    2
+   ],
+   "surface_forms": [
+    "interior door"
    ]
   },
   {
@@ -549,6 +471,265 @@
    ]
   },
   {
+   "anchor": "snake plant",
+   "counts": [
+    {
+     "confidence": "probable",
+     "count": 1,
+     "pass": 0
+    },
+    {
+     "confidence": "probable",
+     "count": 2,
+     "pass": 1
+    },
+    {
+     "confidence": "probable",
+     "count": 3,
+     "pass": 2
+    }
+   ],
+   "counts_agree": false,
+   "first_frame_rank": 3,
+   "frame_ids": [
+    "frame_03_168647.559",
+    "frame_04_168649.958",
+    "frame_05_168664.419",
+    "frame_06_168667.185"
+   ],
+   "n_passes": 3,
+   "passes": [
+    0,
+    1,
+    2
+   ],
+   "surface_forms": [
+    "snake plant"
+   ]
+  },
+  {
+   "anchor": "window",
+   "counts": [
+    {
+     "confidence": "unsure",
+     "count": 3,
+     "pass": 0
+    },
+    {
+     "confidence": "certain",
+     "count": 2,
+     "pass": 1
+    },
+    {
+     "confidence": "unsure",
+     "count": 4,
+     "pass": 2
+    }
+   ],
+   "counts_agree": false,
+   "first_frame_rank": 3,
+   "frame_ids": [
+    "frame_03_168647.559",
+    "frame_04_168649.958",
+    "frame_05_168664.419",
+    "frame_06_168667.185"
+   ],
+   "n_passes": 3,
+   "passes": [
+    0,
+    1,
+    2
+   ],
+   "surface_forms": [
+    "window"
+   ]
+  },
+  {
+   "anchor": "wall mounted television",
+   "counts": [
+    {
+     "confidence": "certain",
+     "count": 1,
+     "pass": 0
+    },
+    {
+     "confidence": "certain",
+     "count": 1,
+     "pass": 1
+    },
+    {
+     "confidence": "certain",
+     "count": 1,
+     "pass": 2
+    }
+   ],
+   "counts_agree": true,
+   "first_frame_rank": 8,
+   "frame_ids": [
+    "frame_08_168685.427",
+    "frame_09_168693.691",
+    "frame_12_168723.645",
+    "frame_13_168726.394"
+   ],
+   "n_passes": 3,
+   "passes": [
+    0,
+    1,
+    2
+   ],
+   "surface_forms": [
+    "television",
+    "wall-mounted television"
+   ]
+  },
+  {
+   "anchor": "white sideboard",
+   "counts": [
+    {
+     "confidence": "certain",
+     "count": 1,
+     "pass": 0
+    },
+    {
+     "confidence": "certain",
+     "count": 1,
+     "pass": 1
+    },
+    {
+     "confidence": "certain",
+     "count": 1,
+     "pass": 2
+    }
+   ],
+   "counts_agree": true,
+   "first_frame_rank": 8,
+   "frame_ids": [
+    "frame_08_168685.427",
+    "frame_09_168693.691",
+    "frame_12_168723.645",
+    "frame_13_168726.394"
+   ],
+   "n_passes": 3,
+   "passes": [
+    0,
+    1,
+    2
+   ],
+   "surface_forms": [
+    "sideboard",
+    "white sideboard"
+   ]
+  },
+  {
+   "anchor": "coffee table",
+   "counts": [
+    {
+     "confidence": "probable",
+     "count": 1,
+     "pass": 0
+    },
+    {
+     "confidence": "certain",
+     "count": 1,
+     "pass": 1
+    },
+    {
+     "confidence": "certain",
+     "count": 1,
+     "pass": 2
+    }
+   ],
+   "counts_agree": true,
+   "first_frame_rank": 1,
+   "frame_ids": [
+    "frame_01_168631.716",
+    "frame_03_168647.559",
+    "frame_04_168649.958"
+   ],
+   "n_passes": 3,
+   "passes": [
+    0,
+    1,
+    2
+   ],
+   "surface_forms": [
+    "coffee table"
+   ]
+  },
+  {
+   "anchor": "console table",
+   "counts": [
+    {
+     "confidence": "probable",
+     "count": 1,
+     "pass": 0
+    },
+    {
+     "confidence": "certain",
+     "count": 1,
+     "pass": 1
+    },
+    {
+     "confidence": "certain",
+     "count": 1,
+     "pass": 2
+    }
+   ],
+   "counts_agree": true,
+   "first_frame_rank": 1,
+   "frame_ids": [
+    "frame_01_168631.716",
+    "frame_02_168633.431",
+    "frame_04_168649.958"
+   ],
+   "n_passes": 3,
+   "passes": [
+    0,
+    1,
+    2
+   ],
+   "surface_forms": [
+    "console table"
+   ]
+  },
+  {
+   "anchor": "gold decorative bottle",
+   "counts": [
+    {
+     "confidence": "probable",
+     "count": 1,
+     "pass": 0
+    },
+    {
+     "confidence": "unsure",
+     "count": 2,
+     "pass": 1
+    },
+    {
+     "confidence": "probable",
+     "count": 1,
+     "pass": 2
+    }
+   ],
+   "counts_agree": false,
+   "first_frame_rank": 1,
+   "frame_ids": [
+    "frame_01_168631.716",
+    "frame_02_168633.431",
+    "frame_04_168649.958"
+   ],
+   "n_passes": 3,
+   "passes": [
+    0,
+    1,
+    2
+   ],
+   "surface_forms": [
+    "decorative bottle",
+    "gold decorative bottle"
+   ]
+  },
+  {
    "anchor": "white chest of drawer",
    "counts": [
     {
@@ -586,6 +767,115 @@
    ]
   },
   {
+   "anchor": "remote control",
+   "counts": [
+    {
+     "confidence": "unsure",
+     "count": 3,
+     "pass": 0
+    },
+    {
+     "confidence": "unsure",
+     "count": 4,
+     "pass": 1
+    },
+    {
+     "confidence": "unsure",
+     "count": 2,
+     "pass": 2
+    }
+   ],
+   "counts_agree": false,
+   "first_frame_rank": 3,
+   "frame_ids": [
+    "frame_03_168647.559",
+    "frame_08_168685.427",
+    "frame_12_168723.645"
+   ],
+   "n_passes": 3,
+   "passes": [
+    0,
+    1,
+    2
+   ],
+   "surface_forms": [
+    "remote control"
+   ]
+  },
+  {
+   "anchor": "soundbar",
+   "counts": [
+    {
+     "confidence": "certain",
+     "count": 1,
+     "pass": 0
+    },
+    {
+     "confidence": "certain",
+     "count": 1,
+     "pass": 1
+    },
+    {
+     "confidence": "certain",
+     "count": 1,
+     "pass": 2
+    }
+   ],
+   "counts_agree": true,
+   "first_frame_rank": 8,
+   "frame_ids": [
+    "frame_08_168685.427",
+    "frame_12_168723.645",
+    "frame_13_168726.394"
+   ],
+   "n_passes": 3,
+   "passes": [
+    0,
+    1,
+    2
+   ],
+   "surface_forms": [
+    "soundbar"
+   ]
+  },
+  {
+   "anchor": "glass patio door",
+   "counts": [
+    {
+     "confidence": "certain",
+     "count": 1,
+     "pass": 0
+    },
+    {
+     "confidence": "certain",
+     "count": 1,
+     "pass": 1
+    },
+    {
+     "confidence": "certain",
+     "count": 1,
+     "pass": 2
+    }
+   ],
+   "counts_agree": true,
+   "first_frame_rank": 1,
+   "frame_ids": [
+    "frame_01_168631.716",
+    "frame_02_168633.431"
+   ],
+   "n_passes": 3,
+   "passes": [
+    0,
+    1,
+    2
+   ],
+   "surface_forms": [
+    "glass patio door",
+    "patio door",
+    "patio doors"
+   ]
+  },
+  {
    "anchor": "wooden chair",
    "counts": [
     {
@@ -618,73 +908,6 @@
    ],
    "surface_forms": [
     "wooden chair"
-   ]
-  },
-  {
-   "anchor": "area rug",
-   "counts": [
-    {
-     "confidence": "unsure",
-     "count": 2,
-     "pass": 0
-    },
-    {
-     "confidence": "unsure",
-     "count": 2,
-     "pass": 1
-    },
-    {
-     "confidence": "probable",
-     "count": 2,
-     "pass": 2
-    }
-   ],
-   "counts_agree": true,
-   "first_frame_rank": 3,
-   "frame_ids": [
-    "frame_03_168647.559",
-    "frame_04_168649.958",
-    "frame_07_168677.514",
-    "frame_10_168704.020",
-    "frame_12_168723.645"
-   ],
-   "n_passes": 3,
-   "passes": [
-    0,
-    1,
-    2
-   ],
-   "surface_forms": [
-    "area rug",
-    "rug"
-   ]
-  },
-  {
-   "anchor": "carved wooden wall plaque",
-   "counts": [
-    {
-     "confidence": "unsure",
-     "count": 1,
-     "pass": 0
-    },
-    {
-     "confidence": "probable",
-     "count": 1,
-     "pass": 1
-    }
-   ],
-   "counts_agree": true,
-   "first_frame_rank": 3,
-   "frame_ids": [
-    "frame_03_168647.559"
-   ],
-   "n_passes": 2,
-   "passes": [
-    0,
-    1
-   ],
-   "surface_forms": [
-    "carved wooden wall plaque"
    ]
   },
   {
@@ -793,246 +1016,6 @@
    ]
   },
   {
-   "anchor": "ornament in the display cabinet",
-   "counts": [
-    {
-     "confidence": "unsure",
-     "count": 2,
-     "pass": 0
-    },
-    {
-     "confidence": "certain",
-     "count": 1,
-     "pass": 1
-    },
-    {
-     "confidence": "unsure",
-     "count": 15,
-     "pass": 1
-    }
-   ],
-   "counts_agree": false,
-   "first_frame_rank": 3,
-   "frame_ids": [
-    "frame_03_168647.559",
-    "frame_09_168693.691",
-    "frame_12_168723.645",
-    "frame_13_168726.394"
-   ],
-   "n_passes": 2,
-   "passes": [
-    0,
-    1
-   ],
-   "surface_forms": [
-    "display cabinet",
-    "ornaments in the display cabinet"
-   ]
-  },
-  {
-   "anchor": "remote control",
-   "counts": [
-    {
-     "confidence": "unsure",
-     "count": 3,
-     "pass": 0
-    },
-    {
-     "confidence": "unsure",
-     "count": 4,
-     "pass": 1
-    },
-    {
-     "confidence": "unsure",
-     "count": 2,
-     "pass": 2
-    }
-   ],
-   "counts_agree": false,
-   "first_frame_rank": 3,
-   "frame_ids": [
-    "frame_03_168647.559",
-    "frame_08_168685.427",
-    "frame_12_168723.645"
-   ],
-   "n_passes": 3,
-   "passes": [
-    0,
-    1,
-    2
-   ],
-   "surface_forms": [
-    "remote control"
-   ]
-  },
-  {
-   "anchor": "round straw wall decoration",
-   "counts": [
-    {
-     "confidence": "unsure",
-     "count": 1,
-     "pass": 0
-    },
-    {
-     "confidence": "unsure",
-     "count": 2,
-     "pass": 1
-    }
-   ],
-   "counts_agree": false,
-   "first_frame_rank": 3,
-   "frame_ids": [
-    "frame_03_168647.559",
-    "frame_04_168649.958"
-   ],
-   "n_passes": 2,
-   "passes": [
-    0,
-    1
-   ],
-   "surface_forms": [
-    "round straw wall decoration",
-    "round wall decoration"
-   ]
-  },
-  {
-   "anchor": "snake plant",
-   "counts": [
-    {
-     "confidence": "probable",
-     "count": 1,
-     "pass": 0
-    },
-    {
-     "confidence": "probable",
-     "count": 2,
-     "pass": 1
-    },
-    {
-     "confidence": "probable",
-     "count": 3,
-     "pass": 2
-    }
-   ],
-   "counts_agree": false,
-   "first_frame_rank": 3,
-   "frame_ids": [
-    "frame_03_168647.559",
-    "frame_04_168649.958",
-    "frame_05_168664.419",
-    "frame_06_168667.185"
-   ],
-   "n_passes": 3,
-   "passes": [
-    0,
-    1,
-    2
-   ],
-   "surface_forms": [
-    "snake plant"
-   ]
-  },
-  {
-   "anchor": "tray",
-   "counts": [
-    {
-     "confidence": "probable",
-     "count": 1,
-     "pass": 0
-    },
-    {
-     "confidence": "probable",
-     "count": 1,
-     "pass": 1
-    },
-    {
-     "confidence": "probable",
-     "count": 1,
-     "pass": 2
-    }
-   ],
-   "counts_agree": true,
-   "first_frame_rank": 3,
-   "frame_ids": [
-    "frame_03_168647.559"
-   ],
-   "n_passes": 3,
-   "passes": [
-    0,
-    1,
-    2
-   ],
-   "surface_forms": [
-    "tray"
-   ]
-  },
-  {
-   "anchor": "vase of tulip",
-   "counts": [
-    {
-     "confidence": "probable",
-     "count": 1,
-     "pass": 0
-    },
-    {
-     "confidence": "certain",
-     "count": 1,
-     "pass": 1
-    }
-   ],
-   "counts_agree": true,
-   "first_frame_rank": 3,
-   "frame_ids": [
-    "frame_03_168647.559",
-    "frame_04_168649.958"
-   ],
-   "n_passes": 2,
-   "passes": [
-    0,
-    1
-   ],
-   "surface_forms": [
-    "vase of tulips"
-   ]
-  },
-  {
-   "anchor": "window",
-   "counts": [
-    {
-     "confidence": "unsure",
-     "count": 3,
-     "pass": 0
-    },
-    {
-     "confidence": "certain",
-     "count": 2,
-     "pass": 1
-    },
-    {
-     "confidence": "unsure",
-     "count": 4,
-     "pass": 2
-    }
-   ],
-   "counts_agree": false,
-   "first_frame_rank": 3,
-   "frame_ids": [
-    "frame_03_168647.559",
-    "frame_04_168649.958",
-    "frame_05_168664.419",
-    "frame_06_168667.185"
-   ],
-   "n_passes": 3,
-   "passes": [
-    0,
-    1,
-    2
-   ],
-   "surface_forms": [
-    "window"
-   ]
-  },
-  {
    "anchor": "pet bed",
    "counts": [
     {
@@ -1071,35 +1054,6 @@
    "surface_forms": [
     "bed",
     "pet bed"
-   ]
-  },
-  {
-   "anchor": "potted palm",
-   "counts": [
-    {
-     "confidence": "certain",
-     "count": 1,
-     "pass": 0
-    },
-    {
-     "confidence": "certain",
-     "count": 1,
-     "pass": 2
-    }
-   ],
-   "counts_agree": true,
-   "first_frame_rank": 5,
-   "frame_ids": [
-    "frame_05_168664.419",
-    "frame_06_168667.185"
-   ],
-   "n_passes": 2,
-   "passes": [
-    0,
-    2
-   ],
-   "surface_forms": [
-    "potted palm"
    ]
   },
   {
@@ -1173,40 +1127,6 @@
    ]
   },
   {
-   "anchor": "cactu",
-   "counts": [
-    {
-     "confidence": "probable",
-     "count": 1,
-     "pass": 0
-    },
-    {
-     "confidence": "probable",
-     "count": 1,
-     "pass": 1
-    },
-    {
-     "confidence": "probable",
-     "count": 1,
-     "pass": 2
-    }
-   ],
-   "counts_agree": true,
-   "first_frame_rank": 6,
-   "frame_ids": [
-    "frame_06_168667.185"
-   ],
-   "n_passes": 3,
-   "passes": [
-    0,
-    1,
-    2
-   ],
-   "surface_forms": [
-    "cactus"
-   ]
-  },
-  {
    "anchor": "ceramic elephant figurine",
    "counts": [
     {
@@ -1249,63 +1169,6 @@
    ]
   },
   {
-   "anchor": "fireplace",
-   "counts": [
-    {
-     "confidence": "certain",
-     "count": 1,
-     "pass": 1
-    },
-    {
-     "confidence": "certain",
-     "count": 1,
-     "pass": 2
-    }
-   ],
-   "counts_agree": true,
-   "first_frame_rank": 7,
-   "frame_ids": [
-    "frame_07_168677.514",
-    "frame_12_168723.645"
-   ],
-   "n_passes": 2,
-   "passes": [
-    1,
-    2
-   ],
-   "surface_forms": [
-    "fireplace"
-   ]
-  },
-  {
-   "anchor": "wire basket",
-   "counts": [
-    {
-     "confidence": "probable",
-     "count": 1,
-     "pass": 0
-    },
-    {
-     "confidence": "probable",
-     "count": 1,
-     "pass": 2
-    }
-   ],
-   "counts_agree": true,
-   "first_frame_rank": 7,
-   "frame_ids": [
-    "frame_07_168677.514"
-   ],
-   "n_passes": 2,
-   "passes": [
-    0,
-    2
-   ],
-   "surface_forms": [
-    "wire basket"
-   ]
-  },
-  {
    "anchor": "set top box",
    "counts": [
     {
@@ -1341,266 +1204,7 @@
    ]
   },
   {
-   "anchor": "soundbar",
-   "counts": [
-    {
-     "confidence": "certain",
-     "count": 1,
-     "pass": 0
-    },
-    {
-     "confidence": "certain",
-     "count": 1,
-     "pass": 1
-    },
-    {
-     "confidence": "certain",
-     "count": 1,
-     "pass": 2
-    }
-   ],
-   "counts_agree": true,
-   "first_frame_rank": 8,
-   "frame_ids": [
-    "frame_08_168685.427",
-    "frame_12_168723.645",
-    "frame_13_168726.394"
-   ],
-   "n_passes": 3,
-   "passes": [
-    0,
-    1,
-    2
-   ],
-   "surface_forms": [
-    "soundbar"
-   ]
-  },
-  {
-   "anchor": "wall mounted television",
-   "counts": [
-    {
-     "confidence": "certain",
-     "count": 1,
-     "pass": 0
-    },
-    {
-     "confidence": "certain",
-     "count": 1,
-     "pass": 1
-    },
-    {
-     "confidence": "certain",
-     "count": 1,
-     "pass": 2
-    }
-   ],
-   "counts_agree": true,
-   "first_frame_rank": 8,
-   "frame_ids": [
-    "frame_08_168685.427",
-    "frame_09_168693.691",
-    "frame_12_168723.645",
-    "frame_13_168726.394"
-   ],
-   "n_passes": 3,
-   "passes": [
-    0,
-    1,
-    2
-   ],
-   "surface_forms": [
-    "television",
-    "wall-mounted television"
-   ]
-  },
-  {
-   "anchor": "wall power socket",
-   "counts": [
-    {
-     "confidence": "unsure",
-     "count": 4,
-     "pass": 0
-    },
-    {
-     "confidence": "unsure",
-     "count": 3,
-     "pass": 1
-    },
-    {
-     "confidence": "unsure",
-     "count": 3,
-     "pass": 2
-    }
-   ],
-   "counts_agree": false,
-   "first_frame_rank": 8,
-   "frame_ids": [
-    "frame_08_168685.427",
-    "frame_09_168693.691",
-    "frame_10_168704.020",
-    "frame_11_168707.468",
-    "frame_12_168723.645",
-    "frame_15_168747.052",
-    "frame_16_168751.184"
-   ],
-   "n_passes": 3,
-   "passes": [
-    0,
-    1,
-    2
-   ],
-   "surface_forms": [
-    "wall power socket",
-    "wall socket"
-   ]
-  },
-  {
-   "anchor": "white sideboard",
-   "counts": [
-    {
-     "confidence": "certain",
-     "count": 1,
-     "pass": 0
-    },
-    {
-     "confidence": "certain",
-     "count": 1,
-     "pass": 1
-    },
-    {
-     "confidence": "certain",
-     "count": 1,
-     "pass": 2
-    }
-   ],
-   "counts_agree": true,
-   "first_frame_rank": 8,
-   "frame_ids": [
-    "frame_08_168685.427",
-    "frame_09_168693.691",
-    "frame_12_168723.645",
-    "frame_13_168726.394"
-   ],
-   "n_passes": 3,
-   "passes": [
-    0,
-    1,
-    2
-   ],
-   "surface_forms": [
-    "sideboard",
-    "white sideboard"
-   ]
-  },
-  {
-   "anchor": "dark wooden chest of drawer",
-   "counts": [
-    {
-     "confidence": "unsure",
-     "count": 1,
-     "pass": 0
-    },
-    {
-     "confidence": "probable",
-     "count": 1,
-     "pass": 1
-    }
-   ],
-   "counts_agree": true,
-   "first_frame_rank": 9,
-   "frame_ids": [
-    "frame_09_168693.691"
-   ],
-   "n_passes": 2,
-   "passes": [
-    0,
-    1
-   ],
-   "surface_forms": [
-    "dark wooden chest of drawers"
-   ]
-  },
-  {
-   "anchor": "wooden staircase",
-   "counts": [
-    {
-     "confidence": "certain",
-     "count": 1,
-     "pass": 0
-    },
-    {
-     "confidence": "certain",
-     "count": 1,
-     "pass": 1
-    },
-    {
-     "confidence": "certain",
-     "count": 1,
-     "pass": 2
-    }
-   ],
-   "counts_agree": true,
-   "first_frame_rank": 9,
-   "frame_ids": [
-    "frame_09_168693.691",
-    "frame_10_168704.020",
-    "frame_11_168707.468",
-    "frame_12_168723.645",
-    "frame_13_168726.394",
-    "frame_14_168733.624"
-   ],
-   "n_passes": 3,
-   "passes": [
-    0,
-    1,
-    2
-   ],
-   "surface_forms": [
-    "staircase",
-    "wooden staircase"
-   ]
-  },
-  {
-   "anchor": "interior door",
-   "counts": [
-    {
-     "confidence": "unsure",
-     "count": 2,
-     "pass": 0
-    },
-    {
-     "confidence": "unsure",
-     "count": 3,
-     "pass": 1
-    },
-    {
-     "confidence": "unsure",
-     "count": 2,
-     "pass": 2
-    }
-   ],
-   "counts_agree": false,
-   "first_frame_rank": 10,
-   "frame_ids": [
-    "frame_10_168704.020",
-    "frame_11_168707.468",
-    "frame_13_168726.394",
-    "frame_14_168733.624",
-    "frame_17_168759.447"
-   ],
-   "n_passes": 3,
-   "passes": [
-    0,
-    1,
-    2
-   ],
-   "surface_forms": [
-    "interior door"
-   ]
-  },
-  {
-   "anchor": "light switch",
+   "anchor": "tray",
    "counts": [
     {
      "confidence": "probable",
@@ -1611,21 +1215,60 @@
      "confidence": "probable",
      "count": 1,
      "pass": 1
+    },
+    {
+     "confidence": "probable",
+     "count": 1,
+     "pass": 2
     }
    ],
    "counts_agree": true,
-   "first_frame_rank": 10,
+   "first_frame_rank": 3,
    "frame_ids": [
-    "frame_10_168704.020",
-    "frame_11_168707.468"
+    "frame_03_168647.559"
    ],
-   "n_passes": 2,
+   "n_passes": 3,
    "passes": [
     0,
-    1
+    1,
+    2
    ],
    "surface_forms": [
-    "light switch"
+    "tray"
+   ]
+  },
+  {
+   "anchor": "cactu",
+   "counts": [
+    {
+     "confidence": "probable",
+     "count": 1,
+     "pass": 0
+    },
+    {
+     "confidence": "probable",
+     "count": 1,
+     "pass": 1
+    },
+    {
+     "confidence": "probable",
+     "count": 1,
+     "pass": 2
+    }
+   ],
+   "counts_agree": true,
+   "first_frame_rank": 6,
+   "frame_ids": [
+    "frame_06_168667.185"
+   ],
+   "n_passes": 3,
+   "passes": [
+    0,
+    1,
+    2
+   ],
+   "surface_forms": [
+    "cactus"
    ]
   },
   {
@@ -1662,6 +1305,363 @@
     "bronze figure statue",
     "bronze statue",
     "statue"
+   ]
+  },
+  {
+   "anchor": "ornament in the display cabinet",
+   "counts": [
+    {
+     "confidence": "unsure",
+     "count": 2,
+     "pass": 0
+    },
+    {
+     "confidence": "certain",
+     "count": 1,
+     "pass": 1
+    },
+    {
+     "confidence": "unsure",
+     "count": 15,
+     "pass": 1
+    }
+   ],
+   "counts_agree": false,
+   "first_frame_rank": 3,
+   "frame_ids": [
+    "frame_03_168647.559",
+    "frame_09_168693.691",
+    "frame_12_168723.645",
+    "frame_13_168726.394"
+   ],
+   "n_passes": 2,
+   "passes": [
+    0,
+    1
+   ],
+   "surface_forms": [
+    "display cabinet",
+    "ornaments in the display cabinet"
+   ]
+  },
+  {
+   "anchor": "movie poster print",
+   "counts": [
+    {
+     "confidence": "certain",
+     "count": 1,
+     "pass": 0
+    },
+    {
+     "confidence": "certain",
+     "count": 1,
+     "pass": 1
+    }
+   ],
+   "counts_agree": true,
+   "first_frame_rank": 0,
+   "frame_ids": [
+    "frame_00_168619.987",
+    "frame_10_168704.020",
+    "frame_17_168759.447"
+   ],
+   "n_passes": 2,
+   "passes": [
+    0,
+    1
+   ],
+   "surface_forms": [
+    "movie poster print"
+   ]
+  },
+  {
+   "anchor": "decorative bowl",
+   "counts": [
+    {
+     "confidence": "probable",
+     "count": 1,
+     "pass": 1
+    },
+    {
+     "confidence": "probable",
+     "count": 1,
+     "pass": 2
+    }
+   ],
+   "counts_agree": true,
+   "first_frame_rank": 1,
+   "frame_ids": [
+    "frame_01_168631.716",
+    "frame_02_168633.431",
+    "frame_04_168649.958"
+   ],
+   "n_passes": 2,
+   "passes": [
+    1,
+    2
+   ],
+   "surface_forms": [
+    "decorative bowl"
+   ]
+  },
+  {
+   "anchor": "orchid",
+   "counts": [
+    {
+     "confidence": "probable",
+     "count": 1,
+     "pass": 0
+    },
+    {
+     "confidence": "probable",
+     "count": 1,
+     "pass": 2
+    }
+   ],
+   "counts_agree": true,
+   "first_frame_rank": 1,
+   "frame_ids": [
+    "frame_01_168631.716",
+    "frame_02_168633.431",
+    "frame_04_168649.958"
+   ],
+   "n_passes": 2,
+   "passes": [
+    0,
+    2
+   ],
+   "surface_forms": [
+    "orchid"
+   ]
+  },
+  {
+   "anchor": "round straw wall decoration",
+   "counts": [
+    {
+     "confidence": "unsure",
+     "count": 1,
+     "pass": 0
+    },
+    {
+     "confidence": "unsure",
+     "count": 2,
+     "pass": 1
+    }
+   ],
+   "counts_agree": false,
+   "first_frame_rank": 3,
+   "frame_ids": [
+    "frame_03_168647.559",
+    "frame_04_168649.958"
+   ],
+   "n_passes": 2,
+   "passes": [
+    0,
+    1
+   ],
+   "surface_forms": [
+    "round straw wall decoration",
+    "round wall decoration"
+   ]
+  },
+  {
+   "anchor": "vase of tulip",
+   "counts": [
+    {
+     "confidence": "probable",
+     "count": 1,
+     "pass": 0
+    },
+    {
+     "confidence": "certain",
+     "count": 1,
+     "pass": 1
+    }
+   ],
+   "counts_agree": true,
+   "first_frame_rank": 3,
+   "frame_ids": [
+    "frame_03_168647.559",
+    "frame_04_168649.958"
+   ],
+   "n_passes": 2,
+   "passes": [
+    0,
+    1
+   ],
+   "surface_forms": [
+    "vase of tulips"
+   ]
+  },
+  {
+   "anchor": "potted palm",
+   "counts": [
+    {
+     "confidence": "certain",
+     "count": 1,
+     "pass": 0
+    },
+    {
+     "confidence": "certain",
+     "count": 1,
+     "pass": 2
+    }
+   ],
+   "counts_agree": true,
+   "first_frame_rank": 5,
+   "frame_ids": [
+    "frame_05_168664.419",
+    "frame_06_168667.185"
+   ],
+   "n_passes": 2,
+   "passes": [
+    0,
+    2
+   ],
+   "surface_forms": [
+    "potted palm"
+   ]
+  },
+  {
+   "anchor": "fireplace",
+   "counts": [
+    {
+     "confidence": "certain",
+     "count": 1,
+     "pass": 1
+    },
+    {
+     "confidence": "certain",
+     "count": 1,
+     "pass": 2
+    }
+   ],
+   "counts_agree": true,
+   "first_frame_rank": 7,
+   "frame_ids": [
+    "frame_07_168677.514",
+    "frame_12_168723.645"
+   ],
+   "n_passes": 2,
+   "passes": [
+    1,
+    2
+   ],
+   "surface_forms": [
+    "fireplace"
+   ]
+  },
+  {
+   "anchor": "light switch",
+   "counts": [
+    {
+     "confidence": "probable",
+     "count": 1,
+     "pass": 0
+    },
+    {
+     "confidence": "probable",
+     "count": 1,
+     "pass": 1
+    }
+   ],
+   "counts_agree": true,
+   "first_frame_rank": 10,
+   "frame_ids": [
+    "frame_10_168704.020",
+    "frame_11_168707.468"
+   ],
+   "n_passes": 2,
+   "passes": [
+    0,
+    1
+   ],
+   "surface_forms": [
+    "light switch"
+   ]
+  },
+  {
+   "anchor": "carved wooden wall plaque",
+   "counts": [
+    {
+     "confidence": "unsure",
+     "count": 1,
+     "pass": 0
+    },
+    {
+     "confidence": "probable",
+     "count": 1,
+     "pass": 1
+    }
+   ],
+   "counts_agree": true,
+   "first_frame_rank": 3,
+   "frame_ids": [
+    "frame_03_168647.559"
+   ],
+   "n_passes": 2,
+   "passes": [
+    0,
+    1
+   ],
+   "surface_forms": [
+    "carved wooden wall plaque"
+   ]
+  },
+  {
+   "anchor": "wire basket",
+   "counts": [
+    {
+     "confidence": "probable",
+     "count": 1,
+     "pass": 0
+    },
+    {
+     "confidence": "probable",
+     "count": 1,
+     "pass": 2
+    }
+   ],
+   "counts_agree": true,
+   "first_frame_rank": 7,
+   "frame_ids": [
+    "frame_07_168677.514"
+   ],
+   "n_passes": 2,
+   "passes": [
+    0,
+    2
+   ],
+   "surface_forms": [
+    "wire basket"
+   ]
+  },
+  {
+   "anchor": "dark wooden chest of drawer",
+   "counts": [
+    {
+     "confidence": "unsure",
+     "count": 1,
+     "pass": 0
+    },
+    {
+     "confidence": "probable",
+     "count": 1,
+     "pass": 1
+    }
+   ],
+   "counts_agree": true,
+   "first_frame_rank": 9,
+   "frame_ids": [
+    "frame_09_168693.691"
+   ],
+   "n_passes": 2,
+   "passes": [
+    0,
+    1
+   ],
+   "surface_forms": [
+    "dark wooden chest of drawers"
    ]
   },
   {

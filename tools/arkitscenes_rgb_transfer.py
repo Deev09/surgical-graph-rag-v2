@@ -38,6 +38,21 @@ MIN_PASSES = 2          # an object is an anchor only on 2-of-3 agreement
 MIN_ANCHORS = 6         # below this the protocol says the test does not run
 MIN_SCORED = 6          # amendment 1: below this the RUN is void, not scored
 
+
+def has_unique_referent(anchor: dict) -> bool:
+    """All three passes agreed there is exactly one of it.
+
+    Amendment 2. A comparative or near question names its objects with a
+    singular definite description -- "the cushion" -- which picks out nothing
+    when the passes counted four cushions. That is ill-posed in the same way
+    "in this room" was ill-posed on a multi-room floor, and it is detectable
+    without any model output. Presence and cardinality slots are unaffected:
+    "how many framed pictures" is a fine question precisely because there are
+    several.
+    """
+    counts = [c["count"] for c in anchor["counts"]]
+    return bool(counts) and len(set(counts)) == 1 and counts[0] == 1
+
 SCOPE = "the captured space"
 SCOPE_DEFINITION = (
     "\"The captured space\" means everywhere visible anywhere in the supplied "
@@ -203,7 +218,12 @@ def build_questions(anchors: list[dict]) -> tuple[list[dict], list[str]]:
             notes.append(f"{a['anchor']}: passes did not agree on a count, so "
                          f"the slot became a presence question")
 
-    pool = anchors[:6]
+    # Amendment 2: relational slots draw only from unique-referent anchors.
+    singular = [a for a in anchors if has_unique_referent(a)]
+    if len(singular) < 6:
+        raise ValueError(f"only {len(singular)} unique-referent anchors; "
+                         "comparative slots need six")
+    pool = singular[:6]
     triples = [(0, 1, 2), (1, 2, 3), (2, 3, 4), (3, 4, 5)]
     for n, (s, x, y) in enumerate(triples, start=1):
         if max(s, x, y) >= len(pool):
@@ -219,7 +239,7 @@ def build_questions(anchors: list[dict]) -> tuple[list[dict], list[str]]:
             "subject": pool[s]["anchor"], "reference_a": pool[x]["anchor"],
             "reference_b": pool[y]["anchor"], "template_rank": n})
 
-    pairs = non_covisible_pairs(anchors)
+    pairs = non_covisible_pairs(singular)
     if not pairs:
         notes.append("no non-co-visible anchor pair exists in this capture, so "
                      "the cross-view slots are empty; the 'if naturally "
@@ -228,9 +248,9 @@ def build_questions(anchors: list[dict]) -> tuple[list[dict], list[str]]:
         questions.append({
             "id": f"t_xview_{n}", "form": "binary_near",
             "answer_type": "boolean",
-            "question": (f"Is the {anchors[i]['anchor']} near the "
-                         f"{anchors[j]['anchor']}?"),
-            "subject": anchors[i]["anchor"], "object": anchors[j]["anchor"],
+            "question": (f"Is the {singular[i]['anchor']} near the "
+                         f"{singular[j]['anchor']}?"),
+            "subject": singular[i]["anchor"], "object": singular[j]["anchor"],
             "cross_view": True, "template_rank": n,
             "why_cross_view": "no supplied frame contains both objects"})
     if len(pairs) < 3:
@@ -518,12 +538,18 @@ def cmd_build(args) -> int:
         "near_convention": NEAR_CONVENTION,
         "scope": SCOPE, "scope_definition": SCOPE_DEFINITION,
         "amendment": "1 -- run 1 void; scope wording, anchor ordering and "
-                     "question count fixed before regenerating",
+                     "question count fixed. 2 -- relational slots restricted "
+                     "to unique-referent anchors. Both applied before any "
+                     "blinded response existed.",
         "generation": {
             "anchor_rule": f"admitted on >= {MIN_PASSES} of 3 independent "
                            "blind enumeration passes",
             "ordering": "passes desc, frames-seen desc, first appearance asc",
             "allocation": "3 presence/cardinality, 4 comparative, 3 cross-view",
+            "relational_slots": "amendment 2: comparative and cross-view slots "
+                                "draw only from anchors all three passes agreed "
+                                "there is exactly one of, so every singular "
+                                "definite description has a referent",
             "notes": notes,
         },
         "questions": questions,
