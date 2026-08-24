@@ -1,0 +1,23 @@
+{
+ "schema": "arkitscenes_rgb_transfer_responses_v1",
+ "scene_id": "47331972",
+ "packet_sha256": "33355c8a74d3039aca14a3f1a10e1b1bd1ad0f4deb94436ebe8756da3f346c96",
+ "model": {"provider": "anthropic", "name": "claude-opus-5", "version": "claude-opus-5"},
+ "answers": [
+  {"id": "t_pres_1", "outcome": "answer", "answer": true, "confidence": 0.96,
+   "evidence_frame_ids": ["frame_15_168747.052", "frame_16_168751.184", "frame_17_168759.447"]},
+  {"id": "t_pres_2", "outcome": "answer", "answer": true, "confidence": 0.93,
+   "evidence_frame_ids": ["frame_02_168633.431", "frame_03_168647.559", "frame_10_168704.020", "frame_11_168707.468"]},
+  {"id": "t_pres_3", "outcome": "answer", "answer": true, "confidence": 0.68,
+   "evidence_frame_ids": ["frame_08_168685.427", "frame_15_168747.052"]},
+  {"id": "t_cmp_1", "outcome": "answer", "answer": "white sideboard", "confidence": 0.36,
+   "evidence_frame_ids": ["frame_12_168723.645", "frame_09_168693.691"]},
+  {"id": "t_cmp_2", "outcome": "answer", "answer": "white sideboard", "confidence": 0.48,
+   "evidence_frame_ids": ["frame_08_168685.427", "frame_09_168693.691"]},
+  {"id": "t_cmp_3", "outcome": "unknown", "answer": null, "confidence": 0.0, "evidence_frame_ids": []},
+  {"id": "t_cmp_4", "outcome": "unknown", "answer": null, "confidence": 0.0, "evidence_frame_ids": []},
+  {"id": "t_xview_1", "outcome": "unknown", "answer": null, "confidence": 0.0, "evidence_frame_ids": []},
+  {"id": "t_xview_2", "outcome": "unknown", "answer": null, "confidence": 0.0, "evidence_frame_ids": []},
+  {"id": "t_xview_3", "outcome": "unknown", "answer": null, "confidence": 0.0, "evidence_frame_ids": []}
+ ]
+}
