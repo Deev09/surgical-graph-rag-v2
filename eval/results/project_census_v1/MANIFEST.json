@@ -107,45 +107,59 @@
    "sanitization": "none \u2014 the file is already numeric-only (per-arm counts and precisions)",
    "sanitized_sha256": "5847b2618ec38d185e33889fd8ff410e33d3498d2e889b63967729d32784db73",
    "why_included": "C: backs 41069042 rows C13-C16, C24-C25 (splat 0/5, 0/5; rgb_tight 2/5, 3/5)"
+  },
+  {
+   "original_bytes": 16159,
+   "original_path": "runs/arkit_label_image_ab/summary.json",
+   "original_sha256": "140bca012fb119230f034542c07c3f6c8eec0f5d67158be136edeba37fcf5151",
+   "pack_file": "arkit_label_ab_41069021_summary.json",
+   "producing_commit": "untracked (runs/ is gitignored)",
+   "sanitization": "keys dropped if present: ['embedding', 'embeddings', 'image', 'images', 'masks', 'point_indices', 'rows_raw', 'vertex_ids', 'vertices']; lists over 4000 elements elided",
+   "sanitized_sha256": "140bca012fb119230f034542c07c3f6c8eec0f5d67158be136edeba37fcf5151",
+   "why_included": "C: backs 41069021 rows C05-C08, C17-C21 \u2014 splat 0/7, 0/7; rgb_tight 5/7, 7/7; rgb_context 3/7, 5/7. Completes the pooled headline."
+  },
+  {
+   "original_bytes": 6328,
+   "original_path": "runs/arkit_label_image_ab/splat/label_eval.json",
+   "original_sha256": "a0355bf454d7d6e5462fd23d9dc53f3cbf2a38c06f712497e9f270439e5c8b18",
+   "pack_file": "arkit_label_ab_41069021_splat_label_eval.json",
+   "producing_commit": "untracked (runs/ is gitignored)",
+   "sanitization": "keys dropped if present: ['embedding', 'embeddings', 'image', 'images', 'masks', 'point_indices', 'rows_raw', 'vertex_ids', 'vertices']; lists over 4000 elements elided",
+   "sanitized_sha256": "a0355bf454d7d6e5462fd23d9dc53f3cbf2a38c06f712497e9f270439e5c8b18",
+   "why_included": "C: per-instance detail for the 41069021 splat arm [C05], [C06], [C19]"
+  },
+  {
+   "original_bytes": 6308,
+   "original_path": "runs/arkit_label_image_ab/rgb_tight/label_eval.json",
+   "original_sha256": "9c4f6873183b87e125c7695cd4a85bf48279fdef31ae72c96b235c577c0b2758",
+   "pack_file": "arkit_label_ab_41069021_rgb_tight_label_eval.json",
+   "producing_commit": "untracked (runs/ is gitignored)",
+   "sanitization": "keys dropped if present: ['embedding', 'embeddings', 'image', 'images', 'masks', 'point_indices', 'rows_raw', 'vertex_ids', 'vertices']; lists over 4000 elements elided",
+   "sanitized_sha256": "9c4f6873183b87e125c7695cd4a85bf48279fdef31ae72c96b235c577c0b2758",
+   "why_included": "C: per-instance detail for the 41069021 rgb_tight arm [C07], [C08], [C20]"
+  },
+  {
+   "original_bytes": 6320,
+   "original_path": "runs/arkit_label_image_ab/rgb_context/label_eval.json",
+   "original_sha256": "efc85ce81c77ce01c74ef5410b3d2319ad70b21180d24b45cbc8087ab8913d97",
+   "pack_file": "arkit_label_ab_41069021_rgb_context_label_eval.json",
+   "producing_commit": "untracked (runs/ is gitignored)",
+   "sanitization": "keys dropped if present: ['embedding', 'embeddings', 'image', 'images', 'masks', 'point_indices', 'rows_raw', 'vertex_ids', 'vertices']; lists over 4000 elements elided",
+   "sanitized_sha256": "efc85ce81c77ce01c74ef5410b3d2319ad70b21180d24b45cbc8087ab8913d97",
+   "why_included": "C: per-instance detail for the rgb_context CONTROL [C17], [C18], [C21] \u2014 the arm that supports the texture-not-room-gist interpretation"
   }
  ],
  "headline_backing": {
+  "arithmetic_check": "top-1 splat 0+1+0 = 1/21, rgb_tight 5+5+2 = 12/21; top-3 splat 0+4+0 = 4/21, rgb_tight 7+8+3 = 18/21",
   "backed_by_machine_report_in_pack": [
-   "41069025 (5/9, 8/9 rgb_tight; 1/9, 4/9 splat)",
-   "41069042 (2/5, 3/5 rgb_tight; 0/5, 0/5 splat)"
-  ],
-  "backed_by_tracked_narrative_only": [
-   "41069021 (5/7, 7/7 rgb_tight; 0/7, 0/7 splat)"
+   "41069021 (splat 0/7, 0/7; rgb_tight 5/7, 7/7)",
+   "41069025 (splat 1/9, 4/9; rgb_tight 5/9, 8/9)",
+   "41069042 (splat 0/5, 0/5; rgb_tight 2/5, 3/5)"
   ],
   "claim": "pooled matched-instance top-1 1/21 -> 12/21 and top-3 4/21 -> 18/21",
-  "note": "2 of the 3 pooled scenes have a machine report here; the third does not exist locally. The pooled figures are therefore reproducible in part, not in whole, from this pack."
+  "context_control": "41069021 rgb_context 3/7 top-1 and 5/7 top-3, below rgb_tight's 5/7 and 7/7 \u2014 the control that supports the texture-not-room-gist interpretation now has a tracked machine report in this pack",
+  "status": "ALL THREE pooled scenes and the context control now have machine backing here. A correction: an earlier manifest recorded 41069021 and rgb_context as missing. They were present all along under the UNSUFFIXED development directory runs/arkit_label_image_ab/, which the audit's runs/arkit_label_image_ab_* glob did not match."
  },
- "known_gaps": [
-  {
-   "affects": [
-    "C05",
-    "C06",
-    "C07",
-    "C08",
-    "C19",
-    "C20",
-    "C21",
-    "C17",
-    "C18"
-   ],
-   "what": "arkit_label_image_ab_41069021 summary (the development scene)",
-   "why": "runs/arkit_label_image_ab_41069021/ does not exist in this working copy; only 41069025 and 41069042 were regenerated locally. The scene's contribution to the pooled headline (splat 0/7 and 0/7; rgb_tight 5/7 and 7/7) is therefore backed only by the tracked narrative docs/arkitscenes_rgb_label_results.md, not by a machine report in this pack."
-  },
-  {
-   "affects": [
-    "C17",
-    "C18",
-    "C21"
-   ],
-   "what": "machine report for the rgb_context control (C17, C18, C21)",
-   "why": "The two summaries present carry only the `splat` and `rgb_tight` arms. No `rgb_context` arm appears in any summary in this working copy, so the context control that SUPPORTS the texture-not-room-gist interpretation has no machine report here. It rests on the tracked narrative alone."
-  }
- ],
  "missing_at_pack_time": [],
  "purpose": "Numeric reports needed to reproduce published claims whose primary artifact lives under the gitignored runs/ tree. Copied and sanitized, never regenerated.",
  "schema": "project_census_evidence_pack_v1"

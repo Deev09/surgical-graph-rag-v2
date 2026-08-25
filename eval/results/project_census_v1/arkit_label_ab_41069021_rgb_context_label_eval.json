@@ -1,0 +1,289 @@
+{
+ "evaluation_only": true,
+ "lane_a": {
+  "entity_bundle_hash": "ent_openclip_global_indoor_labels_b89f5627cf806bc5",
+  "entity_manifest_sha256": "ed287404dc9820a971e925e09e0005a6bdfbb0d706348ea33e0ed4333143d169",
+  "label_stage": {
+   "confidence_note": "raw CLIP cosine similarity; not calibrated",
+   "image_source": "arkitscenes_rgb_crop_pad0.6_mark1",
+   "instances_without_views": [],
+   "min_top1_score": 0.28,
+   "model": "ViT-B-32-quickgelu",
+   "n_promoted_display_labels": 33,
+   "n_retained_anonymous": 1,
+   "name": "openclip_global_indoor_labels",
+   "pretrained": "openai",
+   "prompts": [
+    "a photo of a {c}",
+    "a photo of a {c} in a room",
+    "a 3D render of a {c}"
+   ],
+   "top_k": 3,
+   "version": "0.1",
+   "vocabulary": [
+    "armchair",
+    "bathtub",
+    "bed",
+    "bench",
+    "blinds",
+    "bookshelf",
+    "bottle",
+    "bowl",
+    "box",
+    "cabinet",
+    "chair",
+    "clock",
+    "counter",
+    "cushion",
+    "desk",
+    "door",
+    "drawer",
+    "indoor-plant",
+    "lamp",
+    "microwave",
+    "mirror",
+    "monitor",
+    "nightstand",
+    "oven",
+    "picture",
+    "plate",
+    "plant-stand",
+    "projector",
+    "refrigerator",
+    "rug",
+    "shelf",
+    "sink",
+    "sofa",
+    "stool",
+    "table",
+    "toilet",
+    "trash-can",
+    "tv-monitor",
+    "vase",
+    "whiteboard",
+    "window"
+   ],
+   "vocabulary_name": "global_indoor_v1",
+   "weights_sha256": "e6d1bd7789aa45192b3bf90570a789b478bae1b74ebcce7eddd908e83a2b7c31"
+  },
+  "representation_hash": "repr_ae6c87801b8603f9",
+  "segmentation_output_sha256": "cbe32a59b50c9fe4df723d6f9e7ae5b061842bc23d09ac973b85e1c8e4d7c844"
+ },
+ "lane_a_immutability": "finalized labeled EntityArtifacts loaded and hash-checked before annotation access; evaluator never invokes the labeler or writes to Lane A",
+ "match_iou_threshold": 0.5,
+ "metrics": {
+  "admission": {
+   "correct_admitted_over_all_matches": 0.4286,
+   "coverage": 1.0,
+   "definition": "coverage = admitted/matched; precision = top1-correct/admitted",
+   "n_admitted": 7,
+   "n_correct": 3,
+   "precision": 0.4286
+  },
+  "all_delivered_admission": {
+   "n_admitted": 33,
+   "n_delivered": 34,
+   "note": "descriptive only; unmatched delivered instances have no oracle class and therefore do not enter admission precision",
+   "rate": 0.9706
+  },
+  "metric_scope": "delivered instances greedily matched one-to-one to annotation-box entities at vertex IoU >= 0.50",
+  "n_geometry_matches": 7,
+  "per_match": [
+   {
+    "admitted": true,
+    "display_label": "chair",
+    "instance_id": 1,
+    "object_uid": "obj_1",
+    "oracle_class_normalized": "chair",
+    "oracle_label": "chair",
+    "oracle_uid": "nedxKuGFavRwqIfx",
+    "top1_correct": true,
+    "top3_correct": true,
+    "top_k": [
+     {
+      "label": "chair",
+      "score": 0.3192
+     },
+     {
+      "label": "stool",
+      "score": 0.3099
+     },
+     {
+      "label": "armchair",
+      "score": 0.3077
+     }
+    ],
+    "vertex_iou": 0.7622
+   },
+   {
+    "admitted": true,
+    "display_label": "table",
+    "instance_id": 3,
+    "object_uid": "obj_3",
+    "oracle_class_normalized": "table",
+    "oracle_label": "table",
+    "oracle_uid": "6wkDEUU2uUskLubg",
+    "top1_correct": true,
+    "top3_correct": true,
+    "top_k": [
+     {
+      "label": "table",
+      "score": 0.3304
+     },
+     {
+      "label": "stool",
+      "score": 0.3021
+     },
+     {
+      "label": "desk",
+      "score": 0.295
+     }
+    ],
+    "vertex_iou": 0.6968
+   },
+   {
+    "admitted": true,
+    "display_label": "rug",
+    "instance_id": 10,
+    "object_uid": "obj_10",
+    "oracle_class_normalized": "sofa",
+    "oracle_label": "sofa",
+    "oracle_uid": "mPJvI0Pxiil86iIa",
+    "top1_correct": false,
+    "top3_correct": false,
+    "top_k": [
+     {
+      "label": "rug",
+      "score": 0.2873
+     },
+     {
+      "label": "table",
+      "score": 0.2842
+     },
+     {
+      "label": "armchair",
+      "score": 0.281
+     }
+    ],
+    "vertex_iou": 0.6902
+   },
+   {
+    "admitted": true,
+    "display_label": "microwave",
+    "instance_id": 15,
+    "object_uid": "obj_15",
+    "oracle_class_normalized": "cabinet",
+    "oracle_label": "cabinet",
+    "oracle_uid": "uMD5e11v5QhIgNvm",
+    "top1_correct": false,
+    "top3_correct": false,
+    "top_k": [
+     {
+      "label": "microwave",
+      "score": 0.3128
+     },
+     {
+      "label": "oven",
+      "score": 0.2935
+     },
+     {
+      "label": "refrigerator",
+      "score": 0.2896
+     }
+    ],
+    "vertex_iou": 0.5219
+   },
+   {
+    "admitted": true,
+    "display_label": "desk",
+    "instance_id": 16,
+    "object_uid": "obj_16",
+    "oracle_class_normalized": "table",
+    "oracle_label": "table",
+    "oracle_uid": "X8PyoT9WztVOsC1U",
+    "top1_correct": false,
+    "top3_correct": true,
+    "top_k": [
+     {
+      "label": "desk",
+      "score": 0.2998
+     },
+     {
+      "label": "table",
+      "score": 0.2981
+     },
+     {
+      "label": "counter",
+      "score": 0.2872
+     }
+    ],
+    "vertex_iou": 0.5306
+   },
+   {
+    "admitted": true,
+    "display_label": "tv-monitor",
+    "instance_id": 29,
+    "object_uid": "obj_29",
+    "oracle_class_normalized": "tv-monitor",
+    "oracle_label": "tv_monitor",
+    "oracle_uid": "n53EBc28Jgmi3hDf",
+    "top1_correct": true,
+    "top3_correct": true,
+    "top_k": [
+     {
+      "label": "tv-monitor",
+      "score": 0.3244
+     },
+     {
+      "label": "monitor",
+      "score": 0.3202
+     },
+     {
+      "label": "mirror",
+      "score": 0.3131
+     }
+    ],
+    "vertex_iou": 0.9446
+   },
+   {
+    "admitted": true,
+    "display_label": "armchair",
+    "instance_id": 31,
+    "object_uid": "obj_31",
+    "oracle_class_normalized": "table",
+    "oracle_label": "table",
+    "oracle_uid": "ttby0uMQcAKubH4Q",
+    "top1_correct": false,
+    "top3_correct": true,
+    "top_k": [
+     {
+      "label": "armchair",
+      "score": 0.3045
+     },
+     {
+      "label": "table",
+      "score": 0.3033
+     },
+     {
+      "label": "chair",
+      "score": 0.3016
+     }
+    ],
+    "vertex_iou": 0.6344
+   }
+  ],
+  "top1": {
+   "accuracy": 0.4286,
+   "n_correct": 3
+  },
+  "top3": {
+   "accuracy": 0.7143,
+   "n_correct": 5
+  }
+ },
+ "n_delivered_instances": 34,
+ "n_oracle_entities": 18,
+ "scene_id": "arkitscenes_41069021",
+ "schema": "arkitscenes_learned_label_eval_v1",
+ "video_id": "41069021"
+}

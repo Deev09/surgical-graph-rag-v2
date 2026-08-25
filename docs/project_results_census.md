@@ -578,23 +578,31 @@ direct), which both ranges satisfy, so the test never adjudicated them.
 
 ### Evidence pack
 
-`eval/results/project_census_v1/` — **10** numeric JSON reports, each with its original
+`eval/results/project_census_v1/` — **14** numeric JSON reports, each with its original
 path, original sha256 and producing commit in `MANIFEST.json`. **No raw masks, meshes,
 images, point clouds or dataset files, and not the `runs/` tree.** Large arrays are elided
 and geometry keys dropped; the manifest records the sanitisation applied. Most originals
 live under the gitignored `runs/` tree, which is why they are copied here at all.
 
-The two ARKit label A/B summaries backing the chosen headline were added in the
-documentation pass, and `MANIFEST.json` records two **known gaps** alongside them:
+**The pooled headline and its context control both have tracked machine backing.** All
+three ARKit label A/B scenes are in the pack, and the arithmetic closes against them:
 
-- **`41069021` has no summary in this working copy.** Its contribution to the pooled
-  headline (`0/7 → 5/7` top-1, `0/7 → 7/7` top-3) rests on the tracked narrative alone.
-  So `1/21 → 12/21` is reproducible **in part, not in whole**, from this pack: two of the
-  three pooled scenes have a machine report here.
-- **The `rgb_context` control has no machine report anywhere in this working copy.** The
-  two summaries present carry only `splat` and `rgb_tight`. The control that *supports*
-  the texture-not-room-gist interpretation `[C17]`, `[C18]`, `[C21]` therefore rests on the
-  tracked narrative alone.
+| scene | splat top-1 | rgb_tight top-1 | splat top-3 | rgb_tight top-3 |
+|---|---|---|---|---|
+| 41069021 | 0/7 `[C05]` | 5/7 `[C07]` | 0/7 `[C06]` | 7/7 `[C08]` |
+| 41069025 | 1/9 `[C09]` | 5/9 `[C11]` | 4/9 `[C10]` | 8/9 `[C12]` |
+| 41069042 | 0/5 `[C13]` | 2/5 `[C15]` | 0/5 `[C14]` | 3/5 `[C16]` |
+| **pooled** | **1/21** `[C01]` | **12/21** `[C02]` | **4/21** `[C03]` | **18/21** `[C04]` |
+
+The `rgb_context` control is in the pack too: 3/7 top-1 `[C17]` and 5/7 top-3 `[C18]`,
+below `rgb_tight`'s 5/7 and 7/7 on the same scene. The control that *supports* the
+texture-not-room-gist interpretation is therefore machine-backed, not narrative-only.
+
+**Correction.** An earlier revision of this section recorded `41069021` and `rgb_context`
+as missing machine reports. They were present the whole time, under the **unsuffixed**
+development directory `runs/arkit_label_image_ab/`, which the audit's
+`runs/arkit_label_image_ab_*` glob did not match. Both former gaps are removed from
+`MANIFEST.json`; the pack no longer records any.
 
 The camera diagnostic now records sha256 for its mesh, all three depth frames, the pose
 trajectory and all three intrinsics files, and separates
@@ -612,9 +620,11 @@ documentation-only:
    scope column. Both are corrected and the claim is withdrawn.
 2. The `[C02]` registry note still carried stale prose beginning *“Scope='deployable'
    because…”*. Removed; no registry note now contradicts its scope column.
-3. The evidence pack omitted the machine reports behind the chosen headline. Two of the
-   three were added; the third does not exist in this working copy and is recorded as a
-   known gap rather than left implicit.
+3. The evidence pack omitted the machine reports behind the chosen headline. **All three
+   scenes plus the `rgb_context` control are now in the pack.** An intermediate revision
+   recorded two of them as missing; that was a search error — the development run lives in
+   the unsuffixed `runs/arkit_label_image_ab/`, which a `runs/arkit_label_image_ab_*` glob
+   does not match. The pack records no known gaps.
 
 ### Genuine unresolved contradictions remaining: **0**
 
