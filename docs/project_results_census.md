@@ -216,10 +216,16 @@ Different datasets, different relation definitions, different denominators.
 | E1 transfer, room_1 | scene aggregate micro-precision | 0.58 `[E10]` | **definition-change** |
 | E1 transfer, office_0 | scene aggregate micro-precision | 0.36 `[E12]` | **definition-change** |
 | E1 track decision | S2 proceed rule | STOP_TRACK `[E21]` | **definition-change** |
-| E2 ARKit 41069025 | owner-confirmed positives recovered | 1/3 `[E27]` | delivered |
+| E2 ARKit 41069025 | owner-confirmed positives recovered | 1/3 `[E27]` | delivered — **exploratory** |
 | E2 ARKit 41069025 | precision on keyed pairs | 1.0 `[E28]` | delivered |
 | E2 ARKit 41069025 | recall on keyed positives | 0.3333333333333333 `[E29]` | delivered |
 | E2 ARKit 41069025 | candidates proposed / pairs evaluated | 1/714 `[E30]` | delivered |
+
+**E2 is exploratory and must not become a headline.** Two of its three keyed positives,
+`obj_9→obj_13` and `obj_23→obj_13`, appear only in the FINAL owner-corrected key and have
+no independent returned-form record; the key attributes the omission to a review-form
+defect. The entire recall denominator therefore rests on pairs captured once. Rows
+`[E27]`, `[E28]`, `[E29]` carry this caveat in the registry.
 
 E2 miss attribution: the threshold-reachable miss is `obj_23->obj_13` at footprint
 overlap 0.4545 `[E32]` against a 0.50 gate; the segmentation-evidence miss is
@@ -572,12 +578,43 @@ direct), which both ranges satisfy, so the test never adjudicated them.
 
 ### Evidence pack
 
-`eval/results/project_census_v1/` — 8 numeric JSON reports, 0.15 MB total, each with its
-original path, original sha256 and producing commit in `MANIFEST.json`. **No raw masks,
-meshes, images, point clouds or dataset files, and not the `runs/` tree.** Large arrays
-are elided and geometry keys dropped; the manifest records the sanitisation applied.
-Seven of the eight originals live under the gitignored `runs/` tree, which is why they
-are copied here at all.
+`eval/results/project_census_v1/` — **10** numeric JSON reports, each with its original
+path, original sha256 and producing commit in `MANIFEST.json`. **No raw masks, meshes,
+images, point clouds or dataset files, and not the `runs/` tree.** Large arrays are elided
+and geometry keys dropped; the manifest records the sanitisation applied. Most originals
+live under the gitignored `runs/` tree, which is why they are copied here at all.
+
+The two ARKit label A/B summaries backing the chosen headline were added in the
+documentation pass, and `MANIFEST.json` records two **known gaps** alongside them:
+
+- **`41069021` has no summary in this working copy.** Its contribution to the pooled
+  headline (`0/7 → 5/7` top-1, `0/7 → 7/7` top-3) rests on the tracked narrative alone.
+  So `1/21 → 12/21` is reproducible **in part, not in whole**, from this pack: two of the
+  three pooled scenes have a machine report here.
+- **The `rgb_context` control has no machine report anywhere in this working copy.** The
+  two summaries present carry only `splat` and `rgb_tight`. The control that *supports*
+  the texture-not-room-gist interpretation `[C17]`, `[C18]`, `[C21]` therefore rests on the
+  tracked narrative alone.
+
+The camera diagnostic now records sha256 for its mesh, all three depth frames, the pose
+trajectory and all three intrinsics files, and separates
+`measurement_repository_state` (`58af9cd`, where the numbers were computed) from
+`artifact_commit` (`fdb63a5`, where the file first landed) — a file cannot record the
+commit that contains it.
+
+### Follow-up documentation pass
+
+Three audit defects found after the reconciliation commit and fixed here, all
+documentation-only:
+
+1. The strongest-result table still called `[C01→C02]` `deployable` and described it as
+   *“simultaneously deployable in the answer path”*, contradicting its own corrected
+   scope column. Both are corrected and the claim is withdrawn.
+2. The `[C02]` registry note still carried stale prose beginning *“Scope='deployable'
+   because…”*. Removed; no registry note now contradicts its scope column.
+3. The evidence pack omitted the machine reports behind the chosen headline. Two of the
+   three were added; the third does not exist in this working copy and is recorded as a
+   known gap rather than left implicit.
 
 ### Genuine unresolved contradictions remaining: **0**
 
@@ -620,18 +657,28 @@ Several results compete; they are listed so the choice is visible rather than im
 
 | candidate | value | scope | why it might win | why it might not |
 |---|---|---|---|---|
-| Labeler input A/B `[C01→C02]` | 1/21 → 12/21 top-1 | deployable | one changed variable, three scenes, no tuning between them, ~12× effect | denominator is oracle-matched instances; says nothing about detection |
-| Labeler input A/B `[C03→C04]` | 4/21 → 18/21 top-3 | deployable | same design, larger absolute effect | top-3 is a weaker criterion than top-1 |
+| Labeler input A/B `[C01→C02]` | 1/21 → 12/21 top-1 | `oracle_free_component_eval` | one changed variable, three scenes, no tuning between them, ~12× effect | **not end-to-end**: the denominator is oracle-matched instances, so it says nothing about detection |
+| Labeler input A/B `[C03→C04]` | 4/21 → 18/21 top-3 | `oracle_free_component_eval` | same design, larger absolute effect | **not end-to-end**, same denominator caveat; top-3 is a weaker criterion than top-1 |
 | Graph-consistency QA `[C32→C33]` | 13/14 → 3/14 abstentions | deployable | end-to-end, makes the graph askable | scored against the graph's own neighbours, so it cannot show they are spatially correct |
 | Pooled proposal ceiling `[B01→B03]` | 20/53 → 33/53 | **proposal_ceiling** | largest headline jump in the project | an oracle-evaluated bound, ineligible as a deployable result |
 | Stored-edge replay agreement `[F63]` | 12/12 | **identity_oracle** | cleanly isolates relation extraction | a bound, and a null result rather than a gain |
-| Unseen-scene calibration `[F85]`, `[F86]` | 1.000 when answered, 0 false-confident | deployable | perfect precision on a never-seen room | only 5 answers, and both gates failed `[F82]`, `[F83]` |
+| Unseen-scene calibration `[F85]`, `[F86]` | 1.000 when answered, 0 false-confident | `deployable` (end-to-end) | perfect precision on a never-seen room | only 5 answers, and both gates failed `[F82]`, `[F83]` |
 
-**Chosen: `[C01→C02]`.** It is the only candidate that is simultaneously deployable in
-the answer path, isolates a single changed variable, spans three scenes with no tuning
-between them, and is corroborated by a control in the opposite direction `[C07→C17]`.
-The ceiling result `[B01→B03]` is larger but is not a deployable result and cannot
-serve as the headline.
+**Chosen: `[C01→C02]`.** It isolates a single changed variable, spans three scenes with
+no tuning between them, and a context control in the opposite direction `[C07→C17]`
+supports the interpretation that the gain comes from object texture rather than room gist.
+
+**It is not a deployable end-to-end result and must never be quoted as one.** Its scope is
+`oracle_free_component_eval`: the prediction path uses no oracle, but the denominator is
+instances the evaluator had already matched to an annotation box, so the number is
+conditional on detection having succeeded and says nothing about detection itself. An
+earlier revision of this section called it *“simultaneously deployable in the answer
+path”*, which contradicted its own corrected scope column; that claim is withdrawn.
+
+The strongest **end-to-end deployable** evidence in the project is a different and much
+weaker set: the unseen-scene transfer result `[F76]`, `[F82]`, `[F83]`, which failed both
+of its predeclared gates. The ceiling result `[B01→B03]` is numerically larger than either
+but is an oracle-evaluated bound and ineligible for any headline.
 
 ---
 

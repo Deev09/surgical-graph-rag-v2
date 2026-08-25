@@ -79,14 +79,71 @@
    "why_included": "E1: Replica support precision/recall per scene"
   },
   {
-   "original_bytes": 3948,
+   "original_bytes": 6677,
    "original_path": "(produced by this reconciliation pass)",
    "original_sha256": "\u2014",
    "pack_file": "camera_convention_depth_diagnostic.json",
    "producing_commit": "58af9cd",
    "sanitization": "none; numeric only by construction",
-   "sanitized_sha256": "fce259ba264b21a57b1a639a0e594a97af4a0dcf693159a194956cdd32e4311d",
+   "sanitized_sha256": "e0a2478559c5266a7de73a97b8de65722ef7ba5915163e71719cea30ec5627b6",
    "why_included": "D: the one authoritative camera-convention depth measurement"
+  },
+  {
+   "original_bytes": 8429,
+   "original_path": "runs/arkit_label_image_ab_41069025/summary.json",
+   "original_sha256": "b8d1e14d47f0de4ba81daa06f3b62cd629f23b4c3a597492cbccb25e034588e2",
+   "pack_file": "arkit_label_ab_41069025_summary.json",
+   "producing_commit": "untracked (runs/ is gitignored)",
+   "sanitization": "none \u2014 the file is already numeric-only (per-arm counts and precisions)",
+   "sanitized_sha256": "b8d1e14d47f0de4ba81daa06f3b62cd629f23b4c3a597492cbccb25e034588e2",
+   "why_included": "C: backs 41069025 rows C09-C12, C22-C23 (splat 1/9, 4/9; rgb_tight 5/9, 8/9)"
+  },
+  {
+   "original_bytes": 5762,
+   "original_path": "runs/arkit_label_image_ab_41069042/summary.json",
+   "original_sha256": "5847b2618ec38d185e33889fd8ff410e33d3498d2e889b63967729d32784db73",
+   "pack_file": "arkit_label_ab_41069042_summary.json",
+   "producing_commit": "untracked (runs/ is gitignored)",
+   "sanitization": "none \u2014 the file is already numeric-only (per-arm counts and precisions)",
+   "sanitized_sha256": "5847b2618ec38d185e33889fd8ff410e33d3498d2e889b63967729d32784db73",
+   "why_included": "C: backs 41069042 rows C13-C16, C24-C25 (splat 0/5, 0/5; rgb_tight 2/5, 3/5)"
+  }
+ ],
+ "headline_backing": {
+  "backed_by_machine_report_in_pack": [
+   "41069025 (5/9, 8/9 rgb_tight; 1/9, 4/9 splat)",
+   "41069042 (2/5, 3/5 rgb_tight; 0/5, 0/5 splat)"
+  ],
+  "backed_by_tracked_narrative_only": [
+   "41069021 (5/7, 7/7 rgb_tight; 0/7, 0/7 splat)"
+  ],
+  "claim": "pooled matched-instance top-1 1/21 -> 12/21 and top-3 4/21 -> 18/21",
+  "note": "2 of the 3 pooled scenes have a machine report here; the third does not exist locally. The pooled figures are therefore reproducible in part, not in whole, from this pack."
+ },
+ "known_gaps": [
+  {
+   "affects": [
+    "C05",
+    "C06",
+    "C07",
+    "C08",
+    "C19",
+    "C20",
+    "C21",
+    "C17",
+    "C18"
+   ],
+   "what": "arkit_label_image_ab_41069021 summary (the development scene)",
+   "why": "runs/arkit_label_image_ab_41069021/ does not exist in this working copy; only 41069025 and 41069042 were regenerated locally. The scene's contribution to the pooled headline (splat 0/7 and 0/7; rgb_tight 5/7 and 7/7) is therefore backed only by the tracked narrative docs/arkitscenes_rgb_label_results.md, not by a machine report in this pack."
+  },
+  {
+   "affects": [
+    "C17",
+    "C18",
+    "C21"
+   ],
+   "what": "machine report for the rgb_context control (C17, C18, C21)",
+   "why": "The two summaries present carry only the `splat` and `rgb_tight` arms. No `rgb_context` arm appears in any summary in this working copy, so the context control that SUPPORTS the texture-not-room-gist interpretation has no machine report here. It rests on the tracked narrative alone."
   }
  ],
  "missing_at_pack_time": [],

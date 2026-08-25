@@ -7,6 +7,52 @@
   380.363,
   455.366
  ],
+ "inputs": {
+  "depth_frames": [
+   {
+    "path": "/Users/deevyaswain/Desktop/datasets/arkitscenes/Validation/41069021/lowres_depth/41069021_305.377.png",
+    "sha256": "3165fe8d1b0a56c7f98e5101e5df621f5bf29f47c4d343759246911b867c5e19",
+    "timestamp": 305.377
+   },
+   {
+    "path": "/Users/deevyaswain/Desktop/datasets/arkitscenes/Validation/41069021/lowres_depth/41069021_380.363.png",
+    "sha256": "3f99144b50f09df399e1e2861e8175814948d22d51a7de2aa46f38022aa2be77",
+    "timestamp": 380.363
+   },
+   {
+    "path": "/Users/deevyaswain/Desktop/datasets/arkitscenes/Validation/41069021/lowres_depth/41069021_455.366.png",
+    "sha256": "763b38fed4fc8acf11031fe597052637d00f6939b8ac538d4b91cc43837cf435",
+    "timestamp": 455.366
+   }
+  ],
+  "intrinsics": [
+   {
+    "path": "/Users/deevyaswain/Desktop/datasets/arkitscenes/Validation/41069021/lowres_wide_intrinsics/41069021_305.377.pincam",
+    "sha256": "5b1a4e30018954d4611369972b0d173070bee0a79c7f6409aa5fbcf7e9d6adf4",
+    "timestamp": 305.377
+   },
+   {
+    "path": "/Users/deevyaswain/Desktop/datasets/arkitscenes/Validation/41069021/lowres_wide_intrinsics/41069021_380.363.pincam",
+    "sha256": "813bb93354151710329684957f71ab7a8ea2134df7571d29fb35852d6bff9f1b",
+    "timestamp": 380.363
+   },
+   {
+    "path": "/Users/deevyaswain/Desktop/datasets/arkitscenes/Validation/41069021/lowres_wide_intrinsics/41069021_455.366.pincam",
+    "sha256": "eb16611cdee3d3f8dfc66547835a5a4f6d209904b147e628e40621f80a9bc664",
+    "timestamp": 455.366
+   }
+  ],
+  "mesh": {
+   "bytes": 40868073,
+   "path": "/Users/deevyaswain/Desktop/datasets/arkitscenes/Validation/41069021/41069021_3dod_mesh.ply",
+   "sha256": "c02fc84ffc020830dd1e88d7d223686da17e06eb573be586d1c10666182c867c"
+  },
+  "pose_source": {
+   "note": "world->camera angle-axis + translation per row; frames matched to within 0.001 s of each named timestamp",
+   "path": "/Users/deevyaswain/Desktop/datasets/arkitscenes/Validation/41069021/lowres_wide.traj",
+   "sha256": "96934154a6c466691d11ea6eff21adb7c3ac29410c5a43dbc5be0f1c41a10f4c"
+  }
+ },
  "is_experiment": false,
  "mask": "none beyond common-pixel intersection; no instance mask, no annotation",
  "measured": [
@@ -87,13 +133,16 @@
   }
  ],
  "provenance": {
+  "artifact_commit": "fdb63a5",
+  "commit_note": "measurement_repository_state is the working-tree commit the measurement was COMPUTED at (58af9cd). artifact_commit is the commit this JSON was first COMMITTED in (fdb63a5). They differ by construction: the file cannot record the commit that contains it until after it exists. Input hashes were added in the follow-up documentation pass and pin the dataset files themselves, which are not tracked in this repository.",
   "depth": "lowres_depth/*.png (dataset, not tracked)",
-  "measured_at_repo_commit": "58af9cd",
+  "measurement_repository_state": "58af9cd",
   "mesh": "41069021_3dod_mesh.ply (dataset, not tracked)",
   "tool": "tools/arkitscenes_camera_alignment.py",
   "tool_commit": "fbf163c"
  },
  "purpose": "One authoritative measurement of the camera-convention depth error, so the two ranges circulating in prose can be compared against a single recorded set.",
+ "reproduce": "tests/extractors/test_arkitscenes_rgb_crops.py::test_synchronized_depth_pins_camera_convention exercises the same call on the same three frames and asserts bounds, not these values.",
  "scene": "arkitscenes_41069021",
  "schema": "arkitscenes_camera_convention_depth_diagnostic_v1",
  "summary_cm": {
