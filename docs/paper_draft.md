@@ -22,16 +22,21 @@ Replacing only the labeler's input images — real capture crops instead of
 point-splat renders, with weights, vocabulary, admission threshold, evaluator,
 delivered partitions and matching all held fixed — raises matched-instance
 top-1 from 1/21 to 12/21 `[C01, C02]` and top-3 from 4/21 to 18/21 `[C03, C04]`
-across three scenes with no tuning between them. This is a component evaluation on
-an oracle-selected denominator, not end-to-end performance.
+across three scenes with no tuning between them. Paired per instance, RGB fixes 12 and
+regresses 1 at top-1 (exact McNemar p = 0.00341797 `[G01]`) and fixes 14 and regresses
+0 at top-3 (p = 0.00012207 `[G02]`). This is a component evaluation on an
+oracle-selected denominator, not end-to-end performance, and the 21 instances are
+clustered within only three scenes.
 
 On a twelve-question relation benchmark over two rooms, the *same stored relations*
 answer 7 of 10 scored items when object identity is supplied by a human
 `[F35]`, 0 of 10 when identity comes from learned labels `[F40]`, and 2 of 10
-through an oracle-free grounding bridge `[F45]`. Relation extraction is not the
+through an oracle-free grounding bridge `[F45]` — a paired substitution on the same
+items, 7 fixed and 0 regressed, exact McNemar p = 0.015625 `[G06]`, which sizes a
+bound rather than a system improvement. Relation extraction is not the
 loss: a replay reading only serialized edges agrees with recomputed geometry on
-12 of 12 items `[F63]`. The information is present and unreachable, and the
-binding stage is identity.
+12 of 12 items `[F63]`. The information is present in the store and was not reached
+by any of the three identity paths we instantiated; the binding stage is identity.
 
 On a previously untouched room, direct multiview RGB answers 5 of 10 with **zero
 wrong answers** `[F76, F77]` and perfect accuracy when it answers `[F85]`, but
@@ -112,9 +117,16 @@ Beacon3D [huang2025beacon3d] decouples grounding from question answering at eval
 finds the coherence between them fragile. MV-ScanQA [mo2025mvscanqa] shows that only a small
 minority of questions in existing 3D QA datasets actually require integrating more
 than one view. Jin et al. [jin2025revisiting3d] find 2D VLMs on rendered views match 3D LLMs, with
-oracle viewpoint selection closing much of the residual gap. Each diagnoses a
-*benchmark or protocol*; we move the decomposition into the pipeline itself and
-declare the scope of each stage before measuring it. The multi-view finding in [mo2025mvscanqa]
+oracle viewpoint selection closing much of the residual gap. We concede both constructs rather than compete for them:
+[huang2025beacon3d] established grounding-versus-answering attribution in 3D-VL, and
+[mo2025mvscanqa] formalised cross-view necessity at dataset scale. Neither is ours to
+claim. What separates this work is narrower and is stated as such in §5: prior
+stage-wise analyses either compare the *quality* of stored representations
+[gu2024conceptgraphs], split *inference-time* stages of a model over an
+already-annotated scene [huang2025beacon3d], or report an oracle upper bound produced
+by a *different system* [azuma2022scanqa, takmaz2023openmask3d]. We hold one store
+fixed, independently certify its relations against recomputed geometry, and substitute
+only the identity source. The multi-view finding in [mo2025mvscanqa]
 is the direct context for our transfer result, where a direct-RGB baseline declined
 every non-co-visible item: if benchmarks rarely demand cross-view integration, a
 system can score well without ever acquiring the capability.
@@ -127,8 +139,12 @@ systems at room scale. GPT4Scene [qi2026gpt4scene] matches or beats most 3D LLMs
 zero-shot; SpatialVLM [chen2024spatialvlm] argues the deficit was metric-3D supervision in training
 data rather than architecture; SpatialRGPT [cheng2024spatialrgpt] adds region-grounded spatial
 reasoning. Benchmarks map the remaining weaknesses: BLINK [fu2024blink], VSI-Bench [yang2025thinkinginspace],
-All-Angles [yeh2026allangles], MMSI-Bench [yang2026mmsibench] and the relative-position probes of Kamath et
-al. [kamath2023whatsup].
+All-Angles [yeh2026allangles], MMSI-Bench [yang2026mmsibench] the relative-position probes of Kamath et
+al. [kamath2023whatsup], and the dedicated spatial suites 3DSRBench [ma2025srbench]
+and SpatiaLQA [xie2026spatialqa]. These are evaluation suites for image-in/answer-out
+models: they carry no persistent 3D state, so nothing in them can *hold* information
+in the first place, and none contrasts human-supplied identity against learned labels
+as two labelled quantities.
 
 We reproduce the phenomenon rather than argue with it — our direct multiview RGB
 arm is the strongest deployable path we measured. Where we depart is granularity.
@@ -265,6 +281,17 @@ this project.
 | 41069042 | 0/5 `[C13]` | 2/5 `[C15]` | 0/5 `[C14]` | 3/5 `[C16]` |
 | **pooled** | **1/21** `[C01]` | **12/21** `[C02]` | **4/21** `[C03]` | **18/21** `[C04]` |
 
+**Paired, the effect is stronger than the marginals suggest.** Both arms were scored
+on the same matched instances, so the comparison is paired by construction. At top-1,
+RGB fixes 12 instances and regresses 1 — 13 discordant pairs, exact McNemar
+p = 0.00341797 `[G01]`. At top-3 it fixes 14 and regresses none, p = 0.00012207
+`[G02]`. The test is the two-sided exact binomial on discordant pairs, not the
+chi-square approximation, which these counts are far too small for. **The limitation
+is clustering:** the 21 instances sit within only three scenes and the test treats
+them as independent, which they are not — instances in one room share a capture, a
+lighting condition and a reconstruction. This is an instance-level statement and not
+a scene-level or dataset-level one.
+
 Held fixed: OpenCLIP `ViT-B-32-quickgelu`/`openai` weights, the class vocabulary,
 `top_k=3`, `min_top1_score=0.28`, the evaluator, the delivered Mask3D partitions,
 and greedy IoU ≥ 0.50 matching. Only the images changed, and no constant was tuned
@@ -336,6 +363,24 @@ gates: anchor precision 0.583 against ≥ 0.80 `[F67]`, coverage 0.467 against �
 `[F68]`, and graph-unique wins 0 against ≥ 2 `[F69]`. Of the 17 question anchors, 15
 were human-resolvable, the bridge admitted 12, and 7 of those admissions were correct
 `[F70]`.
+
+**A ledger makes the transitions explicit.** Rather than argue about where the
+capability goes, we record for each question whether it survived each stage it must
+pass: a human answered it, its objects are in the delivered partition, `NEAR` can
+express it, the serialized edge reproduces the geometry, and the bridge bound its
+anchors. The full table is `docs/paper_reachability_ledger.csv`.
+
+![Figure 4](figures/fig4_reachability.svg)
+
+Of the 10 scored questions, 8 survive object delivery `[G03]` and all 8 survive both
+relation expressibility and the serialized-edge stage — **no question is lost to
+relation extraction** `[G05]`. Three survive anchor grounding `[G04]`. The single
+largest loss, five of ten, is at identity grounding, and it is larger than every other
+transition combined. The substitution is paired: 7 items are answered under
+human-supplied identity that the delivered graph does not answer, none the other way,
+exact McNemar p = 0.015625 `[G06]`. Because one side of that comparison consumes human
+identity, it sizes a bound — it says the arms differ, not that anything deployable
+achieves 7/10.
 
 One failure is diagnostic of the mechanism. The bridge admitted a UID for an object
 the owner had marked absent from the delivered partition, with maximum cross-view
@@ -467,9 +512,27 @@ unverifiable. The track was stopped by its own predeclared rule `[E21]`.
 4. **Neither deployed path yet handles genuinely non-co-visible spatial questions
    reliably** — the graph arm cannot reach them `[F40]`, and RGB declines them on an
    unseen room `[F79]`.
-5. **The contribution is a controlled decomposition of where spatial information is
-   gained, retained and lost** — not a solved general-purpose room-understanding
-   system.
+5. **The contribution is an evaluation-method contribution, and it is narrower than
+   "decomposition".** Stage-wise attribution in 3D-VL is prior work
+   [huang2025beacon3d], and so is cross-view necessity [mo2025mvscanqa]. What we add
+   is the conjunction of two things that appear to be unoccupied. First, the relation
+   store is **independently certified** against recomputed geometry `[F63, G05]`
+   before anything is claimed about it, so "the representation holds it" is a
+   measurement rather than an assumption — prior stage analyses split stages of a
+   model over an already-annotated scene, and never certify the store underneath.
+   Second, **identity is the only variable**: the same serialized edges are queried
+   under three identity sources `[F35, F40, F45, G06]`, where prior oracle contrasts
+   swap the whole input modality and model and so confound identity with
+   architecture. A third element, **scoring a decline as an outcome distinct from a
+   wrong answer**, is a protocol proposal rather than a validated contribution: a
+   result of the form "5 correct, 0 wrong, 3 declined" `[F76, F77, F79]` is not
+   expressible in the benchmarks above, but a proposal is validated by adoption, and
+   ten authored items cannot demonstrate that.
+
+   We do **not** claim that representations in general hold unreachable information,
+   that *no* deployable path could reach it, or any ordering among 7, 2 and 0. The
+   defensible statement is bounded to this pipeline, these two rooms, and the three
+   identity paths we instantiated.
 
 ## 6. Limitations
 
@@ -510,8 +573,8 @@ in §5.
 
 ## 7. Conclusion
 
-A representation can hold correct information that no deployable query path can
-reach. We measured that gap directly: the same stored relations answer 7 of 10 with
+A representation can hold correct information that the deployable query paths we
+instantiated do not reach. We measured that gap directly: the same stored relations answer 7 of 10 with
 human-supplied identity and 0 of 10 with the identity the system actually produces,
 while the relation extraction between them lost nothing on all 12 items tested. Identity grounding is the dominant measured loss on this
 `NEAR` slice; relation serialization adds no measurable loss on the twelve tested

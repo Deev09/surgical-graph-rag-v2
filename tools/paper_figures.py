@@ -18,6 +18,7 @@ pictures still cannot mistake a bound for system performance.
 from __future__ import annotations
 
 import csv
+import json
 import re
 import sys
 from pathlib import Path
@@ -271,12 +272,95 @@ def figure_3_unreachable(R: dict) -> str:
     return svg(W, H, "".join(b), "Held, but unreachable")
 
 
+# --------------------------------------------------------------------------
+def figure_4_reachability(R: dict) -> str:
+    """Where questions are lost between representation and deployable answer.
+
+    Reads the committed statistics report rather than recomputing it, so this
+    figure and docs/paper_reachability_ledger.csv can never disagree.
+    """
+    stats = json.loads((REPO_ROOT / "eval" / "results" / "paper_statistics.json").read_text())
+    reach = stats["reachability"]
+    stages = reach["survivors_by_stage"]
+    n = reach["n_scored"]
+
+    # H=520, not 470: the stat tiles run to y=486 and the footer sits below them.
+    W, H = 1040, 520
+    b = [text(28, 34, "Figure 4 — Where questions are lost", 15, INK, weight="600"),
+         text(28, 55, "One row per stage an answer must survive, over the "
+                      f"{n} scored relation questions. Read top to bottom.", 11, MUTED),
+         f'<rect x="28" y="66" width="984" height="26" rx="3" fill="#f6efdc" '
+         f'stroke="{ORACLE}" stroke-width="1"/>',
+         text(40, 83, "SCOPE  bookkeeping over already-scored outcomes, not a new "
+                      "measurement. n = 10 questions over two rooms.", 10, ORACLE,
+              weight="600")]
+
+    left, top, bw, rowh = 330, 116, 420, 44
+    labels = {
+        "human_answerable": "a human answered it",
+        "objects_delivered": "objects are in the delivered partition",
+        "relation_expressible": "NEAR can express the question",
+        "edge_serialized": "the serialized edge matches geometry",
+        "anchor_grounded": "the bridge bound the anchors",
+        "graph_correct": "the delivered graph answered correctly",
+    }
+    worst = max(s["lost_here"] for s in stages)
+    for i, st in enumerate(stages):
+        y = top + i * rowh
+        surviving, lost = st["surviving"], st["lost_here"]
+        is_worst = lost == worst and lost > 0
+        b.append(text(318, y + 15, labels.get(st["stage"], st["stage"]), 11,
+                      INK if is_worst else MUTED, anchor="end",
+                      weight="700" if is_worst else "normal"))
+        b.append(f'<rect x="{left}" y="{y}" width="{bw}" height="22" rx="3" fill="#eef1f4"/>')
+        w = bw * surviving / n
+        if w > 0:
+            b.append(f'<rect x="{left}" y="{y}" width="{w:.1f}" height="22" rx="3" '
+                     f'fill="{ACCENT}"/>')
+        b.append(text(left + bw + 14, y + 15, f"{surviving}/{n}", 13,
+                      BAD if surviving == 0 else INK, weight="700", family=MONO))
+        if lost > 0:
+            b.append(text(left + bw + 74, y + 15, f"−{lost} here", 10,
+                          BAD if is_worst else FAINT,
+                          weight="700" if is_worst else "normal"))
+        if is_worst:
+            b.append(text(left + bw + 150, y + 15, "the dominant single loss", 9,
+                          BAD, weight="700", spacing="0.05em"))
+
+    yb = top + len(stages) * rowh + 14
+    b.append(f'<line x1="28" y1="{yb}" x2="1012" y2="{yb}" stroke="{LINE}" stroke-width="1"/>')
+    b.append(text(28, yb + 22, "Held by the representation, versus reached by a "
+                               "deployable path", 12.5, INK, weight="600"))
+    cells = [(f"{reach['held_by_representation']}/{n}", "held — stored relations,",
+              "human identity [F35]", ORACLE),
+             (f"{reach['reached_by_delivered_graph']}/{n}", "reached — delivered graph",
+              "[F40]", BAD),
+             (f"{reach['reached_by_deployable_grounding']}/{n}", "reached — grounded graph",
+              "[F45]", BAD),
+             (f"{reach['reached_by_direct_rgb']}/{n}", "reached — direct RGB",
+              "[F50]", OK)]
+    for i, (val, lab, sub, col) in enumerate(cells):
+        cx = 40 + i * 246
+        b.append(f'<rect x="{cx-12}" y="{yb+34}" width="212" height="58" rx="4" '
+                 f'fill="{BG}" stroke="{LINE}" stroke-width="1"/>')
+        b.append(text(cx, yb + 58, val, 17, col, weight="700", family=MONO))
+        b.append(text(cx, yb + 74, lab, 9, MUTED))
+        b.append(text(cx, yb + 87, sub, 8.5, FAINT))
+
+    b.append(text(28, H - 12, "Extraction is not the loss: no question is lost at the "
+                              "serialized-edge stage. Identity grounding is where they go.",
+                  10, FAINT))
+    return svg(W, H, "".join(b), "Where questions are lost")
+
+
+# --------------------------------------------------------------------------
 def main(argv: list[str] | None = None) -> int:
     R = load()
     OUT.mkdir(parents=True, exist_ok=True)
     figs = {"fig1_evaluation_ladder.svg": figure_1_layers(R),
             "fig2_component_result.svg": figure_2_component(R),
-            "fig3_held_but_unreachable.svg": figure_3_unreachable(R)}
+            "fig3_held_but_unreachable.svg": figure_3_unreachable(R),
+            "fig4_reachability.svg": figure_4_reachability(R)}
     for name, body in figs.items():
         (OUT / name).write_text(body)
         print(f"    {name:38s} {len(body):>7,} B")

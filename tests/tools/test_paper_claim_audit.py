@@ -8,6 +8,7 @@ overstated, or if the figures stop being byte-reproducible.
 from __future__ import annotations
 
 import csv
+import json
 import re
 import subprocess
 import sys
@@ -35,8 +36,11 @@ def audit() -> list[dict]:
 
 def paper_ids() -> set[str]:
     """result_ids the paper cites, which it writes as `[C01]` or `[C01, C02]`."""
-    groups = re.findall(r"`\[([A-F]\d{2}(?:,\s*[A-F]\d{2})*)\]`", PAPER.read_text())
-    return {i for g in groups for i in re.findall(r"[A-F]\d{2}", g)}
+    # A-Z, not A-F: the hard-coded range silently stopped seeing citations the
+    # moment derived G-rows were added, and every test that depends on this
+    # function passed vacuously as a result.
+    groups = re.findall(r"`\[([A-Z]\d{2}(?:,\s*[A-Z]\d{2})*)\]`", PAPER.read_text())
+    return {i for g in groups for i in re.findall(r"[A-Z]\d{2}", g)}
 
 
 def test_every_paper_number_traces_to_the_registry():
@@ -207,8 +211,8 @@ def test_the_context_control_supports_rather_than_proves():
 
 
 def test_figures_exist_and_regenerate_byte_identically():
-    names = ["fig1_evaluation_ladder.svg", "fig2_component_result.svg",
-             "fig3_held_but_unreachable.svg"]
+    names = sorted(p.name for p in FIGS.glob("*.svg"))
+    assert len(names) == 4, f"expected 4 figures, found {names}"
     before = {}
     for n in names:
         p = FIGS / n
@@ -278,6 +282,87 @@ def test_no_citation_is_marked_unverified():
     assert not bad, (
         "bibliography entries whose fact-check did not come back clean "
         f"(re-check or remove them before submission): {bad}")
+
+
+STATS = REPO / "eval" / "results" / "paper_statistics.json"
+LEDGER = REPO / "docs" / "paper_reachability_ledger.csv"
+
+
+def test_statistics_and_ledger_are_current():
+    """The committed statistics must match what the tool produces now.
+
+    Both the ledger and figure 4 are generated from the same report, so a stale
+    report would silently desynchronise the paper, the CSV and the figure.
+    """
+    r = subprocess.run([sys.executable, str(REPO / "tools" / "paper_statistics.py"), "--check"],
+                       capture_output=True, text=True, cwd=REPO)
+    assert r.returncode == 0, f"statistics are stale: {r.stdout}{r.stderr[-300:]}"
+
+
+def test_paired_tests_reproduce_the_registry_marginals():
+    """The paired analysis must agree with the rows it claims to strengthen.
+
+    A paired table that did not reproduce C01-C04's marginals would mean the
+    per-instance files and the summary rows disagree, which is a data problem,
+    not a statistics one.
+    """
+    reg, stats = registry(), json.loads(STATS.read_text())
+    t1, t3 = stats["paired_label_tests"]
+
+    def num(rid: int | str) -> int:
+        return int(reg[rid]["numerator"])
+
+    expected = {"top1_correct": (num("C01"), num("C02")),
+                "top3_correct": (num("C03"), num("C04"))}
+    for t in (t1, t3):
+        splat, rgb = expected[t["field"]]
+        assert t["splat_correct"] == splat, (
+            f"{t['field']}: paired table says splat {t['splat_correct']}, registry says {splat}")
+        assert t["rgb_tight_correct"] == rgb, (
+            f"{t['field']}: paired table says rgb {t['rgb_tight_correct']}, registry says {rgb}")
+        assert t["n_instances"] == int(reg["C01"]["denominator"]) == 21
+        # b + c must equal the discordant count the p-value was computed from
+        assert t["rgb_only_correct"] + t["splat_only_correct"] == t["discordant_pairs"]
+
+
+def test_the_clustering_limitation_is_recorded():
+    """A p-value over 21 instances from 3 rooms must carry its caveat."""
+    stats = json.loads(STATS.read_text())
+    for t in stats["paired_label_tests"]:
+        note = t.get("clustering_limitation", "")
+        assert "clustered" in note and "not" in note.lower(), (
+            f"{t['field']} has no clustering caveat")
+    for rid in ("G01", "G02"):
+        assert "INSTANCE-LEVEL" in registry()[rid]["notes"], (
+            f"{rid} does not record that its p-value is instance-level only")
+
+
+def test_ledger_does_not_conflate_multi_view_with_cross_view():
+    """The ledger's multi-view flag is not the transfer test's cross-view.
+
+    The transfer test's cross-view items are non-co-visible by construction;
+    the ledger's flag only records that an answer drew on more than one view.
+    Pooling them would repeat exactly the denominator merge this project has
+    already had to correct once.
+    """
+    header = LEDGER.read_text().splitlines()[0]
+    assert "cross_view" not in header, (
+        "the ledger has a bare cross_view column again; it must be named "
+        "evidence_spans_multiple_views to keep it distinct from the transfer test")
+    assert "evidence_spans_multiple_views" in header
+    stats = json.loads(STATS.read_text())
+    note = stats["reachability"]["multi_view_evidence"]["note"]
+    assert "non-co-visible" in note and "0/3" in note
+
+
+def test_derived_registry_rows_are_marked_as_derived():
+    """G-rows are re-readings of scored outcomes and must say so."""
+    reg = registry()
+    g = {k: v for k, v in reg.items() if k.startswith("G0")}
+    assert g, "no derived rows found"
+    for rid, row in g.items():
+        assert "DERIVED ROW" in row["notes"], f"{rid} is not marked as derived"
+        assert row["primary_source_artifact"].endswith("paper_statistics.json"), rid
 
 
 def main() -> None:

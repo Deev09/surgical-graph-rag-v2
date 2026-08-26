@@ -9,6 +9,146 @@
  ],
  "files": [
   {
+   "original_bytes": 12746,
+   "original_path": "runs/arkit_representation_kill_test/41069025_common6/report.json",
+   "original_sha256": "aaeb6d6281c0f4ce76f2eaa12ad09859a3adfec6b476337e9138911b6cf1f97a",
+   "pack_file": "arkit_kill_test_report.json",
+   "producing_commit": "untracked (runs/ is gitignored)",
+   "sanitization": "keys dropped if present: ['embedding', 'embeddings', 'image', 'images', 'masks', 'point_indices', 'rows_raw', 'vertex_ids', 'vertices']; lists over 4000 elements elided",
+   "sanitized_sha256": "aaeb6d6281c0f4ce76f2eaa12ad09859a3adfec6b476337e9138911b6cf1f97a",
+   "why_included": "F: 6-question kill test"
+  },
+  {
+   "original_bytes": 6320,
+   "original_path": "runs/arkit_label_image_ab/rgb_context/label_eval.json",
+   "original_sha256": "efc85ce81c77ce01c74ef5410b3d2319ad70b21180d24b45cbc8087ab8913d97",
+   "pack_file": "arkit_label_ab_41069021_rgb_context_label_eval.json",
+   "producing_commit": "untracked (runs/ is gitignored)",
+   "sanitization": "keys dropped if present: ['embedding', 'embeddings', 'image', 'images', 'masks', 'point_indices', 'rows_raw', 'vertex_ids', 'vertices']; lists over 4000 elements elided",
+   "sanitized_sha256": "efc85ce81c77ce01c74ef5410b3d2319ad70b21180d24b45cbc8087ab8913d97",
+   "why_included": "C: per-instance detail for the rgb_context CONTROL [C17], [C18], [C21] \u2014 the arm that supports the texture-not-room-gist interpretation"
+  },
+  {
+   "original_bytes": 6308,
+   "original_path": "runs/arkit_label_image_ab/rgb_tight/label_eval.json",
+   "original_sha256": "9c4f6873183b87e125c7695cd4a85bf48279fdef31ae72c96b235c577c0b2758",
+   "pack_file": "arkit_label_ab_41069021_rgb_tight_label_eval.json",
+   "producing_commit": "untracked (runs/ is gitignored)",
+   "sanitization": "keys dropped if present: ['embedding', 'embeddings', 'image', 'images', 'masks', 'point_indices', 'rows_raw', 'vertex_ids', 'vertices']; lists over 4000 elements elided",
+   "sanitized_sha256": "9c4f6873183b87e125c7695cd4a85bf48279fdef31ae72c96b235c577c0b2758",
+   "why_included": "C: per-instance detail for the 41069021 rgb_tight arm [C07], [C08], [C20]"
+  },
+  {
+   "original_bytes": 6328,
+   "original_path": "runs/arkit_label_image_ab/splat/label_eval.json",
+   "original_sha256": "a0355bf454d7d6e5462fd23d9dc53f3cbf2a38c06f712497e9f270439e5c8b18",
+   "pack_file": "arkit_label_ab_41069021_splat_label_eval.json",
+   "producing_commit": "untracked (runs/ is gitignored)",
+   "sanitization": "keys dropped if present: ['embedding', 'embeddings', 'image', 'images', 'masks', 'point_indices', 'rows_raw', 'vertex_ids', 'vertices']; lists over 4000 elements elided",
+   "sanitized_sha256": "a0355bf454d7d6e5462fd23d9dc53f3cbf2a38c06f712497e9f270439e5c8b18",
+   "why_included": "C: per-instance detail for the 41069021 splat arm [C05], [C06], [C19]"
+  },
+  {
+   "original_bytes": 16159,
+   "original_path": "runs/arkit_label_image_ab/summary.json",
+   "original_sha256": "140bca012fb119230f034542c07c3f6c8eec0f5d67158be136edeba37fcf5151",
+   "pack_file": "arkit_label_ab_41069021_summary.json",
+   "producing_commit": "untracked (runs/ is gitignored)",
+   "sanitization": "keys dropped if present: ['embedding', 'embeddings', 'image', 'images', 'masks', 'point_indices', 'rows_raw', 'vertex_ids', 'vertices']; lists over 4000 elements elided",
+   "sanitized_sha256": "140bca012fb119230f034542c07c3f6c8eec0f5d67158be136edeba37fcf5151",
+   "why_included": "C: backs 41069021 rows C05-C08, C17-C21 \u2014 splat 0/7, 0/7; rgb_tight 5/7, 7/7; rgb_context 3/7, 5/7. Completes the pooled headline."
+  },
+  {
+   "original_bytes": 7335,
+   "original_path": "runs/arkit_label_image_ab_41069025/rgb_tight/label_eval.json",
+   "original_sha256": "093ec9e33a3c492d2775da7e45af5caec52fefa1284d9179b0d1932e0ce42935",
+   "pack_file": "arkit_label_ab_41069025_rgb_tight_label_eval.json",
+   "producing_commit": "untracked (runs/ is gitignored)",
+   "sanitization": "keys dropped if present: ['embedding', 'embeddings', 'image', 'images', 'masks', 'point_indices', 'rows_raw', 'vertex_ids', 'vertices']; lists over 4000 elements elided",
+   "sanitized_sha256": "093ec9e33a3c492d2775da7e45af5caec52fefa1284d9179b0d1932e0ce42935",
+   "why_included": "C: per-instance detail for the 41069025 rgb_tight arm, required for the paired McNemar analysis"
+  },
+  {
+   "original_bytes": 7366,
+   "original_path": "runs/arkit_label_image_ab_41069025/splat/label_eval.json",
+   "original_sha256": "f8bc8730a0d5dc09a498774173722be4b0aaa75f769498fca0b1177e77fd7e16",
+   "pack_file": "arkit_label_ab_41069025_splat_label_eval.json",
+   "producing_commit": "untracked (runs/ is gitignored)",
+   "sanitization": "keys dropped if present: ['embedding', 'embeddings', 'image', 'images', 'masks', 'point_indices', 'rows_raw', 'vertex_ids', 'vertices']; lists over 4000 elements elided",
+   "sanitized_sha256": "f8bc8730a0d5dc09a498774173722be4b0aaa75f769498fca0b1177e77fd7e16",
+   "why_included": "C: per-instance detail for the 41069025 splat arm, required for the paired McNemar analysis"
+  },
+  {
+   "original_bytes": 8429,
+   "original_path": "runs/arkit_label_image_ab_41069025/summary.json",
+   "original_sha256": "b8d1e14d47f0de4ba81daa06f3b62cd629f23b4c3a597492cbccb25e034588e2",
+   "pack_file": "arkit_label_ab_41069025_summary.json",
+   "producing_commit": "untracked (runs/ is gitignored)",
+   "sanitization": "none \u2014 the file is already numeric-only (per-arm counts and precisions)",
+   "sanitized_sha256": "b8d1e14d47f0de4ba81daa06f3b62cd629f23b4c3a597492cbccb25e034588e2",
+   "why_included": "C: backs 41069025 rows C09-C12, C22-C23 (splat 1/9, 4/9; rgb_tight 5/9, 8/9)"
+  },
+  {
+   "original_bytes": 5296,
+   "original_path": "runs/arkit_label_image_ab_41069042/rgb_tight/label_eval.json",
+   "original_sha256": "ac41ece8544758b634bbb2a088dcfa5dfc50e4a5b09a664df99a8ce219c08f0c",
+   "pack_file": "arkit_label_ab_41069042_rgb_tight_label_eval.json",
+   "producing_commit": "untracked (runs/ is gitignored)",
+   "sanitization": "keys dropped if present: ['embedding', 'embeddings', 'image', 'images', 'masks', 'point_indices', 'rows_raw', 'vertex_ids', 'vertices']; lists over 4000 elements elided",
+   "sanitized_sha256": "ac41ece8544758b634bbb2a088dcfa5dfc50e4a5b09a664df99a8ce219c08f0c",
+   "why_included": "C: per-instance detail for the 41069042 rgb_tight arm, required for the paired McNemar analysis"
+  },
+  {
+   "original_bytes": 5306,
+   "original_path": "runs/arkit_label_image_ab_41069042/splat/label_eval.json",
+   "original_sha256": "e04598894c3873744bde789ac812e9b14d420bd5385e112fb740ab21d2614a10",
+   "pack_file": "arkit_label_ab_41069042_splat_label_eval.json",
+   "producing_commit": "untracked (runs/ is gitignored)",
+   "sanitization": "keys dropped if present: ['embedding', 'embeddings', 'image', 'images', 'masks', 'point_indices', 'rows_raw', 'vertex_ids', 'vertices']; lists over 4000 elements elided",
+   "sanitized_sha256": "e04598894c3873744bde789ac812e9b14d420bd5385e112fb740ab21d2614a10",
+   "why_included": "C: per-instance detail for the 41069042 splat arm, required for the paired McNemar analysis"
+  },
+  {
+   "original_bytes": 5762,
+   "original_path": "runs/arkit_label_image_ab_41069042/summary.json",
+   "original_sha256": "5847b2618ec38d185e33889fd8ff410e33d3498d2e889b63967729d32784db73",
+   "pack_file": "arkit_label_ab_41069042_summary.json",
+   "producing_commit": "untracked (runs/ is gitignored)",
+   "sanitization": "none \u2014 the file is already numeric-only (per-arm counts and precisions)",
+   "sanitized_sha256": "5847b2618ec38d185e33889fd8ff410e33d3498d2e889b63967729d32784db73",
+   "why_included": "C: backs 41069042 rows C13-C16, C24-C25 (splat 0/5, 0/5; rgb_tight 2/5, 3/5)"
+  },
+  {
+   "original_bytes": 68857,
+   "original_path": "runs/arkit_relation_challenge/report.json",
+   "original_sha256": "58cf5755debbf629a466d06c938e50514e39f4159b4784607a07d6701932098b",
+   "pack_file": "arkit_relation_challenge_report.json",
+   "producing_commit": "untracked (runs/ is gitignored)",
+   "sanitization": "keys dropped if present: ['embedding', 'embeddings', 'image', 'images', 'masks', 'point_indices', 'rows_raw', 'vertex_ids', 'vertices']; lists over 4000 elements elided",
+   "sanitized_sha256": "58cf5755debbf629a466d06c938e50514e39f4159b4784607a07d6701932098b",
+   "why_included": "F: five-layer relation QA + anchor resolution"
+  },
+  {
+   "original_bytes": 5561,
+   "original_path": "runs/arkit_rgb_transfer/47331972/score.json",
+   "original_sha256": "d23c70d5c8ee4a4dc7f2ba31ead94aa640448a07c4086c722057af8ac3f58e19",
+   "pack_file": "arkit_rgb_transfer_47331972_score.json",
+   "producing_commit": "c8e200d",
+   "sanitization": "keys dropped if present: ['embedding', 'embeddings', 'image', 'images', 'masks', 'point_indices', 'rows_raw', 'vertex_ids', 'vertices']; lists over 4000 elements elided",
+   "sanitized_sha256": "d23c70d5c8ee4a4dc7f2ba31ead94aa640448a07c4086c722057af8ac3f58e19",
+   "why_included": "F: unseen-scene transfer score"
+  },
+  {
+   "original_bytes": 6677,
+   "original_path": "(produced by this reconciliation pass)",
+   "original_sha256": "\u2014",
+   "pack_file": "camera_convention_depth_diagnostic.json",
+   "producing_commit": "58af9cd",
+   "sanitization": "none; numeric only by construction",
+   "sanitized_sha256": "e0a2478559c5266a7de73a97b8de65722ef7ba5915163e71719cea30ec5627b6",
+   "why_included": "D: the one authoritative camera-convention depth measurement"
+  },
+  {
    "original_bytes": 15480,
    "original_path": "runs/phase8_c1/ms02/replica_office_0_exact_eval.json",
    "original_sha256": "78b5b2a6dc6fbd375e3199020e141ed57773a59ba0dc094dca4d646dcc9b33ad",
@@ -39,36 +179,6 @@
    "why_included": "A: room_2 delivery counts + IoU columns"
   },
   {
-   "original_bytes": 68857,
-   "original_path": "runs/arkit_relation_challenge/report.json",
-   "original_sha256": "58cf5755debbf629a466d06c938e50514e39f4159b4784607a07d6701932098b",
-   "pack_file": "arkit_relation_challenge_report.json",
-   "producing_commit": "untracked (runs/ is gitignored)",
-   "sanitization": "keys dropped if present: ['embedding', 'embeddings', 'image', 'images', 'masks', 'point_indices', 'rows_raw', 'vertex_ids', 'vertices']; lists over 4000 elements elided",
-   "sanitized_sha256": "58cf5755debbf629a466d06c938e50514e39f4159b4784607a07d6701932098b",
-   "why_included": "F: five-layer relation QA + anchor resolution"
-  },
-  {
-   "original_bytes": 5561,
-   "original_path": "runs/arkit_rgb_transfer/47331972/score.json",
-   "original_sha256": "d23c70d5c8ee4a4dc7f2ba31ead94aa640448a07c4086c722057af8ac3f58e19",
-   "pack_file": "arkit_rgb_transfer_47331972_score.json",
-   "producing_commit": "c8e200d",
-   "sanitization": "keys dropped if present: ['embedding', 'embeddings', 'image', 'images', 'masks', 'point_indices', 'rows_raw', 'vertex_ids', 'vertices']; lists over 4000 elements elided",
-   "sanitized_sha256": "d23c70d5c8ee4a4dc7f2ba31ead94aa640448a07c4086c722057af8ac3f58e19",
-   "why_included": "F: unseen-scene transfer score"
-  },
-  {
-   "original_bytes": 12746,
-   "original_path": "runs/arkit_representation_kill_test/41069025_common6/report.json",
-   "original_sha256": "aaeb6d6281c0f4ce76f2eaa12ad09859a3adfec6b476337e9138911b6cf1f97a",
-   "pack_file": "arkit_kill_test_report.json",
-   "producing_commit": "untracked (runs/ is gitignored)",
-   "sanitization": "keys dropped if present: ['embedding', 'embeddings', 'image', 'images', 'masks', 'point_indices', 'rows_raw', 'vertex_ids', 'vertices']; lists over 4000 elements elided",
-   "sanitized_sha256": "aaeb6d6281c0f4ce76f2eaa12ad09859a3adfec6b476337e9138911b6cf1f97a",
-   "why_included": "F: 6-question kill test"
-  },
-  {
    "original_bytes": 5238,
    "original_path": "runs/semantics_v2/s2_report.json",
    "original_sha256": "d6e83555a997dfbcee8b0f820e98c6706049ddea683735e304dc83a9723c60c3",
@@ -77,76 +187,6 @@
    "sanitization": "keys dropped if present: ['embedding', 'embeddings', 'image', 'images', 'masks', 'point_indices', 'rows_raw', 'vertex_ids', 'vertices']; lists over 4000 elements elided",
    "sanitized_sha256": "d6e83555a997dfbcee8b0f820e98c6706049ddea683735e304dc83a9723c60c3",
    "why_included": "E1: Replica support precision/recall per scene"
-  },
-  {
-   "original_bytes": 6677,
-   "original_path": "(produced by this reconciliation pass)",
-   "original_sha256": "\u2014",
-   "pack_file": "camera_convention_depth_diagnostic.json",
-   "producing_commit": "58af9cd",
-   "sanitization": "none; numeric only by construction",
-   "sanitized_sha256": "e0a2478559c5266a7de73a97b8de65722ef7ba5915163e71719cea30ec5627b6",
-   "why_included": "D: the one authoritative camera-convention depth measurement"
-  },
-  {
-   "original_bytes": 8429,
-   "original_path": "runs/arkit_label_image_ab_41069025/summary.json",
-   "original_sha256": "b8d1e14d47f0de4ba81daa06f3b62cd629f23b4c3a597492cbccb25e034588e2",
-   "pack_file": "arkit_label_ab_41069025_summary.json",
-   "producing_commit": "untracked (runs/ is gitignored)",
-   "sanitization": "none \u2014 the file is already numeric-only (per-arm counts and precisions)",
-   "sanitized_sha256": "b8d1e14d47f0de4ba81daa06f3b62cd629f23b4c3a597492cbccb25e034588e2",
-   "why_included": "C: backs 41069025 rows C09-C12, C22-C23 (splat 1/9, 4/9; rgb_tight 5/9, 8/9)"
-  },
-  {
-   "original_bytes": 5762,
-   "original_path": "runs/arkit_label_image_ab_41069042/summary.json",
-   "original_sha256": "5847b2618ec38d185e33889fd8ff410e33d3498d2e889b63967729d32784db73",
-   "pack_file": "arkit_label_ab_41069042_summary.json",
-   "producing_commit": "untracked (runs/ is gitignored)",
-   "sanitization": "none \u2014 the file is already numeric-only (per-arm counts and precisions)",
-   "sanitized_sha256": "5847b2618ec38d185e33889fd8ff410e33d3498d2e889b63967729d32784db73",
-   "why_included": "C: backs 41069042 rows C13-C16, C24-C25 (splat 0/5, 0/5; rgb_tight 2/5, 3/5)"
-  },
-  {
-   "original_bytes": 16159,
-   "original_path": "runs/arkit_label_image_ab/summary.json",
-   "original_sha256": "140bca012fb119230f034542c07c3f6c8eec0f5d67158be136edeba37fcf5151",
-   "pack_file": "arkit_label_ab_41069021_summary.json",
-   "producing_commit": "untracked (runs/ is gitignored)",
-   "sanitization": "keys dropped if present: ['embedding', 'embeddings', 'image', 'images', 'masks', 'point_indices', 'rows_raw', 'vertex_ids', 'vertices']; lists over 4000 elements elided",
-   "sanitized_sha256": "140bca012fb119230f034542c07c3f6c8eec0f5d67158be136edeba37fcf5151",
-   "why_included": "C: backs 41069021 rows C05-C08, C17-C21 \u2014 splat 0/7, 0/7; rgb_tight 5/7, 7/7; rgb_context 3/7, 5/7. Completes the pooled headline."
-  },
-  {
-   "original_bytes": 6328,
-   "original_path": "runs/arkit_label_image_ab/splat/label_eval.json",
-   "original_sha256": "a0355bf454d7d6e5462fd23d9dc53f3cbf2a38c06f712497e9f270439e5c8b18",
-   "pack_file": "arkit_label_ab_41069021_splat_label_eval.json",
-   "producing_commit": "untracked (runs/ is gitignored)",
-   "sanitization": "keys dropped if present: ['embedding', 'embeddings', 'image', 'images', 'masks', 'point_indices', 'rows_raw', 'vertex_ids', 'vertices']; lists over 4000 elements elided",
-   "sanitized_sha256": "a0355bf454d7d6e5462fd23d9dc53f3cbf2a38c06f712497e9f270439e5c8b18",
-   "why_included": "C: per-instance detail for the 41069021 splat arm [C05], [C06], [C19]"
-  },
-  {
-   "original_bytes": 6308,
-   "original_path": "runs/arkit_label_image_ab/rgb_tight/label_eval.json",
-   "original_sha256": "9c4f6873183b87e125c7695cd4a85bf48279fdef31ae72c96b235c577c0b2758",
-   "pack_file": "arkit_label_ab_41069021_rgb_tight_label_eval.json",
-   "producing_commit": "untracked (runs/ is gitignored)",
-   "sanitization": "keys dropped if present: ['embedding', 'embeddings', 'image', 'images', 'masks', 'point_indices', 'rows_raw', 'vertex_ids', 'vertices']; lists over 4000 elements elided",
-   "sanitized_sha256": "9c4f6873183b87e125c7695cd4a85bf48279fdef31ae72c96b235c577c0b2758",
-   "why_included": "C: per-instance detail for the 41069021 rgb_tight arm [C07], [C08], [C20]"
-  },
-  {
-   "original_bytes": 6320,
-   "original_path": "runs/arkit_label_image_ab/rgb_context/label_eval.json",
-   "original_sha256": "efc85ce81c77ce01c74ef5410b3d2319ad70b21180d24b45cbc8087ab8913d97",
-   "pack_file": "arkit_label_ab_41069021_rgb_context_label_eval.json",
-   "producing_commit": "untracked (runs/ is gitignored)",
-   "sanitization": "keys dropped if present: ['embedding', 'embeddings', 'image', 'images', 'masks', 'point_indices', 'rows_raw', 'vertex_ids', 'vertices']; lists over 4000 elements elided",
-   "sanitized_sha256": "efc85ce81c77ce01c74ef5410b3d2319ad70b21180d24b45cbc8087ab8913d97",
-   "why_included": "C: per-instance detail for the rgb_context CONTROL [C17], [C18], [C21] \u2014 the arm that supports the texture-not-room-gist interpretation"
   }
  ],
  "headline_backing": {

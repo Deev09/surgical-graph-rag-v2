@@ -1,0 +1,140 @@
+{
+ "paired_identity_test": {
+  "comparison": "stored relations with human identity vs the delivered graph",
+  "delivered_correct": 0,
+  "delivered_only_correct": 0,
+  "discordant_pairs": 7,
+  "human_identity_only_correct": 7,
+  "limitation": "10 items authored over two rooms, with one human reviewer who is not blind to the hypothesis. The pairing is exact (same questions, same stored edges) but the item set is small and the p-value inherits every limitation of that key.",
+  "n_items": 10,
+  "p_value_exact_mcnemar": 0.015625,
+  "scope": "identity_oracle on one side -- this measures the SIZE OF A BOUND, not a system improvement. It says the two arms differ, not that anything deployable achieves the higher number.",
+  "stored_correct": 7
+ },
+ "paired_label_tests": [
+  {
+   "both_correct": 0,
+   "clustering_limitation": "The 21 instances are clustered within only 3 scenes. The test treats instances as independent, which they are not: instances in one room share a capture, a lighting condition and a reconstruction. The p-value is therefore an instance-level statement and NOT a scene-level or dataset-level one, and no claim about handheld capture in general follows from it.",
+   "discordant_pairs": 13,
+   "field": "top1_correct",
+   "fixed_by_rgb": [
+    "41069021:obj_1",
+    "41069021:obj_10",
+    "41069021:obj_29",
+    "41069021:obj_3",
+    "41069021:obj_31",
+    "41069025:obj_0",
+    "41069025:obj_15",
+    "41069025:obj_18",
+    "41069025:obj_4",
+    "41069025:obj_5",
+    "41069042:obj_14",
+    "41069042:obj_6"
+   ],
+   "n_instances": 21,
+   "n_scenes": 3,
+   "neither_correct": 8,
+   "p_value_exact_mcnemar": 0.00341796875,
+   "regressed_by_rgb": [
+    "41069025:obj_34"
+   ],
+   "rgb_only_correct": 12,
+   "rgb_tight_correct": 12,
+   "splat_correct": 1,
+   "splat_only_correct": 1,
+   "test": "two-sided exact binomial on discordant pairs (not the chi-square approximation; the discordant counts are too small for it)"
+  },
+  {
+   "both_correct": 4,
+   "clustering_limitation": "The 21 instances are clustered within only 3 scenes. The test treats instances as independent, which they are not: instances in one room share a capture, a lighting condition and a reconstruction. The p-value is therefore an instance-level statement and NOT a scene-level or dataset-level one, and no claim about handheld capture in general follows from it.",
+   "discordant_pairs": 14,
+   "field": "top3_correct",
+   "fixed_by_rgb": [
+    "41069021:obj_1",
+    "41069021:obj_10",
+    "41069021:obj_15",
+    "41069021:obj_16",
+    "41069021:obj_29",
+    "41069021:obj_3",
+    "41069021:obj_31",
+    "41069025:obj_13",
+    "41069025:obj_18",
+    "41069025:obj_27",
+    "41069025:obj_5",
+    "41069042:obj_14",
+    "41069042:obj_6",
+    "41069042:obj_9"
+   ],
+   "n_instances": 21,
+   "n_scenes": 3,
+   "neither_correct": 3,
+   "p_value_exact_mcnemar": 0.0001220703125,
+   "regressed_by_rgb": [],
+   "rgb_only_correct": 14,
+   "rgb_tight_correct": 18,
+   "splat_correct": 4,
+   "splat_only_correct": 0,
+   "test": "two-sided exact binomial on discordant pairs (not the chi-square approximation; the discordant counts are too small for it)"
+  }
+ ],
+ "purpose": "Paired significance and question-level reachability, computed from the tracked evidence pack. No model was run.",
+ "reachability": {
+  "held_by_representation": 7,
+  "multi_view_evidence": {
+   "n_multi_view": 4,
+   "note": "evidence_views == '2+' means the answer drew on more than one view. It does NOT mean the referents are non-co-visible, which is what the transfer test's cross-view items were. Do not pool these counts with the transfer test's 0/3.",
+   "rgb_correct_multi_view": 3,
+   "rgb_correct_single_view": 4
+  },
+  "n_scored": 10,
+  "reached_by_delivered_graph": 0,
+  "reached_by_deployable_grounding": 2,
+  "reached_by_direct_rgb": 7,
+  "selective_risk": {
+   "graph_answered": 0,
+   "note": "coverage = answered / scored; selective risk = wrong / answered",
+   "rgb_answered": 9,
+   "rgb_wrong": 2
+  },
+  "survivors_by_stage": [
+   {
+    "lost_here": 0,
+    "meaning": "a human supplied an answer",
+    "stage": "human_answerable",
+    "surviving": 10
+   },
+   {
+    "lost_here": 2,
+    "meaning": "every referenced object exists in the delivered partition",
+    "stage": "objects_delivered",
+    "surviving": 8
+   },
+   {
+    "lost_here": 0,
+    "meaning": "and the NEAR convention can express the question",
+    "stage": "relation_expressible",
+    "surviving": 8
+   },
+   {
+    "lost_here": 0,
+    "meaning": "and the serialized edge reproduces the geometry",
+    "stage": "edge_serialized",
+    "surviving": 8
+   },
+   {
+    "lost_here": 5,
+    "meaning": "and the oracle-free bridge bound the anchors",
+    "stage": "anchor_grounded",
+    "surviving": 3
+   },
+   {
+    "lost_here": 3,
+    "meaning": "the delivered graph answered correctly",
+    "stage": "graph_correct",
+    "surviving": 0
+   }
+  ]
+ },
+ "schema": "paper_statistics_v1",
+ "source": "eval/results/project_census_v1/"
+}
