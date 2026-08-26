@@ -362,7 +362,12 @@ def test_derived_registry_rows_are_marked_as_derived():
     assert g, "no derived rows found"
     for rid, row in g.items():
         assert "DERIVED ROW" in row["notes"], f"{rid} is not marked as derived"
-        assert row["primary_source_artifact"].endswith("paper_statistics.json"), rid
+        # the point is that it is re-read in-repo from committed evidence, not that
+        # it came from one particular file
+        assert "derived in-repo" in row["source_commit_or_tag"], (
+            f"{rid} does not record that it was derived in-repo from committed evidence")
+        src = row["primary_source_artifact"]
+        assert src.startswith("eval/results/"), f"{rid} points outside the evidence tree: {src}"
 
 
 def main() -> None:
