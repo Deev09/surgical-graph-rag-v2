@@ -109,8 +109,16 @@ the first relation experiment the routing structure made the accuracy clause
 unreachable, and it duly came in at exactly `0.0000` `[F25]`, with the
 proceed decision `false` `[F27]`.
 
-Blinded model responses are hash-pinned and committed **before** the human key is
-opened, so the ordering is auditable in version history rather than asserted.
+Blinded model responses are generated in an isolated context with **no access to
+the key** and are hash-pinned and committed before scoring.
+
+We state the limit of that claim precisely, because an earlier draft overstated it.
+For the transfer run the key was recorded at commit `45f8ec9` and the response
+hash-pinned at `e193e6f` eight minutes later, so **commit order does not prove the
+response predates the key**. What the record does establish is that the response was
+produced in a context that never received the key, and that it was pinned by hash
+before any score was computed. The protection is isolation and the hash pin, not
+version-history ordering.
 
 ## 4. Results
 
@@ -148,8 +156,8 @@ oracle and no human key, but the denominator of 21 is instances the evaluator ha
 already matched to an annotation box. The number is therefore conditional on
 detection having succeeded and says nothing about detection itself: on the same
 scenes the delivered pipeline recovered 7/18 `[C29]`, 9/20 `[C30]` and 5/6 `[C31]`
-annotated entities — and those recoveries *are* the denominator, 7 + 9 + 5 = 21 of
-44 annotated entities. **This result must not be reported as end-to-end or deployable
+annotated entities — the per-scene recoveries that the matched
+denominator is drawn from. **This result must not be reported as end-to-end or deployable
 performance.**
 
 ### 4.2 Held but unreachable
@@ -170,8 +178,8 @@ stored relations, differing only in where object identity comes from.
 | direct multiview RGB | the images | 7/10 `[F50]` | 0.90 `[F53]` | `deployable` |
 
 The direct-RGB row carries a cost the correct-count hides: on these development
-rooms it was **wrong on 2 of 10** `[F51]`, a false-confident rate of 0.222. That is
-the baseline against which §4.3's unseen-room behaviour must be read.
+rooms it was **wrong on 2 of 10** `[F51]`. That is the baseline against which §4.3's
+unseen-room behaviour must be read.
 
 Three findings follow, and their order matters.
 
@@ -187,16 +195,20 @@ extraction on this slice; it demonstrates no deployable capability.
 
 **Identity is what binds.** Seven of the ten scored items are *ceiling-correct,
 delivered-unanswered* `[F64]`. The delivered pipeline could not address the
-questions at all, because its label stage resolved exactly one of the seventeen
-question anchors to a unique instance `[F40, F70]`. Delivered-graph-unique correct answers: 0, against a
-predeclared bar of 2 `[F60]`.
+questions at all: the delivered graph scored 0/10 `[F40]`, and delivered-graph-unique
+correct answers were 0 against a predeclared bar of 2 `[F60]`. That the label stage
+resolves only a single anchor across both scenes is recorded as a pre-registration in
+`[F40]`'s provenance, not as a measured row, and we do not quote a denominator for it
+here.
 
 **An oracle-free bridge does not close it.** A grounding bridge encoding anchor
 phrases and real capture crops with the same pinned weights, admitting a match only
 on cross-view agreement and with no confidence threshold anywhere, moved the
 delivered graph arm from 0/10 `[F40]` to 2/10 `[F45]` — and failed all three predeclared
 gates: anchor precision 0.583 against ≥ 0.80 `[F67]`, coverage 0.467 against ≥ 0.60
-`[F68]`, and graph-unique wins 0 against ≥ 2 `[F69]`.
+`[F68]`, and graph-unique wins 0 against ≥ 2 `[F69]`. Of the 17 question anchors, 15
+were human-resolvable, the bridge admitted 12, and 7 of those admissions were correct
+`[F70]`.
 
 One failure is diagnostic of the mechanism. The bridge admitted a UID for an object
 the owner had marked absent from the delivered partition, with maximum cross-view
@@ -209,7 +221,8 @@ rooms had been examined for months. We froze the protocol — question-generatio
 procedure, view selection, prompt, schema, scoring and two gates — and committed it
 **before** downloading a previously untouched capture.
 
-Question generation removes the author: three agents independently enumerated
+Question generation reduces direct author selection: three agents independently
+enumerated
 objects from the same eighteen frames with no access to each other or to any
 question; an object became an anchor only on two-of-three agreement; anchors were
 then ordered mechanically and a fixed template allocation decided which filled which
@@ -220,7 +233,9 @@ exactly one of, so every singular definite description has a referent.
 allocated eight questions; the scored set is ten. Run 1 produced eight questions of
 which the owner's returned key marked four ambiguous, leaving n = 4 with zero
 cross-view items — at which size the coverage gate degenerates into an
-anti-abstention gate. Run 1 was voided `[F76]` and the generator was amended twice:
+anti-abstention gate. Run 1 was voided — protocol history, not a scored result:
+commit `2d6d55a` and Amendment 1 of the transfer protocol — and the generator was
+amended twice:
 first for scope wording, anchor ordering and question count, then to restrict
 relational slots to unique-referent anchors, after the ordering fix was found to
 promote the *most numerous* anchors ("the cushion", where the passes counted four).
@@ -260,9 +275,8 @@ calibrated abstainer fails both gates on one behaviour. The model declined preci
 the category that motivates the work.
 
 We resist the phrase "calibration transferred". On the development rooms the same
-arm answered 9 of 10 and was **wrong twice** `[F51]`, a false-confident rate of
-0.222, and its two-view sufficiency gate never fired on any of the 7 thin-evidence
-items there `[F66]`; on the unseen room it declined 4 of 6 thin-evidence items and
+arm was **wrong on 2 of 10** `[F51]` at 0.90 coverage `[F53]`, and its two-view
+sufficiency gate never fired on any of the 7 thin-evidence items there `[F66]`; on the unseen room it declined 4 of 6 thin-evidence items and
 was right on both it answered `[F87]`. That is a *change* in abstention behaviour
 between rooms, measured once on each, not a property carried across. The defensible
 statement is narrower: on this room the arm abstained rather than guessed, and
@@ -312,7 +326,9 @@ unverifiable. The track was stopped by its own predeclared rule `[E21]`.
 
 1. **Real RGB substantially improves the label stage on oracle-matched instances**
    `[C01, C02, C03, C04]` — a component evaluation on an oracle-selected denominator
-   of 21 of 44 annotated entities, **not end-to-end or deployable performance** — with
+   of instances the evaluator had already matched to an annotation box, **not
+   end-to-end or deployable performance**; per-scene recovery is 7/18 `[C29]`, 9/20
+   `[C30]` and 5/6 `[C31]` — with
    a development-scene control that supports, but does not prove, the object-texture
    reading `[C17, C18]`.
 2. **Stored 3D relations contain useful answers for human-resolved objects, and
@@ -370,9 +386,10 @@ in §5.
 A representation can hold correct information that no deployable query path can
 reach. We measured that gap directly: the same stored relations answer 7 of 10 with
 human-supplied identity and 0 of 10 with the identity the system actually produces,
-while the relation extraction between them lost nothing on all 12 items tested. The
-binding constraint is grounding language to entities — not geometry, and not
-relation extraction.
+while the relation extraction between them lost nothing on all 12 items tested. Identity grounding is the dominant measured loss on this
+`NEAR` slice; relation serialization adds no measurable loss on the twelve tested
+items. We claim nothing broader: geometry and relation extraction are cleared *for
+this slice, over human-resolved delivered objects*, not in general.
 
 The obvious alternative does not remove the constraint. Direct multiview RGB is the
 strongest deployable answer path for visible evidence, and on one previously

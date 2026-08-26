@@ -46,6 +46,102 @@ def test_every_paper_number_traces_to_the_registry():
     assert not unknown, f"paper cites result_ids absent from the registry: {unknown}"
 
 
+# Deliberately empty. Every quantity in the paper traces to a registry row, and
+# section cross-references (which are not quantities) are stripped before the scan
+# rather than excused here. If a number needs an entry in this set, the honest fix
+# is almost always an audited registry row instead.
+PROSE_CONSTANTS: set[str] = set()
+
+
+def _registry_numbers(reg: dict) -> set[str]:
+    """Every number the registry actually asserts, in the forms prose may use."""
+    out: set[str] = set()
+    for row in reg.values():
+        num = (row.get("numerator") or "").strip()
+        den = (row.get("denominator") or "").strip()
+        for text in ((row.get("value") or "").strip(), num, den):
+            for frac in re.findall(r"\d+\s*/\s*\d+", text):
+                a, b = re.split(r"\s*/\s*", frac)
+                out.add(f"{a}/{b}")
+            for dec in re.findall(r"\d+\.\d+", text):
+                out.add(dec)
+                out.add(dec.rstrip("0").rstrip("."))
+        if num.isdigit() and den.isdigit():
+            out.add(f"{num}/{den}")
+            out.update({num, den})
+    return out
+
+
+def test_no_paper_number_is_derived_outside_the_registry():
+    """A quantity the prose states must be a quantity the registry asserts.
+
+    This exists because reconstructed numbers passed review twice: "21 of 44
+    annotated entities" was summed across three scenes, and a false-confident
+    rate of "0.222" was recomputed from two wrong among nine answered. Both were
+    arithmetically right and neither was auditable, which is exactly what the
+    registry exists to prevent.
+    """
+    reg = registry()
+    known = _registry_numbers(reg) | PROSE_CONSTANTS
+    text = PAPER.read_text()
+    text = re.sub(r"`\[[^\]]*\]`", " ", text)   # citation brackets
+    text = re.sub(r"`[^`]*`", " ", text)         # code spans: ids, paths, settings
+    text = re.sub(r"§\s*\d+(\.\d+)?", " ", text)  # section cross-references
+    text = re.sub(r"^#+ *\d+(\.\d+)?", " ", text, flags=re.M)  # section headings
+
+    found: list[str] = []
+    for a, b in re.findall(r"(?<![\d./])(\d+)\s*/\s*(\d+)(?![\d./])", text):
+        if f"{a}/{b}" not in known:
+            found.append(f"{a}/{b}")
+    for dec in re.findall(r"(?<![\d.])(\d+\.\d+)(?!\d)", text):
+        if dec not in known and dec.rstrip("0").rstrip(".") not in known:
+            found.append(dec)
+    for a, b in re.findall(r"(?<![\d.])(\d+)\s+of\s+(\d+)(?![\d.])", text):
+        if f"{a}/{b}" not in known:
+            found.append(f"{a} of {b}")
+
+    assert not found, (
+        "quantities stated in the paper that no registry row asserts "
+        f"(add an audited row, or report the registered value): {sorted(set(found))}"
+    )
+
+
+def test_the_blinding_claim_is_not_overstated():
+    """Commit order does not prove a response predates a key.
+
+    For the transfer run the key commit (45f8ec9) precedes the response hash-pin
+    (e193e6f) by eight minutes. The defensible claim is isolation plus a hash pin
+    before scoring, so the paper must not reassert the ordering version.
+    """
+    # normalise: the prose wraps lines and uses ** emphasis mid-phrase
+    text = re.sub(r"\s+", " ", PAPER.read_text().replace("*", "")).lower()
+    banned = ["committed before the human key is opened",
+              "auditable in version history",
+              "hash-pinned and committed before the human key"]
+    hit = [b for b in banned if b in text]
+    assert not hit, f"the paper restates the disproved commit-ordering claim: {hit}"
+    assert "no access to the key" in text, (
+        "the paper must state the defensible blinding claim: the response was "
+        "generated in an isolated context without key access")
+
+
+# result_ids previously cited for claims they do not support.
+MISCITATION_GUARDS = [
+    ("F76", "was voided"),    # F76 is run 2's "correct 5/10", not the voiding
+    ("F70", "label stage"),   # F70 is the grounding bridge's admissions
+]
+
+
+def test_known_miscitations_do_not_reappear():
+    text = PAPER.read_text()
+    bad = []
+    for rid, phrase in MISCITATION_GUARDS:
+        for m in re.finditer(re.escape(f"[{rid}"), text):
+            if phrase.lower() in text[max(0, m.start() - 240):m.start()].lower():
+                bad.append(f"{rid} cited near '{phrase}'")
+    assert not bad, f"a corrected miscitation has returned: {bad}"
+
+
 def test_every_cited_id_appears_in_the_claim_audit():
     """A number in the paper with no audit row is an unaudited claim."""
     audited = {i for r in audit() for i in r["result_ids"].split()}
