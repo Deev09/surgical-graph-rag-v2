@@ -66,129 +66,79 @@ that states what it is entitled to claim (§3). Three results anchor the paper:
 
 ## 2. Related work
 
-Our system descends from open-vocabulary 3D scene graphs, our questions from the 3D QA
-benchmark line, our strongest baseline from the direct-VLM line, our method from the
-oracle-substitution tradition, and our transfer result is only interpretable in the
-vocabulary of selective prediction. We take from each and depart from each the same
-way: none reports *where in a pipeline* spatial information is gained, retained and
-lost.
+**Open-vocabulary 3D representations and scene graphs.** Dense open-vocabulary 3D
+understanding fuses 2D vision-language features into a 3D map
+[jatavallabhula2023conceptfusion, peng2023openscene]; instance-level work makes objects
+explicit [takmaz2023openmask3d, nguyen2024open3dis, lu2023ovir3d], with LERF
+[kerr2023lerf] the radiance-field analogue. Scene graphs add relational structure
+[armeni20193dscenegraph, wu2021scenegraphfusion, hughes2022hydra, looper20233dvsg,
+koch2024open3dsg, werby2024hovsg, zhu2026ogscene3d]. ConceptGraphs [gu2024conceptgraphs]
+is the closest prior representation. What this line *reports* is the point of contact:
+per-point mIoU, instance AP, retrieval mAP, or construction fidelity — never an
+end-to-end answer rate, and nearly always against human-annotated instances, an
+oracle-supplied denominator. ConceptGraphs reports node precision and edge precision as
+two *separate* human-judged numbers, with edges scoring higher: our result already
+latent in the closest prior system, missing only the number that composes them.
 
-### 2.1 Open-vocabulary 3D representations and scene graphs
+**Answering questions from stored 3D scenes.** Embodied QA [das2018embodiedqa,
+gordon2018iqa] established the task; ScanQA [azuma2022scanqa], SQA3D [ma2023sqa3d] and
+OpenEQA [majumdar2024openeqa] made it a benchmark; systems answer over 3D scenes
+[hong20233dllm, huang2024leo, huang2024chatscene, zhu2025llava3d]. The convention is one
+accuracy per system, conflating perception, identity grounding, relation extraction and
+answer generation. Several systems answer *from a persistent graph*, and they bound what
+we may claim: GraphEQA [saxena2025grapheqa] feeds a real-time scene graph plus retrieved
+images to a VLM planner and ablates graph-only against images-only; BBQ [linok2025bbq]
+serializes stored metric-semantic edges into an LLM prompt; SG-Nav [yin2024sgnav] is the
+reference design for that serialization and adds re-perception precisely because wrong
+node identity poisons downstream use; VL-KnG [almdfaa2026vlkng] makes identity
+association an explicit module; 3D-Mem [yang2025threedmem] argues the opposite design,
+keeping retrieved images *as* the memory. We therefore claim no novelty for combining a
+graph with retrieved images, for ablating graph against images, or for observing that
+detector quality bounds graph-mediated QA — GraphEQA states that in its own limitations.
 
-Dense open-vocabulary 3D understanding fuses 2D vision-language features into a 3D map
-[jatavallabhula2023conceptfusion, peng2023openscene]; instance-level work makes the
-objects explicit [takmaz2023openmask3d, nguyen2024open3dis, lu2023ovir3d], with LERF
-[kerr2023lerf] the radiance-field analogue. Scene graphs add relational structure, from
-the layered 3D Scene Graph [armeni20193dscenegraph] through incremental construction
-[wu2021scenegraphfusion, hughes2022hydra], change-aware variable graphs
-[looper20233dvsg], open-vocabulary graphs [koch2024open3dsg, werby2024hovsg], and
-online Gaussian-splat graph mapping [zhu2026ogscene3d]. ConceptGraphs
-[gu2024conceptgraphs] is the closest prior *representation*: per-frame masks fused into
-3D object nodes, a CLIP embedding and caption per node, LLM-labelled edges.
+**What we concede, and what remains.** Three works break the single-number convention
+and we position as their continuation: Beacon3D [huang2025beacon3d] decouples grounding
+from answering, MV-ScanQA [mo2025mvscanqa] shows few existing 3D QA questions need more
+than one view, and Jin et al. [jin2025revisiting3d] find 2D VLMs on rendered views match
+3D LLMs. We concede both constructs rather than compete: [huang2025beacon3d] established
+grounding-versus-answering attribution and [mo2025mvscanqa] formalised cross-view
+necessity. What separates this work is narrower. Prior stage-wise analyses compare the
+*quality* of stored representations [gu2024conceptgraphs], split *inference-time* stages
+of a model over an already-annotated scene [huang2025beacon3d], or report an oracle bound
+produced by a *different system* [azuma2022scanqa, takmaz2023openmask3d]. None places an
+oracle-fed and a pipeline-labelled number side by side on the same questions over the
+same store. GraphEQA illustrates why that matters: its benchmark results use dataset
+ground-truth segmentation masks, and its only detector-fed evaluation is a handful of
+real-world trials with no aggregate — so the gap between what its representation could
+support and what a deployable one delivers is not recoverable from the paper.
 
-What this line reports is the point of contact. OpenScene reports per-point mIoU;
-OpenMask3D and Open3DIS report instance AP; OVIR-3D reports retrieval mAP; Hydra
-reports construction fidelity and runtime. ConceptGraphs reports human-judged node
-precision and edge precision as two *separate* numbers, with edges scoring higher than
-nodes — our result already latent in the closest prior system, missing only the number
-that composes them. Nearly all of these score against human-annotated instances, an
-oracle-supplied denominator.
+**Direct multimodal baselines.** VLMs read off RGB are competitive with dedicated 3D
+systems at room scale [qi2026gpt4scene, chen2024spatialvlm, cheng2024spatialrgpt], and
+benchmarks map the weaknesses [fu2024blink, yang2025thinkinginspace, yeh2026allangles,
+yang2026mmsibench, kamath2023whatsup, ma2025srbench, xie2026spatialqa]. These carry no
+persistent 3D state, so nothing in them can *hold* information. We reproduce the
+phenomenon rather than dispute it — direct RGB is the strongest deployable path we
+measured — but note that several strong 2D baselines sidestep identity grounding rather
+than solving it: SpatialRGPT consumes supplied region proposals, GPT4Scene supplies
+object identifiers on a bird's-eye image. Those are identity oracles in our vocabulary.
 
-### 2.2 Answering questions from stored 3D scenes
-
-Embodied QA [das2018embodiedqa, gordon2018iqa] established the task; ScanQA
-[azuma2022scanqa], SQA3D [ma2023sqa3d] and OpenEQA [majumdar2024openeqa] made it a
-benchmark; 3D-LLM [hong20233dllm], LEO [huang2024leo], Chat-Scene [huang2024chatscene]
-and LLaVA-3D [zhu2025llava3d] answer over 3D scenes. The convention is a single accuracy
-per system per benchmark, conflating perception, identity grounding, relation extraction
-and answer generation.
-
-Several systems now answer *from a persistent graph*, and they bound what we may claim.
-GraphEQA [saxena2025grapheqa] feeds a real-time hierarchical scene graph plus retrieved
-task-relevant images to a VLM planner, and ablates graph-only against images-only. BBQ
-[linok2025bbq] serializes stored metric-semantic edges into an LLM prompt to answer
-relation-dependent queries; SG-Nav [yin2024sgnav] is the reference design for that
-graph-to-text serialization and adds a re-perception module precisely because wrong node
-identity poisons downstream use; VL-KnG [almdfaa2026vlkng] makes identity association an
-explicit named module; and 3D-Mem [yang2025threedmem] argues the opposite design, keeping
-retrieved images *as* the memory. We therefore claim no novelty for combining a graph
-with retrieved images, for ablating graph against images, or for observing that detector
-quality bounds graph-mediated QA — GraphEQA states that in its own limitations.
-
-Three works break the single-number convention and we position as their continuation.
-Beacon3D [huang2025beacon3d] decouples grounding from answering and finds their coherence
-fragile; MV-ScanQA [mo2025mvscanqa] shows only a small minority of existing 3D QA
-questions require more than one view; Jin et al. [jin2025revisiting3d] find 2D VLMs on
-rendered views match 3D LLMs. We concede both constructs rather than compete for them:
-[huang2025beacon3d] established grounding-versus-answering attribution, and
-[mo2025mvscanqa] formalised cross-view necessity. Neither is ours.
-
-What separates this work is narrower. Prior stage-wise analyses compare the *quality* of
-stored representations [gu2024conceptgraphs], split *inference-time* stages of a model
-over an already-annotated scene [huang2025beacon3d], or report an oracle bound produced
-by a *different system* [azuma2022scanqa, takmaz2023openmask3d]. None places an oracle-fed
-and a pipeline-labelled number side by side on the same questions over the same store.
-GraphEQA is the sharpest illustration of why that matters: its benchmark results are
-produced with dataset ground-truth segmentation masks, and its only detector-fed
-evaluation is a handful of real-world trials with no aggregate reported — so the gap
-between what its representation could support and what a deployable one delivers is not
-recoverable from the paper. We hold one store fixed and substitute only the identity
-source.
-
-### 2.3 Direct multimodal baselines
-
-VLMs read directly off RGB are now competitive with dedicated 3D systems at room scale:
-GPT4Scene [qi2026gpt4scene] matches or beats most 3D LLMs on ScanQA zero-shot;
-SpatialVLM [chen2024spatialvlm] argues the deficit was metric-3D supervision rather than
-architecture; SpatialRGPT [cheng2024spatialrgpt] adds region-grounded reasoning.
-Benchmarks map the weaknesses [fu2024blink, yang2025thinkinginspace, yeh2026allangles,
-yang2026mmsibench, kamath2023whatsup, ma2025srbench, xie2026spatialqa]. These are
-evaluation suites for image-in/answer-out models: they carry no persistent 3D state, so
-nothing in them can *hold* information, and none contrasts human-supplied identity
-against learned labels as two labelled quantities.
-
-We reproduce the phenomenon rather than dispute it — direct multiview RGB is the
-strongest deployable path we measured. Where we depart is granularity: the 3D
-representation is not what failed, identity grounding is, and several strong 2D
-baselines sidestep that stage rather than solving it — SpatialRGPT consumes supplied
-region proposals, GPT4Scene supplies object identifiers on a bird's-eye image. Those are
-identity oracles in our vocabulary.
-
-### 2.4 Diagnosis by substitution, and abstention
-
-Our method is the oracle-substitution tradition. Hoiem et al. [hoiem2012diagnosing]
-argued aggregate AP is not diagnostic; TIDE [bolya2020tide] fixes one error type at a
-time; Hosang et al. [hosang2016proposals] treat proposal recall as the ceiling every
-downstream stage inherits; the PredCls/SGCls/SGDet ladder [zellers2018motifs] is the same
-idea as a reporting convention. Min et al. [min2019compositional] is the cautionary case:
-questions designed to require multi-hop reasoning turned out not to. We borrow the
-primitive — substitute ground truth at one point, read the downstream delta — and add
-that the substitution's scope must travel *with* the number rather than living in a
-footnote. Every precedent stays inside one model or one homogeneous output type; tracing
-a substitution through a heterogeneous chain to a final answer is what makes *held*
-versus *reachable* visible. Our predeclaration practice draws on the benchmark-integrity
-literature [musgrave2020reality, dacrema2019progress, lipton2019troubling,
-bouthillier2021variance, recht2019imagenet] and the pre-registration workshop
-[bertinetto2021prereg]; our own `definition-change` scope exists because a frozen
-relation redefinition moved a benchmark number with no model change.
-
-Selective prediction supplies the vocabulary our transfer result needs. Since Chow
-[chow1970reject] and El-Yaniv and Wiener [elyaniv2010foundations], a predictor that may
-decline is a point on a risk–coverage curve, not a scalar; Geifman and El-Yaniv
-[geifman2017selective, geifman2019selectivenet] carried this into deep networks, and
-Hendrickx et al. [hendrickx2024reject] survey the reject option. Calibration
-[guo2017calibration, kadavath2022know] addresses the confidence side; SQuAD 2.0
-[rajpurkar2018squad2] made unanswerability first-class, Kamath et al.
-[kamath2020selectiveqa] introduced accuracy-at-coverage under domain shift, Reliable VQA
-[whitehead2022reliablevqa] proposed Effective Reliability because exact-match charges an
-abstention like a wrong answer, and Ren et al. [ren2024exploreuntilconfident] give
-calibrated "do not answer yet" behaviour in EQA. That pathology is ours: our transfer arm
-answered five items, got five right, declined the rest, and *failed* both predeclared
-gates. What this literature does not address, and our decomposition adds, is *where
-inside a pipeline* the abstention-worthy uncertainty originates — selective classification
-attaches a selection function to a monolithic predictor's output, and the QA-side work
-locates unanswerability in the input. Neither expresses a system that should have been
-able to answer because its own store held the fact, and did not reach it.
+**Diagnosis by substitution, and abstention.** Our method is the oracle-substitution
+tradition [hoiem2012diagnosing, bolya2020tide, hosang2016proposals, zellers2018motifs],
+with Min et al. [min2019compositional] the cautionary case. We borrow the primitive —
+substitute ground truth at one point, read the downstream delta — and add that the
+substitution's scope must travel *with* the number rather than living in a footnote.
+Every precedent stays inside one model or one homogeneous output type. Our predeclaration
+practice draws on benchmark-integrity work [musgrave2020reality, dacrema2019progress,
+lipton2019troubling, bouthillier2021variance, recht2019imagenet, bertinetto2021prereg].
+Selective prediction supplies the vocabulary our transfer result needs [chow1970reject,
+elyaniv2010foundations, geifman2017selective, geifman2019selectivenet,
+hendrickx2024reject], as does calibration [guo2017calibration, kadavath2022know] and the
+QA side [rajpurkar2018squad2, kamath2020selectiveqa, whitehead2022reliablevqa,
+ren2024exploreuntilconfident]. What none addresses is *where inside a pipeline* the
+abstention-worthy uncertainty originates: selective classification attaches a selection
+function to a monolithic predictor's output, and QA-side work locates unanswerability in
+the input. Neither expresses a system that should have been able to answer because its
+own store held the fact, and did not reach it.
 
 ## 3. Method: an evaluation ladder with explicit scope
 
@@ -223,24 +173,19 @@ wherever they appear.
 
 ### 3.3 Predeclaration
 
-Gates, stopping rules and interpretation limits are written and committed before
-the corresponding scores exist. Twice this caught a *structurally unreachable*
-outcome before measurement: a predeclared clause that cannot fire is not a null
-result but a broken instrument, and it is only visible if checked in advance. In
-the first relation experiment the routing structure made the accuracy clause
-unreachable, and it duly came in at exactly `0.0000` `[F25]`, with the
-proceed decision `false` `[F27]`.
+Gates, stopping rules and interpretation limits are written and committed before the
+corresponding scores exist. Twice this caught a *structurally unreachable* outcome before
+measurement: a predeclared clause that cannot fire is a broken instrument, not a null
+result, and only a check in advance reveals it. In the first relation experiment the
+routing structure made the accuracy clause unreachable, and it duly came in at exactly
+`0.0000` `[F25]` with the proceed decision `false` `[F27]`.
 
-Blinded model responses are generated in an isolated context with **no access to
-the key** and are hash-pinned and committed before scoring.
-
-We state the limit of that claim precisely, because an earlier draft overstated it.
-For the transfer run the key was recorded at commit `45f8ec9` and the response
-hash-pinned at `e193e6f` eight minutes later, so **commit order does not prove the
-response predates the key**. What the record does establish is that the response was
-produced in a context that never received the key, and that it was pinned by hash
-before any score was computed. The protection is isolation and the hash pin, not
-version-history ordering.
+Blinded responses are generated in an isolated context with **no access to the key** and
+hash-pinned before scoring. The protection is isolation plus the hash pin, not
+version-history ordering: for the transfer run the key commit precedes the response
+commit, so commit order does not prove the response predates the key. The commit
+chronology, the full amendment history of the transfer protocol, and the scope table in
+full are in the supplement.
 
 ## 4. Results
 
@@ -250,8 +195,6 @@ The label stage classified each delivered instance from three isolated point-spl
 renders. Replacing those images with real capture RGB crops — and changing nothing
 else — produces the largest improvement measured on any oracle-free prediction path in
 this project.
-
-![Figure 2](figures/fig2_component_result.svg)
 
 | scene | splat top-1 | rgb_tight top-1 | splat top-3 | rgb_tight top-3 |
 |---|---|---|---|---|
@@ -305,8 +248,6 @@ delivered graph actually contains — across two rooms, with ten items scored af
 the owner marked two ambiguous `[F65]`. Five layers answer the same questions over the same
 stored relations, differing only in where object identity comes from.
 
-![Figure 3](figures/fig3_held_but_unreachable.svg)
-
 | layer | identity from | correct | coverage | scope |
 |---|---|---|---|---|
 | geometry ceiling | human | 7/10 `[F28]` | 0.800 `[F31]` | `identity_oracle` |
@@ -354,7 +295,7 @@ pass: a human answered it, its objects are in the delivered partition, `NEAR` ca
 express it, the serialized edge reproduces the geometry, and the bridge bound its
 anchors. The full table is `docs/paper_reachability_ledger.csv`.
 
-![Figure 4](figures/fig4_reachability.svg)
+![Figure 2](figures/fig4_reachability.svg)
 
 Of the 10 scored questions, 8 survive object delivery `[G03]` and all 8 survive both
 relation expressibility and the serialized-edge stage — **no question is lost to
@@ -429,74 +370,7 @@ This also suggests a re-reading of the earlier 7/10: those cross-view items were
 likely answerable from co-visible evidence. With three genuinely non-co-visible pairs produced by a
 generator that could not select for answerability, direct RGB produced nothing.
 
-### 4.4 Supporting decomposition on Replica
-
-Earlier stages of the same decomposition locate where information is *gained*. Delivered
-instance recovery at IoU 0.50 is 12/47 `[A05]`, 17/45 `[A25]` and 18/53 `[A48]` across
-three scenes — `delivered` rows, the pipeline's own output. Separately and **not
-comparable to them**, pooling a frozen multiview generator's bank with the Mask3D raw
-masks raises the oracle-evaluated *proposal ceiling* from 20/53 to 33/53 `[B01, B03]`,
-and by +6 and +5 under prospective transfer at fixed settings `[B04, B06, B07, B09]`.
-The attribution matters: those are *pooled* per-entity maxima, and the generator alone
-scores 25/53, 12/47 and 13/45 `[B02, B05, B08]` — below the Mask3D baseline on both
-transfer scenes. What transferred is the benefit of pooling two proposal sources, not
-the generator's own quality.
-
-A frozen revision of the support relation moved `ON_ENTITY_SURFACE` citation hits on the
-development scene from 5/20 `[E01]` to 16/20 `[E02]`. This is neither a model
-before/after nor a single scope: the 5/20 baseline is `proposal_ceiling`, measured on a
-variant consuming the dataset's **oracle boxes and labels**, while 16/20 is
-`definition-change`. Neither is a delivered result, and the track was stopped by its own
-predeclared rule `[E21]`. The supplement carries the per-scene detail, including why the
-0.58 `[E10]` and 0.36 `[E12]` figures reported elsewhere are scene-aggregate
-micro-precision on a different denominator and are not the fall of that scene's 0.94
-`[E03]`.
-
-## 5. What the decomposition establishes
-
-1. **Real RGB substantially improves the label stage on oracle-matched instances**
-   `[C01, C02, C03, C04]` — a component evaluation on an oracle-selected denominator
-   of instances the evaluator had already matched to an annotation box, **not
-   end-to-end or deployable performance**; per-scene recovery is 7/18 `[C29]`, 9/20
-   `[C30]` and 5/6 `[C31]` — with
-   a development-scene control that supports, but does not prove, the object-texture
-   reading `[C17, C18]`.
-2. **Stored 3D relations contain useful answers for human-resolved objects, and
-   current deployable grounding cannot access most of them** — 7/10 `[F35]` against
-   0/10 `[F40]` and 2/10 `[F45]`, with extraction cleared on this slice at 12/12 `[F63]`
-   (an identity-oracle diagnostic over the single `NEAR` relation).
-3. **Direct RGB is the strongest current answer path for visible evidence** — 7/10
-   at 0.90 coverage `[F50, F53]`, though wrong on 2 of 10 on those rooms `[F51]`.
-4. **Neither deployed path yet handles genuinely non-co-visible spatial questions
-   reliably** — the graph arm cannot reach them `[F40]`, and RGB declines them on an
-   unseen room `[F79]`.
-5. **The contribution is an evaluation-method contribution, and it is narrower than
-   "decomposition".** Stage-wise attribution in 3D-VL is prior work
-   [huang2025beacon3d], and so is cross-view necessity [mo2025mvscanqa]. What we add
-   is the conjunction of two things that appear to be unoccupied. First, the relation
-   store is **checked for serialization consistency** against geometry recomputed
-   under the same AABB convention `[F63, G05]` before anything is claimed about it,
-   so "the representation holds it" rests on a measurement rather than an assumption.
-   The check is bounded and we state the bound: because both sides apply the same
-   1.0 m surface-to-surface convention, it catches a serialization or plumbing error
-   but **cannot** detect a wrong convention. Prior stage analyses split stages of a
-   model over an already-annotated scene and do not check the store underneath at
-   all.
-   Second, **identity is the only variable**: the same serialized edges are queried
-   under three identity sources `[F35, F40, F45, G06]`, where prior oracle contrasts
-   swap the whole input modality and model and so confound identity with
-   architecture. A third element, **scoring a decline as an outcome distinct from a
-   wrong answer**, is a protocol proposal rather than a validated contribution: a
-   result of the form "5 correct, 0 wrong, 3 declined" `[F76, F77, F79]` is not
-   expressible in the benchmarks above, but a proposal is validated by adoption, and
-   ten authored items cannot demonstrate that.
-
-   We do **not** claim that representations in general hold unreachable information,
-   that *no* deployable path could reach it, or any ordering among 7, 2 and 0. The
-   defensible statement is bounded to this pipeline, these two rooms, and the three
-   identity paths we instantiated.
-
-## 6. Limitations
+## 5. Limitations
 
 **Scale.** Four ARKitScenes rooms (three examined, one untouched until §4.3) and four
 Replica scenes; six, twelve and ten questions per experiment; one blinded response each;
@@ -526,29 +400,55 @@ because most run artifacts live in an ignored tree. Twenty-eight rows cite an un
 primary source and cannot be reproduced from the repository alone; a further 52
 quantities could not be verified against any committed artifact and are enumerated in
 the census rather than entered in the registry. None is load-bearing for any claim in
-§5.
+§6.
 
-## 7. Conclusion
+## 6. Conclusion
 
 A representation can hold correct information that the deployable query paths we
-instantiated do not reach. We measured that gap directly: the same stored relations answer 7 of 10 with
-human-supplied identity and 0 of 10 with the identity the system actually produces,
-while the relation extraction between them lost nothing on all 12 items tested. Identity grounding is the dominant measured loss on this
-`NEAR` slice; relation serialization adds no measurable loss on the twelve tested
-items. We claim nothing broader: geometry and relation extraction are cleared *for
-this slice, over human-resolved delivered objects*, not in general.
+instantiated do not reach. We measured that gap directly: the same stored relations
+answer 7 of 10 with human-supplied identity and 0 of 10 with the identity the system
+actually produces `[F35, F40]`, while the serialized edges reproduce recomputed geometry
+on all 12 tested items `[F63]`. Identity grounding is the dominant measured loss on this
+`NEAR` slice; relation serialization adds no measurable loss on those items. We claim
+nothing broader: geometry and relation extraction are cleared *for this slice, over
+human-resolved delivered objects*, not in general.
 
-The obvious alternative does not remove the constraint. Direct multiview RGB is the
-strongest deployable answer path for visible evidence, and on one previously
-untouched room it was right on each of the five items it answered and silent on every
-non-co-visible question — while failing both predeclared gates, and having been wrong
-twice on the development rooms `[F51]`.
+What the decomposition establishes, in order:
 
-We therefore report a decomposition rather than a system: where spatial information
-is gained (naming, from real image evidence), where it is retained (serialized
-relations, with no measured loss), and where it is lost (identity grounding, and instance
-delivery upstream of it). Every negative result stands as measured; none was retuned
-or re-run.
+1. **Real RGB substantially improves the label stage on oracle-matched instances**
+   `[C01, C02, C03, C04]` — a component evaluation on an oracle-selected denominator,
+   **not end-to-end or deployable performance** — with a development-scene control that
+   supports, but does not prove, the object-texture reading `[C17, C18]`.
+2. **Stored 3D relations contain useful answers for human-resolved objects, and current
+   deployable grounding reaches few of them** — 7/10 `[F35]` against 0/10 `[F40]` and
+   2/10 `[F45]`, with serialization consistent on this slice at 12/12 `[F63]`.
+3. **Direct RGB is the strongest current answer path for visible evidence** — 7/10 at
+   0.90 coverage `[F50, F53]`, though wrong on 2 of 10 on those rooms `[F51]`.
+4. **Neither deployed path yet handles genuinely non-co-visible questions reliably** —
+   the graph arm cannot reach them `[F40]`, and RGB declines them on an unseen room
+   `[F79]`.
+
+**The contribution is an evaluation-method one, and narrower than "decomposition".**
+Stage-wise attribution in 3D-VL is prior work [huang2025beacon3d], as is cross-view
+necessity [mo2025mvscanqa]. What we add is a conjunction that appears unoccupied: the
+relation store is **checked for serialization consistency** against geometry recomputed
+under the same AABB convention `[F63, G05]` before anything is claimed about it — a
+bounded check, since a shared convention catches a plumbing error but cannot detect a
+wrong convention — and **identity is the only varied variable**, the same serialized
+edges queried under three identity sources `[F35, F40, F45, G06]`, where prior oracle
+contrasts swap the whole input modality and model. A third element, **scoring a decline
+as an outcome distinct from a wrong answer**, is a protocol proposal rather than a
+validated contribution: "5 correct, 0 wrong, 3 declined" `[F76, F77, F79]` is not
+expressible in the benchmarks above, but proposals are validated by adoption, and ten
+authored items cannot demonstrate that.
+
+We do **not** claim that representations in general hold unreachable information, that
+*no* deployable path could reach it, or any ordering among 7, 2 and 0. The defensible
+statement is bounded to this pipeline, these two rooms, and the three identity paths we
+instantiated. We report where spatial information is gained (naming, from real image
+evidence), retained (serialized relations, with no measured loss on the tested items),
+and lost (identity grounding, and instance delivery upstream of it). Every negative
+result stands as measured; none was retuned or re-run.
 
 ---
 

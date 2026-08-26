@@ -292,7 +292,8 @@ def figure_4_reachability(R: dict) -> str:
          f'<rect x="28" y="66" width="984" height="26" rx="3" fill="#f6efdc" '
          f'stroke="{ORACLE}" stroke-width="1"/>',
          text(40, 83, "SCOPE  bookkeeping over already-scored outcomes, not a new "
-                      "measurement. n = 10 questions over two rooms.", 10, ORACLE,
+                      "measurement. The held tile is identity_oracle \u2014 a BOUND, "
+                      "not performance. n = 10 over two rooms.", 10, ORACLE,
               weight="600")]
 
     left, top, bw, rowh = 330, 116, 420, 44
@@ -346,6 +347,11 @@ def figure_4_reachability(R: dict) -> str:
         b.append(text(cx, yb + 58, val, 17, col, weight="700", family=MONO))
         b.append(text(cx, yb + 74, lab, 9, MUTED))
         b.append(text(cx, yb + 87, sub, 8.5, FAINT))
+        if i == 0:
+            # figure 3 carried the NOT DEPLOYABLE badge; it is out of the paper,
+            # so this tile is the only place a reader is warned.
+            b.append(text(cx + 188, yb + 58, "NOT DEPLOYABLE", 8, ORACLE,
+                          anchor="end", weight="700", spacing="0.05em"))
 
     b.append(text(28, H - 12, "Extraction is not the loss: no question is lost at the "
                               "serialized-edge stage. Identity grounding is where they go.",

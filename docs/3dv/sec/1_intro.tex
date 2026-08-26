@@ -1,0 +1,31 @@
+\section{Introduction}
+
+A 3D scene graph built from a room scan can, in principle, answer spatial questions about
+that room: it stores objects, and it stores relations between them. Whether it does so in
+practice is usually reported as one accuracy number, which conflates four things --- did
+the pipeline recover the object, did it name it, did it extract the relation, and could a
+question reach any of it.
+
+We take a pipeline of exactly this kind, built from real handheld RGB-D captures, and
+measure each stage separately under a scope discipline that states, for every number,
+what it is entitled to claim (\cref{sec:method}). Three results anchor the paper.
+
+First, the stage where spatial information is \emph{gained}: replacing only the label
+stage's input images with real capture crops raises matched-instance top-1 accuracy from
+1/21 to 12/21 \rid{C01, C02}, a component result on an oracle-selected denominator.
+
+Second, the stage where it is \emph{lost}. The same stored relations, queried by the same
+procedure over the same serialized edges, answer 7 of 10 questions when a human supplies
+object identity \rid{F35} and 0 of 10 when the pipeline supplies it \rid{F40}, while a
+replay reading only the serialized edges reproduces recomputed geometry on every tested
+item \rid{F63}. The relational content is present and correct; none of the three identity
+paths we instantiated reached it.
+
+Third, what happens on a room nobody had looked at. A direct multiview RGB baseline,
+under a protocol frozen before the capture was downloaded, answers 5 of 10 with zero
+wrong answers \rid{F76, F77} and declines every non-co-visible item \rid{F79}, failing
+both predeclared gates.
+
+We report the decomposition, not a system. Its contribution is an evaluation method: a
+store held fixed, its serialization checked for consistency against recomputed geometry,
+and object identity varied as the only free variable.

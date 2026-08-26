@@ -1,0 +1,51 @@
+\section{Method: an evaluation ladder with explicit scope}
+\label{sec:method}
+
+\subsection{The scope discipline}
+
+Every measurement carries one of seven scopes, enforced in code rather than promised in
+prose. Four matter for the results below: \texttt{deployable} (end-to-end performance of
+a shippable path; no oracle, no human key in the answer path, and the denominator is not
+oracle-selected); \texttt{oracle\_free\_component\_eval} (the prediction path is
+oracle-free, but the \textbf{denominator is oracle-selected} --- a component result
+only); \texttt{delivered} (the pipeline's own output, scored against a key); and
+\texttt{identity\_oracle} (consumes human-supplied identity --- a \textbf{bound}, never
+system performance). The remaining three --- \texttt{proposal\_ceiling},
+\texttt{definition-change} and \texttt{bug-diagnostic} --- are defined in the
+supplement, along with the full row counts.
+
+Answer production and grading are separate functions: no layer that produces an answer
+may read an expected value, and a syntax-tree test fails the build if a deployable answer
+function so much as binds a key-shaped name.
+
+\subsection{The ladder}
+
+Five layers answer the same questions over the same stored relations, differing only in
+where object identity comes from: a geometry ceiling and a stored-edge replay, both
+consuming human identity; the delivered graph, using its own learned labels; a grounded
+graph, using an oracle-free bridge; and direct multiview RGB, which uses no graph at all.
+\Cref{fig:ladder} shows which pipeline stages each layer relies on.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{figures/fig1_evaluation_ladder.pdf}
+  \caption{The evaluation ladder. Each layer holds the pipeline fixed and changes one
+  source of identity; bars span the stages a layer relies on. Hatched layers consume
+  human-supplied identity and are bounds, never system performance.}
+  \label{fig:ladder}
+\end{figure}
+
+\subsection{Predeclaration}
+
+Gates, stopping rules and interpretation limits are written and committed before the
+corresponding scores exist. Twice this caught a \emph{structurally unreachable} outcome
+before measurement: a predeclared clause that cannot fire is a broken instrument, not a
+null result, and only a check in advance reveals it. In the first relation experiment the
+routing structure made the accuracy clause unreachable, and it duly came in at exactly
+$0.0000$ \rid{F25} with the proceed decision \texttt{false} \rid{F27}.
+
+Blinded responses are generated in an isolated context with \textbf{no access to the key}
+and hash-pinned before scoring. The protection is isolation plus the hash pin, not
+version-history ordering: for the transfer run the key was recorded before the response
+was pinned, so commit order does not prove the response predates the key. The full
+chronology and the transfer protocol's amendment history are in the supplement.

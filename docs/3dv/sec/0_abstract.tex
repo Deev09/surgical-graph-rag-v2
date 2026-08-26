@@ -1,0 +1,29 @@
+\begin{abstract}
+We report a scoped decomposition of spatial question answering over real handheld room
+captures. Rather than a single accuracy number, we measure each pipeline stage against a
+scope discipline separating what a system \emph{could} express from what a deployable
+path can \emph{reach}, and find the two far apart.
+
+Replacing only the labeler's input images --- real capture crops instead of point-splat
+renders, with weights, vocabulary, threshold, evaluator, delivered partitions and
+matching all fixed --- raises matched-instance top-1 from 1/21 to 12/21 \rid{C01, C02}
+and top-3 from 4/21 to 18/21 \rid{C03, C04} across three scenes with no tuning between
+them. Paired per instance the change is one-directional \rid{G01, G02}. This is a
+component evaluation on an oracle-selected denominator, not end-to-end performance.
+
+On a relation benchmark over two rooms, the \emph{same stored relations} answer 7 of 10
+scored items when identity is supplied by a human \rid{F35}, 0 of 10 from learned labels
+\rid{F40}, and 2 of 10 through an oracle-free grounding bridge \rid{F45} --- a paired
+substitution sizing a bound, not a system improvement \rid{G06}. Relation extraction is
+not the loss: a replay reading only serialized edges agrees with geometry recomputed
+under the same convention on 12 of 12 items \rid{F63}. The information is present in the
+store and was not reached by any of the three identity paths we instantiated; the binding
+stage is identity.
+
+On a previously untouched room, direct multiview RGB answers 5 of 10 with \textbf{zero
+wrong answers} \rid{F76, F77}, declines all three non-co-visible items \rid{F79}, and
+fails both predeclared gates \rid{F82, F83}.
+
+The contribution is the decomposition and its scope discipline, with negative results
+committed as first-class artifacts --- not a solved room-understanding system.
+\end{abstract}

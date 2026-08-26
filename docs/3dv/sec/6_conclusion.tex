@@ -1,0 +1,52 @@
+\section{Conclusion}
+
+A representation can hold correct information that the deployable query paths we
+instantiated do not reach. We measured that gap directly: the same stored relations
+answer 7 of 10 with human-supplied identity and 0 of 10 with the identity the system
+actually produces \rid{F35, F40}, while the serialized edges reproduce recomputed
+geometry on all 12 tested items \rid{F63}. Identity grounding is the dominant measured
+loss on this \texttt{NEAR} slice; relation serialization adds no measurable loss on those
+items. We claim nothing broader: geometry and relation extraction are cleared \emph{for
+this slice, over human-resolved delivered objects}, not in general.
+
+What the decomposition establishes, in order:
+\begin{enumerate}\itemsep2pt \parskip0pt
+  \item \textbf{Real RGB substantially improves the label stage on oracle-matched
+  instances} \rid{C01, C02, C03, C04} --- a component evaluation on an oracle-selected
+  denominator, \textbf{not end-to-end or deployable performance} --- with a
+  development-scene control that supports, but does not prove, the object-texture
+  reading \rid{C17, C18}.
+  \item \textbf{Stored 3D relations contain useful answers for human-resolved objects,
+  and current deployable grounding reaches few of them} --- 7/10 \rid{F35} against 0/10
+  \rid{F40} and 2/10 \rid{F45}, with serialization consistent on this slice \rid{F63}.
+  \item \textbf{Direct RGB is the strongest current answer path for visible evidence} ---
+  7/10 at 0.90 coverage \rid{F50, F53}, though wrong on 2 of 10 on those rooms \rid{F51}.
+  \item \textbf{Neither deployed path yet handles genuinely non-co-visible questions
+  reliably} --- the graph arm cannot reach them \rid{F40}, and RGB declines them on an
+  unseen room \rid{F79}.
+\end{enumerate}
+
+\paragraph{The contribution is an evaluation-method one, and narrower than
+``decomposition''.}
+Stage-wise attribution in 3D-VL is prior work~\cite{huang2025beacon3d}, as is cross-view
+necessity~\cite{mo2025mvscanqa}. What we add is a conjunction that appears unoccupied:
+the relation store is \textbf{checked for serialization consistency} against geometry
+recomputed under the same AABB convention \rid{F63, G05} before anything is claimed about
+it --- a bounded check, since a shared convention catches a plumbing error but cannot
+detect a wrong convention --- and \textbf{identity is the only varied variable}, the same
+serialized edges queried under three identity sources \rid{F35, F40, F45, G06}, where
+prior oracle contrasts swap the whole input modality and model. A third element,
+\textbf{scoring a decline as an outcome distinct from a wrong answer}, is a protocol
+proposal rather than a validated contribution: ``5 correct, 0 wrong, 3 declined''
+\rid{F76, F77, F79} is not expressible in the benchmarks above, but proposals are
+validated by adoption, and ten authored items cannot demonstrate that.
+
+We do \textbf{not} claim that representations in general hold unreachable information,
+that \emph{no} deployable path could reach it, or any ordering among 7, 2 and 0. The
+defensible statement is bounded to this pipeline, these two rooms, and the three identity
+paths we instantiated. We report where spatial information is gained (naming, from real
+image evidence), retained (serialized relations, with no measured loss on the tested
+items), and lost (identity grounding, and instance delivery upstream of it). Every
+negative result stands as measured; none was retuned or re-run.
+
+\label{endofmaintext}

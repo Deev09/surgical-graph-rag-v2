@@ -1,0 +1,82 @@
+\section{Related work}
+
+\paragraph{Open-vocabulary 3D representations and scene graphs.}
+Dense open-vocabulary 3D understanding fuses 2D vision-language features into a 3D
+map~\cite{jatavallabhula2023conceptfusion, peng2023openscene}; instance-level work makes
+objects explicit~\cite{takmaz2023openmask3d, nguyen2024open3dis, lu2023ovir3d}, with
+LERF~\cite{kerr2023lerf} the radiance-field analogue. Scene graphs add relational
+structure~\cite{armeni20193dscenegraph, wu2021scenegraphfusion, hughes2022hydra,
+looper20233dvsg, koch2024open3dsg, werby2024hovsg, zhu2026ogscene3d}.
+ConceptGraphs~\cite{gu2024conceptgraphs} is the closest prior representation. What this
+line \emph{reports} is the point of contact: per-point mIoU, instance AP, retrieval mAP,
+or construction fidelity --- never an end-to-end answer rate, and nearly always against
+human-annotated instances, an oracle-supplied denominator. ConceptGraphs reports node
+precision and edge precision as two \emph{separate} human-judged numbers, with edges
+scoring higher: our result already latent in the closest prior system, missing only the
+number that composes them.
+
+\paragraph{Answering questions from stored 3D scenes.}
+Embodied QA~\cite{das2018embodiedqa, gordon2018iqa} established the task;
+ScanQA~\cite{azuma2022scanqa}, SQA3D~\cite{ma2023sqa3d} and
+OpenEQA~\cite{majumdar2024openeqa} made it a benchmark; systems answer over 3D
+scenes~\cite{hong20233dllm, huang2024leo, huang2024chatscene, zhu2025llava3d}. The
+convention is one accuracy per system, conflating perception, identity grounding,
+relation extraction and answer generation. Several systems answer \emph{from a persistent
+graph}, and they bound what we may claim: GraphEQA~\cite{saxena2025grapheqa} feeds a
+real-time scene graph plus retrieved images to a VLM planner and ablates graph-only
+against images-only; BBQ~\cite{linok2025bbq} serializes stored metric-semantic edges into
+an LLM prompt; SG-Nav~\cite{yin2024sgnav} is the reference design for that serialization
+and adds re-perception precisely because wrong node identity poisons downstream use;
+VL-KnG~\cite{almdfaa2026vlkng} makes identity association an explicit module;
+3D-Mem~\cite{yang2025threedmem} argues the opposite design, keeping retrieved images
+\emph{as} the memory. We therefore claim no novelty for combining a graph with retrieved
+images, for ablating graph against images, or for observing that detector quality bounds
+graph-mediated QA --- GraphEQA states that in its own limitations.
+
+\paragraph{What we concede, and what remains.}
+Three works break the single-number convention and we position as their continuation:
+Beacon3D~\cite{huang2025beacon3d} decouples grounding from answering,
+MV-ScanQA~\cite{mo2025mvscanqa} shows few existing 3D QA questions need more than one
+view, and Jin et al.~\cite{jin2025revisiting3d} find 2D VLMs on rendered views match 3D
+LLMs. We concede both constructs rather than compete: \cite{huang2025beacon3d}
+established grounding-versus-answering attribution and \cite{mo2025mvscanqa} formalised
+cross-view necessity. What separates this work is narrower. Prior stage-wise analyses
+compare the \emph{quality} of stored representations~\cite{gu2024conceptgraphs}, split
+\emph{inference-time} stages of a model over an already-annotated
+scene~\cite{huang2025beacon3d}, or report an oracle bound produced by a \emph{different
+system}~\cite{azuma2022scanqa, takmaz2023openmask3d}. None places an oracle-fed and a
+pipeline-labelled number side by side on the same questions over the same store.
+GraphEQA illustrates why that matters: its benchmark results use dataset ground-truth
+segmentation masks, and its only detector-fed evaluation is a handful of real-world
+trials with no aggregate --- so the gap between what its representation could support and
+what a deployable one delivers is not recoverable from the paper.
+
+\paragraph{Direct multimodal baselines.}
+VLMs read off RGB are competitive with dedicated 3D systems at room
+scale~\cite{qi2026gpt4scene, chen2024spatialvlm, cheng2024spatialrgpt}, and benchmarks
+map the weaknesses~\cite{fu2024blink, yang2025thinkinginspace, yeh2026allangles,
+yang2026mmsibench, kamath2023whatsup, ma2025srbench, xie2026spatialqa}. These carry no
+persistent 3D state, so nothing in them can \emph{hold} information. We reproduce the
+phenomenon rather than dispute it --- direct RGB is the strongest deployable path we
+measured --- but note that several strong 2D baselines sidestep identity grounding rather
+than solving it: SpatialRGPT consumes supplied region proposals, GPT4Scene supplies
+object identifiers on a bird's-eye image. Those are identity oracles in our vocabulary.
+
+\paragraph{Diagnosis by substitution, and abstention.}
+Our method is the oracle-substitution tradition~\cite{hoiem2012diagnosing, bolya2020tide,
+hosang2016proposals, zellers2018motifs}, with Min et al.~\cite{min2019compositional} the
+cautionary case. We borrow the primitive --- substitute ground truth at one point, read
+the downstream delta --- and add that the substitution's scope must travel \emph{with}
+the number rather than living in a footnote. Every precedent stays inside one model or
+one homogeneous output type. Our predeclaration practice draws on benchmark-integrity
+work~\cite{musgrave2020reality, dacrema2019progress, lipton2019troubling,
+bouthillier2021variance, recht2019imagenet, bertinetto2021prereg}. Selective prediction
+supplies the vocabulary our transfer result needs~\cite{chow1970reject,
+elyaniv2010foundations, geifman2017selective, geifman2019selectivenet,
+hendrickx2024reject}, as does calibration~\cite{guo2017calibration, kadavath2022know} and
+the QA side~\cite{rajpurkar2018squad2, kamath2020selectiveqa, whitehead2022reliablevqa,
+ren2024exploreuntilconfident}. What none addresses is \emph{where inside a pipeline} the
+abstention-worthy uncertainty originates: selective classification attaches a selection
+function to a monolithic predictor's output, and QA-side work locates unanswerability in
+the input. Neither expresses a system that should have been able to answer because its
+own store held the fact, and did not reach it.

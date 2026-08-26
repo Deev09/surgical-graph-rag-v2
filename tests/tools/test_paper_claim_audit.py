@@ -196,7 +196,7 @@ def test_the_exploratory_support_result_is_not_headlined():
     abstract = text.split("## 1. Introduction")[0]
     for rid in ("E27", "E28", "E29"):
         assert rid not in abstract, f"{rid} (exploratory) appears in the abstract"
-    conclusion = text.split("## 7. Conclusion")[1]
+    conclusion = re.split(r"## \d+\. Conclusion", text)[1]
     for rid in ("E27", "E28", "E29"):
         assert rid not in conclusion, f"{rid} (exploratory) appears in the conclusion"
     assert "deliberately not a headline" in text
@@ -208,6 +208,9 @@ def test_the_context_control_supports_rather_than_proves():
     for overclaim in ("proves the interpretation", "confirms that the gain",
                       "proves that the gain"):
         assert overclaim not in text, f"paper overclaims the control: {overclaim!r}"
+
+
+MAIN_PAPER_FIGURES = ("fig1_evaluation_ladder.svg", "fig4_reachability.svg")
 
 
 def test_figures_exist_and_regenerate_byte_identically():
@@ -226,12 +229,30 @@ def test_figures_exist_and_regenerate_byte_identically():
 
 
 def test_figures_carry_their_result_ids_and_scope_warnings():
+    """Every generated figure keeps its scope warning, used in the paper or not."""
     f2 = (FIGS / "fig2_component_result.svg").read_text()
     assert "oracle_free_component_eval" in f2 and "NOT end-to-end" in f2
     f3 = (FIGS / "fig3_held_but_unreachable.svg").read_text()
     assert "NOT DEPLOYABLE" in f3
     for rid in ("F35", "F40", "F45", "F50"):
         assert rid in f3, f"figure 3 omits {rid}"
+    # figure 4 carries the same four ids and must, since it replaced figure 3
+    # in the main paper and is now the only place a reader sees the four arms
+    f4 = (FIGS / "fig4_reachability.svg").read_text()
+    for rid in ("F35", "F40", "F45", "F50"):
+        assert rid in f4, f"figure 4 omits {rid}"
+    assert "identity_oracle" in f4, "figure 4 lost its scope banner"
+
+
+def test_main_paper_embeds_only_the_chosen_figures():
+    """The author cut figures 2 and 3 for the page limit; keep it that way.
+
+    Figure 2's table was kept instead of the figure, and figure 4 subsumes
+    figure 3. Both still generate, for the supplement.
+    """
+    embedded = set(re.findall(r"!\[[^\]]*\]\(figures/([^)]+)\)", PAPER.read_text()))
+    assert embedded == set(MAIN_PAPER_FIGURES), (
+        f"main paper embeds {sorted(embedded)}, expected {sorted(MAIN_PAPER_FIGURES)}")
 
 
 BIB = REPO / "docs" / "paper_references.bib"
@@ -368,6 +389,70 @@ def test_derived_registry_rows_are_marked_as_derived():
             f"{rid} does not record that it was derived in-repo from committed evidence")
         src = row["primary_source_artifact"]
         assert src.startswith("eval/results/"), f"{rid} points outside the evidence tree: {src}"
+
+
+TEX = REPO / "docs" / "3dv"
+
+
+def _tex_source() -> str:
+    return "\n".join(f.read_text() for f in sorted((TEX / "sec").glob("*.tex")))
+
+
+def test_latex_result_ids_all_exist_and_are_audited():
+    """The submission PDF is built from the LaTeX, not the markdown.
+
+    Every \\rid{...} in the LaTeX must resolve to a registry row and appear in
+    the claim audit, exactly as the markdown's citations must. Without this the
+    two can drift and the artifact that actually gets submitted is unchecked.
+    """
+    reg, audited = registry(), set()
+    for row in audit():
+        audited.update(row["result_ids"].split())
+    ids = set()
+    for group in re.findall(r"\\rid\{([^}]*)\}", _tex_source()):
+        ids.update(re.findall(r"[A-Z]\d{2}", group))
+    assert ids, "the LaTeX cites no result ids"
+    unknown = sorted(ids - set(reg))
+    assert not unknown, f"LaTeX cites ids absent from the registry: {unknown}"
+    unaudited = sorted(ids - audited)
+    assert not unaudited, f"LaTeX cites ids absent from the claim audit: {unaudited}"
+
+
+def test_latex_cites_no_number_the_markdown_does_not():
+    """The LaTeX is a port, not a new set of claims."""
+    md = paper_ids()
+    tex = set()
+    for group in re.findall(r"\\rid\{([^}]*)\}", _tex_source()):
+        tex.update(re.findall(r"[A-Z]\d{2}", group))
+    extra = sorted(tex - md)
+    assert not extra, (
+        f"the LaTeX introduces result ids the markdown does not carry: {extra}")
+
+
+def test_latex_bibliography_is_generated_from_the_working_file():
+    r = subprocess.run([sys.executable, str(REPO / "tools" / "paper_bib_latex.py"), "--check"],
+                       capture_output=True, text=True, cwd=REPO)
+    assert r.returncode == 0, f"refs.bib is stale: {r.stdout}{r.stderr[-200:]}"
+
+
+def test_latex_is_anonymised():
+    """3DV rejects non-anonymous submissions without review.
+
+    The working draft is full of repository paths and commit hashes; those are
+    de-anonymising if the repository is findable, so the LaTeX must not carry
+    them.
+    """
+    src = _tex_source() + (TEX / "main.tex").read_text()
+    bad = []
+    if re.search(r"\bdocs/\w+", src):
+        bad.append("a docs/ path")
+    if re.search(r"\btools/\w+\.py", src):
+        bad.append("a tools/ script name")
+    if re.search(r"\b[0-9a-f]{7,40}\b", src):
+        bad.append("what looks like a commit hash")
+    if re.search(r"surgical.graph.rag", src, re.I):
+        bad.append("the repository name")
+    assert not bad, f"the LaTeX carries de-anonymising material: {bad}"
 
 
 def main() -> None:
