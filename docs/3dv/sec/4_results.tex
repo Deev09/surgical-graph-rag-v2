@@ -94,7 +94,7 @@ The direct-RGB row carries a cost the correct-count hides: on these development 
 was \textbf{wrong on 2 of 10} \rid{F51}. That is the baseline against which
 \cref{sec:transfer}'s unseen-room behaviour must be read.
 
-\paragraph{Relation extraction is cleared on this slice.}
+\paragraph{Serialization adds no measurable loss.}
 The stored-edge replay reads \emph{only} edges the extractor serialized and recomputes no
 geometry. It agrees with the recomputed geometry ceiling on all 12 authored items
 \rid{F63}. The scope is \texttt{identity\_oracle} and the limits are real: \textbf{both
@@ -128,17 +128,29 @@ serialized-edge stage --- \textbf{no question is lost to relation extraction} \r
 Three survive anchor grounding \rid{G04}. The single largest loss, five of ten, is at
 identity grounding, larger than every other transition combined. The substitution is
 paired: 7 items are answered under human-supplied identity that the delivered graph does
-not answer, none the other way \rid{G06}. Because one side consumes human identity, it
-sizes a bound --- it says the arms differ, not that anything deployable achieves 7/10.
+not answer, none the other way \rid{G06}. \Cref{fig:qualitative} shows one such question in the room itself. Because one side
+consumes human identity, it sizes a bound --- it says the arms differ, not that anything deployable achieves 7/10.
 
-\begin{figure}[t]
+\begin{figure*}[t]
   \centering
-  \includegraphics[width=\linewidth]{figures/fig4_reachability.pdf}
+  \includegraphics[width=\textwidth]{figures/fig4_reachability.pdf}
   \caption{Where questions are lost between representation and deployable answer. One row
   per stage an answer must survive. Nothing is lost at the serialized-edge stage;
   identity grounding loses more than every other transition combined.}
   \label{fig:reach}
-\end{figure}
+\end{figure*}
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{figures/fig5_qualitative.pdf}
+  \caption{One question, in the room it is about. The stored \texttt{NEAR} edge between
+  the basket and the desk is present and correct (surface distance $0.0$\,m against a
+  $1.0$\,m threshold). A human resolving both referents answers it; the delivered labels
+  never address it; the oracle-free bridge binds one referent and abstains on the other,
+  so the edge is unreachable through it. Frames and crops are from the committed human
+  review sheet; outcomes from the packed relation report.}
+  \label{fig:qualitative}
+\end{figure*}
 
 \subsection{Transfer to an untouched room}
 \label{sec:transfer}

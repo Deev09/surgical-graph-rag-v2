@@ -103,7 +103,7 @@ def figure_1_layers(R: dict) -> str:
     # top=116, not 96: the ORACLE note at y=72 is wide enough to reach x~478, and
     # at top=96 the stage headers (drawn at top-26) collided with it horizontally.
     x0, top, colw, rowh = 250, 116, 96, 52
-    b = [text(28, 34, "Figure 1 — The evaluation ladder", 15, INK, weight="600"),
+    b = [text(28, 34, "The evaluation ladder", 15, INK, weight="600"),
          text(28, 55, "Each layer holds the same pipeline fixed and changes one source of "
                       "identity. Bars span the stages a layer relies on.", 11, MUTED),
          text(28, 72, "Hatched layers consume human-supplied identity: bounds, never system "
@@ -143,7 +143,7 @@ def figure_2_component(R: dict) -> str:
               ("pooled",   "C01", "C02", "C03", "C04", None, None)]
     W, H = 940, 430
     left, top, gw, bh = 60, 130, 210, 15
-    b = [text(28, 34, "Figure 2 — Real-RGB crops as the labeler input", 15, INK, weight="600"),
+    b = [text(28, 34, "Real-RGB crops as the labeler input", 15, INK, weight="600"),
          text(28, 55, "Only the label images changed. Weights, vocabulary, admission "
                       "threshold, evaluator, delivered partitions and IoU matching all fixed.",
               11, MUTED),
@@ -190,7 +190,7 @@ def figure_2_component(R: dict) -> str:
 def figure_3_unreachable(R: dict) -> str:
     """Held but unreachable, plus what direct RGB does on an unseen room."""
     W, H = 1040, 566
-    b = [text(28, 34, "Figure 3 — Held, but unreachable", 15, INK, weight="600"),
+    b = [text(28, 34, "Held, but unreachable", 15, INK, weight="600"),
          text(28, 55, "Same twelve questions, same stored relations, same scoring. "
                       "Only the source of object identity changes.", 11, MUTED),
          # fig2 carries a scope banner; a picture-only reader of fig3 needs the
@@ -286,7 +286,7 @@ def figure_4_reachability(R: dict) -> str:
 
     # H=520, not 470: the stat tiles run to y=486 and the footer sits below them.
     W, H = 1040, 520
-    b = [text(28, 34, "Figure 4 — Where questions are lost", 15, INK, weight="600"),
+    b = [text(28, 34, "Where questions are lost", 15, INK, weight="600"),
          text(28, 55, "One row per stage an answer must survive, over the "
                       f"{n} scored relation questions. Read top to bottom.", 11, MUTED),
          f'<rect x="28" y="66" width="984" height="26" rx="3" fill="#f6efdc" '

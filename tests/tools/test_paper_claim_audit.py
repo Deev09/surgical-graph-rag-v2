@@ -455,6 +455,40 @@ def test_latex_is_anonymised():
     assert not bad, f"the LaTeX carries de-anonymising material: {bad}"
 
 
+def test_figures_carry_no_baked_in_number():
+    """Numbering belongs to the document, not the graphic.
+
+    LaTeX renumbers figures on every edit; a title reading "Figure 4" inside the
+    graphic then contradicts the caption beneath it, which is exactly what
+    happened once the paper dropped two figures.
+    """
+    offenders = []
+    for f in sorted(FIGS.glob("*.svg")):
+        if re.search(r"Figure\s*\d", f.read_text()):
+            offenders.append(f.name)
+    qual = REPO / "tools" / "paper_qualitative_figure.py"
+    if qual.is_file() and re.search(r"<h1>Figure\s*\d", qual.read_text()):
+        offenders.append("fig5_qualitative")
+    assert not offenders, f"figures bake in their own number: {offenders}"
+
+
+def test_the_submission_pdf_is_built_and_within_the_page_limit():
+    """The compiled PDF is the page-limit authority, not word count.
+
+    3DV allows eight pages excluding references. The main text must therefore
+    end on page 8 or earlier; reference pages beyond that do not count.
+    """
+    pdf = TEX / "out" / "main.pdf"
+    aux = TEX / "out" / "main.aux"
+    if not (pdf.is_file() and aux.is_file()):
+        print("  SKIP (no compiled PDF; run tectonic in docs/3dv)")
+        return
+    m = re.search(r"\\newlabel\{endofmaintext\}\{\{[^}]*\}\{(\d+)\}", aux.read_text())
+    assert m, "main.aux has no endofmaintext label; the marker was removed"
+    last = int(m.group(1))
+    assert last <= 8, f"main text ends on page {last}; the limit is 8 excluding references"
+
+
 def main() -> None:
     tests = [v for k, v in sorted(globals().items())
              if k.startswith("test_") and callable(v)]

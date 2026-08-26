@@ -26,14 +26,14 @@ consuming human identity; the delivered graph, using its own learned labels; a g
 graph, using an oracle-free bridge; and direct multiview RGB, which uses no graph at all.
 \Cref{fig:ladder} shows which pipeline stages each layer relies on.
 
-\begin{figure}[t]
+\begin{figure*}[t]
   \centering
-  \includegraphics[width=\linewidth]{figures/fig1_evaluation_ladder.pdf}
+  \includegraphics[width=\textwidth]{figures/fig1_evaluation_ladder.pdf}
   \caption{The evaluation ladder. Each layer holds the pipeline fixed and changes one
   source of identity; bars span the stages a layer relies on. Hatched layers consume
   human-supplied identity and are bounds, never system performance.}
   \label{fig:ladder}
-\end{figure}
+\end{figure*}
 
 \subsection{Predeclaration}
 
@@ -49,3 +49,59 @@ and hash-pinned before scoring. The protection is isolation plus the hash pin, n
 version-history ordering: for the transfer run the key was recorded before the response
 was pinned, so commit order does not prove the response predates the key. The full
 chronology and the transfer protocol's amendment history are in the supplement.
+
+
+\subsection{Experimental setup}
+\label{sec:setup}
+
+Every component below was frozen before the results in \cref{sec:component} and
+\cref{sec:unreachable} were produced, and no constant was tuned between scenes.
+
+\paragraph{Data.}
+Four ARKitScenes validation captures (handheld iPad, 60\,Hz low-resolution wide stream
+with per-frame poses and intrinsics) and four Replica scenes. Geometry is the
+dataset-supplied mesh; the annotation boxes are used only by the evaluator, never by an
+answer path.
+
+\paragraph{Delivered instances.}
+A frozen class-agnostic Mask3D bundle, resolved to a dense partition at
+$\text{MIN\_SCORE}=0.2$, $\text{min\_vertices}=20$, $\text{dbscan\_eps}=0.95$. The
+partition is an input to every arm and is never re-resolved between arms.
+
+\paragraph{Label stage.}
+OpenCLIP \texttt{ViT-B-32-quickgelu} with \texttt{openai} weights, $\text{top\_k}=3$,
+admission threshold $\text{min\_top1\_score}=0.28$ on raw cosine similarity (uncalibrated),
+over a fixed 41-class indoor vocabulary. Three prompt templates are scored per class ---
+``a photo of a \{c\}'', ``a photo of a \{c\} in a room'', ``a 3D render of a \{c\}'' ---
+and the per-class score is the maximum over templates. The three arms differ only in the
+images: \texttt{splat} renders three isolated point splats per instance;
+\texttt{rgb\_tight} takes real capture crops at 0.15 box padding with no marking; and the
+\texttt{rgb\_context} control takes crops at 0.6 padding with the target dimmed. Crops
+come from a fixed multiview source (every 6th posed frame, three views per instance, a
+24\,px minimum crop side). Evaluation matches delivered instances one-to-one to
+annotation-box vertex sets greedily at vertex $\text{IoU}\ge 0.50$.
+
+\paragraph{Graph relation.}
+\texttt{NEAR} holds when the axis-aligned bounding boxes of two instances are within
+$1.0$\,m surface-to-surface (strict less-than). The same convention defines the human
+key. Comparative items are ordinal and use no threshold. Edge absence is a measurement,
+not a missing value: the extractor emits no top-$k$ truncation.
+
+\paragraph{Grounding bridge.}
+The oracle-free bridge encodes anchor phrases and the same real capture crops with the
+same pinned OpenCLIP weights. A slot score is the maximum over the anchor's name and its
+declared synonyms; the entity score is the mean over that entity's available view slots;
+ranking is by aggregate descending, ties by identifier ascending. An entity is admitted
+only if it also wins at least two independent view slots. \textbf{No confidence threshold
+is applied or swept anywhere in the bridge.}
+
+\paragraph{Direct multiview RGB.}
+Claude Opus 5 (Anthropic), single pass, one response per packet, no retries and no
+self-consistency sampling. Frames are selected answer-free: 18 equal temporal bins across
+the capture, and within each bin the frame with the highest information score (contrast
+and edge density, penalising clipping). The selector cannot see any question. The
+response schema is fixed --- per item an identifier, an \texttt{outcome} of
+\texttt{answer} or \texttt{unknown}, the answer, a confidence in $[0,1]$, and evidence
+frame identifiers drawn only from the 18 supplied --- and the response must pin the hash
+of the packet it answered. Declining is a first-class outcome, distinct from answering
+wrongly.

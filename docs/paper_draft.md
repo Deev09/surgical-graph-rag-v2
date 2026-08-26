@@ -28,9 +28,8 @@ evaluation on an oracle-selected denominator, not end-to-end performance.
 On a relation benchmark over two rooms, the *same stored relations* answer 7 of 10
 scored items when identity is supplied by a human `[F35]`, 0 of 10 from learned labels
 `[F40]`, and 2 of 10 through an oracle-free grounding bridge `[F45]` — a paired
-substitution sizing a bound, not a system improvement `[G06]`. Relation extraction is
-not the loss: a replay reading only serialized edges agrees with geometry recomputed
-under the same convention on 12 of 12 items `[F63]`. The information is present in the
+substitution sizing a bound, not a system improvement `[G06]`. Relation serialization adds no measurable loss relative to recomputation under the same AABB convention: a replay reading only serialized edges agrees with recomputed geometry
+on 12 of 12 items `[F63]`. The information is present in the
 store and was not reached by any of the three identity paths we instantiated; the
 binding stage is identity.
 
@@ -262,7 +261,7 @@ unseen-room behaviour must be read.
 
 Three findings follow, and their order matters.
 
-**Relation extraction is cleared on this slice.** The stored-edge replay reads
+**Serialization adds no measurable loss.** The stored-edge replay reads
 *only* edges the extractor serialized and recomputes no geometry. It agrees with the
 recomputed geometry ceiling on all 12 authored items `[F63]` — every answer, every
 abstention, and the single shared error. Nothing measurable is lost between the
@@ -410,8 +409,9 @@ answer 7 of 10 with human-supplied identity and 0 of 10 with the identity the sy
 actually produces `[F35, F40]`, while the serialized edges reproduce recomputed geometry
 on all 12 tested items `[F63]`. Identity grounding is the dominant measured loss on this
 `NEAR` slice; relation serialization adds no measurable loss on those items. We claim
-nothing broader: geometry and relation extraction are cleared *for this slice, over
-human-resolved delivered objects*, not in general.
+nothing broader. Nothing here clears relation *extraction*: only that serialization
+added no measurable loss relative to recomputation under the same convention, on twelve
+items, over human-resolved delivered objects.
 
 What the decomposition establishes, in order:
 
