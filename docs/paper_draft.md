@@ -5,8 +5,9 @@
 `result_id`; the mapping is audited in Appendix A and machine-checked in
 `docs/paper_claim_audit.csv`. Protocol facts and repository counts are sourced to
 their documents instead. Figures are regenerated from the registry by
-`tools/paper_figures.py` and are byte-reproducible. Section 2 (related work) is
-deliberately left to the author — no citations are invented here.*
+`tools/paper_figures.py` and are byte-reproducible. Section 2's citations were each
+gathered and then independently fact-checked by a second reader; the bibliography is
+`docs/paper_references.bib`, which records the verification verdict for every entry.*
 
 ---
 
@@ -66,7 +67,133 @@ that states what it is entitled to claim (§3). Three results anchor the paper:
 
 ## 2. Related work
 
-*Left to the author. No citations are invented in this draft.*
+Our system is a descendant of open-vocabulary 3D scene graphs, our questions come
+from the 3D QA benchmark line, our strongest baseline comes from the direct-VLM
+line, our method is the oracle-substitution tradition of detector diagnosis, and
+our transfer result is only interpretable in the vocabulary of selective
+prediction. We take something from each and depart from each in the same way: none
+of them reports *where in a pipeline* spatial information is gained, retained and
+lost.
+
+### 2.1 Open-vocabulary 3D representations and scene graphs
+
+Dense open-vocabulary 3D understanding fuses 2D vision-language features into a 3D
+map — ConceptFusion [jatavallabhula2023conceptfusion], OpenScene [peng2023openscene] — and instance-level work makes the objects
+explicit: OpenMask3D [takmaz2023openmask3d], Open3DIS [nguyen2024open3dis], OVIR-3D [lu2023ovir3d], with LERF [kerr2023lerf] the radiance-
+field analogue. Scene graphs add relational structure, from the layered 3D Scene
+Graph [armeni20193dscenegraph] through incremental construction in SceneGraphFusion [wu2021scenegraphfusion] and Hydra [hughes2022hydra],
+change-aware variable graphs [looper20233dvsg], and open-vocabulary graphs in Open3DSG [koch2024open3dsg].
+ConceptGraphs [gu2024conceptgraphs] is the closest prior system to ours: per-frame masks fused into
+3D object nodes, a CLIP embedding and a caption per node, LLM-labelled edges, and an
+LLM consuming the result.
+
+What this line reports is the point of contact. OpenScene reports per-point mIoU;
+OpenMask3D and Open3DIS report instance AP; OVIR-3D reports retrieval mAP; Hydra
+reports construction fidelity and runtime. ConceptGraphs reports human-judged node
+precision and edge precision as two *separate* numbers, with edges scoring higher
+than nodes. No system in this line composes its stages into an end-to-end
+question-answering rate, and nearly all of them score against human-annotated
+instances — an oracle-supplied denominator. Our contribution is not a better
+representation but a measurement of one: we compose the stages and find that the
+composition, not any single stage, is where the capability disappears. The
+separately-reported node and edge quality in [gu2024conceptgraphs] already predicts our result; what
+has been missing is the number that puts them together.
+
+### 2.2 3D and embodied question answering
+
+Embodied QA [das2018embodiedqa] and IQA [gordon2018iqa] established the task; ScanQA [azuma2022scanqa], SQA3D [ma2023sqa3d] and
+OpenEQA [majumdar2024openeqa] made it a benchmark; 3D-LLM [hong20233dllm], LEO [huang2024leo], Chat-Scene [huang2024chatscene] and
+LLaVA-3D [zhu2025llava3d] built systems that answer over 3D scenes. The convention throughout is
+a single accuracy per system per benchmark, which conflates perception, identity
+grounding, relation extraction and answer generation.
+
+Three recent works break that number apart and we position as their continuation.
+Beacon3D [huang2025beacon3d] decouples grounding from question answering at evaluation time and
+finds the coherence between them fragile. MV-ScanQA [mo2025mvscanqa] shows that only a small
+minority of questions in existing 3D QA datasets actually require integrating more
+than one view. Jin et al. [jin2025revisiting3d] find 2D VLMs on rendered views match 3D LLMs, with
+oracle viewpoint selection closing much of the residual gap. Each diagnoses a
+*benchmark or protocol*; we move the decomposition into the pipeline itself and
+declare the scope of each stage before measuring it. The multi-view finding in [mo2025mvscanqa]
+is the direct context for our transfer result, where a direct-RGB baseline declined
+every non-co-visible item: if benchmarks rarely demand cross-view integration, a
+system can score well without ever acquiring the capability.
+
+### 2.3 Direct multimodal baselines
+
+A strong recent result is uncomfortable for explicit-3D pipelines: VLMs read
+directly off RGB are competitive with, and sometimes better than, dedicated 3D
+systems at room scale. GPT4Scene [qi2026gpt4scene] matches or beats most 3D LLMs on ScanQA
+zero-shot; SpatialVLM [chen2024spatialvlm] argues the deficit was metric-3D supervision in training
+data rather than architecture; SpatialRGPT [cheng2024spatialrgpt] adds region-grounded spatial
+reasoning. Benchmarks map the remaining weaknesses: BLINK [fu2024blink], VSI-Bench [yang2025thinkinginspace],
+All-Angles [yeh2026allangles], MMSI-Bench [yang2026mmsibench] and the relative-position probes of Kamath et
+al. [kamath2023whatsup].
+
+We reproduce the phenomenon rather than argue with it — our direct multiview RGB
+arm is the strongest deployable path we measured. Where we depart is granularity.
+The prevailing reading is a verdict on representations; our decomposition shows the
+comparison is run at the wrong level, because the 3D representation is not what
+failed. Identity grounding is. It is also worth naming that several strong 2D
+baselines sidestep exactly that stage: SpatialRGPT consumes supplied region
+proposals and GPT4Scene supplies object identifiers on a bird's-eye image. Those are
+identity oracles in our scope vocabulary, which is precisely the distinction our
+scope discipline exists to keep visible.
+
+### 2.4 Diagnostic decomposition and oracle ceilings
+
+Our method is the oracle-substitution tradition. Hoiem et al. [hoiem2012diagnosing] argued that
+aggregate AP is not diagnostic and isolated error types by controlled substitution;
+TIDE [bolya2020tide] fixed one error type at a time to attribute the delta; Hosang et al. [hosang2016proposals]
+treated proposal recall as the ceiling every downstream stage inherits; and the
+scene-graph community's PredCls/SGCls/SGDet ladder, consolidated by Zellers et
+al. [zellers2018motifs], is the same idea as a reporting convention. Min et al. [min2019compositional] is the
+cautionary case in QA: questions designed to require multi-hop reasoning turned out
+not to.
+
+The primitive we borrow is: substitute ground truth at exactly one point and read
+the downstream delta as that point's attributable cost. What we add is that the
+substitution's scope must travel *with* the number rather than living in a protocol
+footnote — scope is a reported field of every result in our registry. Every
+precedent here also stays inside one model or one homogeneous output type;
+[hoiem2012diagnosing, bolya2020tide] attribute error within a single detector's prediction list, [hosang2016proposals] bounds
+one proposal stage, and [zellers2018motifs] stops at graph-level recall without asking whether a
+downstream consumer can use the graph. Tracing a substitution through a
+heterogeneous chain to a final answer is what makes the distinction between
+information *held* and information *reachable* visible at all.
+
+Our predeclaration practice draws on the benchmark-integrity literature — the metric
+learning reality check [musgrave2020reality], the recommender-systems reassessment [dacrema2019progress], troubling
+trends [lipton2019troubling], benchmark variance [bouthillier2021variance], and ImageNet replication [recht2019imagenet] — and on the
+NeurIPS pre-registration workshop [bertinetto2021prereg]. Our own results include a case in point: a
+frozen redefinition of a relation moved a benchmark number substantially without any
+model change, which we report under a `definition-change` scope rather than as an
+improvement.
+
+### 2.5 Abstention and selective prediction
+
+Our transfer result needs a vocabulary this paper's own gates did not supply. Since
+Chow [chow1970reject] and its modern formalisation by El-Yaniv and Wiener [elyaniv2010foundations], a predictor that
+may decline is a point on a risk–coverage curve, not a scalar accuracy; Geifman and
+El-Yaniv [geifman2017selective, geifman2019selectivenet] carried that into deep networks, and Hendrickx et al. [hendrickx2024reject] separate
+novelty rejection from ambiguity rejection. Calibration [guo2017calibration] and self-knowledge
+elicitation [kadavath2022know] address the confidence side. On the QA side, SQuAD 2.0 [rajpurkar2018squad2]
+made unanswerability first-class, Kamath et al. [kamath2020selectiveqa] introduced accuracy-at-coverage
+under domain shift, and Reliable VQA [whitehead2022reliablevqa] proposed Effective Reliability precisely
+because an exact-match metric charges an abstention the same as a wrong answer.
+
+That pathology is ours. On the untouched room our direct-RGB arm answered five items,
+got all five right, declined the rest — including every non-co-visible item, a
+novelty rejection since the evidence is absent from any single view — and *failed*
+both predeclared gates, because exact accuracy counts an abstention as a non-correct
+item. We report the result as a coverage/selective-risk pair and name our own gate as
+coverage-specifying and risk-unconstrained, the inverse of the standard
+risk-specifying protocol. What this literature does not address, and what our
+decomposition adds, is *where inside a pipeline* the abstention-worthy uncertainty
+originates: selective classification attaches a selection function to a monolithic
+predictor's output, and the QA-side work locates unanswerability in the input. Neither
+can express a system that should have been able to answer because its own
+representation held the fact, and could not reach it.
 
 ## 3. Method: an evaluation ladder with explicit scope
 
@@ -402,6 +529,16 @@ is gained (naming, from real image evidence), where it is retained (serialized
 relations, with no measured loss), and where it is lost (identity grounding, and instance
 delivery upstream of it). Every negative result stands as measured; none was retuned
 or re-run.
+
+---
+
+## References
+
+See `docs/paper_references.bib` (53 entries). Each entry was gathered by one reader
+and independently checked for existence, authorship, venue and year by a second who
+did not gather it; the verdict is recorded in each entry's `note` field. Two entries
+were corrected after checking: `chen2024spatialvlm`'s author list was incomplete and
+`jin2025revisiting3d` was attributed to arXiv rather than Findings of ACL 2025.
 
 ---
 

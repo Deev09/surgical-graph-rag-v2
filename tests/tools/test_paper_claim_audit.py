@@ -230,6 +230,56 @@ def test_figures_carry_their_result_ids_and_scope_warnings():
         assert rid in f3, f"figure 3 omits {rid}"
 
 
+BIB = REPO / "docs" / "paper_references.bib"
+
+
+def _section_2() -> str:
+    text = PAPER.read_text()
+    return text[text.index("## 2. Related work"):text.index("## 3. Method")]
+
+
+def test_every_citation_resolves_to_the_bibliography():
+    """A citation key in the prose must exist in the .bib, and vice versa.
+
+    Related work is the one section whose claims are about OTHER papers, so the
+    failure mode is a key that looks right and resolves to nothing. This makes a
+    typo a build failure rather than a dangling reference in a submission.
+    """
+    assert BIB.is_file(), "docs/paper_references.bib is missing"
+    defined = set(re.findall(r"@\w+\{([^,]+),", BIB.read_text()))
+    assert defined, "the bibliography defines no entries"
+
+    used: set[str] = set()
+    for group in re.findall(r"\[([a-z][a-z0-9]*\d{4}[a-z0-9]*(?:,\s*[a-z][a-z0-9]*\d{4}[a-z0-9]*)*)\]",
+                            _section_2()):
+        used.update(k.strip() for k in group.split(","))
+    assert used, "section 2 cites nothing"
+
+    dangling = sorted(used - defined)
+    assert not dangling, f"cited in section 2 but absent from the bibliography: {dangling}"
+    orphan = sorted(defined - used)
+    assert not orphan, f"in the bibliography but never cited: {orphan}"
+
+
+def test_related_work_is_written():
+    """Guards against the section reverting to its placeholder."""
+    sec = _section_2()
+    assert "Left to the author" not in sec, "section 2 is back to its placeholder"
+    assert len(sec.split()) > 600, f"section 2 is only {len(sec.split())} words"
+
+
+def test_no_citation_is_marked_unverified():
+    """Every bibliography entry carries a fact-check verdict, and none failed."""
+    text = BIB.read_text()
+    entries = re.findall(r"@\w+\{([^,]+),(.*?)\n\}", text, flags=re.S)
+    assert entries, "no parseable bibliography entries"
+    bad = [k for k, body in entries
+           if "verification: exists_as_stated" not in body]
+    assert not bad, (
+        "bibliography entries whose fact-check did not come back clean "
+        f"(re-check or remove them before submission): {bad}")
+
+
 def main() -> None:
     tests = [v for k, v in sorted(globals().items())
              if k.startswith("test_") and callable(v)]
