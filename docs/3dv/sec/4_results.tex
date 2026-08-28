@@ -158,11 +158,11 @@ Reachability is reported per arm, never as one mixed ladder: the delivered graph
 \SRArmDeliveredLadder{} across its declared stages, the grounded graph
 \SRArmGroundedLadder{}, the stored-edge replay \SRArmStoredLadder{} (identity injected,
 grounding bypassed), and direct RGB \SRArmDirectLadder{} (graph stages bypassed)
-% NOTE for the integrator: the reserved code G07 for per-arm ARKit equivalence is
-% already occupied in the registry by the top-1-commitment row (6/21), which this paper
-% cites in Sec 4.1. G13 is used here so the collision fails loudly in the claim audit
-% instead of resolving to the wrong row; add the registry row under G13 or renumber.
-\rid{G13}. The evaluator re-derives each chain independently from the committed
+% NOTE for the integrator: new-claim codes follow the corrected reservation (G07 was
+% already occupied by the top-3-commitment row): G08 per-arm equivalence, G09 Replica
+% normalized matrix, G10 Replica per-scene n's, G11 masked fault localization. Registry
+% rows to be added at merge.
+\rid{G08}. The evaluator re-derives each chain independently from the committed
 artifacts, and the chains reproduce the committed statistics field for field.
 
 \paragraph{Fault-localization validation.}
@@ -174,7 +174,7 @@ fault classes and \SRFaultRelationTypes{} relation types (\texttt{NEAR},
 \texttt{ON\_ENTITY\_SURFACE}, \texttt{ATTACHED\_TO}). The evaluator attributes via
 independent per-stage checkers and was masked to the injected class --- it is never told
 what was injected. It localized \SRFaultLocalized{} faults to the mutated stage, with
-zero false attributions on clean artifacts \rid{G10}. This is evaluator-masked
+zero false attributions on clean artifacts \rid{G11}. This is evaluator-masked
 artifact-level validation; it is not a blind study of the human protocol.
 
 \begin{figure*}[t]
@@ -265,7 +265,7 @@ those cross-view items were likely answerable from co-visible evidence.
 
 To test that the \emph{evaluator} transfers --- not the pipeline --- we re-scored the
 frozen Replica multi-relation QA scorecards (four scenes, \SRReplicaTotal{} items,
-per-scene $n$ of \SRReplicaSceneNs{} \rid{G09}) through the same schema and outcome
+per-scene $n$ of \SRReplicaSceneNs{} \rid{G10}) through the same schema and outcome
 mapping. Raw scorecard labels are preserved verbatim in every trace, and every metric is
 keyed by (expected outcome, result) --- the normalized matrix and the raw categories are
 reported side by side (\cref{tab:replica}).
@@ -292,7 +292,7 @@ reported side by side (\cref{tab:replica}).
     false\_answer & \SRReplicaFalseAnswer{}\\
     \bottomrule
   \end{tabular}
-  \caption{Replica multi-relation QA re-scored through the evaluator \rid{G08}: the
+  \caption{Replica multi-relation QA re-scored through the evaluator \rid{G09}: the
   normalized (expected outcome, result) matrix, with the raw scorecard categories
   alongside. The \texttt{miss} category splits by the per-question record, never by the
   category label alone.}
@@ -304,7 +304,7 @@ Pooled, the same scorecards would read \SRReplicaPooled{} ``correct'' --- a numb
 dominated by the \SRReplicaTrueEmpty{} true-empty items, on which being correct means
 returning nothing. Keyed by expected outcome, the answered side is
 \SRReplicaAnswerCorrect{} correct against \SRReplicaAnswerWrong{} wrong with
-\SRReplicaAnswerAbstain{} abstentions \rid{G08}. The pooled number would mislead, and
+\SRReplicaAnswerAbstain{} abstentions \rid{G09}. The pooled number would mislead, and
 the evaluator refuses to emit it.
 
 \paragraph{Scope.}
