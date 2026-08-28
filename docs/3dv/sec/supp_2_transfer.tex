@@ -10,10 +10,13 @@ point'') and repository paths by generic artifact names; the de-anonymised
 transfer-protocol record, with hashes and paths restored, accompanies the
 camera-ready.
 
-\subsection{The protocol as frozen, before the capture was downloaded}
+\subsection{The protocol text at the freeze point}
 
 The following restates the protocol text committed at the freeze point, at
-which time the test scene had never been inspected.
+which time the test scene had never been inspected. The restatement keeps
+the protocol's own historical wording --- including ``untouched'' and
+``transfer'' --- which predates the main paper's pilot framing; both gates
+later failed, so no transfer claim rests on any of it.
 
 \paragraph{The question.} Does the fixed direct multiview RGB QA path
 transfer to one untouched real handheld room, with no prompt, view-selection
@@ -82,7 +85,7 @@ can, and it has two physically separate waste containers at opposite ends of
 the room, which all four arms then ``failed''. \emph{NEAR}: two objects are
 near when the nearest points of their surfaces are within about one metre;
 comparative questions are ordinal and use no threshold. Both conventions
-appear verbatim in the model prompt and on the owner sheet, so the two are
+appear verbatim in the model prompt and on the author-reviewer sheet, so the two are
 answering the same question.
 
 \paragraph{Prompt and answer schema --- composed from existing text, not
@@ -96,16 +99,16 @@ ids drawn only from the 18 supplied ids. The response must pin the packet
 hash.
 
 \paragraph{Human review.} One self-contained offline sheet, same generator
-family as the relation-challenge review kit. For each question the owner
+family as the relation-challenge review kit. For each question the author-reviewer
 records the answer; ambiguous yes/no; evidence visibility as 0, 1, or 2+
-views, judged independently of the answer; and free-text notes. The owner
+views, judged independently of the answer; and free-text notes. The author-reviewer
 also confirms or corrects the counting convention for any class the
 questions count. There is no UID mapping panel --- there are no delivered
 entities for this scene and none will be produced.
 
 \paragraph{Scoring.} Exactly once, after the blinded response is
 hash-pinned. Exact accuracy is correct over scored items, where scored
-excludes items the owner marked ambiguous; answer coverage is (correct +
+excludes items the author-reviewer marked ambiguous; answer coverage is (correct +
 wrong) over scored items; ambiguous items are excluded from both and
 reported.
 
@@ -139,13 +142,13 @@ Run~1 is void. Nothing from it is scored, and no transfer claim rests on it.
 run~1. No response was requested, no answer existed, and nothing was scored.
 The no-adjustment rule exists to prevent selecting on outcomes; there was no
 outcome to select on. What was fixed is a question-generation defect flagged
-before the owner answered. The run-1 key is preserved inside the
+before the author-reviewer answered. The run-1 key is preserved inside the
 amendment-1 record: its tracked location was later overwritten by the run-2
 key (10 items, none ambiguous), so the run-1 key survives only in the
 version history at the amendment-1 record, where it remains the evidence
 that the defect was real.
 
-\paragraph{What the defect was.} The owner marked 4 of 8 items ambiguous,
+\paragraph{What the defect was.} The author-reviewer marked 4 of 8 items ambiguous,
 leaving $n = 4$: one cardinality, two presence, one comparative, and zero
 cross-view. Two failures follow. First, the coverage gate became an
 anti-abstention gate: at $n = 4$, coverage $\ge 0.80$ requires 4 of 4
@@ -193,7 +196,7 @@ made afterwards.
 anchors}
 
 Applied immediately after amendment~1 regenerated, before any blinded
-response existed, and before the owner was asked to review anything.
+response existed, and before the author-reviewer was asked to review anything.
 
 Amendment~1's ordering fix promoted the best-attested anchors --- but
 best-attested turns out to correlate with \emph{numerous}. Of the top twelve

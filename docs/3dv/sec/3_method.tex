@@ -29,10 +29,12 @@ answer function so much as binds a key-shaped name.
 
 \subsection{The arms}
 
-Five arms answer the same questions over the same stored relations, differing only in
-where object identity comes from: a geometry ceiling and a stored-edge replay, both
-consuming human identity; the delivered graph, using its own learned labels; a grounded
-graph, using an oracle-free bridge; and direct multiview RGB, which uses no graph at all.
+Five arms answer the same questions. Four form a controlled identity substitution over
+the same stored relations, differing only in where object identity comes from: a
+geometry ceiling and a stored-edge replay, both consuming human identity; the delivered
+graph, using its own learned labels; and a grounded graph, using an oracle-free bridge.
+The fifth, direct multiview RGB, is an external comparator on a different path: it uses
+no graph at all.
 \Cref{tab:paths} shows which pipeline stages each arm relies on; the evaluation-ladder
 overview figure is in the supplement.
 

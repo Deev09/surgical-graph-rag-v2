@@ -109,8 +109,8 @@ def figure_1_layers(R: dict) -> str:
     # 15 px legend line whose baseline is y=82.
     x0, top, colw, rowh = 330, 150, 88, 62
     b = [text(28, 36, "The evaluation ladder", 20, INK, weight="600"),
-         text(28, 60, "Each arm holds the same pipeline fixed and changes one source of "
-                      "identity. Bars span the stages an arm relies on.", 15, MUTED),
+         text(28, 60, "Each arm reports its own declared path; bars span the stages "
+                      "an arm relies on. There is no shared mixed ladder.", 15, MUTED),
          text(28, 82, "Hatched = human-supplied identity: a bound, never system "
                       "performance.", 15, ORACLE)]
     for i, s in enumerate(stages):
