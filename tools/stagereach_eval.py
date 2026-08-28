@@ -35,6 +35,7 @@ OUT_DIR = REPO / "eval" / "results" / "stagereach"
 OUT_ARKIT = OUT_DIR / "arkit_stagereach_v1.json"
 OUT_REPLICA = OUT_DIR / "replica_stagereach_v1.json"
 OUT_FIXTURE = REPO / faults.FIXTURE_RELPATH
+OUT_BATTERY = OUT_DIR / "fault_battery_v1.json"
 
 RESULT_SCHEMA = "stagereach_track_result"
 RESULT_SCHEMA_VERSION = 1
@@ -142,6 +143,20 @@ def run_fixture_battery() -> dict:
     return faults.run_battery(faults.build_fixture())
 
 
+def build_battery_artifact() -> dict:
+    """The committed fault-battery result: the paper's 24/24 evidence."""
+    battery = run_fixture_battery()
+    return {
+        "schema": "stagereach_fault_battery",
+        "schema_version": 1,
+        "source_fixture": faults.FIXTURE_RELPATH,
+        "masking": ("the evaluator attributes via independent per-stage "
+                    "checkers and is never told the injected class; the "
+                    "expected label is consulted only after evaluation"),
+        **battery,
+    }
+
+
 # -------------------------------------------------------------------- shell
 def _artifact_bytes(doc: dict) -> bytes:
     return (json.dumps(doc, indent=1, sort_keys=True) + "\n").encode()
@@ -171,6 +186,8 @@ def main(argv: list[str]) -> int:
                      _artifact_bytes(build_replica())))
     if args.track in ("fixtures", "all"):
         jobs.append(("fixtures", OUT_FIXTURE, build_fixture_bytes()))
+        jobs.append(("battery", OUT_BATTERY,
+                     _artifact_bytes(build_battery_artifact())))
 
     if args.out is not None:
         if len(jobs) != 1:

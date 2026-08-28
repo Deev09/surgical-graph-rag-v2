@@ -1,0 +1,349 @@
+{
+ "cells": [
+  {
+   "attributed": {
+    "stage": "key_eligibility",
+    "status": "fail"
+   },
+   "expected": {
+    "stage": "key_eligibility",
+    "status": "fail"
+   },
+   "fault": "ambiguous_key",
+   "localized": true,
+   "other_questions_clean": true,
+   "relation": "NEAR"
+  },
+  {
+   "attributed": {
+    "stage": "key_eligibility",
+    "status": "fail"
+   },
+   "expected": {
+    "stage": "key_eligibility",
+    "status": "fail"
+   },
+   "fault": "ambiguous_key",
+   "localized": true,
+   "other_questions_clean": true,
+   "relation": "ON_ENTITY_SURFACE"
+  },
+  {
+   "attributed": {
+    "stage": "key_eligibility",
+    "status": "fail"
+   },
+   "expected": {
+    "stage": "key_eligibility",
+    "status": "fail"
+   },
+   "fault": "ambiguous_key",
+   "localized": true,
+   "other_questions_clean": true,
+   "relation": "ATTACHED_TO"
+  },
+  {
+   "attributed": {
+    "stage": "answer_generation",
+    "status": "fail"
+   },
+   "expected": {
+    "stage": "answer_generation",
+    "status": "fail"
+   },
+   "fault": "answer_corruption",
+   "localized": true,
+   "other_questions_clean": true,
+   "relation": "NEAR"
+  },
+  {
+   "attributed": {
+    "stage": "answer_generation",
+    "status": "fail"
+   },
+   "expected": {
+    "stage": "answer_generation",
+    "status": "fail"
+   },
+   "fault": "answer_corruption",
+   "localized": true,
+   "other_questions_clean": true,
+   "relation": "ON_ENTITY_SURFACE"
+  },
+  {
+   "attributed": {
+    "stage": "answer_generation",
+    "status": "fail"
+   },
+   "expected": {
+    "stage": "answer_generation",
+    "status": "fail"
+   },
+   "fault": "answer_corruption",
+   "localized": true,
+   "other_questions_clean": true,
+   "relation": "ATTACHED_TO"
+  },
+  {
+   "attributed": {
+    "stage": "object_delivery",
+    "status": "fail"
+   },
+   "expected": {
+    "stage": "object_delivery",
+    "status": "fail"
+   },
+   "fault": "entity_removal",
+   "localized": true,
+   "other_questions_clean": true,
+   "relation": "NEAR"
+  },
+  {
+   "attributed": {
+    "stage": "object_delivery",
+    "status": "fail"
+   },
+   "expected": {
+    "stage": "object_delivery",
+    "status": "fail"
+   },
+   "fault": "entity_removal",
+   "localized": true,
+   "other_questions_clean": true,
+   "relation": "ON_ENTITY_SURFACE"
+  },
+  {
+   "attributed": {
+    "stage": "object_delivery",
+    "status": "fail"
+   },
+   "expected": {
+    "stage": "object_delivery",
+    "status": "fail"
+   },
+   "fault": "entity_removal",
+   "localized": true,
+   "other_questions_clean": true,
+   "relation": "ATTACHED_TO"
+  },
+  {
+   "attributed": {
+    "stage": "answer_generation",
+    "status": "abstain"
+   },
+   "expected": {
+    "stage": "answer_generation",
+    "status": "abstain"
+   },
+   "fault": "forced_abstention",
+   "localized": true,
+   "other_questions_clean": true,
+   "relation": "NEAR"
+  },
+  {
+   "attributed": {
+    "stage": "answer_generation",
+    "status": "abstain"
+   },
+   "expected": {
+    "stage": "answer_generation",
+    "status": "abstain"
+   },
+   "fault": "forced_abstention",
+   "localized": true,
+   "other_questions_clean": true,
+   "relation": "ON_ENTITY_SURFACE"
+  },
+  {
+   "attributed": {
+    "stage": "answer_generation",
+    "status": "abstain"
+   },
+   "expected": {
+    "stage": "answer_generation",
+    "status": "abstain"
+   },
+   "fault": "forced_abstention",
+   "localized": true,
+   "other_questions_clean": true,
+   "relation": "ATTACHED_TO"
+  },
+  {
+   "attributed": {
+    "stage": "referent_grounding",
+    "status": "fail"
+   },
+   "expected": {
+    "stage": "referent_grounding",
+    "status": "fail"
+   },
+   "fault": "identity_swap",
+   "localized": true,
+   "other_questions_clean": true,
+   "relation": "NEAR"
+  },
+  {
+   "attributed": {
+    "stage": "referent_grounding",
+    "status": "fail"
+   },
+   "expected": {
+    "stage": "referent_grounding",
+    "status": "fail"
+   },
+   "fault": "identity_swap",
+   "localized": true,
+   "other_questions_clean": true,
+   "relation": "ON_ENTITY_SURFACE"
+  },
+  {
+   "attributed": {
+    "stage": "referent_grounding",
+    "status": "fail"
+   },
+   "expected": {
+    "stage": "referent_grounding",
+    "status": "fail"
+   },
+   "fault": "identity_swap",
+   "localized": true,
+   "other_questions_clean": true,
+   "relation": "ATTACHED_TO"
+  },
+  {
+   "attributed": {
+    "stage": "serialization_consistency",
+    "status": "fail"
+   },
+   "expected": {
+    "stage": "serialization_consistency",
+    "status": "fail"
+   },
+   "fault": "predicate_change",
+   "localized": true,
+   "other_questions_clean": true,
+   "relation": "NEAR"
+  },
+  {
+   "attributed": {
+    "stage": "serialization_consistency",
+    "status": "fail"
+   },
+   "expected": {
+    "stage": "serialization_consistency",
+    "status": "fail"
+   },
+   "fault": "predicate_change",
+   "localized": true,
+   "other_questions_clean": true,
+   "relation": "ON_ENTITY_SURFACE"
+  },
+  {
+   "attributed": {
+    "stage": "serialization_consistency",
+    "status": "fail"
+   },
+   "expected": {
+    "stage": "serialization_consistency",
+    "status": "fail"
+   },
+   "fault": "predicate_change",
+   "localized": true,
+   "other_questions_clean": true,
+   "relation": "ATTACHED_TO"
+  },
+  {
+   "attributed": {
+    "stage": "relation_correctness",
+    "status": "fail"
+   },
+   "expected": {
+    "stage": "relation_correctness",
+    "status": "fail"
+   },
+   "fault": "relation_deletion_pre_serialization",
+   "localized": true,
+   "other_questions_clean": true,
+   "relation": "NEAR"
+  },
+  {
+   "attributed": {
+    "stage": "relation_correctness",
+    "status": "fail"
+   },
+   "expected": {
+    "stage": "relation_correctness",
+    "status": "fail"
+   },
+   "fault": "relation_deletion_pre_serialization",
+   "localized": true,
+   "other_questions_clean": true,
+   "relation": "ON_ENTITY_SURFACE"
+  },
+  {
+   "attributed": {
+    "stage": "relation_correctness",
+    "status": "fail"
+   },
+   "expected": {
+    "stage": "relation_correctness",
+    "status": "fail"
+   },
+   "fault": "relation_deletion_pre_serialization",
+   "localized": true,
+   "other_questions_clean": true,
+   "relation": "ATTACHED_TO"
+  },
+  {
+   "attributed": {
+    "stage": "serialization_consistency",
+    "status": "fail"
+   },
+   "expected": {
+    "stage": "serialization_consistency",
+    "status": "fail"
+   },
+   "fault": "serialization_corruption",
+   "localized": true,
+   "other_questions_clean": true,
+   "relation": "NEAR"
+  },
+  {
+   "attributed": {
+    "stage": "serialization_consistency",
+    "status": "fail"
+   },
+   "expected": {
+    "stage": "serialization_consistency",
+    "status": "fail"
+   },
+   "fault": "serialization_corruption",
+   "localized": true,
+   "other_questions_clean": true,
+   "relation": "ON_ENTITY_SURFACE"
+  },
+  {
+   "attributed": {
+    "stage": "serialization_consistency",
+    "status": "fail"
+   },
+   "expected": {
+    "stage": "serialization_consistency",
+    "status": "fail"
+   },
+   "fault": "serialization_corruption",
+   "localized": true,
+   "other_questions_clean": true,
+   "relation": "ATTACHED_TO"
+  }
+ ],
+ "clean_failures": 0,
+ "masking": "the evaluator attributes via independent per-stage checkers and is never told the injected class; the expected label is consulted only after evaluation",
+ "n_fault_classes": 8,
+ "n_localized": 24,
+ "n_relation_types": 3,
+ "n_total": 24,
+ "schema": "stagereach_fault_battery",
+ "schema_version": 1,
+ "source_fixture": "eval/fixtures/stagereach/fault_fixture_v1.json"
+}

@@ -61,9 +61,11 @@ owner-confirmed relation key:
 | delivered graph | 0/10 | 0.00 | yes |
 
 Useful spatial information exists in the graph and is not deployably
-reachable. Relation extraction is cleared (stored-edge replay matched the
-geometry ceiling 12/12); the binding stage is identity, and the pinned
-OpenCLIP crop-based grounding bridge failed all three predeclared gates.
+reachable. Serialization added no measured loss (stored-edge replay matched
+the geometry ceiling 12/12 under the same convention; semantic correctness
+of the relation convention was not independently established); the binding
+stage is identity, and the pinned OpenCLIP crop-based grounding bridge
+failed all three predeclared gates.
 
 The stop closes THAT bridge, not grounding research in general. Its purpose is
 to stop endless variants being fitted to the same seventeen anchors.
