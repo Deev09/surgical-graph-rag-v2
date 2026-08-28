@@ -62,7 +62,8 @@ serialization consistency is measured.
 \begin{table*}[t]
   \centering\footnotesize
   \setlength{\tabcolsep}{4pt}
-  \begin{tabular}{@{}lp{0.40\textwidth}p{0.17\textwidth}p{0.15\textwidth}@{}}
+  \hyphenpenalty=10000 \exhyphenpenalty=10000
+  \begin{tabular}{@{}l>{\raggedright\arraybackslash}p{0.40\textwidth}>{\raggedright\arraybackslash}p{0.17\textwidth}>{\raggedright\arraybackslash}p{0.15\textwidth}@{}}
     \toprule
     path & stages (ordered) & bypassed & allowed scopes\\
     \midrule
