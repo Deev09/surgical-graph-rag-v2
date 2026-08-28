@@ -14,9 +14,18 @@ on the true count, and we report the disagreement rather than settle it.
 succeeding and silent about detection. \Cref{sec:unreachable}'s 7/10 rows \rid{F28, F35}
 consume human-supplied identity and bound what the representation could express. The
 serialization check \rid{F63, G05} applies the same 1.0\,m AABB convention on both sides,
-so it catches a plumbing error but cannot detect a wrong convention. \Cref{sec:transfer}
-is a one-scene pilot under a twice-amended generator, licensing no statement about
-handheld capture in general, and both gates failed.
+so it catches a plumbing error but cannot detect a wrong convention.
+\texttt{relation\_correctness} is \texttt{unknown} on the entire ARKit slice: no
+independent semantic annotation of the stored relations exists there, so serialization
+consistency is the strongest relation-stage statement this paper can make, and no claim
+of semantic relation correctness should be read into it. \Cref{sec:replica}'s arms
+consume oracle geometry and oracle identity, so nothing there speaks to deployable
+performance; it demonstrates only that the schema and outcome mapping transfer.
+\Cref{sec:transfer} is a one-scene pilot under a twice-amended generator, licensing no
+statement about handheld capture in general, and both gates failed. Every paired test in
+\cref{sec:results} is instance-level: instances are clustered within rooms and the tests
+treat them as independent, which they are not, and a scene-level sign test cannot reach
+significance with three clusters.
 
 \paragraph{An exploratory result is excluded from the claims.}
 A human-keyed support experiment on one ARKit scene recovered 1 of 3 author-confirmed
@@ -32,4 +41,6 @@ original paths, checksums and producing commits accompanies the paper, because m
 artifacts live in an ignored tree. Twenty-eight rows cite an untracked primary source and
 cannot be reproduced from the repository alone; a further 52 quantities could not be
 verified against any committed artifact and are enumerated in the census rather than
-entered in the registry. None is load-bearing for any claim in the conclusion.
+entered in the registry. None is load-bearing for any claim in the conclusion, and every
+registry code cited in this paper is among the verified rows of the committed evidence
+pack.
