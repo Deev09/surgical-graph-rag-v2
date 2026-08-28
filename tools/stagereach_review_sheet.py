@@ -284,6 +284,8 @@ def agreement(adjudications: Path | None) -> int:
 
     n = len(items)
     amb_exact = sum(1 for a, b in amb_pairs if a == b)
+    scored = [it for it in items if not it["key_ambiguous"]]
+    scored_agree = sum(1 for it in scored if it["final_answer_match"])
     report = {
         "schema": "stagereach_annotator_agreement",
         "schema_version": 1,
@@ -292,6 +294,8 @@ def agreement(adjudications: Path | None) -> int:
         "n_retained_for_exclusion_reproducibility": 2,
         "answer_exact_agreement": {"agree": n_answer_match, "of": n,
                                    "n_adjudicated": n_adjudicated},
+        "answer_exact_agreement_scored": {"agree": scored_agree,
+                                          "of": len(scored)},
         "ambiguity_exact_agreement": {"agree": amb_exact, "of": n},
         "ambiguity_kappa": kappa(amb_pairs),
         "kappa_note": ("kappa reported only for the binary ambiguity field; "

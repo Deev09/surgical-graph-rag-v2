@@ -1,0 +1,199 @@
+{
+ "ambiguity_exact_agreement": {
+  "agree": 10,
+  "of": 12
+ },
+ "ambiguity_kappa": 0.0,
+ "answer_exact_agreement": {
+  "agree": 6,
+  "n_adjudicated": 10,
+  "of": 12
+ },
+ "answer_exact_agreement_scored": {
+  "agree": 6,
+  "of": 10
+ },
+ "items": [
+  {
+   "adjudicated": true,
+   "adjudication_note": "binary: returned 'Yes' is equivalent to key True",
+   "auto_answer_match": false,
+   "final_answer_match": true,
+   "id": "q25_bin_basket_near_desk",
+   "key_ambiguous": false,
+   "key_answer": true,
+   "returned_ambiguous": false,
+   "returned_answer": "Yes",
+   "returned_confidence": "5 (certain)",
+   "returned_rationale": "",
+   "returned_relation_label": "near"
+  },
+  {
+   "adjudicated": true,
+   "adjudication_note": "annotator abstained ('cannot determine', confidence 1); key says False; a coverage disagreement, not a contradictory answer",
+   "auto_answer_match": false,
+   "final_answer_match": false,
+   "id": "q25_bin_kitchenbin_near_basket",
+   "key_ambiguous": false,
+   "key_answer": false,
+   "returned_ambiguous": false,
+   "returned_answer": "cannot determine",
+   "returned_confidence": "1 (guess)",
+   "returned_rationale": "the tall stainless kitchen bin os barely visible and they are not in the same frame to determine",
+   "returned_relation_label": "cannot determine"
+  },
+  {
+   "adjudicated": true,
+   "adjudication_note": "binary: returned 'yes' is equivalent to key True",
+   "auto_answer_match": false,
+   "final_answer_match": true,
+   "id": "q25_bin_kitchenbin_near_counter",
+   "key_ambiguous": false,
+   "key_answer": true,
+   "returned_ambiguous": false,
+   "returned_answer": "yes",
+   "returned_confidence": "2",
+   "returned_rationale": "",
+   "returned_relation_label": "closer to first"
+  },
+  {
+   "adjudicated": false,
+   "adjudication_note": null,
+   "auto_answer_match": true,
+   "final_answer_match": true,
+   "id": "q25_cmp_coffee_table_sofa_vs_dining",
+   "key_ambiguous": false,
+   "key_answer": "sofa",
+   "returned_ambiguous": false,
+   "returned_answer": "Sofa",
+   "returned_confidence": "4",
+   "returned_rationale": "",
+   "returned_relation_label": "near"
+  },
+  {
+   "adjudicated": false,
+   "adjudication_note": null,
+   "auto_answer_match": true,
+   "final_answer_match": true,
+   "id": "q25_cmp_fan_desk_vs_counter",
+   "key_ambiguous": false,
+   "key_answer": "long narrow desk",
+   "returned_ambiguous": false,
+   "returned_answer": "closer to the long narrow desk",
+   "returned_confidence": "3",
+   "returned_rationale": "",
+   "returned_relation_label": "closer to first"
+  },
+  {
+   "adjudicated": true,
+   "adjudication_note": "owner-excluded as ambiguous; annotator answered 'Closer to Sofa' at confidence 5 -- an exclusion-judgement disagreement, reported as such; no key answer exists to match",
+   "auto_answer_match": false,
+   "final_answer_match": false,
+   "id": "q25_cmp_rug_sofa_vs_counter",
+   "key_ambiguous": true,
+   "key_answer": null,
+   "returned_ambiguous": false,
+   "returned_answer": "Closer to Sofa",
+   "returned_confidence": "5 (certain)",
+   "returned_rationale": "",
+   "returned_relation_label": "near"
+  },
+  {
+   "adjudicated": true,
+   "adjudication_note": "same three-item set; 'white heater' refers to the white convector heater",
+   "auto_answer_match": false,
+   "final_answer_match": true,
+   "id": "q25_set_near_sofa",
+   "key_ambiguous": false,
+   "key_answer": [
+    "striped rug",
+    "coffee table",
+    "white convector heater"
+   ],
+   "returned_ambiguous": false,
+   "returned_answer": "Coffee Table, striped rug, white heater",
+   "returned_confidence": "5 (certain)",
+   "returned_rationale": "",
+   "returned_relation_label": "near"
+  },
+  {
+   "adjudicated": true,
+   "adjudication_note": "annotator abstained ('cannot determine', confidence 1); key says False; coverage disagreement",
+   "auto_answer_match": false,
+   "final_answer_match": false,
+   "id": "q42_bin_bed_near_desk",
+   "key_ambiguous": false,
+   "key_answer": false,
+   "returned_ambiguous": false,
+   "returned_answer": "cannot determine",
+   "returned_confidence": "1 (guess)",
+   "returned_rationale": "Don't see both on the same frame",
+   "returned_relation_label": "cannot determine"
+  },
+  {
+   "adjudicated": true,
+   "adjudication_note": "binary: returned 'Yes' is equivalent to key True",
+   "auto_answer_match": false,
+   "final_answer_match": true,
+   "id": "q42_bin_desk_near_drawers",
+   "key_ambiguous": false,
+   "key_answer": true,
+   "returned_ambiguous": false,
+   "returned_answer": "Yes",
+   "returned_confidence": "5 (certain)",
+   "returned_rationale": "",
+   "returned_relation_label": "near"
+  },
+  {
+   "adjudicated": true,
+   "adjudication_note": "annotator abstained ('cannot determine', confidence 1); key says bed; coverage disagreement",
+   "auto_answer_match": false,
+   "final_answer_match": false,
+   "id": "q42_cmp_picture_drawers_vs_bed",
+   "key_ambiguous": false,
+   "key_answer": "bed",
+   "returned_ambiguous": false,
+   "returned_answer": "cannot determine",
+   "returned_confidence": "1 (guess)",
+   "returned_rationale": "Cannot see the framed picture",
+   "returned_relation_label": "cannot determine"
+  },
+  {
+   "adjudicated": true,
+   "adjudication_note": "owner-excluded as ambiguous; annotator also could not determine (confidence 1) -- functional agreement on unanswerability, though the ambiguity checkbox was not ticked",
+   "auto_answer_match": false,
+   "final_answer_match": false,
+   "id": "q42_cmp_radiator_window_vs_desk",
+   "key_ambiguous": true,
+   "key_answer": null,
+   "returned_ambiguous": false,
+   "returned_answer": "cannot determine",
+   "returned_confidence": "1 (guess)",
+   "returned_rationale": "Doesn't have any frames with both objects in it to compare",
+   "returned_relation_label": "cannot determine "
+  },
+  {
+   "adjudicated": true,
+   "adjudication_note": "over-inclusion: returned set adds 'window' itself alongside the key's cream curtain; not an exact set match",
+   "auto_answer_match": false,
+   "final_answer_match": false,
+   "id": "q42_set_near_window",
+   "key_ambiguous": false,
+   "key_answer": [
+    "cream curtain"
+   ],
+   "returned_ambiguous": false,
+   "returned_answer": "window, cream curtain",
+   "returned_confidence": "3",
+   "returned_rationale": "",
+   "returned_relation_label": "near"
+  }
+ ],
+ "kappa_note": "kappa reported only for the binary ambiguity field; free-text answers use exact agreement after adjudication, preserved pre-adjudication below",
+ "n_eligible_primary": 10,
+ "n_questions_reviewed": 12,
+ "n_retained_for_exclusion_reproducibility": 2,
+ "protocol": "second annotator blinded to system outputs, arm names and hypothesis; sheet order shuffled with recorded seed; adjudication overlays never overwrite the returned form",
+ "schema": "stagereach_annotator_agreement",
+ "schema_version": 1
+}

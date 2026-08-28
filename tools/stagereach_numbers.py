@@ -230,6 +230,28 @@ def build_macros() -> list[tuple[str, str, str]]:
     add(g, "SRReplicaPooled",
         f"{raw['true_answer'] + raw['true_empty']}/{tot['n']}")
 
+    # Second-annotator agreement, when the committed artifact exists.
+    agr_path = REPO / "eval" / "results" / "stagereach" / \
+        "annotator_agreement_v1.json"
+    if agr_path.is_file():
+        agr = json.loads(agr_path.read_text())
+        g = "Second-annotator agreement"
+        sc = agr["answer_exact_agreement_scored"]
+        add(g, "SRAnnScoredAgree", sc["agree"])
+        add(g, "SRAnnScoredOf", sc["of"])
+        add(g, "SRAnnReviewed", agr["n_questions_reviewed"])
+        amb = agr["ambiguity_exact_agreement"]
+        add(g, "SRAnnAmbiguityAgree", amb["agree"])
+        add(g, "SRAnnAmbiguityOf", amb["of"])
+        scored_items = [i for i in agr["items"] if not i["key_ambiguous"]]
+        abstained = sum(1 for i in scored_items
+                        if not i["final_answer_match"]
+                        and "cannot determine"
+                        in (i["returned_answer"] or "").casefold())
+        add(g, "SRAnnAbstainDisagreements", abstained)
+        add(g, "SRAnnOtherDisagreements",
+            sc["of"] - sc["agree"] - abstained)
+
     names = [n for _, n, _ in m]
     assert len(names) == len(set(names)), "duplicate macro name"
     for n in names:

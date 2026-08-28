@@ -1,0 +1,22 @@
+{
+ "q25_bin_basket_near_desk": {"answer_match": true,
+  "note": "binary: returned 'Yes' is equivalent to key True"},
+ "q25_bin_kitchenbin_near_counter": {"answer_match": true,
+  "note": "binary: returned 'yes' is equivalent to key True"},
+ "q42_bin_desk_near_drawers": {"answer_match": true,
+  "note": "binary: returned 'Yes' is equivalent to key True"},
+ "q25_set_near_sofa": {"answer_match": true,
+  "note": "same three-item set; 'white heater' refers to the white convector heater"},
+ "q25_bin_kitchenbin_near_basket": {"answer_match": false,
+  "note": "annotator abstained ('cannot determine', confidence 1); key says False; a coverage disagreement, not a contradictory answer"},
+ "q42_bin_bed_near_desk": {"answer_match": false,
+  "note": "annotator abstained ('cannot determine', confidence 1); key says False; coverage disagreement"},
+ "q42_cmp_picture_drawers_vs_bed": {"answer_match": false,
+  "note": "annotator abstained ('cannot determine', confidence 1); key says bed; coverage disagreement"},
+ "q42_set_near_window": {"answer_match": false,
+  "note": "over-inclusion: returned set adds 'window' itself alongside the key's cream curtain; not an exact set match"},
+ "q25_cmp_rug_sofa_vs_counter": {"answer_match": false,
+  "note": "owner-excluded as ambiguous; annotator answered 'Closer to Sofa' at confidence 5 -- an exclusion-judgement disagreement, reported as such; no key answer exists to match"},
+ "q42_cmp_radiator_window_vs_desk": {"answer_match": false,
+  "note": "owner-excluded as ambiguous; annotator also could not determine (confidence 1) -- functional agreement on unanswerability, though the ambiguity checkbox was not ticked"}
+}

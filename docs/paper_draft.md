@@ -393,7 +393,7 @@ its three keyed positives appear only in the final owner-corrected key with no
 independent returned-form record, so the recall denominator rests on pairs captured
 once. It is marked exploratory in the registry and is deliberately not a headline.
 
-**Reproducibility.** 282 registry rows, each carrying a scope; a sanitized pack of 23
+**Reproducibility.** 283 registry rows, each carrying a scope; a sanitized pack of 23
 numeric reports with original paths, sha256 and producing commits accompanies the paper,
 because most run artifacts live in an ignored tree. Twenty-eight rows cite an untracked
 primary source and cannot be reproduced from the repository alone; a further 52
@@ -491,3 +491,11 @@ above:
   evaluator was masked to the injected class, with zero failures on clean
   artifacts `[G11]`. Synthetic fixture; validates attribution, not any
   system's performance.
+
+- After the keys were frozen, a blinded second annotator independently
+  answered all 12 relation questions from the committed packet frames:
+  6 of 10 scored answers agree exactly after committed adjudication, every
+  pure disagreement is a confidence-1 abstention rather than a
+  contradiction, and the two owner-excluded items split one-one on the
+  exclusion judgement `[G12]`. Keys were not altered in response; the
+  evaluated system was not retuned.

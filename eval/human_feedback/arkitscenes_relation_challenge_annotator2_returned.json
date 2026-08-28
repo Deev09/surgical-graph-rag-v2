@@ -1,0 +1,125 @@
+{
+ "answers": {
+  "q25_bin_basket_near_desk": {
+   "ambiguous": false,
+   "answer": "Yes",
+   "confidence": "5 (certain)",
+   "rationale": "",
+   "referent:small grey wastepaper basket under the desk": "The small white open waste paper basket with plastic wrapping below the white long desk",
+   "relation_label": "near"
+  },
+  "q25_bin_kitchenbin_near_basket": {
+   "ambiguous": false,
+   "answer": "cannot determine",
+   "confidence": "1 (guess)",
+   "rationale": "the tall stainless kitchen bin os barely visible and they are not in the same frame to determine",
+   "referent:tall stainless kitchen bin": "he black rim and stainless steel near the corner of the page near the microwave ",
+   "relation_label": "cannot determine"
+  },
+  "q25_bin_kitchenbin_near_counter": {
+   "ambiguous": false,
+   "answer": "yes",
+   "confidence": "2",
+   "rationale": "",
+   "referent:tall stainless kitchen bin": "the black rim and stainless steel near the corner of the page near the microwave ",
+   "relation_label": "closer to first"
+  },
+  "q25_cmp_coffee_table_sofa_vs_dining": {
+   "ambiguous": false,
+   "answer": "Sofa",
+   "confidence": "4",
+   "rationale": "",
+   "referent:coffee table": "Glass table with wooden frames",
+   "referent:round dining table": "not visible",
+   "referent:sofa": "Brown leather couch",
+   "relation_label": "near"
+  },
+  "q25_cmp_fan_desk_vs_counter": {
+   "ambiguous": false,
+   "answer": "closer to the long narrow desk",
+   "confidence": "3",
+   "rationale": "",
+   "referent:kitchen counter": "has the attached wooden cabinets with the microwave and sink",
+   "referent:long narrow desk": "the long white glass desk with wooden frames attached to the wall",
+   "referent:pedestal fan": "the white stading fan in the corner of the room",
+   "relation_label": "closer to first"
+  },
+  "q25_cmp_rug_sofa_vs_counter": {
+   "ambiguous": false,
+   "answer": "Closer to Sofa",
+   "confidence": "5 (certain)",
+   "rationale": "",
+   "referent:kitchen counter": "has the attached wooden cabinets with the microwave and sink",
+   "referent:sofa": "the Leather couch with pillows on it",
+   "referent:striped rug": "Striped rug has a coffee table on top of it seems to be in the center of the room",
+   "relation_label": "near"
+  },
+  "q25_set_near_sofa": {
+   "ambiguous": false,
+   "answer": "Coffee Table, striped rug, white heater",
+   "confidence": "5 (certain)",
+   "rationale": "",
+   "referent:coffee table": "the glass wooden frame table ",
+   "referent:kitchen counter": "the one with wooden cabinets, sink and microwave",
+   "referent:round dining table": "not visible",
+   "referent:sofa": "The brown leather couche",
+   "referent:striped rug": "the Striped carpet on the floor",
+   "referent:white convector heater": "The air vent heater on the ground near the sofa attached to the wall",
+   "relation_label": "near"
+  },
+  "q42_bin_bed_near_desk": {
+   "ambiguous": false,
+   "answer": "cannot determine",
+   "confidence": "1 (guess)",
+   "rationale": "Don't see both on the same frame",
+   "referent:bed": "black head frame with white sheets and white pillows with green partly covered",
+   "relation_label": "cannot determine"
+  },
+  "q42_bin_desk_near_drawers": {
+   "ambiguous": false,
+   "answer": "Yes",
+   "confidence": "5 (certain)",
+   "rationale": "",
+   "referent:white desk": "the object below the TV with a remote on it",
+   "relation_label": "near"
+  },
+  "q42_cmp_picture_drawers_vs_bed": {
+   "ambiguous": false,
+   "answer": "cannot determine",
+   "confidence": "1 (guess)",
+   "rationale": "Cannot see the framed picture",
+   "referent:bed": "black head frame with white sheets and white pillows with green partly covered",
+   "referent:chest of drawers": "Brown long wooden drawers below the mirror",
+   "referent:framed picture standing on the carpet": "not visible",
+   "relation_label": "cannot determine"
+  },
+  "q42_cmp_radiator_window_vs_desk": {
+   "ambiguous": false,
+   "answer": "cannot determine",
+   "confidence": "1 (guess)",
+   "rationale": "Doesn't have any frames with both objects in it to compare",
+   "referent:white desk": "sttached to wall below the tv with a remote on it",
+   "referent:white radiator": "White with narrow vents attached to the wall near the blue lamp on desk",
+   "referent:window": "lighted with transparent covered screen and green curtains",
+   "relation_label": "cannot determine "
+  },
+  "q42_set_near_window": {
+   "ambiguous": false,
+   "answer": "window, cream curtain",
+   "confidence": "3",
+   "rationale": "",
+   "referent:bed": "black head frame with white sheets and white pillows with green partly covered",
+   "referent:chest of drawers": "Brown long wooden drawers below the mirror",
+   "referent:cream curtain": "long draping curtains with a steel holing on top",
+   "referent:white radiator": "not visible",
+   "referent:window": "window is on the window obviously near it",
+   "relation_label": "near"
+  }
+ },
+ "exported_at": "2026-08-28T15:13:40.591Z",
+ "role": "independent second annotator; blinded to system outputs, arm names and hypothesis; key-reproducibility evidence and future calibration data only",
+ "schema": "stagereach_annotator2_returned",
+ "schema_version": 1,
+ "sheet_seed": 20260828,
+ "source_sha256": "900a4b3f46a2110352cf2c559927fbfdf304c60a905ed882a5e12d841e733741"
+}
