@@ -26,9 +26,10 @@ Scope of the amendment, for every agent working tonight:
 - No graph tuning, no new grounding variants, no new VLM runs, no new scenes.
   Direct multiview RGB remains the product answer path and is disclosed in the
   paper as one named model (claude-opus-5), one frozen pass.
-- The second annotator's returned review is stored as evaluation-key
+- If a second annotator returns a review, it is stored as evaluation-key
   reproducibility evidence and future calibration data; it must not be used to
-  retune the evaluated system tonight.
+  retune the evaluated system, and no returned review arrived before the
+  2026-08-28 submission.
 
 Current development target:
 

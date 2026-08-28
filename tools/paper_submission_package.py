@@ -58,14 +58,18 @@ OPTIONAL = [
 # The 24/24 claim's full evidence chain: evaluator code, CLI, and the test
 # that asserts the battery. Staged under code/ with paths flattened.
 CODE_FILES = [
+    "eval/stagereach/__init__.py",
     "eval/stagereach/schema.py",
     "eval/stagereach/evaluator.py",
     "eval/stagereach/metrics.py",
     "eval/stagereach/faults.py",
+    "eval/stagereach/adapters/__init__.py",
     "eval/stagereach/adapters/arkit.py",
     "eval/stagereach/adapters/replica.py",
     "tools/stagereach_eval.py",
     "tools/stagereach_numbers.py",
+    "tests/eval/test_stagereach_schema.py",
+    "tests/eval/test_stagereach_evaluator.py",
     "tests/eval/test_stagereach_faults.py",
     "tests/eval/test_stagereach_arkit_gate.py",
     "tests/eval/test_stagereach_replica_gate.py",
@@ -245,14 +249,14 @@ def main(argv=None) -> int:
     stage_pack(STAGE / "evidence_pack")
     stage_packet_manifests(STAGE / "packets")
     code_dir = STAGE / "code"
-    code_dir.mkdir(parents=True, exist_ok=True)
     for rel in CODE_FILES:
         src = REPO / rel
         if not src.is_file():
             missing.append(rel)
             continue
-        (code_dir / rel.replace("/", "_")).write_text(
-            scrub_paths(src.read_text()))
+        dst = code_dir / rel
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        dst.write_text(scrub_paths(src.read_text()))
 
     for pdf in ("main.pdf", "supp.pdf"):
         src = REPO / "docs" / "3dv" / "out" / pdf
