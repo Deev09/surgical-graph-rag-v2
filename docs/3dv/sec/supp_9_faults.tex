@@ -44,20 +44,19 @@ spurious failures on clean artifacts.
     \toprule
     fault class & mutated artifact & expected stage & loc.\\
     \midrule
-    \TODO{class 1} & \TODO{artifact} & \TODO{stage} & \TODO{3/3}\\
-    \TODO{class 2} & \TODO{artifact} & \TODO{stage} & \TODO{3/3}\\
-    \TODO{class 3} & \TODO{artifact} & \TODO{stage} & \TODO{3/3}\\
-    \TODO{class 4} & \TODO{artifact} & \TODO{stage} & \TODO{3/3}\\
-    \TODO{class 5} & \TODO{artifact} & \TODO{stage} & \TODO{3/3}\\
-    \TODO{class 6} & \TODO{artifact} & \TODO{stage} & \TODO{3/3}\\
-    \TODO{class 7} & \TODO{artifact} & \TODO{stage} & \TODO{3/3}\\
-    \TODO{class 8} & \TODO{artifact} & \TODO{stage} & \TODO{3/3}\\
+    entity\_removal & entity\_artifact & object\_delivery (fail) & 3/3\\
+    identity\_swap & grounded\_candidates & referent\_grounding (fail) & 3/3\\
+    relation\_deletion\_pre\_serialization & relation\_artifact & relation\_correctness (fail) & 3/3\\
+    serialization\_corruption & serialized\_graph & serialization\_consistency (fail) & 3/3\\
+    predicate\_change & serialized\_graph & serialization\_consistency (fail) & 3/3\\
+    answer\_corruption & answer\_artifact & answer\_generation (fail) & 3/3\\
+    forced\_abstention & answer\_artifact & answer\_generation (abstain) & 3/3\\
+    ambiguous\_key & evaluation\_key & key\_eligibility (fail) & 3/3\\
     \midrule
     total & & & 24/24\\
     \bottomrule
   \end{tabular}
-  \caption{\TODO{PLACEHOLDER --- to be verified against the committed
-  fault-injection results before submission.} The eight injected fault
+  \caption{The eight injected fault
   classes, the single artifact each mutates, the predeclared localization
   stage, and the masked evaluator's localization count across the three
   relation types.}
