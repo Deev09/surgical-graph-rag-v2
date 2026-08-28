@@ -197,6 +197,26 @@ def test_committed_arkit_artifact_is_current():
         f"arkit stagereach artifact is stale: {r.stdout}{r.stderr[-300:]}")
 
 
+def test_generated_paper_numbers_are_current():
+    """docs/3dv/sec/generated_numbers.tex must match what the numbers tool
+    derives now from the committed artifacts (byte-compare via --check),
+    and must never carry de-anonymising strings."""
+    import re
+    import subprocess
+    r = subprocess.run(
+        [sys.executable, str(REPO_ROOT / "tools" / "stagereach_numbers.py"),
+         "--check"],
+        capture_output=True, text=True, cwd=REPO_ROOT)
+    assert r.returncode == 0, (
+        f"generated_numbers.tex is stale: {r.stdout}{r.stderr[-300:]}")
+    tex = (REPO_ROOT / "docs" / "3dv" / "sec" /
+           "generated_numbers.tex").read_text()
+    assert not re.search(r"\bdocs/\w+", tex)
+    assert not re.search(r"\btools/\w+\.py", tex)
+    assert not re.search(r"\b[0-9a-f]{7,40}\b", tex)
+    assert not re.search(r"surgical.graph.rag", tex, re.I)
+
+
 TESTS = [
     test_gate_arkit_arms_delivered_ladder,
     test_gate_arkit_arms_grounded_ladder,
@@ -208,6 +228,7 @@ TESTS = [
     test_gate_arkit_attribution_names_gating_stages_only,
     test_gate_arkit_legacy_ledger_compatibility,
     test_committed_arkit_artifact_is_current,
+    test_generated_paper_numbers_are_current,
 ]
 
 
