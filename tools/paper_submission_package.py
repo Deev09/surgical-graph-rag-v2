@@ -89,7 +89,13 @@ BANNED = [
     (re.compile(r"claude code|anthropic assistant|written by claude", re.I),
      "assistant attribution"),
     (re.compile(r"\bTODO\b|PLACEHOLDER", re.I), "unfinished marker"),
-    # Causal overclaims the paper retracted; must never ship in the package.
+]
+# Causal overclaims the paper retracted; must never appear in CURATED staged
+# files (registry, claim audit, tex-derived text, code). Historical run
+# reports in evidence_pack/ are byte-derived from what was scored and are
+# never rewritten; their run-time interpretive strings are superseded by the
+# paper and the registry, which NOTE_historical_reports.txt states.
+RETRACTED = [
     (re.compile(r"clear(s|ed|ing)? extraction|not relation extraction"
                 r"|naming[a-z ,]*\bbind", re.I), "retracted causal phrasing"),
 ]
@@ -202,6 +208,9 @@ def scan(stage: Path) -> list[str]:
         except (UnicodeDecodeError, ValueError):
             continue
         pats = list(BANNED)
+        rel = f.relative_to(stage)
+        if rel.parts[0] != "evidence_pack":
+            pats += RETRACTED
         if f.suffix in PROSE_SUFFIXES:
             pats.append((COMMIT_HASH, "commit-like hash"))
         for pat, label in pats:
@@ -250,6 +259,18 @@ def main(argv=None) -> int:
         else:
             print(f"  (optional, absent: {rel})")
     stage_pack(STAGE / "evidence_pack")
+    (STAGE / "evidence_pack" / "NOTE_historical_reports.txt").write_text(
+        "The reports in this directory are byte-derived, sanitized copies of\n"
+        "run artifacts exactly as they existed when the results were scored;\n"
+        "they are never regenerated or edited (MANIFEST.json records the\n"
+        "hashes). Interpretive prose strings inside them reflect the analysis\n"
+        "framing AT RUN TIME. Where that framing has since been corrected --\n"
+        "in particular, any suggestion that relation extraction was 'cleared'\n"
+        "or that naming alone binds -- the paper's bounded claims and the\n"
+        "results registry supersede the report text: the comparison\n"
+        "establishes serialization consistency on the tested items only, both\n"
+        "arms consume human-supplied identity, and semantic correctness of\n"
+        "the stored relations was not independently established.\n")
     stage_packet_manifests(STAGE / "packets")
     ann_dir = STAGE / "annotation"
     ann_dir.mkdir(parents=True, exist_ok=True)
