@@ -14,8 +14,8 @@ camera-ready.
 
 The following restates the protocol text committed at the freeze point, at
 which time the test scene had never been inspected. The restatement keeps
-the protocol's own historical wording --- including ``untouched'' and
-``transfer'' --- which predates the main paper's pilot framing; both gates
+the protocol's own historical wording (including ``untouched'' and
+``transfer''), which predates the main paper's pilot framing; both gates
 later failed, so no transfer claim rests on any of it.
 
 \paragraph{The question.} Does the fixed direct multiview RGB QA path
@@ -28,7 +28,7 @@ ARKitScenes capture, not present locally at freeze time; only the assets
 needed for RGB packet generation are downloaded (the low-resolution wide RGB
 frames, the trajectory, and the per-frame intrinsics). A fallback capture is
 fixed in the same document so it cannot become scene-shopping later: if the
-primary cannot be obtained, a second named validation capture is used ---
+primary cannot be obtained, a second named validation capture is used; it is
 already present in a local dataset copy and never touched by any experiment
 in the project: no packet, no key, no entity manifest, no graph, no mention
 in any report. The substitution, if it happens, is recorded in the result
@@ -36,14 +36,14 @@ with the reason. No third option exists: if neither scene is usable the test
 does not run, and no scene is chosen after seeing data. Either way the scene
 stays uninspected until the protocol is committed.
 
-\paragraph{Frame selection --- reused verbatim, not re-tuned.} The survey
+\paragraph{Frame selection: reused verbatim, not re-tuned.} The survey
 rule of the existing review-kit generator: 18 equal temporal bins across the
 capture, and inside each bin the frame with the highest answer-free
 information score (contrast plus edge density, penalising clipping). The
 score cannot know what any question is about. This is the same rule the
 previous two packets used, unchanged.
 
-\paragraph{Question generation --- fixed first, applied after the packet
+\paragraph{Question generation: fixed first, applied after the packet
 exists.} The failure mode this guards against is authoring questions the
 model can answer. The procedure removes the author's discretion at the point
 where that bias would enter.
@@ -65,7 +65,7 @@ where that bias would enter.
   items from ordered triples over the anchors ranked 1--6; two cross-view
   relation items from the two lowest-combined-rank anchor pairs sharing no
   frame. Eight questions. If fewer than two non-co-visible pairs exist
-  naturally, the shortfall is recorded and the set drops to 7 or 6 --- no
+  naturally, the shortfall is recorded and the set drops to 7 or 6: no
   substitute pair is invented, and the ``if naturally present'' condition is
   reported either way. If fewer than six anchors survive step 1, the test
   does not run.
@@ -88,7 +88,7 @@ comparative questions are ordinal and use no threshold. Both conventions
 appear verbatim in the model prompt and on the author-reviewer sheet, so the two are
 answering the same question.
 
-\paragraph{Prompt and answer schema --- composed from existing text, not
+\paragraph{Prompt and answer schema: composed from existing text, not
 rewritten.} The prompt is assembled from the two prompts already in use,
 with no rewording: presence/cardinality forms take the representation kill
 test's integer/boolean phrasing; comparative and binary-near forms take the
@@ -103,7 +103,7 @@ family as the relation-challenge review kit. For each question the author-review
 records the answer; ambiguous yes/no; evidence visibility as 0, 1, or 2+
 views, judged independently of the answer; and free-text notes. The author-reviewer
 also confirms or corrects the counting convention for any class the
-questions count. There is no UID mapping panel --- there are no delivered
+questions count. There is no UID mapping panel: there are no delivered
 entities for this scene and none will be produced.
 
 \paragraph{Scoring.} Exactly once, after the blinded response is
@@ -112,7 +112,7 @@ excludes items the author-reviewer marked ambiguous; answer coverage is (correct
 wrong) over scored items; ambiguous items are excluded from both and
 reported.
 
-\paragraph{Predeclared gates --- both required.} Exact accuracy $\ge 0.60$
+\paragraph{Predeclared gates: both required.} Exact accuracy $\ge 0.60$
 and answer coverage $\ge 0.80$. Plus, as conditions on the run rather than
 numbers: no prompt, view-selection, question, convention or scoring
 adjustment after the scene is inspected; and one run only.
@@ -126,7 +126,7 @@ soften a gate.
 under a fixed procedure, direct multiview RGB transferred to one previously
 untouched ARKitScenes handheld room. It does not support generalization, a
 claim about handheld capture in general, a claim about room understanding,
-or any comparison to the graph path --- which is not run here and whose
+or any comparison to the graph path, which is not run here and whose
 existing results stand unchanged. One room, 6--10 questions, one blinded
 response, one human reviewer.
 
@@ -134,7 +134,7 @@ response, one human reviewer.
 extraction, the live API. No existing result, key, packet, report or demo
 artifact is modified.
 
-\subsection{Amendment 1 --- run voided and regenerated (2026-08-23)}
+\subsection{Amendment 1: run voided and regenerated (2026-08-23)}
 
 Run~1 is void. Nothing from it is scored, and no transfer claim rests on it.
 
@@ -152,12 +152,12 @@ that the defect was real.
 leaving $n = 4$: one cardinality, two presence, one comparative, and zero
 cross-view. Two failures follow. First, the coverage gate became an
 anti-abstention gate: at $n = 4$, coverage $\ge 0.80$ requires 4 of 4
-answered, so a single honest \texttt{unknown} would fail the run --- the
+answered, so a single honest \texttt{unknown} would fail the run; the
 gate was written to catch a model abstaining its way out of being wrong,
 and at this sample size it instead punishes the exact behaviour the product
 path is built on. Second, the surviving mix could not support the claim:
-half the scored set was presence --- the easiest and least spatial category
---- with no cross-view item at all. Root cause of the exclusions: six of
+half the scored set was presence (the easiest and least spatial category),
+with no cross-view item at all. Root cause of the exclusions: six of
 eight questions said ``in this room'', and the capture is a
 $9.99 \times 13.53$\,m single-storey multi-space floor with a staircase and
 adjoining rooms, not one room. The phrase does not denote, so several items
@@ -168,8 +168,8 @@ had no determinate answer.
 the captured space'', defined in the conventions as everything visible
 anywhere in the supplied views; comparative and near questions need no scope
 and are unchanged. (2)~\emph{Anchor ordering}: was first-appearance
-ascending, which put a small wall print --- 2 of 3 passes, seen in 3 frames
---- at rank~0, where it carried three of eight questions; now ordered by
+ascending, which put a small wall print (2 of 3 passes, seen in 3 frames)
+at rank~0, where it carried three of eight questions; now ordered by
 passes agreeing descending, then frames-seen descending, then first
 appearance ascending. Still entirely mechanical, still nothing to do with
 whether any system can answer. (3)~\emph{Ten questions, not eight}, for
@@ -189,16 +189,16 @@ none of the three fixes touches what they saw or reported.
 $\ge 0.60$ needs 6 correct and coverage $\ge 0.80$ needs 8 answered, so up
 to two honest abstentions are affordable. If exclusions again drive the
 scored set below six items, the run is void and reported as such rather
-than scored --- recorded in advance so it is a rule and not a judgement
+than scored; this is recorded in advance so it is a rule and not a judgement
 made afterwards.
 
-\subsection{Amendment 2 --- relational slots restricted to unique-referent
+\subsection{Amendment 2: relational slots restricted to unique-referent
 anchors}
 
 Applied immediately after amendment~1 regenerated, before any blinded
 response existed, and before the author-reviewer was asked to review anything.
 
-Amendment~1's ordering fix promoted the best-attested anchors --- but
+Amendment~1's ordering fix promoted the best-attested anchors, but
 best-attested turns out to correlate with \emph{numerous}. Of the top twelve
 anchors, exactly one had a unique referent. Six of the ten regenerated
 questions read ``the cushion'', ``the framed picture'', ``the wall power
@@ -211,24 +211,24 @@ set a second time.
 The rule: comparative and cross-view slots draw only from anchors where all
 three passes agreed there is exactly one. 27 of the 48 admitted anchors
 qualify, so the constraint costs nothing. Presence and cardinality slots are
-untouched --- ``how many framed pictures are in the captured space'' is a
+untouched: ``how many framed pictures are in the captured space'' is a
 good question precisely because there are several. Nothing about
 answerability enters: the filter is a count agreed by three observers who
 never saw a question.
 
 \paragraph{A limit on amending.} This is the second structural amendment.
-Repeated amendment is itself a risk --- at some point ``fix the generator''
+Repeated amendment is itself a risk: at some point ``fix the generator''
 becomes ``iterate until the questions look right'', which is the behaviour
 the protocol exists to prevent. So: no further structural amendment to this
 generator on this scene. If run~2's returned key again drives the scored set
 below six, that is reported as a finding about the fixed-procedure generator
---- that it does not produce a usable question set on this capture --- and
+(that it does not produce a usable question set on this capture), and
 the transfer test is abandoned rather than amended a third time.
 
 \subsection{What protects the result, and blinding stated precisely}
 
 \paragraph{What protects the result.} The blinded model never ran in run~1
---- no response was ever requested --- so nothing scored was selected on an
+(no response was ever requested), so nothing scored was selected on an
 outcome, and both amendments addressed defects visible in the questions
 alone.
 

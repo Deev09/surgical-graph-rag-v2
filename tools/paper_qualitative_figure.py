@@ -149,21 +149,21 @@ def build_html() -> str:
 </style>
 <div class="cols">
   <div class="col">
-    <p class="lbl">the capture &mdash; both referents visible</p>
+    <p class="lbl">the capture: both referents visible</p>
     {frame_imgs}
   </div>
   <div class="col">
     <p class="lbl">the two referents, as delivered</p>
     <div style="display:flex; gap:12px">
       <div><img class="crop" src="{basket}">
-        <div class="cap"><span class="uid">{BASKET}</span> &mdash; the basket.<br>
+        <div class="cap"><span class="uid">{BASKET}</span>: the basket.<br>
         Bridge resolved it: <b style="color:{OK}">correct</b>.</div></div>
       <div><img class="crop" src="{desk}">
-        <div class="cap"><span class="uid">{DESK}</span> &mdash; the desk.<br>
+        <div class="cap"><span class="uid">{DESK}</span>: the desk.<br>
         Bridge <b style="color:{BAD}">abstained</b>: no entity won two view slots.</div></div>
     </div>
     <p class="edge">Stored edge <span class="uid">{BASKET}</span>&nbsp;&harr;&nbsp;<span
-      class="uid">{DESK}</span>: surface distance <b>{dist} m</b> &lt; {thr} m &mdash; the
+      class="uid">{DESK}</span>: surface distance <b>{dist} m</b> &lt; {thr} m: the
       serialized <b>NEAR</b> edge matches recomputed geometry under the same convention.</p>
   </div>
 </div>

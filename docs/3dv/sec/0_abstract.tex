@@ -1,7 +1,7 @@
 \begin{abstract}
 The object of study is evaluation methodology for question answering over 3D scene
 graphs built from handheld RGB-D captures: when a system answers a spatial question
-wrongly --- or not at all --- which pipeline stage lost it, and what is any reported
+wrongly, or not at all, which pipeline stage lost it, and what is any reported
 number entitled to claim? On our development slice the diagnosis is concentrated. Loss
 collects at identity grounding: the same stored relations answer 7 of 10 scored
 questions under human-supplied identity and 0 of 10 under the pipeline's own labels,
@@ -11,10 +11,10 @@ established). The contribution is \textbf{StageReach3D}, a scope-aware evaluator
 declares each arm's route through a stage DAG, derives reachability from declared gating
 dependencies, reports reached, pass, fail and unknown separately, and enforces scope in
 code: a deployable trace refuses to consume an oracle-fed stage. Its attribution is
-validated by evaluator-masked artifact-level fault localization ---
-\SRFaultLocalized{} injected faults across \SRFaultClasses{} fault classes and
+validated by evaluator-masked artifact-level fault localization
+(\SRFaultLocalized{} injected faults across \SRFaultClasses{} fault classes and
 \SRFaultRelationTypes{} relation types localized to the correct stage while the
-evaluator was masked to the injected class --- and demonstrated on ARKitScenes (per-arm
+evaluator was masked to the injected class) and demonstrated on ARKitScenes (per-arm
 reachability) and on Replica multi-relation QA (schema and outcome transfer, where
 outcome-keyed reporting keeps true-empty items from masking the error rate on answered
 items). The held-but-unreachable finding is scoped: under one named model

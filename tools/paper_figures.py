@@ -6,7 +6,7 @@ Reads `docs/project_results_registry.csv` and writes three SVGs into
 `docs/figures/`. No randomness, no timestamps, no network: identical inputs
 produce byte-identical output, and a test asserts it.
 
-Every number drawn is read from the registry by `result_id` — nothing is typed
+Every number drawn is read from the registry by `result_id`; nothing is typed
 into this file. If a figure and the registry ever disagree, the figure cannot
 be regenerated, which is the point.
 
@@ -154,7 +154,7 @@ def figure_2_component(R: dict) -> str:
          text(28, 78, "partitions and IoU matching all fixed.", 14, MUTED),
          f'<rect x="28" y="90" width="{W-56}" height="48" rx="3" fill="#f6efdc" '
          f'stroke="{ORACLE}" stroke-width="1"/>',
-         text(40, 110, "SCOPE  oracle_free_component_eval — the denominator is instances "
+         text(40, 110, "SCOPE  oracle_free_component_eval: the denominator is instances "
                        "the evaluator already", 14, ORACLE, weight="600"),
          text(40, 130, "matched to an annotation box. NOT end-to-end performance.",
               14, ORACLE, weight="600")]
@@ -183,7 +183,7 @@ def figure_2_component(R: dict) -> str:
                 b.append(text(gx + d * scale + 80, yy + 13, idr, 14, FAINT, family=MONO))
             y += 68
     b.append(text(28, H - 58, "The context control (41069021, rgb_context) scores BELOW "
-                              "rgb_tight at both ranks — 3/7 and 5/7", 14, INK))
+                              "rgb_tight at both ranks: 3/7 and 5/7", 14, INK))
     b.append(text(28, H - 40, "against 5/7 and 7/7. More context hurts, which SUPPORTS the "
                               "interpretation that the gain comes", 14, MUTED))
     b.append(text(28, H - 22, "from object texture rather than room gist. It does not "
@@ -208,7 +208,7 @@ def figure_3_unreachable(R: dict) -> str:
          # same warning, because the top bar is a bound and not a system result.
          f'<rect x="28" y="74" width="984" height="50" rx="3" fill="#f6efdc" '
          f'stroke="{ORACLE}" stroke-width="1"/>',
-         text(40, 95, "SCOPE  the hatched bar is identity_oracle — it consumes "
+         text(40, 95, "SCOPE  the hatched bar is identity_oracle: it consumes "
                       "human-supplied identity.", 15, ORACLE, weight="600"),
          text(40, 116, "It BOUNDS what the representation could express; it is not "
                        "performance.", 15, ORACLE, weight="600")]
@@ -237,7 +237,7 @@ def figure_3_unreachable(R: dict) -> str:
             # F50 draws the same width as the F35 bound. Left unmarked, the tie
             # reads as "the deployable path already reaches the ceiling", which
             # is the opposite of this figure's claim.
-            b.append(text(left + bw + 112, y + 17, "deployable — ties the bound on "
+            b.append(text(left + bw + 112, y + 17, "deployable: ties the bound on "
                           "DIFFERENT items", 15, OK, weight="700"))
     # The gap brace sits BELOW the bars, not beside them: an earlier version put
     # its label inline and it overlapped the 2/10 value and its result_id.
@@ -245,7 +245,7 @@ def figure_3_unreachable(R: dict) -> str:
     gy = top + 3 * rowh + 2
     b.append(f'<path d="M {gx0} {gy-8} L {gx0} {gy} L {gx1} {gy} L {gx1} {gy-8}" '
              f'fill="none" stroke="{BAD}" stroke-width="1.4"/>')
-    b.append(text((gx0 + gx1) / 2, gy + 18, "the reachability gap — 7/10 held, 0/10 reached",
+    b.append(text((gx0 + gx1) / 2, gy + 18, "the reachability gap: 7/10 held, 0/10 reached",
                   15, BAD, anchor="middle", weight="700"))
     n64, d64 = frac(R["F64"])
     b.append(text(28, rowy(3) + 58,
@@ -281,7 +281,7 @@ def figure_3_unreachable(R: dict) -> str:
                           weight="700" if "FAIL" in sub else "normal"))
         b.append(text(cx + 160, yb + 46, rid, 15, FAINT, anchor="end", family=MONO))
     b.append(text(28, H - 30, f"Accuracy when answered is {R['F85']['value']} [F85] over the "
-                              "5 items it answered — denominator 5, not 10.", 15, FAINT))
+                              "5 items it answered: denominator 5, not 10.", 15, FAINT))
     b.append(text(28, H - 10, "Both predeclared gates failed; no transfer claim is made "
                               "[F88]. On the development rooms this arm was wrong 2/10 [F51].",
                   15, FAINT))
@@ -314,7 +314,7 @@ def figure_4_reachability(R: dict) -> str:
          f'<rect x="28" y="74" width="984" height="30" rx="3" fill="#f6efdc" '
          f'stroke="{ORACLE}" stroke-width="1"/>',
          text(40, 95, "SCOPE  re-reads already-scored outcomes; the stored-human arm is "
-                      "identity_oracle \u2014 a BOUND, not performance.", 15, ORACLE,
+                      "identity_oracle: a BOUND, not performance.", 15, ORACLE,
               weight="600")]
 
     # Stage columns shared by the graph arms; every arm's outcome sits at x=858.
@@ -391,7 +391,7 @@ def figure_4_reachability(R: dict) -> str:
     # --- stored-human identity ----------------------------------------------
     y = 364
     b.append(band(y, "stored-human identity", "F35",
-                  "identity_oracle \u2014 a bound, NOT DEPLOYABLE", ORACLE))
+                  "identity_oracle: a bound, NOT DEPLOYABLE", ORACLE))
     ny = y + 14
     b.append(node(xs[0], ny, n))
     b.append(node(xo, ny, reach["held_by_representation"], oracle=True))
@@ -407,7 +407,7 @@ def figure_4_reachability(R: dict) -> str:
     b.append(node(xs[0], ny, n))
     b.append(node(xo, ny, reach["reached_by_direct_rgb"]))
     b.append(arrow(xs[0] + nw, xo, ny + nh / 2, dashed=True,
-                   note="graph stages bypassed \u2014 answers from the images alone"))
+                   note="graph stages bypassed; answers from the images alone"))
     b.append(stage_label(xs[0], ny + nh + 20, "scored"))
     b.append(stage_label(xo, ny + nh + 20, "correct"))
 

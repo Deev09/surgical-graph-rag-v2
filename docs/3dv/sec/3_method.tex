@@ -16,11 +16,11 @@ Every measurement carries one of seven scopes, enforced in code rather than prom
 prose. Four matter for the results below: \texttt{deployable} (end-to-end performance of
 a shippable path; no oracle, no human key in the answer path, and the denominator is not
 oracle-selected); \texttt{oracle\_free\_component\_eval} (the prediction path is
-oracle-free, but the \textbf{denominator is oracle-selected} --- a component result
+oracle-free, but the \textbf{denominator is oracle-selected}, a component result
 only); \texttt{delivered} (the pipeline's own output, scored against a key); and
-\texttt{identity\_oracle} (consumes human-supplied identity --- a \textbf{bound}, never
-system performance). The remaining three --- \texttt{proposal\_ceiling},
-\texttt{definition-change} and \texttt{bug-diagnostic} --- are defined in the
+\texttt{identity\_oracle} (consumes human-supplied identity: a \textbf{bound}, never
+system performance). The remaining three (\texttt{proposal\_ceiling},
+\texttt{definition-change} and \texttt{bug-diagnostic}) are defined in the
 supplement, along with the full row counts.
 
 Answer production and grading are separate functions: no component that produces an
@@ -45,10 +45,10 @@ Each arm is evaluated along a declared \emph{path}: an ordered subset of a fixed
 universe of eight stages (\cref{tab:paths}). Paths are data, not convention; a stage a
 path does not declare is bypassed, and a \texttt{not\_applicable} status is legal only
 there. Two stages the vocabulary keeps distinct:
-\texttt{serialization\_consistency} --- the serialized edge agrees with recomputation
-under the same convention --- is measured on the ARKit slice, while
-\texttt{relation\_correctness} --- semantic truth of the relation against independent
-ground truth --- is an \emph{audit} stage: non-gating, and \texttt{unknown} on ARKit,
+\texttt{serialization\_consistency} (the serialized edge agrees with recomputation
+under the same convention) is measured on the ARKit slice, while
+\texttt{relation\_correctness} (semantic truth of the relation against independent
+ground truth) is an \emph{audit} stage: non-gating, and \texttt{unknown} on ARKit,
 where no independent semantic annotation exists.
 
 \begin{table}[t]
@@ -60,18 +60,18 @@ where no independent semantic annotation exists.
     \midrule
     key\_eligibility & $\bullet$\textsuperscript{o} & $\bullet$\textsuperscript{o}
       & $\bullet$\textsuperscript{o} & $\bullet$\textsuperscript{o}\\
-    object\_delivery & $\bullet$ & $\bullet$ & $\bullet$ & ---\\
-    relation\_applicability & $\bullet$ & $\bullet$ & $\bullet$ & ---\\
-    relation\_correctness & $\circ$ & $\circ$ & --- & ---\\
-    serialization\_consistency & $\bullet$ & $\bullet$ & --- & ---\\
-    identity\_injection & --- & $\bullet$\textsuperscript{o} &
-      $\bullet$\textsuperscript{o} & ---\\
-    referent\_grounding & $\bullet$ & --- & --- & ---\\
+    object\_delivery & $\bullet$ & $\bullet$ & $\bullet$ & $\times$\\
+    relation\_applicability & $\bullet$ & $\bullet$ & $\bullet$ & $\times$\\
+    relation\_correctness & $\circ$ & $\circ$ & $\times$ & $\times$\\
+    serialization\_consistency & $\bullet$ & $\bullet$ & $\times$ & $\times$\\
+    identity\_injection & $\times$ & $\bullet$\textsuperscript{o} &
+      $\bullet$\textsuperscript{o} & $\times$\\
+    referent\_grounding & $\bullet$ & $\times$ & $\times$ & $\times$\\
     answer\_generation & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$\\
     \bottomrule
   \end{tabular}
   \caption{Per-arm paths through the stage DAG; there is no shared mixed ladder.
-  $\bullet$ gating stage, $\circ$ non-gating audit stage, --- declared bypass,
+  $\bullet$ gating stage, $\circ$ non-gating audit stage, $\times$ declared bypass,
   \textsuperscript{o} oracle-fed. \emph{graph} covers the delivered and grounded arms
   (one path shape); \emph{id-oracle} is the stored-edge replay;
   \texttt{identity\_injection} is the only oracle-fed stage on an answer path, and
@@ -124,9 +124,9 @@ header, scene id, provenance strings and raw category elided):
 The evaluator's invariants are tests, and a violation raises rather than warns:
 (i) \texttt{unknown} never counts as pass in survival;
 (ii) a deployable-scope trace may not pass-consume any oracle-fed answer-path stage;
-(iii) no silent bypass --- any reached status downstream of a fail on a depended-on
+(iii) no silent bypass: any reached status downstream of a fail on a depended-on
 stage is an error, and \texttt{not\_applicable} is legal only on declared bypasses;
-(iv) no pooled accuracy --- metrics are keyed by (expected outcome, result), positives
+(iv) no pooled accuracy: metrics are keyed by (expected outcome, result), positives
 are never pooled with true-empties, and no single ``accuracy'' is exposed;
 (v) under a non-exhaustive key the evaluator refuses to emit precision, recall or
 true-negative metrics;
@@ -136,7 +136,7 @@ true-negative metrics;
 
 Gates, stopping rules and interpretation limits are written and committed before the
 corresponding scores exist. Twice this caught a \emph{structurally unreachable} outcome
-before measurement --- a predeclared clause that cannot fire is a broken instrument, not
+before measurement; a predeclared clause that cannot fire is a broken instrument, not
 a null result: in the first relation experiment the routing structure made the accuracy
 clause unreachable, and it duly came in at exactly $0.0000$ \rid{F25} with the proceed
 decision \texttt{false} \rid{F27}. Blinded responses are generated in an isolated
@@ -170,7 +170,7 @@ admission threshold $\text{min\_top1\_score}=0.28$ on raw cosine similarity
 per class, scored by their maximum. The three arms differ only in the images:
 \texttt{splat} renders three isolated point splats per instance; \texttt{rgb\_tight}
 takes real capture crops at 0.15 box padding; the \texttt{rgb\_context} control takes
-0.6-padding crops with the target dimmed --- all from a fixed multiview source (every
+0.6-padding crops with the target dimmed, all from a fixed multiview source (every
 6th posed frame, three views per instance, 24\,px minimum crop side). Evaluation
 matches delivered instances one-to-one to annotation-box vertex sets greedily at vertex
 $\text{IoU}\ge 0.50$.
@@ -193,7 +193,7 @@ is applied or swept anywhere in the bridge.}
 Claude Opus 5 (Anthropic), single pass, one response per packet, no retries and no
 self-consistency sampling. Frames are selected answer-free (18 temporal bins, highest
 information score per bin; the selector cannot see any question). The response schema is
-fixed --- per item an identifier, an \texttt{outcome} of \texttt{answer} or
+fixed (per item an identifier, an \texttt{outcome} of \texttt{answer} or
 \texttt{unknown}, the answer, a confidence in $[0,1]$, and evidence frames drawn only
-from the 18 supplied --- and the response must pin the hash of the packet it answered.
+from the 18 supplied), and the response must pin the hash of the packet it answered.
 Declining is a first-class outcome, distinct from answering wrongly.

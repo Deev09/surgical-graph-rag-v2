@@ -50,12 +50,12 @@ each arm declares its own ordered stage subset as data
 \texttt{oracle\_fed}: \texttt{key\_eligibility} is
 \texttt{answer\_path=False, oracle\_fed=True} on every path, and
 \texttt{identity\_injection} is \texttt{answer\_path=True,
-oracle\_fed=True} --- a \texttt{deployable}-scope trace may not
+oracle\_fed=True}; a \texttt{deployable}-scope trace may not
 pass-consume any oracle-fed answer-path stage, and the evaluator raises if
 one tries. Gating dependencies are declared per stage per path:
 \texttt{serialization\_consistency} does \emph{not} depend on
 \texttt{relation\_correctness}, and \texttt{relation\_correctness} is a
-non-gating audit stage on the ARKit paths --- on ARKit \texttt{NEAR} it is
+non-gating audit stage on the ARKit paths; on ARKit \texttt{NEAR} it is
 \texttt{unknown} (no independent semantic annotation exists) while
 serialization consistency is measured.
 
@@ -71,10 +71,10 @@ serialization consistency is measured.
       key\_eligibility, object\_delivery, relation\_applicability,
       relation\_correctness, serialization\_consistency,
       referent\_grounding, answer\_generation &
-      --- & deployable, delivered\\
+      none & deployable, delivered\\
     \addlinespace
     \texttt{graph\_deployable\_grounded} &
-      same as above & --- & deployable, delivered\\
+      same as above & none & deployable, delivered\\
     \addlinespace
     \texttt{graph\_identity\_oracle} &
       key\_eligibility, object\_delivery, relation\_applicability,

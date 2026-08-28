@@ -49,7 +49,7 @@ code & metric & value & scope & source artifact\\
 \texttt{E28} & support-stage precision on the keyed pairs & 1.0 & \texttt{delivered} & arkitscenes\_\allowbreak{}(id)\_\allowbreak{}support\_\allowbreak{}separability.json\\
 \texttt{E29} & support-stage recall on the keyed positives & 0.333333 & \texttt{delivered} & arkitscenes\_\allowbreak{}(id)\_\allowbreak{}support\_\allowbreak{}separability.json\\
 \texttt{F14} & wrong & 2 / 6 & \texttt{deployable} & arkitscenes\_\allowbreak{}representation\_\allowbreak{}kill\_\allowbreak{}test.md\\
-\texttt{F25} & absolute exact-accuracy gain vs best single arm (required \textgreater{}= 0.10) & 0.0000 (required \textgreater{}= 0.10) — MISSED & \texttt{deployable} & arkitscenes\_\allowbreak{}representation\_\allowbreak{}kill\_\allowbreak{}test.md\\
+\texttt{F25} & absolute exact-accuracy gain vs best single arm (required \textgreater{}= 0.10) & 0.0000 (required \textgreater{}= 0.10): MISSED & \texttt{deployable} & arkitscenes\_\allowbreak{}representation\_\allowbreak{}kill\_\allowbreak{}test.md\\
 \texttt{F27} & proceed to a larger hybrid & false & \texttt{deployable} & arkitscenes\_\allowbreak{}representation\_\allowbreak{}kill\_\allowbreak{}test.md\\
 \texttt{F28} & correct & 7 / 10 & \texttt{identity\_\allowbreak{}oracle} & arkitscenes\_\allowbreak{}relation\_\allowbreak{}challenge.md\\
 \texttt{F35} & correct & 7 / 10 & \texttt{identity\_\allowbreak{}oracle} & arkitscenes\_\allowbreak{}relation\_\allowbreak{}challenge.md\\
@@ -58,26 +58,26 @@ code & metric & value & scope & source artifact\\
 \texttt{F50} & correct & 7 / 10 & \texttt{deployable} & arkitscenes\_\allowbreak{}relation\_\allowbreak{}challenge.md\\
 \texttt{F51} & wrong & 2 / 10 & \texttt{deployable} & arkitscenes\_\allowbreak{}relation\_\allowbreak{}challenge.md\\
 \texttt{F53} & coverage & 0.90 & \texttt{deployable} & direct\_\allowbreak{}rgb\_\allowbreak{}product\_\allowbreak{}path.md\\
-\texttt{F60} & delivered-graph-unique correct answers (bar \textgreater{}= 2, preferably one per scene) & 0 (required \textgreater{}= 2) — BAR NOT MET & \texttt{delivered} & arkitscenes\_\allowbreak{}relation\_\allowbreak{}challenge.md\\
+\texttt{F60} & delivered-graph-unique correct answers (bar \textgreater{}= 2, preferably one per scene) & 0 (required \textgreater{}= 2): BAR NOT MET & \texttt{delivered} & arkitscenes\_\allowbreak{}relation\_\allowbreak{}challenge.md\\
 \texttt{F63} & item-for-item agreement & 12 / 12 (agreement rate 1.0, 0 disagreements) & \texttt{identity\_\allowbreak{}oracle} & arkitscenes\_\allowbreak{}relation\_\allowbreak{}challenge.md\\
 \texttt{F64} & items in bucket 'ceiling correct, delivered unanswered' & 7 / 12 (= 7 of the 10 scored items) & \texttt{identity\_\allowbreak{}oracle} & arkitscenes\_\allowbreak{}relation\_\allowbreak{}challenge.md\\
 \texttt{F65} & items excluded as owner-ambiguous & 2 / 12 excluded -\textgreater{} 10 scored & \texttt{definition-change} & arkitscenes\_\allowbreak{}relation\_\allowbreak{}challenge.md\\
 \texttt{F66} & times the two-view sufficiency gate fired & 0 of 7 thin-evidence items (0 wrong answers suppressed, 0 correct answers suppressed) & \texttt{deployable} & arkitscenes\_\allowbreak{}relation\_\allowbreak{}challenge.md\\
-\texttt{F67} & anchor precision (correct admissions / all admissions) & 0.583 (required \textgreater{}= 0.80) — FAIL & \texttt{deployable} & arkitscenes\_\allowbreak{}grounding\_\allowbreak{}bridge.md\\
-\texttt{F68} & anchor coverage (correct AND human-resolvable admissions / all human-resolvable anchors) & 0.467 (required \textgreater{}= 0.60) — FAIL & \texttt{deployable} & arkitscenes\_\allowbreak{}grounding\_\allowbreak{}bridge.md\\
-\texttt{F69} & deployable graph-unique QA wins vs blinded RGB & 0 (required \textgreater{}= 2) — FAIL & \texttt{deployable} & arkitscenes\_\allowbreak{}grounding\_\allowbreak{}bridge.md\\
+\texttt{F67} & anchor precision (correct admissions / all admissions) & 0.583 (required \textgreater{}= 0.80): FAIL & \texttt{deployable} & arkitscenes\_\allowbreak{}grounding\_\allowbreak{}bridge.md\\
+\texttt{F68} & anchor coverage (correct AND human-resolvable admissions / all human-resolvable anchors) & 0.467 (required \textgreater{}= 0.60): FAIL & \texttt{deployable} & arkitscenes\_\allowbreak{}grounding\_\allowbreak{}bridge.md\\
+\texttt{F69} & deployable graph-unique QA wins vs blinded RGB & 0 (required \textgreater{}= 2): FAIL & \texttt{deployable} & arkitscenes\_\allowbreak{}grounding\_\allowbreak{}bridge.md\\
 \texttt{F70} & anchors admitted & 12 / 17 admitted; 15 / 17 human-resolvable; 7 admissions correct & \texttt{deployable} & arkitscenes\_\allowbreak{}grounding\_\allowbreak{}bridge.md\\
 \texttt{F75} & admissions for anchors with no human uid (precision errors, not suppressed) & 1 of 12 admissions & \texttt{bug-diagnostic} & arkitscenes\_\allowbreak{}grounding\_\allowbreak{}bridge.md\\
 \texttt{F76} & correct & 5 / 10 & \texttt{deployable} & arkitscenes\_\allowbreak{}rgb\_\allowbreak{}transfer\_\allowbreak{}test.md\\
 \texttt{F77} & wrong & 0 / 10 & \texttt{deployable} & arkitscenes\_\allowbreak{}rgb\_\allowbreak{}transfer\_\allowbreak{}test.md\\
 \texttt{F78} & unanswered & 5 / 10 & \texttt{deployable} & arkitscenes\_\allowbreak{}rgb\_\allowbreak{}transfer\_\allowbreak{}test.md\\
 \texttt{F79} & correct (cross-view items) & 0 / 3 correct, 3 / 3 unanswered & \texttt{deployable} & arkitscenes\_\allowbreak{}rgb\_\allowbreak{}transfer\_\allowbreak{}test.md\\
-\texttt{F82} & exact accuracy (gate: \textgreater{}= 0.60) & 0.50 (required \textgreater{}= 0.60) — FAIL & \texttt{deployable} & arkitscenes\_\allowbreak{}rgb\_\allowbreak{}transfer\_\allowbreak{}test.md\\
-\texttt{F83} & answer coverage (gate: \textgreater{}= 0.80) & 0.50 (required \textgreater{}= 0.80) — FAIL & \texttt{deployable} & arkitscenes\_\allowbreak{}rgb\_\allowbreak{}transfer\_\allowbreak{}test.md\\
-\texttt{F84} & scored items (condition: \textgreater{}= 6, else run is void) & 10 (required \textgreater{}= 6) — PASS & \texttt{deployable} & arkitscenes\_\allowbreak{}rgb\_\allowbreak{}transfer\_\allowbreak{}test.md\\
+\texttt{F82} & exact accuracy (gate: \textgreater{}= 0.60) & 0.50 (required \textgreater{}= 0.60): FAIL & \texttt{deployable} & arkitscenes\_\allowbreak{}rgb\_\allowbreak{}transfer\_\allowbreak{}test.md\\
+\texttt{F83} & answer coverage (gate: \textgreater{}= 0.80) & 0.50 (required \textgreater{}= 0.80): FAIL & \texttt{deployable} & arkitscenes\_\allowbreak{}rgb\_\allowbreak{}transfer\_\allowbreak{}test.md\\
+\texttt{F84} & scored items (condition: \textgreater{}= 6, else run is void) & 10 (required \textgreater{}= 6): PASS & \texttt{deployable} & arkitscenes\_\allowbreak{}rgb\_\allowbreak{}transfer\_\allowbreak{}test.md\\
 \texttt{F85} & accuracy when answered & 1.000 & \texttt{deployable} & arkitscenes\_\allowbreak{}rgb\_\allowbreak{}transfer\_\allowbreak{}test.md\\
 \texttt{F87} & correct on the thin-evidence slice & 2 answered of 6, both correct & \texttt{deployable} & arkitscenes\_\allowbreak{}rgb\_\allowbreak{}transfer\_\allowbreak{}test.md\\
-\texttt{F88} & transfer claim made & NONE — both gates failed; demo remains a fixed evaluation replay & \texttt{deployable} & arkitscenes\_\allowbreak{}rgb\_\allowbreak{}transfer\_\allowbreak{}test.md\\
+\texttt{F88} & transfer claim made & NONE: both gates failed; demo remains a fixed evaluation replay & \texttt{deployable} & arkitscenes\_\allowbreak{}rgb\_\allowbreak{}transfer\_\allowbreak{}test.md\\
 \texttt{G01} & exact McNemar two-sided p, top-1 label accuracy & p = 0.003417 (12 fixed, 1 regressed, 13 discordant of 21) & \texttt{oracle\_\allowbreak{}free\_\allowbreak{}component\_\allowbreak{}eval} & paper\_\allowbreak{}statistics.json\\
 \texttt{G02} & exact McNemar two-sided p, top-3 label accuracy & p = 0.000122 (14 fixed, 0 regressed, 14 discordant of 21) & \texttt{oracle\_\allowbreak{}free\_\allowbreak{}component\_\allowbreak{}eval} & paper\_\allowbreak{}statistics.json\\
 \texttt{G03} & questions surviving the object-delivery stage & 8 / 10 & \texttt{identity\_\allowbreak{}oracle} & paper\_\allowbreak{}statistics.json\\

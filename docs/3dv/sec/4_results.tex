@@ -5,8 +5,8 @@
 \label{sec:component}
 
 The label stage classified each delivered instance from three isolated point-splat
-renders. Replacing those images with real capture RGB crops --- and changing nothing else
---- produces the largest improvement measured on any oracle-free prediction path in this
+renders. Replacing those images with real capture RGB crops, changing nothing else,
+produces the largest improvement measured on any oracle-free prediction path in this
 study (\cref{tab:labels}).
 
 \begin{table}[t]
@@ -45,7 +45,7 @@ and the full clustering discussion are in the supplement.
 A wide crop of a doorway reads as a kitchen, so a naive RGB win could have been the model
 recognising \emph{rooms} rather than \emph{objects}. A third arm with wider context and
 the target dimmed, run on the development scene only (7 of the 21 pooled instances),
-scores \textbf{below} the tight arm at both ranks --- 3/7 \rid{C17} and 5/7 \rid{C18}
+scores \textbf{below} the tight arm at both ranks, 3/7 \rid{C17} and 5/7 \rid{C18},
 against that scene's 5/7 \rid{C07} and 7/7 \rid{C08}. More context measurably hurts,
 which \textbf{supports} the interpretation that the gain comes from object texture rather
 than room gist. It does not prove it. One descriptive observation: six of the 21 matched
@@ -63,8 +63,8 @@ must not be reported as end-to-end or deployable performance.}
 \subsection{Held but unreachable}
 \label{sec:unreachable}
 
-The central experiment asks twelve questions about \texttt{NEAR} --- the one relation the
-delivered graph actually contains --- across two rooms, with ten items scored after one
+The central experiment asks twelve questions about \texttt{NEAR} (the one relation the
+delivered graph actually contains) across two rooms, with ten items scored after one
 of the authors marked two ambiguous \rid{F65}. Four arms form a controlled identity
 substitution over the same stored relations, and one external deployable comparator
 answers the same questions from images alone (\cref{tab:arms}).
@@ -124,14 +124,14 @@ correct answers were 0 against a predeclared bar of 2 \rid{F60}.
 \paragraph{An oracle-free bridge does not close it.}
 A grounding bridge encoding anchor phrases and real capture crops with the same pinned
 weights, admitting a match only on cross-view agreement and with no confidence threshold
-anywhere, moved the delivered graph arm from 0/10 \rid{F40} to 2/10 \rid{F45} --- a
-2-versus-0 difference that is not statistically separable at $n = 10$ --- and
+anywhere, moved the delivered graph arm from 0/10 \rid{F40} to 2/10 \rid{F45} (a
+2-versus-0 difference that is not statistically separable at $n = 10$) and
 failed all three predeclared gates: anchor precision 0.583 against $\ge 0.80$ \rid{F67},
 coverage 0.467 against $\ge 0.60$ \rid{F68}, and graph-unique wins 0 against $\ge 2$
 \rid{F69}. Of 17 question anchors, 15 were human-resolvable; the bridge admitted 12, 7
 of them correctly \rid{F70}. One failure is diagnostic: the bridge admitted a UID for an
 object one of the authors had marked absent from the delivered partition, with maximum
-cross-view agreement \rid{F75} --- cross-view agreement measures \emph{consistency}, not
+cross-view agreement \rid{F75}: cross-view agreement measures \emph{consistency}, not
 \emph{existence}.
 
 \paragraph{A per-arm ledger makes the transitions explicit.}
@@ -147,24 +147,24 @@ bypassed)
 \rid{G08}; the evaluator re-derives each chain from the committed artifacts, reproducing
 the committed statistics field for field. Eight of the 10 scored questions survive object
 delivery \rid{G03}, and all 8 survive relation expressibility and the serialized-edge
-stage --- \textbf{no additional loss was measured at the serialized-edge stage relative
+stage: \textbf{no additional loss was measured at the serialized-edge stage relative
 to recomputation under the same convention} \rid{G05}. Three survive anchor grounding
 \rid{G04}: the single largest loss, five of ten, larger than every other transition
 combined. The substitution is paired: 7 items are answered under human-supplied identity
 that the delivered graph does not answer, none the other way (exact McNemar $p = 0.0156$
 \rid{G06}, instance-level, over ten items in two rooms; test details in the supplement).
 \Cref{fig:qualitative} shows one such question in the room itself. Because one side
-consumes human identity, this sizes a bound --- the arms differ; it does not follow that
+consumes human identity, this sizes a bound: the arms differ; it does not follow that
 anything deployable achieves 7/10.
 
 \paragraph{Fault-localization validation.}
 Attribution is only as trustworthy as its checkers, so we validated it under masking.
-Into clean committed artifact chains --- evaluation key and entity artifact, relation
-artifact, serialized graph, grounded candidates, answer --- we injected controlled
+Into clean committed artifact chains (evaluation key and entity artifact, relation
+artifact, serialized graph, grounded candidates, answer) we injected controlled
 artifact-level faults, each mutating exactly one artifact, spanning \SRFaultClasses{}
 fault classes and \SRFaultRelationTypes{} relation types (\texttt{NEAR},
 \texttt{ON\_ENTITY\_SURFACE}, \texttt{ATTACHED\_TO}). The evaluator attributes via
-independent per-stage checkers and was masked to the injected class --- it is never told
+independent per-stage checkers and was masked to the injected class: it is never told
 what was injected. It localized \SRFaultLocalized{} faults to the mutated stage, with
 zero false attributions on clean artifacts \rid{G11}. This is evaluator-masked
 artifact-level validation; it is not a blind study of the human protocol.
@@ -172,8 +172,8 @@ artifact-level validation; it is not a blind study of the human protocol.
 \begin{figure*}[t]
   \centering
   \includegraphics[width=\textwidth]{figures/fig4_reachability.pdf}
-  \caption{Per-arm reachability: each arm reports its own declared path --- there is no
-  shared mixed ladder --- and counts are questions surviving each stage
+  \caption{Per-arm reachability: each arm reports its own declared path (there is no
+  shared mixed ladder) and counts are questions surviving each stage
   \rid{G03, G04, G05, G08}. The stored-human arm is \texttt{identity\_oracle}, a bound,
   not performance \rid{F35}. No additional loss was measured at the serialized-edge
   stage relative to recomputation under the same convention; identity grounding loses
@@ -199,8 +199,8 @@ artifact-level validation; it is not a blind study of the human protocol.
 
 Direct multiview RGB was the strongest deployable arm \rid{F50}, but both rooms had been
 examined for months. For a pilot on a capture unused during development, the gates, the
-scoring and the model-facing protocol --- view selection, prompt, schema and two gates
---- were frozen before any model run. Questions came from a mechanical generator (anchors
+scoring and the model-facing protocol (view selection, prompt, schema and two gates)
+were frozen before any model run. Questions came from a mechanical generator (anchors
 by two-of-three agreement among independent enumerations, slots by fixed template) that
 was amended twice on question-text defects before scoring: run 1's eight questions came
 back with four marked ambiguous and was voided; \textbf{the blinded model never ran in
@@ -210,8 +210,8 @@ defects visible in the questions alone. Run 2 was authored and scored once at $n
 
 Scored once: 5/10 correct \rid{F76}, \textbf{0/10 wrong} \rid{F77}, 5/10 unanswered
 \rid{F78}, accuracy 1.000 over the 5 answered \rid{F85}, and all three cross-view items
-declined (0/3) \rid{F79}. \textbf{Both predeclared gates failed} --- exact accuracy 0.50
-against $\ge 0.60$ \rid{F82}, coverage 0.50 against $\ge 0.80$ \rid{F83} --- so no
+declined (0/3) \rid{F79}. \textbf{Both predeclared gates failed} (exact accuracy 0.50
+against $\ge 0.60$ \rid{F82}, coverage 0.50 against $\ge 0.80$ \rid{F83}), so no
 transfer claim is made \rid{F88}.
 
 The shape of the failure is the result: not accuracy but coverage, and because exact
@@ -228,27 +228,27 @@ property carried across.
 \subsection{Evaluator transfer: Replica multi-relation QA}
 \label{sec:replica}
 
-To test that the \emph{evaluator} transfers --- not the pipeline --- we re-scored the
+To test that the \emph{evaluator} transfers, not the pipeline, we re-scored the
 frozen Replica multi-relation QA scorecards (four scenes, \SRReplicaTotal{} items,
 per-scene $n$ of \SRReplicaSceneNs{} \rid{G10}) through the same schema and outcome
 mapping. Keyed by (expected outcome, result) \rid{G09}: on answer-expected items,
 \SRReplicaAnswerCorrect{} correct, \SRReplicaAnswerWrong{} wrong and
 \SRReplicaAnswerAbstain{} abstentions; on empty-expected items,
 \SRReplicaEmptyCorrect{} correct and \SRReplicaEmptyWrong{} wrong. The raw scorecard
-labels are preserved verbatim in every trace --- \SRReplicaTrueAnswer{}
+labels are preserved verbatim in every trace (\SRReplicaTrueAnswer{}
 \texttt{true\_answer}, \SRReplicaTrueEmpty{} \texttt{true\_empty}, \SRReplicaMiss{}
-\texttt{miss}, \SRReplicaFalseAnswer{} \texttt{false\_answer} --- and \texttt{miss}
+\texttt{miss}, \SRReplicaFalseAnswer{} \texttt{false\_answer}), and \texttt{miss}
 splits by the per-question record, never by the category label alone.
 
 \paragraph{Aggregates mask.}
-Pooled, the same scorecards would read \SRReplicaPooled{} ``correct'' --- a number
+Pooled, the same scorecards would read \SRReplicaPooled{} ``correct'', a number
 dominated by the \SRReplicaTrueEmpty{} true-empty items, on which being correct means
 returning nothing, while masking the error rate on the answered side. The pooled number
 would mislead, and the evaluator refuses to emit it.
 
 \paragraph{Scope.}
 The Replica arms consume oracle geometry and oracle identity. This demonstrates schema
-and outcome transfer of the evaluator --- not deployable performance, and not full fault
+and outcome transfer of the evaluator, not deployable performance and not full fault
 localization: every internal stage the packed scorecards cannot support is reported
 \texttt{unknown}; delivery, relation correctness and serialization are never inferred
 from the final answer.

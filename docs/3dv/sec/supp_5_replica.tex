@@ -7,7 +7,7 @@ The frozen Phase-8 Replica scorecards ship in the evidence pack as
 \texttt{\ldots room\_2.json}, plus their aggregate. They enter the
 evaluation as a schema and outcome transfer only: the evaluator re-reads the
 packed, already-scored outcomes, and every internal stage the packed
-scorecard cannot support is recorded as \texttt{unknown} --- delivery,
+scorecard cannot support is recorded as \texttt{unknown}: delivery,
 relation correctness and serialization are never inferred from the final
 answer. \Cref{tab:replica} gives the per-scene outcome counts in the
 scorecards' own category vocabulary, verified against the packed files.
@@ -34,7 +34,7 @@ scorecards' own category vocabulary, verified against the packed files.
 
 \paragraph{The normalized outcome matrix.} The raw categories map to the
 evaluator's outcome matrix, keyed by (expected outcome, result), via each
-question's per-item record --- never by the category name alone. A
+question's per-item record, never by the category name alone. A
 \texttt{miss} whose record shows an explicit deferral maps to
 (answer,\,abstain); a \texttt{miss} that answered incorrectly, incompletely
 or empty-without-deferring maps to (answer,\,wrong); a
@@ -56,15 +56,15 @@ as membership pass/fail.
 
 \medskip
 \noindent\fbox{\parbox{0.965\linewidth}{\footnotesize
-\textbf{Definition-change track --- cannot be pooled with the frozen
+\textbf{Definition-change track: cannot be pooled with the frozen
 track.} A later semantics revision was measured on its own track. The
 support-citation result 5/20 \srid{E01} is \texttt{proposal\_ceiling},
 measured on a variant consuming the dataset's oracle boxes and labels; the
-revised-semantics 16/20 \srid{E02} is \texttt{definition-change} --- the
+revised-semantics 16/20 \srid{E02} is \texttt{definition-change}: the
 benchmark definition moved, not the model. Support-relation citation
 precision on that scene is 0.94 \srid{E03}. The 0.58 \srid{E10} and 0.36
 \srid{E12} figures reported on two further scenes are scene-aggregate
-micro-precision across all relations --- a different metric on a different
+micro-precision across all relations, a different metric on a different
 denominator, not the fall of 0.94; the comparable relation-level precisions
 exist only in an untracked run report and are recorded as unverifiable.
 The evaluator enforces the separation: pooling a

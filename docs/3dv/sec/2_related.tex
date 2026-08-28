@@ -9,7 +9,7 @@ structure~\cite{armeni20193dscenegraph, wu2021scenegraphfusion, hughes2022hydra,
 looper20233dvsg, koch2024open3dsg, werby2024hovsg, zhu2026ogscene3d}.
 ConceptGraphs~\cite{gu2024conceptgraphs} is the closest prior representation. What this
 line \emph{reports} is the point of contact: per-point mIoU, instance AP, retrieval mAP
-or construction fidelity --- never an end-to-end answer rate, and nearly always against
+or construction fidelity; never an end-to-end answer rate, and nearly always against
 an oracle-supplied denominator of human-annotated instances. ConceptGraphs reports node
 and edge precision as two \emph{separate} human-judged numbers, edges higher: our
 result latent in the closest prior system, missing only the number that composes them.
@@ -29,7 +29,7 @@ VL-KnG~\cite{almdfaa2026vlkng} makes identity association an explicit module;
 3D-Mem~\cite{yang2025threedmem} argues the opposite design, keeping retrieved images
 \emph{as} the memory. We claim no novelty for combining a graph with retrieved images,
 for ablating graph against images, or for observing that detector quality bounds
-graph-mediated QA --- GraphEQA states that in its own limitations.
+graph-mediated QA; GraphEQA states that in its own limitations.
 
 \paragraph{What we concede, and what remains.}
 Three works break the single-number convention and we position as their continuation:
@@ -54,7 +54,7 @@ yang2026mmsibench, kamath2023whatsup, ma2025srbench, xie2026spatialqa}. These ca
 persistent 3D state, so nothing in them can \emph{hold} information. We reproduce the
 phenomenon rather than dispute it, but note that several strong 2D baselines sidestep
 identity grounding rather than solving it: SpatialRGPT consumes supplied region
-proposals, GPT4Scene supplies object identifiers on a bird's-eye image --- identity
+proposals, GPT4Scene supplies object identifiers on a bird's-eye image: identity
 oracles in our vocabulary.
 
 \paragraph{Diagnosis by substitution, and abstention.}

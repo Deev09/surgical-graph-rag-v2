@@ -4,8 +4,8 @@
 The evaluation keys used by the main results were authored by a single
 reviewer who is one of the authors and is not blind to the hypothesis, and
 the paper says so wherever it matters. To measure how reproducible those
-keys are, an independent human annotator --- blinded to all system
-outputs, to the arm names, and to the hypothesis --- answered the 12 authored
+keys are, an independent human annotator (blinded to all system
+outputs, to the arm names, and to the hypothesis) answered the 12 authored
 relation questions from a self-contained review sheet presenting the same
 frozen packet frames the blinded model received, in seeded-shuffled order:
 the 10 items eligible for the primary evaluation, and the 2 excluded items,
@@ -20,9 +20,9 @@ measured for reproducibility rather than assumed.
     field & $n$ & exact agreement & Cohen's $\kappa$\\
     \midrule
     answer (scored items) & \SRAnnScoredOf{} &
-      \SRAnnScoredAgree{}/\SRAnnScoredOf{} & --- (free text)\\
+      \SRAnnScoredAgree{}/\SRAnnScoredOf{} & n/a (free text)\\
     ambiguity flag & \SRAnnAmbiguityOf{} &
-      \SRAnnAmbiguityAgree{}/\SRAnnAmbiguityOf{} & --- (degenerate)\\
+      \SRAnnAmbiguityAgree{}/\SRAnnAmbiguityOf{} & n/a (degenerate)\\
     \bottomrule
   \end{tabular}
   \caption{Per-field agreement between the original key author and the
@@ -42,8 +42,8 @@ object itself alongside the key's single member). The annotator marked
 neither owner-excluded item ambiguous: one was answered confidently and one
 received ``cannot determine''. Ambiguity-flag agreement is
 \SRAnnAmbiguityAgree{}/\SRAnnAmbiguityOf{}; the two differences are
-exactly the owner-excluded items. This is evidence of partial --- not
-complete --- key reproducibility.
+exactly the owner-excluded items. This is evidence of partial, not
+complete, key reproducibility.
 
 Referent descriptions and free-text relation labels are preserved verbatim
 in the committed returned form for post-hoc analysis. The adjudication

@@ -61,6 +61,7 @@ def sanitize(text: str) -> str:
     """
     text = re.sub(r"(\d\.\d{6})\d+", r"\1", text)
     text = re.sub(r"\b[0-9a-f]{7,40}\b", "(id)", text)
+    text = text.replace(" \u2014 ", ": ").replace("\u2014", ":")
     # Digit-bearing hex runs are elided even inside underscore-joined names
     # (scene ids and hashes embedded in filenames have no word boundary).
     text = re.sub(r"(?=[0-9a-f]*\d)[0-9a-f]{7,40}", "(id)", text)

@@ -3,7 +3,7 @@
 
 The main paper states the paired effects and their direction; the exact
 tests live here. All three tests are exact two-sided binomial tests on the
-discordant pairs (exact McNemar), not the chi-square approximation --- the
+discordant pairs (exact McNemar), not the chi-square approximation: the
 discordant counts are far too small for it. Under the null, the instances
 that changed verdict between the two arms are equally likely to have changed
 in either direction. Every input is a committed, already-scored outcome; the
@@ -42,7 +42,7 @@ oracle-selected, and nothing here is end-to-end performance.
 relation questions, substituting human-supplied identity for the delivered
 labels moves the same stored edges from 0/10 \rid{F40} to 7/10 \rid{F35}:
 7 items fixed, none regressed, exact two-sided $p = 0.0156$ \rid{G06}. Both
-the direction and the exclusivity matter --- no item was answered by the
+the direction and the exclusivity matter: no item was answered by the
 delivered graph that human identity missed. Because one side consumes human
 identity, the scope is \texttt{identity\_oracle}: the test says the arms
 differ; it does not say anything deployable achieves 7/10. Its ten items
@@ -58,7 +58,7 @@ statements, not scene-level or dataset-level ones.
 \paragraph{The scene-level statement.} All three scenes move in the same
 direction under the label-image substitution. Treating the scene as the
 cluster, a sign test over the three scene clusters gives $p = 0.25$, so
-\textbf{no scene-level significance is claimable} --- three clusters cannot
+\textbf{no scene-level significance is claimable}: three clusters cannot
 reach significance under any outcome. The scene-level evidence is
 directional consistency, nothing stronger, and the paper claims nothing
 stronger.
