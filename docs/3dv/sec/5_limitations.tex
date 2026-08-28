@@ -13,12 +13,12 @@ count, and we report the disagreement rather than settle it.
 \Cref{sec:component}'s denominator is oracle-selected \rid{C02}, conditional on detection
 succeeding and silent about detection. \Cref{sec:unreachable}'s 7/10 rows \rid{F28, F35}
 consume human-supplied identity and bound what the representation could express. The
-serialization check \rid{F63, G05} applies the same 1.0\,m AABB convention on both sides,
-so it catches a plumbing error but cannot detect a wrong convention.
+serialization check \rid{F63, G05} applies the same 1.0\,m AABB convention on both sides
+(\cref{sec:unreachable} states the limit).
 \texttt{relation\_correctness} is \texttt{unknown} on the entire ARKit slice: no
 independent semantic annotation of the stored relations exists there, so serialization
-consistency is the strongest relation-stage statement this paper can make, and no claim
-of semantic relation correctness should be read into it. \Cref{sec:replica}'s arms
+consistency is the strongest relation-stage statement this paper can make.
+\Cref{sec:replica}'s arms
 consume oracle geometry and oracle identity, so nothing there speaks to deployable
 performance; it demonstrates only that the schema and outcome mapping transfer.
 \Cref{sec:transfer} is a one-scene pilot under a twice-amended generator, licensing no

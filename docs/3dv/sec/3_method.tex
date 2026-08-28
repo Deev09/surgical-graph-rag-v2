@@ -99,23 +99,24 @@ report reached/pass/fail/unknown separately
   \label{fig:algo}
 \end{figure}
 
-Every scored question emits a trace, committed as an artifact. An excerpt, with
-per-stage provenance strings elided for width:
-% NOTE for the integrator: representative excerpt written against the frozen trace
-% schema; swap in a verbatim excerpt from the committed traces at merge.
+Every scored question emits a trace, committed as an artifact. The committed
+trace for Fig.~\ref{fig:qualitative}'s question on the grounded arm (schema
+header, scene id, provenance strings and raw category elided):
 {\scriptsize
 \begin{verbatim}
-{"schema": "stagereach_trace", "schema_version": 1,
- "question_id": "q07", "arm": "delivered_graph",
- "path_id": "graph_deployable_delivered",
- "scope": "delivered", "expected_outcome": "answer",
+{"question_id": "q25_bin_basket_near_desk",
+ "arm": "grounded_delivered_graph",
+ "path_id": "graph_deployable_grounded",
+ "scope": "deployable", "expected_outcome": "answer",
  "stages": [
-  {"stage":"object_delivery",      "status":"pass"},
-  {"stage":"relation_correctness", "status":"unknown"},
+  {"stage":"key_eligibility",       "status":"pass"},
+  {"stage":"object_delivery",       "status":"pass"},
+  {"stage":"relation_applicability","status":"pass"},
+  {"stage":"relation_correctness",  "status":"unknown"},
   {"stage":"serialization_consistency","status":"pass"},
-  {"stage":"referent_grounding",   "status":"fail"},
+  {"stage":"referent_grounding",    "status":"fail"},
   {"stage":"answer_generation","status":"not_reached"}],
- "final_outcome": {"result": "abstain", ...}}
+ "final_outcome": {"result": "abstain"}}
 \end{verbatim}}
 
 The evaluator's invariants are tests, and a violation raises rather than warns:
