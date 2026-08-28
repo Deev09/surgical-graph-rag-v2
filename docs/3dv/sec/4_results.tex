@@ -180,10 +180,12 @@ artifact-level validation; it is not a blind study of the human protocol.
 \begin{figure*}[t]
   \centering
   \includegraphics[width=\textwidth]{figures/fig4_reachability.pdf}
-  \caption{Where questions are lost between representation and deployable answer. One row
-  per stage an answer must survive. No additional loss was measured at the
-  serialized-edge stage relative to recomputation under the same convention; identity
-  grounding loses more than every other transition combined.}
+  \caption{Per-arm reachability: each arm reports its own declared path --- there is no
+  shared mixed ladder --- and counts are questions surviving each stage
+  \rid{G03, G04, G05, G08}. The stored-human arm is \texttt{identity\_oracle}, a bound,
+  not performance \rid{F35}. No additional loss was measured at the serialized-edge
+  stage relative to recomputation under the same convention; identity grounding loses
+  more than every other transition combined \rid{F40, F45, F50}.}
   \label{fig:reach}
 \end{figure*}
 
