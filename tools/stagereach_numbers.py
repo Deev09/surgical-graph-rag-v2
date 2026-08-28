@@ -243,6 +243,9 @@ def build_macros() -> list[tuple[str, str, str]]:
         amb = agr["ambiguity_exact_agreement"]
         add(g, "SRAnnAmbiguityAgree", amb["agree"])
         add(g, "SRAnnAmbiguityOf", amb["of"])
+        kappa = agr.get("ambiguity_kappa")
+        add(g, "SRAnnAmbiguityKappa",
+            "undefined" if kappa is None else f"{kappa:.1f}")
         scored_items = [i for i in agr["items"] if not i["key_ambiguous"]]
         abstained = sum(1 for i in scored_items
                         if not i["final_answer_match"]

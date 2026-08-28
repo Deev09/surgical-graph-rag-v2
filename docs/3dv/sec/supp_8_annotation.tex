@@ -22,15 +22,16 @@ measured for reproducibility rather than assumed.
     answer (scored items) & \SRAnnScoredOf{} &
       \SRAnnScoredAgree{}/\SRAnnScoredOf{} & n/a (free text)\\
     ambiguity flag & \SRAnnAmbiguityOf{} &
-      \SRAnnAmbiguityAgree{}/\SRAnnAmbiguityOf{} & n/a (degenerate)\\
+      \SRAnnAmbiguityAgree{}/\SRAnnAmbiguityOf{} & \SRAnnAmbiguityKappa{}\\
     \bottomrule
   \end{tabular}
   \caption{Per-field agreement between the original key author and the
   blinded second annotator, after committed adjudication of free-text
-  equivalences. $\kappa$ is reported only where a field's categories are
-  finite and varied enough for chance correction to be meaningful; the
-  second annotator marked no item ambiguous, so the ambiguity field is
-  degenerate and only exact agreement is reported.}
+  equivalences. $\kappa$ is not applicable to the free-text answer field.
+  For the ambiguity flag $\kappa = \SRAnnAmbiguityKappa{}$: the annotator
+  marked no item ambiguous against the key author's two, so the observed
+  10/12 agreement equals chance agreement under the marginals; the
+  annotator reproduced neither ambiguity exclusion.}
   \label{tab:annotation}
 \end{table}
 
