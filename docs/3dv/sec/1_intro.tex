@@ -4,31 +4,49 @@ A 3D scene graph built from a room scan can, in principle, answer spatial questi
 that room: it stores objects, and it stores relations between them. Whether it does so in
 practice is usually reported as one accuracy number, which conflates four things --- did
 the pipeline recover the object, did it name it, did it extract the relation, and could a
-question reach any of it.
+question reach any of it. A pooled number cannot say where a lost question went, and it
+quietly licenses claims that a component measurement is not entitled to make.
 
-We take a pipeline of exactly this kind, built from real handheld RGB-D captures, and
-measure each stage separately under a scope discipline that states, for every number,
-what it is entitled to claim (\cref{sec:method}). Three results anchor the paper.
+This paper treats the evaluation itself as the artifact. \textbf{StageReach3D} declares,
+for each evaluated \emph{arm}, a path through a DAG of pipeline stages; derives which
+stages a question can reach from declared gating dependencies; reports reached, pass,
+fail and unknown separately at every stage; and enforces scope in code rather than in
+prose --- a trace scoped as deployable refuses to consume any oracle-fed stage, and
+unknown is never counted as pass (\cref{sec:method}).
 
-First, the stage where spatial information is \emph{gained}: replacing only the label
-stage's input images with real capture crops raises matched-instance top-1 accuracy from
-1/21 to 12/21, a component result on an oracle-selected denominator.
+Applied to a real pipeline over handheld RGB-D captures, the evaluator returns a
+concentrated diagnosis. The stage where information is \emph{gained}: replacing only the
+label stage's input images with real capture crops raises matched-instance top-1
+accuracy from 1/21 to 12/21, a component result on an oracle-selected denominator. The
+stage where questions are \emph{lost}: the same stored relations answer 7 of 10
+questions when a human supplies object identity and 0 of 10 when the pipeline supplies
+it, while relation availability and serialization consistency are measurably clean on
+the tested items --- semantic correctness of the stored relations was not independently
+established. And on a blinded one-scene pilot under a twice-amended generator --- gates,
+scoring and the model-facing protocol frozen before any model run; question generation
+amended twice on question-text defects before scoring, chronology in the supplement ---
+direct multiview RGB answers 5 of 10 with zero wrong answers, declines every
+non-co-visible item, and fails both predeclared gates.
 
-Second, the stage where it is \emph{lost}. The same stored relations, queried by the same
-procedure over the same serialized edges, answer 7 of 10 questions when a human supplies
-object identity and 0 of 10 when the pipeline supplies it, while a
-replay reading only the serialized edges reproduces recomputed geometry on every tested
-item. Relation availability and serialization consistency were observed on those items;
-semantic correctness of the stored relations was not independently established. None of
-the three identity paths we instantiated reached the stored content.
+The contributions, in order:
+\begin{enumerate}\itemsep2pt \parskip0pt
+  \item \textbf{The evaluator.} A frozen stage schema with per-arm path declarations,
+  dependency-derived gating and reachability, per-question traces as committed
+  artifacts, and scope enforcement in code.
+  \item \textbf{Evaluator-masked fault-localization validation.}
+  \SRFaultLocalized{} controlled artifact-level injected faults, spanning
+  \SRFaultClasses{} fault classes and \SRFaultRelationTypes{} relation types, each
+  localized to the injected stage while the evaluator was masked to the injected class,
+  and none falsely attributed on clean artifacts.
+  \item \textbf{The held-but-unreachable diagnosis, with an aggregate-masking
+  demonstration.} On ARKitScenes, information the store demonstrably holds is reached by
+  no deployable identity path we instantiated; on Replica multi-relation QA, outcome-keyed
+  reporting shows how true-empty items dominate a pooled accuracy that would otherwise
+  read as competence.
+\end{enumerate}
 
-Third, a blinded one-scene pilot under a twice-amended generator. Gates, scoring and the
-model-facing protocol were frozen before any model run on a capture unused during
-development; question generation was amended twice on question-text defects before
-scoring (the chronology is in the supplement). Direct multiview RGB answers 5 of 10 with
-zero wrong answers and declines every non-co-visible item, failing both predeclared
-gates.
-
-We report the decomposition, not a system. Its contribution is an evaluation method: a
-store held fixed, its serialization checked for consistency against recomputed geometry,
-and object identity varied as the only free variable.
+What transfers to other pipelines is the schema, the evaluator and the protocol: the
+stage vocabulary, the path declarations, the gating and survival semantics, and the
+masked fault-injection recipe. What does not transfer is any number. Every count in this
+paper is instance-bound --- one pipeline, at most two rooms per experiment, one named
+model where a model is involved, one frozen pass.
