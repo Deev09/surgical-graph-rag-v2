@@ -1,0 +1,3065 @@
+{
+ "guards": {
+  "aggregate_cross_check": {
+   "category_counts_match": true,
+   "headline_scenes": [
+    "replica_office_0",
+    "replica_room_0",
+    "replica_room_1",
+    "replica_room_2"
+   ],
+   "total_questions": 56
+  },
+  "answer_key_type": "human_verified",
+  "forbidden_scene_substring": "frl_apartment",
+  "internal_stages_unknown": [
+   "object_delivery",
+   "relation_applicability",
+   "relation_correctness",
+   "serialization_consistency",
+   "referent_grounding"
+  ],
+  "precision_recall_refused_for_nonexhaustive": [
+   "ATTACHED_TO",
+   "CONTACTS_SURFACE",
+   "NEAR_SURFACE",
+   "SUPPORTS_FLOOR"
+  ],
+  "scene_allowlist": [
+   "replica_office_0",
+   "replica_room_0",
+   "replica_room_1",
+   "replica_room_2"
+  ]
+ },
+ "purpose": "Schema/outcome transfer of the frozen Phase-8 Replica scorecards. Internal stages are unknown by construction; only the final router outcome is restated, raw and normalized.",
+ "scenes": {
+  "replica_office_0": {
+   "n": 13,
+   "normalized_matrix": {
+    "answer|correct": 1,
+    "answer|wrong": 5,
+    "empty|correct": 7
+   },
+   "raw_category_counts": {
+    "miss": 5,
+    "true_answer": 1,
+    "true_empty": 7
+   },
+   "relation_exhaustive": {
+    "ATTACHED_TO": false,
+    "CONTACTS_SURFACE": false,
+    "NEAR_SURFACE": false,
+    "ON_ENTITY_SURFACE": true,
+    "SUPPORTS_FLOOR": false
+   }
+  },
+  "replica_room_0": {
+   "n": 14,
+   "normalized_matrix": {
+    "answer|abstain": 1,
+    "answer|correct": 2,
+    "answer|wrong": 6,
+    "empty|correct": 5
+   },
+   "raw_category_counts": {
+    "miss": 7,
+    "true_answer": 2,
+    "true_empty": 5
+   },
+   "relation_exhaustive": {
+    "ATTACHED_TO": true,
+    "CONTACTS_SURFACE": true,
+    "NEAR_SURFACE": false,
+    "ON_ENTITY_SURFACE": true,
+    "SUPPORTS_FLOOR": true
+   }
+  },
+  "replica_room_1": {
+   "n": 16,
+   "normalized_matrix": {
+    "answer|abstain": 3,
+    "answer|wrong": 4,
+    "empty|correct": 9
+   },
+   "raw_category_counts": {
+    "false_answer": 1,
+    "miss": 6,
+    "true_empty": 9
+   },
+   "relation_exhaustive": {
+    "ATTACHED_TO": true,
+    "CONTACTS_SURFACE": true,
+    "NEAR_SURFACE": false,
+    "ON_ENTITY_SURFACE": true,
+    "SUPPORTS_FLOOR": true
+   }
+  },
+  "replica_room_2": {
+   "n": 13,
+   "normalized_matrix": {
+    "answer|correct": 1,
+    "answer|wrong": 5,
+    "empty|correct": 6,
+    "empty|wrong": 1
+   },
+   "raw_category_counts": {
+    "false_answer": 2,
+    "miss": 4,
+    "true_answer": 1,
+    "true_empty": 6
+   },
+   "relation_exhaustive": {
+    "ATTACHED_TO": true,
+    "CONTACTS_SURFACE": true,
+    "NEAR_SURFACE": false,
+    "ON_ENTITY_SURFACE": true,
+    "SUPPORTS_FLOOR": true
+   }
+  }
+ },
+ "schema": "stagereach_track_result",
+ "schema_version": 1,
+ "sources": [
+  "eval/results/project_census_v1/phase8_scorecard_aggregate.json",
+  "eval/results/project_census_v1/phase8_scorecard_replica_office_0.json",
+  "eval/results/project_census_v1/phase8_scorecard_replica_room_0.json",
+  "eval/results/project_census_v1/phase8_scorecard_replica_room_1.json",
+  "eval/results/project_census_v1/phase8_scorecard_replica_room_2.json",
+  "eval/questions/phase8/replica_office_0_qa.json",
+  "eval/questions/phase8/replica_room_0_qa.json",
+  "eval/questions/phase8/replica_room_1_qa.json",
+  "eval/questions/phase8/replica_room_2_qa.json"
+ ],
+ "totals": {
+  "n": 56,
+  "normalized_matrix": {
+   "answer|abstain": 4,
+   "answer|correct": 4,
+   "answer|wrong": 20,
+   "empty|correct": 27,
+   "empty|wrong": 1
+  },
+  "raw_category_counts": {
+   "false_answer": 3,
+   "miss": 22,
+   "true_answer": 4,
+   "true_empty": 27
+  }
+ },
+ "traces": [
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "answer",
+   "final_outcome": {
+    "positive_expected": true,
+    "result": "wrong"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q01",
+   "raw_category": "miss",
+   "scene_id": "replica_office_0",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_office_0_qa.json: human_verified key row (SUPPORTS_FLOOR)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa.per_question category='miss'",
+     "stage": "answer_generation",
+     "status": "fail"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "answer",
+   "final_outcome": {
+    "positive_expected": true,
+    "result": "wrong"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q02",
+   "raw_category": "miss",
+   "scene_id": "replica_office_0",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_office_0_qa.json: human_verified key row (CONTACTS_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa.per_question category='miss'",
+     "stage": "answer_generation",
+     "status": "fail"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "answer",
+   "final_outcome": {
+    "positive_expected": true,
+    "result": "correct"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q03",
+   "raw_category": "true_answer",
+   "scene_id": "replica_office_0",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_office_0_qa.json: human_verified key row (NEAR_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa.per_question category='true_answer'",
+     "stage": "answer_generation",
+     "status": "pass"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "answer",
+   "final_outcome": {
+    "positive_expected": true,
+    "result": "wrong"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q04",
+   "raw_category": "miss",
+   "scene_id": "replica_office_0",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_office_0_qa.json: human_verified key row (ATTACHED_TO)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa.per_question category='miss'",
+     "stage": "answer_generation",
+     "status": "fail"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "answer",
+   "final_outcome": {
+    "positive_expected": true,
+    "result": "wrong"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q05",
+   "raw_category": "miss",
+   "scene_id": "replica_office_0",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_office_0_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa.per_question category='miss'",
+     "stage": "answer_generation",
+     "status": "fail"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "empty",
+   "final_outcome": {
+    "positive_expected": false,
+    "result": "correct"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q06",
+   "raw_category": "true_empty",
+   "scene_id": "replica_office_0",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_office_0_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa.per_question category='true_empty'",
+     "stage": "answer_generation",
+     "status": "pass"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "empty",
+   "final_outcome": {
+    "positive_expected": false,
+    "result": "correct"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q07",
+   "raw_category": "true_empty",
+   "scene_id": "replica_office_0",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_office_0_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa.per_question category='true_empty'",
+     "stage": "answer_generation",
+     "status": "pass"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "empty",
+   "final_outcome": {
+    "positive_expected": false,
+    "result": "correct"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q08",
+   "raw_category": "true_empty",
+   "scene_id": "replica_office_0",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_office_0_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa.per_question category='true_empty'",
+     "stage": "answer_generation",
+     "status": "pass"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "empty",
+   "final_outcome": {
+    "positive_expected": false,
+    "result": "correct"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q09",
+   "raw_category": "true_empty",
+   "scene_id": "replica_office_0",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_office_0_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa.per_question category='true_empty'",
+     "stage": "answer_generation",
+     "status": "pass"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "empty",
+   "final_outcome": {
+    "positive_expected": false,
+    "result": "correct"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q10",
+   "raw_category": "true_empty",
+   "scene_id": "replica_office_0",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_office_0_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa.per_question category='true_empty'",
+     "stage": "answer_generation",
+     "status": "pass"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "empty",
+   "final_outcome": {
+    "positive_expected": false,
+    "result": "correct"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q11",
+   "raw_category": "true_empty",
+   "scene_id": "replica_office_0",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_office_0_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa.per_question category='true_empty'",
+     "stage": "answer_generation",
+     "status": "pass"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "empty",
+   "final_outcome": {
+    "positive_expected": false,
+    "result": "correct"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q12",
+   "raw_category": "true_empty",
+   "scene_id": "replica_office_0",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_office_0_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa.per_question category='true_empty'",
+     "stage": "answer_generation",
+     "status": "pass"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "answer",
+   "final_outcome": {
+    "positive_expected": true,
+    "result": "wrong"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q13",
+   "raw_category": "miss",
+   "scene_id": "replica_office_0",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_office_0_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_office_0.json router_qa.per_question category='miss'",
+     "stage": "answer_generation",
+     "status": "fail"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "answer",
+   "final_outcome": {
+    "positive_expected": true,
+    "result": "wrong"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q01",
+   "raw_category": "miss",
+   "scene_id": "replica_room_0",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_0_qa.json: human_verified key row (SUPPORTS_FLOOR)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa.per_question category='miss'",
+     "stage": "answer_generation",
+     "status": "fail"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "answer",
+   "final_outcome": {
+    "positive_expected": true,
+    "result": "wrong"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q02",
+   "raw_category": "miss",
+   "scene_id": "replica_room_0",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_0_qa.json: human_verified key row (CONTACTS_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa.per_question category='miss'",
+     "stage": "answer_generation",
+     "status": "fail"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "answer",
+   "final_outcome": {
+    "positive_expected": true,
+    "result": "correct"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q03",
+   "raw_category": "true_answer",
+   "scene_id": "replica_room_0",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_0_qa.json: human_verified key row (NEAR_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa.per_question category='true_answer'",
+     "stage": "answer_generation",
+     "status": "pass"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "answer",
+   "final_outcome": {
+    "positive_expected": true,
+    "result": "wrong"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q04",
+   "raw_category": "miss",
+   "scene_id": "replica_room_0",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_0_qa.json: human_verified key row (ATTACHED_TO)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa.per_question category='miss'",
+     "stage": "answer_generation",
+     "status": "fail"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "answer",
+   "final_outcome": {
+    "positive_expected": true,
+    "result": "wrong"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q05",
+   "raw_category": "miss",
+   "scene_id": "replica_room_0",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_0_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa.per_question category='miss'",
+     "stage": "answer_generation",
+     "status": "fail"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "empty",
+   "final_outcome": {
+    "positive_expected": false,
+    "result": "correct"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q06",
+   "raw_category": "true_empty",
+   "scene_id": "replica_room_0",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_0_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa.per_question category='true_empty'",
+     "stage": "answer_generation",
+     "status": "pass"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "empty",
+   "final_outcome": {
+    "positive_expected": false,
+    "result": "correct"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q07",
+   "raw_category": "true_empty",
+   "scene_id": "replica_room_0",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_0_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa.per_question category='true_empty'",
+     "stage": "answer_generation",
+     "status": "pass"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "empty",
+   "final_outcome": {
+    "positive_expected": false,
+    "result": "correct"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q08",
+   "raw_category": "true_empty",
+   "scene_id": "replica_room_0",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_0_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa.per_question category='true_empty'",
+     "stage": "answer_generation",
+     "status": "pass"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "empty",
+   "final_outcome": {
+    "positive_expected": false,
+    "result": "correct"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q09",
+   "raw_category": "true_empty",
+   "scene_id": "replica_room_0",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_0_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa.per_question category='true_empty'",
+     "stage": "answer_generation",
+     "status": "pass"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "empty",
+   "final_outcome": {
+    "positive_expected": false,
+    "result": "correct"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q10",
+   "raw_category": "true_empty",
+   "scene_id": "replica_room_0",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_0_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa.per_question category='true_empty'",
+     "stage": "answer_generation",
+     "status": "pass"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "answer",
+   "final_outcome": {
+    "positive_expected": true,
+    "result": "wrong"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q11",
+   "raw_category": "miss",
+   "scene_id": "replica_room_0",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_0_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa.per_question category='miss'",
+     "stage": "answer_generation",
+     "status": "fail"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "answer",
+   "final_outcome": {
+    "positive_expected": true,
+    "result": "wrong"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q12",
+   "raw_category": "miss",
+   "scene_id": "replica_room_0",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_0_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa.per_question category='miss'",
+     "stage": "answer_generation",
+     "status": "fail"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "answer",
+   "final_outcome": {
+    "positive_expected": true,
+    "result": "correct"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q13",
+   "raw_category": "true_answer",
+   "scene_id": "replica_room_0",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_0_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa.per_question category='true_answer'",
+     "stage": "answer_generation",
+     "status": "pass"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "answer",
+   "final_outcome": {
+    "positive_expected": true,
+    "result": "abstain"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q14",
+   "raw_category": "miss",
+   "scene_id": "replica_room_0",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_0_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_0.json router_qa.per_question category='miss'",
+     "stage": "answer_generation",
+     "status": "abstain"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "answer",
+   "final_outcome": {
+    "positive_expected": true,
+    "result": "wrong"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q01",
+   "raw_category": "miss",
+   "scene_id": "replica_room_1",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_1_qa.json: human_verified key row (SUPPORTS_FLOOR)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa.per_question category='miss'",
+     "stage": "answer_generation",
+     "status": "fail"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "answer",
+   "final_outcome": {
+    "positive_expected": true,
+    "result": "wrong"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q02",
+   "raw_category": "miss",
+   "scene_id": "replica_room_1",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_1_qa.json: human_verified key row (CONTACTS_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa.per_question category='miss'",
+     "stage": "answer_generation",
+     "status": "fail"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "answer",
+   "final_outcome": {
+    "positive_expected": true,
+    "result": "wrong"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q03",
+   "raw_category": "false_answer",
+   "scene_id": "replica_room_1",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_1_qa.json: human_verified key row (NEAR_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa.per_question category='false_answer'",
+     "stage": "answer_generation",
+     "status": "fail"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "answer",
+   "final_outcome": {
+    "positive_expected": true,
+    "result": "wrong"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q04",
+   "raw_category": "miss",
+   "scene_id": "replica_room_1",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_1_qa.json: human_verified key row (ATTACHED_TO)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa.per_question category='miss'",
+     "stage": "answer_generation",
+     "status": "fail"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "empty",
+   "final_outcome": {
+    "positive_expected": false,
+    "result": "correct"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q05",
+   "raw_category": "true_empty",
+   "scene_id": "replica_room_1",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_1_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa.per_question category='true_empty'",
+     "stage": "answer_generation",
+     "status": "pass"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "empty",
+   "final_outcome": {
+    "positive_expected": false,
+    "result": "correct"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q06",
+   "raw_category": "true_empty",
+   "scene_id": "replica_room_1",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_1_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa.per_question category='true_empty'",
+     "stage": "answer_generation",
+     "status": "pass"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "empty",
+   "final_outcome": {
+    "positive_expected": false,
+    "result": "correct"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q07",
+   "raw_category": "true_empty",
+   "scene_id": "replica_room_1",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_1_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa.per_question category='true_empty'",
+     "stage": "answer_generation",
+     "status": "pass"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "empty",
+   "final_outcome": {
+    "positive_expected": false,
+    "result": "correct"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q08",
+   "raw_category": "true_empty",
+   "scene_id": "replica_room_1",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_1_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa.per_question category='true_empty'",
+     "stage": "answer_generation",
+     "status": "pass"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "empty",
+   "final_outcome": {
+    "positive_expected": false,
+    "result": "correct"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q09",
+   "raw_category": "true_empty",
+   "scene_id": "replica_room_1",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_1_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa.per_question category='true_empty'",
+     "stage": "answer_generation",
+     "status": "pass"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "empty",
+   "final_outcome": {
+    "positive_expected": false,
+    "result": "correct"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q10",
+   "raw_category": "true_empty",
+   "scene_id": "replica_room_1",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_1_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa.per_question category='true_empty'",
+     "stage": "answer_generation",
+     "status": "pass"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "empty",
+   "final_outcome": {
+    "positive_expected": false,
+    "result": "correct"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q11",
+   "raw_category": "true_empty",
+   "scene_id": "replica_room_1",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_1_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa.per_question category='true_empty'",
+     "stage": "answer_generation",
+     "status": "pass"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "empty",
+   "final_outcome": {
+    "positive_expected": false,
+    "result": "correct"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q12",
+   "raw_category": "true_empty",
+   "scene_id": "replica_room_1",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_1_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa.per_question category='true_empty'",
+     "stage": "answer_generation",
+     "status": "pass"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "empty",
+   "final_outcome": {
+    "positive_expected": false,
+    "result": "correct"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q13",
+   "raw_category": "true_empty",
+   "scene_id": "replica_room_1",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_1_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa.per_question category='true_empty'",
+     "stage": "answer_generation",
+     "status": "pass"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "answer",
+   "final_outcome": {
+    "positive_expected": true,
+    "result": "abstain"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q14",
+   "raw_category": "miss",
+   "scene_id": "replica_room_1",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_1_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa.per_question category='miss'",
+     "stage": "answer_generation",
+     "status": "abstain"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "answer",
+   "final_outcome": {
+    "positive_expected": true,
+    "result": "abstain"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q15",
+   "raw_category": "miss",
+   "scene_id": "replica_room_1",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_1_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa.per_question category='miss'",
+     "stage": "answer_generation",
+     "status": "abstain"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "answer",
+   "final_outcome": {
+    "positive_expected": true,
+    "result": "abstain"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q16",
+   "raw_category": "miss",
+   "scene_id": "replica_room_1",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_1_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_1.json router_qa.per_question category='miss'",
+     "stage": "answer_generation",
+     "status": "abstain"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "answer",
+   "final_outcome": {
+    "positive_expected": true,
+    "result": "wrong"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q01",
+   "raw_category": "false_answer",
+   "scene_id": "replica_room_2",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_2_qa.json: human_verified key row (SUPPORTS_FLOOR)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa.per_question category='false_answer'",
+     "stage": "answer_generation",
+     "status": "fail"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "answer",
+   "final_outcome": {
+    "positive_expected": true,
+    "result": "wrong"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q02",
+   "raw_category": "miss",
+   "scene_id": "replica_room_2",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_2_qa.json: human_verified key row (CONTACTS_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa.per_question category='miss'",
+     "stage": "answer_generation",
+     "status": "fail"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "answer",
+   "final_outcome": {
+    "positive_expected": true,
+    "result": "correct"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q03",
+   "raw_category": "true_answer",
+   "scene_id": "replica_room_2",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_2_qa.json: human_verified key row (NEAR_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa.per_question category='true_answer'",
+     "stage": "answer_generation",
+     "status": "pass"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "answer",
+   "final_outcome": {
+    "positive_expected": true,
+    "result": "wrong"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q04",
+   "raw_category": "miss",
+   "scene_id": "replica_room_2",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_2_qa.json: human_verified key row (ATTACHED_TO)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa.per_question category='miss'",
+     "stage": "answer_generation",
+     "status": "fail"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "answer",
+   "final_outcome": {
+    "positive_expected": true,
+    "result": "wrong"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q05",
+   "raw_category": "miss",
+   "scene_id": "replica_room_2",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_2_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa.per_question category='miss'",
+     "stage": "answer_generation",
+     "status": "fail"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "empty",
+   "final_outcome": {
+    "positive_expected": false,
+    "result": "correct"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q06",
+   "raw_category": "true_empty",
+   "scene_id": "replica_room_2",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_2_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa.per_question category='true_empty'",
+     "stage": "answer_generation",
+     "status": "pass"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "answer",
+   "final_outcome": {
+    "positive_expected": true,
+    "result": "wrong"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q07",
+   "raw_category": "miss",
+   "scene_id": "replica_room_2",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_2_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa.per_question category='miss'",
+     "stage": "answer_generation",
+     "status": "fail"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "empty",
+   "final_outcome": {
+    "positive_expected": false,
+    "result": "correct"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q08",
+   "raw_category": "true_empty",
+   "scene_id": "replica_room_2",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_2_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa.per_question category='true_empty'",
+     "stage": "answer_generation",
+     "status": "pass"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "empty",
+   "final_outcome": {
+    "positive_expected": false,
+    "result": "correct"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q09",
+   "raw_category": "true_empty",
+   "scene_id": "replica_room_2",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_2_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa.per_question category='true_empty'",
+     "stage": "answer_generation",
+     "status": "pass"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "empty",
+   "final_outcome": {
+    "positive_expected": false,
+    "result": "correct"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q10",
+   "raw_category": "true_empty",
+   "scene_id": "replica_room_2",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_2_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa.per_question category='true_empty'",
+     "stage": "answer_generation",
+     "status": "pass"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "empty",
+   "final_outcome": {
+    "positive_expected": false,
+    "result": "correct"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q11",
+   "raw_category": "true_empty",
+   "scene_id": "replica_room_2",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_2_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa.per_question category='true_empty'",
+     "stage": "answer_generation",
+     "status": "pass"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "empty",
+   "final_outcome": {
+    "positive_expected": false,
+    "result": "wrong"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q12",
+   "raw_category": "false_answer",
+   "scene_id": "replica_room_2",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_2_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa.per_question category='false_answer'",
+     "stage": "answer_generation",
+     "status": "fail"
+    }
+   ]
+  },
+  {
+   "arm": "router_delivered_graph",
+   "expected_outcome": "empty",
+   "final_outcome": {
+    "positive_expected": false,
+    "result": "correct"
+   },
+   "path_id": "graph_deployable_delivered",
+   "question_id": "Q13",
+   "raw_category": "true_empty",
+   "scene_id": "replica_room_2",
+   "schema": "stagereach_trace",
+   "schema_version": 1,
+   "scope": "delivered",
+   "stages": [
+    {
+     "source": "eval/questions/phase8/replica_room_2_qa.json: human_verified key row (ON_ENTITY_SURFACE)",
+     "stage": "key_eligibility",
+     "status": "pass"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "object_delivery",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_applicability",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "relation_correctness",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "serialization_consistency",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa records only the final router outcome; this stage is unmeasured there and is never inferred from the final answer",
+     "stage": "referent_grounding",
+     "status": "unknown"
+    },
+    {
+     "source": "phase8_scorecard_replica_room_2.json router_qa.per_question category='true_empty'",
+     "stage": "answer_generation",
+     "status": "pass"
+    }
+   ]
+  }
+ ],
+ "track": "replica"
+}

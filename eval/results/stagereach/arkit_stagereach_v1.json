@@ -1,0 +1,3887 @@
+{
+ "arms": {
+  "blinded_rgb_vlm": {
+   "ladder": [
+    {
+     "reached": 12,
+     "stage": "key_eligibility",
+     "survivors": 10
+    },
+    {
+     "reached": 10,
+     "stage": "answer_generation",
+     "survivors": 7
+    }
+   ],
+   "outcome_matrix": {
+    "answer|abstain": 1,
+    "answer|correct": 7,
+    "answer|excluded": 2,
+    "answer|wrong": 2
+   },
+   "path_id": "direct_rgb",
+   "raw_category_counts": {
+    "correct": 7,
+    "excluded_no_human_answer": 2,
+    "unanswered": 1,
+    "wrong": 2
+   },
+   "scope": "deployable",
+   "stage_report": [
+    {
+     "abstain": 0,
+     "fail": 2,
+     "n": 12,
+     "not_applicable": 0,
+     "not_reached": 0,
+     "pass": 10,
+     "reached": 12,
+     "stage": "key_eligibility",
+     "unknown": 0
+    },
+    {
+     "abstain": 1,
+     "fail": 2,
+     "n": 12,
+     "not_applicable": 0,
+     "not_reached": 2,
+     "pass": 7,
+     "reached": 10,
+     "stage": "answer_generation",
+     "unknown": 0
+    },
+    {
+     "abstain": 0,
+     "fail": 0,
+     "n": 12,
+     "not_applicable": 12,
+     "not_reached": 0,
+     "pass": 0,
+     "reached": 0,
+     "stage": "object_delivery",
+     "unknown": 0
+    },
+    {
+     "abstain": 0,
+     "fail": 0,
+     "n": 12,
+     "not_applicable": 12,
+     "not_reached": 0,
+     "pass": 0,
+     "reached": 0,
+     "stage": "relation_applicability",
+     "unknown": 0
+    },
+    {
+     "abstain": 0,
+     "fail": 0,
+     "n": 12,
+     "not_applicable": 12,
+     "not_reached": 0,
+     "pass": 0,
+     "reached": 0,
+     "stage": "relation_correctness",
+     "unknown": 0
+    },
+    {
+     "abstain": 0,
+     "fail": 0,
+     "n": 12,
+     "not_applicable": 12,
+     "not_reached": 0,
+     "pass": 0,
+     "reached": 0,
+     "stage": "serialization_consistency",
+     "unknown": 0
+    },
+    {
+     "abstain": 0,
+     "fail": 0,
+     "n": 12,
+     "not_applicable": 12,
+     "not_reached": 0,
+     "pass": 0,
+     "reached": 0,
+     "stage": "referent_grounding",
+     "unknown": 0
+    }
+   ],
+   "traces": [
+    {
+     "arm": "blinded_rgb_vlm",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "correct"
+     },
+     "path_id": "direct_rgb",
+     "question_id": "q25_bin_basket_near_desk",
+     "raw_category": "correct",
+     "scene_id": "arkitscenes_41069025",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.blinded_rgb_vlm.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "pass"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "object_delivery",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "relation_applicability",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "relation_correctness",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "serialization_consistency",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    },
+    {
+     "arm": "blinded_rgb_vlm",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "correct"
+     },
+     "path_id": "direct_rgb",
+     "question_id": "q25_bin_kitchenbin_near_basket",
+     "raw_category": "correct",
+     "scene_id": "arkitscenes_41069025",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.blinded_rgb_vlm.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "pass"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "object_delivery",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "relation_applicability",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "relation_correctness",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "serialization_consistency",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    },
+    {
+     "arm": "blinded_rgb_vlm",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "correct"
+     },
+     "path_id": "direct_rgb",
+     "question_id": "q25_bin_kitchenbin_near_counter",
+     "raw_category": "correct",
+     "scene_id": "arkitscenes_41069025",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.blinded_rgb_vlm.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "pass"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "object_delivery",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "relation_applicability",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "relation_correctness",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "serialization_consistency",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    },
+    {
+     "arm": "blinded_rgb_vlm",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "correct"
+     },
+     "path_id": "direct_rgb",
+     "question_id": "q25_cmp_coffee_table_sofa_vs_dining",
+     "raw_category": "correct",
+     "scene_id": "arkitscenes_41069025",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.blinded_rgb_vlm.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "pass"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "object_delivery",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "relation_applicability",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "relation_correctness",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "serialization_consistency",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    },
+    {
+     "arm": "blinded_rgb_vlm",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "correct"
+     },
+     "path_id": "direct_rgb",
+     "question_id": "q25_cmp_fan_desk_vs_counter",
+     "raw_category": "correct",
+     "scene_id": "arkitscenes_41069025",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.blinded_rgb_vlm.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "pass"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "object_delivery",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "relation_applicability",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "relation_correctness",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "serialization_consistency",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    },
+    {
+     "arm": "blinded_rgb_vlm",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "excluded"
+     },
+     "path_id": "direct_rgb",
+     "question_id": "q25_cmp_rug_sofa_vs_counter",
+     "raw_category": "excluded_no_human_answer",
+     "scene_id": "arkitscenes_41069025",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "fail"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "answer_generation",
+       "status": "not_reached"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "object_delivery",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "relation_applicability",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "relation_correctness",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "serialization_consistency",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    },
+    {
+     "arm": "blinded_rgb_vlm",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "correct"
+     },
+     "path_id": "direct_rgb",
+     "question_id": "q25_set_near_sofa",
+     "raw_category": "correct",
+     "scene_id": "arkitscenes_41069025",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.blinded_rgb_vlm.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "pass"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "object_delivery",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "relation_applicability",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "relation_correctness",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "serialization_consistency",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    },
+    {
+     "arm": "blinded_rgb_vlm",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "wrong"
+     },
+     "path_id": "direct_rgb",
+     "question_id": "q42_bin_bed_near_desk",
+     "raw_category": "wrong",
+     "scene_id": "arkitscenes_41069042",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.blinded_rgb_vlm.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "fail"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "object_delivery",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "relation_applicability",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "relation_correctness",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "serialization_consistency",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    },
+    {
+     "arm": "blinded_rgb_vlm",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "correct"
+     },
+     "path_id": "direct_rgb",
+     "question_id": "q42_bin_desk_near_drawers",
+     "raw_category": "correct",
+     "scene_id": "arkitscenes_41069042",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.blinded_rgb_vlm.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "pass"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "object_delivery",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "relation_applicability",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "relation_correctness",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "serialization_consistency",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    },
+    {
+     "arm": "blinded_rgb_vlm",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "abstain"
+     },
+     "path_id": "direct_rgb",
+     "question_id": "q42_cmp_picture_drawers_vs_bed",
+     "raw_category": "unanswered",
+     "scene_id": "arkitscenes_41069042",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.blinded_rgb_vlm.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "abstain"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "object_delivery",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "relation_applicability",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "relation_correctness",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "serialization_consistency",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    },
+    {
+     "arm": "blinded_rgb_vlm",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "excluded"
+     },
+     "path_id": "direct_rgb",
+     "question_id": "q42_cmp_radiator_window_vs_desk",
+     "raw_category": "excluded_no_human_answer",
+     "scene_id": "arkitscenes_41069042",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "fail"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "answer_generation",
+       "status": "not_reached"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "object_delivery",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "relation_applicability",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "relation_correctness",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "serialization_consistency",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    },
+    {
+     "arm": "blinded_rgb_vlm",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "wrong"
+     },
+     "path_id": "direct_rgb",
+     "question_id": "q42_set_near_window",
+     "raw_category": "wrong",
+     "scene_id": "arkitscenes_41069042",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.blinded_rgb_vlm.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "fail"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "object_delivery",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "relation_applicability",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "relation_correctness",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "serialization_consistency",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path direct_rgb",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    }
+   ]
+  },
+  "delivered_graph": {
+   "ladder": [
+    {
+     "reached": 12,
+     "stage": "key_eligibility",
+     "survivors": 10
+    },
+    {
+     "reached": 10,
+     "stage": "object_delivery",
+     "survivors": 8
+    },
+    {
+     "reached": 8,
+     "stage": "relation_applicability",
+     "survivors": 8
+    },
+    {
+     "reached": 8,
+     "stage": "serialization_consistency",
+     "survivors": 8
+    },
+    {
+     "reached": 8,
+     "stage": "answer_generation",
+     "survivors": 0
+    }
+   ],
+   "outcome_matrix": {
+    "answer|abstain": 10,
+    "answer|excluded": 2
+   },
+   "path_id": "graph_deployable_delivered",
+   "raw_category_counts": {
+    "excluded_no_human_answer": 2,
+    "unanswered": 10
+   },
+   "scope": "deployable",
+   "stage_report": [
+    {
+     "abstain": 0,
+     "fail": 2,
+     "n": 12,
+     "not_applicable": 0,
+     "not_reached": 0,
+     "pass": 10,
+     "reached": 12,
+     "stage": "key_eligibility",
+     "unknown": 0
+    },
+    {
+     "abstain": 0,
+     "fail": 2,
+     "n": 12,
+     "not_applicable": 0,
+     "not_reached": 2,
+     "pass": 8,
+     "reached": 10,
+     "stage": "object_delivery",
+     "unknown": 0
+    },
+    {
+     "abstain": 0,
+     "fail": 0,
+     "n": 12,
+     "not_applicable": 0,
+     "not_reached": 4,
+     "pass": 8,
+     "reached": 8,
+     "stage": "relation_applicability",
+     "unknown": 0
+    },
+    {
+     "abstain": 0,
+     "fail": 0,
+     "n": 12,
+     "not_applicable": 0,
+     "not_reached": 4,
+     "pass": 0,
+     "reached": 8,
+     "stage": "relation_correctness",
+     "unknown": 8
+    },
+    {
+     "abstain": 0,
+     "fail": 0,
+     "n": 12,
+     "not_applicable": 0,
+     "not_reached": 4,
+     "pass": 8,
+     "reached": 8,
+     "stage": "serialization_consistency",
+     "unknown": 0
+    },
+    {
+     "abstain": 0,
+     "fail": 0,
+     "n": 12,
+     "not_applicable": 0,
+     "not_reached": 4,
+     "pass": 0,
+     "reached": 8,
+     "stage": "referent_grounding",
+     "unknown": 8
+    },
+    {
+     "abstain": 8,
+     "fail": 0,
+     "n": 12,
+     "not_applicable": 0,
+     "not_reached": 4,
+     "pass": 0,
+     "reached": 8,
+     "stage": "answer_generation",
+     "unknown": 0
+    }
+   ],
+   "traces": [
+    {
+     "arm": "delivered_graph",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "abstain"
+     },
+     "path_id": "graph_deployable_delivered",
+     "question_id": "q25_bin_basket_near_desk",
+     "raw_category": "unanswered",
+     "scene_id": "arkitscenes_41069025",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "pass"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "pass"
+      },
+      {
+       "source": "no independent semantic relation annotation",
+       "stage": "relation_correctness",
+       "status": "unknown"
+      },
+      {
+       "source": "geometry_vs_stored_graph.rows[qid].agree",
+       "stage": "serialization_consistency",
+       "status": "pass"
+      },
+      {
+       "source": "the delivered arm reports a labelling failure and is silent about referent grounding",
+       "stage": "referent_grounding",
+       "status": "unknown"
+      },
+      {
+       "source": "arms.delivered_graph.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "abstain"
+      }
+     ]
+    },
+    {
+     "arm": "delivered_graph",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "abstain"
+     },
+     "path_id": "graph_deployable_delivered",
+     "question_id": "q25_bin_kitchenbin_near_basket",
+     "raw_category": "unanswered",
+     "scene_id": "arkitscenes_41069025",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "pass"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "pass"
+      },
+      {
+       "source": "no independent semantic relation annotation",
+       "stage": "relation_correctness",
+       "status": "unknown"
+      },
+      {
+       "source": "geometry_vs_stored_graph.rows[qid].agree",
+       "stage": "serialization_consistency",
+       "status": "pass"
+      },
+      {
+       "source": "the delivered arm reports a labelling failure and is silent about referent grounding",
+       "stage": "referent_grounding",
+       "status": "unknown"
+      },
+      {
+       "source": "arms.delivered_graph.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "abstain"
+      }
+     ]
+    },
+    {
+     "arm": "delivered_graph",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "abstain"
+     },
+     "path_id": "graph_deployable_delivered",
+     "question_id": "q25_bin_kitchenbin_near_counter",
+     "raw_category": "unanswered",
+     "scene_id": "arkitscenes_41069025",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "pass"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "pass"
+      },
+      {
+       "source": "no independent semantic relation annotation",
+       "stage": "relation_correctness",
+       "status": "unknown"
+      },
+      {
+       "source": "geometry_vs_stored_graph.rows[qid].agree",
+       "stage": "serialization_consistency",
+       "status": "pass"
+      },
+      {
+       "source": "the delivered arm reports a labelling failure and is silent about referent grounding",
+       "stage": "referent_grounding",
+       "status": "unknown"
+      },
+      {
+       "source": "arms.delivered_graph.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "abstain"
+      }
+     ]
+    },
+    {
+     "arm": "delivered_graph",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "abstain"
+     },
+     "path_id": "graph_deployable_delivered",
+     "question_id": "q25_cmp_coffee_table_sofa_vs_dining",
+     "raw_category": "unanswered",
+     "scene_id": "arkitscenes_41069025",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "pass"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "pass"
+      },
+      {
+       "source": "no independent semantic relation annotation",
+       "stage": "relation_correctness",
+       "status": "unknown"
+      },
+      {
+       "source": "geometry_vs_stored_graph.rows[qid].agree",
+       "stage": "serialization_consistency",
+       "status": "pass"
+      },
+      {
+       "source": "the delivered arm reports a labelling failure and is silent about referent grounding",
+       "stage": "referent_grounding",
+       "status": "unknown"
+      },
+      {
+       "source": "arms.delivered_graph.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "abstain"
+      }
+     ]
+    },
+    {
+     "arm": "delivered_graph",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "abstain"
+     },
+     "path_id": "graph_deployable_delivered",
+     "question_id": "q25_cmp_fan_desk_vs_counter",
+     "raw_category": "unanswered",
+     "scene_id": "arkitscenes_41069025",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "pass"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "pass"
+      },
+      {
+       "source": "no independent semantic relation annotation",
+       "stage": "relation_correctness",
+       "status": "unknown"
+      },
+      {
+       "source": "geometry_vs_stored_graph.rows[qid].agree",
+       "stage": "serialization_consistency",
+       "status": "pass"
+      },
+      {
+       "source": "the delivered arm reports a labelling failure and is silent about referent grounding",
+       "stage": "referent_grounding",
+       "status": "unknown"
+      },
+      {
+       "source": "arms.delivered_graph.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "abstain"
+      }
+     ]
+    },
+    {
+     "arm": "delivered_graph",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "excluded"
+     },
+     "path_id": "graph_deployable_delivered",
+     "question_id": "q25_cmp_rug_sofa_vs_counter",
+     "raw_category": "excluded_no_human_answer",
+     "scene_id": "arkitscenes_41069025",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "fail"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "object_delivery",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "relation_applicability",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "relation_correctness",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "serialization_consistency",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "referent_grounding",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "answer_generation",
+       "status": "not_reached"
+      }
+     ]
+    },
+    {
+     "arm": "delivered_graph",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "abstain"
+     },
+     "path_id": "graph_deployable_delivered",
+     "question_id": "q25_set_near_sofa",
+     "raw_category": "unanswered",
+     "scene_id": "arkitscenes_41069025",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "fail"
+      },
+      {
+       "source": "not reached: gating dependency object_delivery is fail",
+       "stage": "relation_applicability",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency object_delivery is fail",
+       "stage": "relation_correctness",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency object_delivery is fail",
+       "stage": "serialization_consistency",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency object_delivery is fail",
+       "stage": "referent_grounding",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency object_delivery is fail",
+       "stage": "answer_generation",
+       "status": "not_reached"
+      }
+     ]
+    },
+    {
+     "arm": "delivered_graph",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "abstain"
+     },
+     "path_id": "graph_deployable_delivered",
+     "question_id": "q42_bin_bed_near_desk",
+     "raw_category": "unanswered",
+     "scene_id": "arkitscenes_41069042",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "pass"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "pass"
+      },
+      {
+       "source": "no independent semantic relation annotation",
+       "stage": "relation_correctness",
+       "status": "unknown"
+      },
+      {
+       "source": "geometry_vs_stored_graph.rows[qid].agree",
+       "stage": "serialization_consistency",
+       "status": "pass"
+      },
+      {
+       "source": "the delivered arm reports a labelling failure and is silent about referent grounding",
+       "stage": "referent_grounding",
+       "status": "unknown"
+      },
+      {
+       "source": "arms.delivered_graph.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "abstain"
+      }
+     ]
+    },
+    {
+     "arm": "delivered_graph",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "abstain"
+     },
+     "path_id": "graph_deployable_delivered",
+     "question_id": "q42_bin_desk_near_drawers",
+     "raw_category": "unanswered",
+     "scene_id": "arkitscenes_41069042",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "pass"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "pass"
+      },
+      {
+       "source": "no independent semantic relation annotation",
+       "stage": "relation_correctness",
+       "status": "unknown"
+      },
+      {
+       "source": "geometry_vs_stored_graph.rows[qid].agree",
+       "stage": "serialization_consistency",
+       "status": "pass"
+      },
+      {
+       "source": "the delivered arm reports a labelling failure and is silent about referent grounding",
+       "stage": "referent_grounding",
+       "status": "unknown"
+      },
+      {
+       "source": "arms.delivered_graph.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "abstain"
+      }
+     ]
+    },
+    {
+     "arm": "delivered_graph",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "abstain"
+     },
+     "path_id": "graph_deployable_delivered",
+     "question_id": "q42_cmp_picture_drawers_vs_bed",
+     "raw_category": "unanswered",
+     "scene_id": "arkitscenes_41069042",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "pass"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "pass"
+      },
+      {
+       "source": "no independent semantic relation annotation",
+       "stage": "relation_correctness",
+       "status": "unknown"
+      },
+      {
+       "source": "geometry_vs_stored_graph.rows[qid].agree",
+       "stage": "serialization_consistency",
+       "status": "pass"
+      },
+      {
+       "source": "the delivered arm reports a labelling failure and is silent about referent grounding",
+       "stage": "referent_grounding",
+       "status": "unknown"
+      },
+      {
+       "source": "arms.delivered_graph.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "abstain"
+      }
+     ]
+    },
+    {
+     "arm": "delivered_graph",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "excluded"
+     },
+     "path_id": "graph_deployable_delivered",
+     "question_id": "q42_cmp_radiator_window_vs_desk",
+     "raw_category": "excluded_no_human_answer",
+     "scene_id": "arkitscenes_41069042",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "fail"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "object_delivery",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "relation_applicability",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "relation_correctness",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "serialization_consistency",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "referent_grounding",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "answer_generation",
+       "status": "not_reached"
+      }
+     ]
+    },
+    {
+     "arm": "delivered_graph",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "abstain"
+     },
+     "path_id": "graph_deployable_delivered",
+     "question_id": "q42_set_near_window",
+     "raw_category": "unanswered",
+     "scene_id": "arkitscenes_41069042",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "fail"
+      },
+      {
+       "source": "not reached: gating dependency object_delivery is fail",
+       "stage": "relation_applicability",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency object_delivery is fail",
+       "stage": "relation_correctness",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency object_delivery is fail",
+       "stage": "serialization_consistency",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency object_delivery is fail",
+       "stage": "referent_grounding",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency object_delivery is fail",
+       "stage": "answer_generation",
+       "status": "not_reached"
+      }
+     ]
+    }
+   ]
+  },
+  "geometry_relation_ceiling": {
+   "ladder": [
+    {
+     "reached": 12,
+     "stage": "key_eligibility",
+     "survivors": 10
+    },
+    {
+     "reached": 10,
+     "stage": "answer_generation",
+     "survivors": 7
+    }
+   ],
+   "outcome_matrix": {
+    "answer|abstain": 2,
+    "answer|correct": 7,
+    "answer|excluded": 2,
+    "answer|wrong": 1
+   },
+   "path_id": "geometry_ceiling",
+   "raw_category_counts": {
+    "correct": 7,
+    "excluded_no_human_answer": 2,
+    "unanswered": 2,
+    "wrong": 1
+   },
+   "scope": "proposal_ceiling",
+   "stage_report": [
+    {
+     "abstain": 0,
+     "fail": 2,
+     "n": 12,
+     "not_applicable": 0,
+     "not_reached": 0,
+     "pass": 10,
+     "reached": 12,
+     "stage": "key_eligibility",
+     "unknown": 0
+    },
+    {
+     "abstain": 0,
+     "fail": 2,
+     "n": 12,
+     "not_applicable": 0,
+     "not_reached": 2,
+     "pass": 8,
+     "reached": 10,
+     "stage": "object_delivery",
+     "unknown": 0
+    },
+    {
+     "abstain": 0,
+     "fail": 2,
+     "n": 12,
+     "not_applicable": 0,
+     "not_reached": 2,
+     "pass": 8,
+     "reached": 10,
+     "stage": "relation_applicability",
+     "unknown": 0
+    },
+    {
+     "abstain": 0,
+     "fail": 2,
+     "n": 12,
+     "not_applicable": 0,
+     "not_reached": 2,
+     "pass": 8,
+     "reached": 10,
+     "stage": "identity_injection",
+     "unknown": 0
+    },
+    {
+     "abstain": 2,
+     "fail": 1,
+     "n": 12,
+     "not_applicable": 0,
+     "not_reached": 2,
+     "pass": 7,
+     "reached": 10,
+     "stage": "answer_generation",
+     "unknown": 0
+    },
+    {
+     "abstain": 0,
+     "fail": 0,
+     "n": 12,
+     "not_applicable": 12,
+     "not_reached": 0,
+     "pass": 0,
+     "reached": 0,
+     "stage": "relation_correctness",
+     "unknown": 0
+    },
+    {
+     "abstain": 0,
+     "fail": 0,
+     "n": 12,
+     "not_applicable": 12,
+     "not_reached": 0,
+     "pass": 0,
+     "reached": 0,
+     "stage": "serialization_consistency",
+     "unknown": 0
+    },
+    {
+     "abstain": 0,
+     "fail": 0,
+     "n": 12,
+     "not_applicable": 12,
+     "not_reached": 0,
+     "pass": 0,
+     "reached": 0,
+     "stage": "referent_grounding",
+     "unknown": 0
+    }
+   ],
+   "traces": [
+    {
+     "arm": "geometry_relation_ceiling",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "correct"
+     },
+     "path_id": "geometry_ceiling",
+     "question_id": "q25_bin_basket_near_desk",
+     "raw_category": "correct",
+     "scene_id": "arkitscenes_41069025",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "proposal_ceiling",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "pass"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "pass"
+      },
+      {
+       "source": "human uid mapping consumed as an oracle identity input",
+       "stage": "identity_injection",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "pass"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "relation_correctness",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "serialization_consistency",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    },
+    {
+     "arm": "geometry_relation_ceiling",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "correct"
+     },
+     "path_id": "geometry_ceiling",
+     "question_id": "q25_bin_kitchenbin_near_basket",
+     "raw_category": "correct",
+     "scene_id": "arkitscenes_41069025",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "proposal_ceiling",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "pass"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "pass"
+      },
+      {
+       "source": "human uid mapping consumed as an oracle identity input",
+       "stage": "identity_injection",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "pass"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "relation_correctness",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "serialization_consistency",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    },
+    {
+     "arm": "geometry_relation_ceiling",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "correct"
+     },
+     "path_id": "geometry_ceiling",
+     "question_id": "q25_bin_kitchenbin_near_counter",
+     "raw_category": "correct",
+     "scene_id": "arkitscenes_41069025",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "proposal_ceiling",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "pass"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "pass"
+      },
+      {
+       "source": "human uid mapping consumed as an oracle identity input",
+       "stage": "identity_injection",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "pass"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "relation_correctness",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "serialization_consistency",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    },
+    {
+     "arm": "geometry_relation_ceiling",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "correct"
+     },
+     "path_id": "geometry_ceiling",
+     "question_id": "q25_cmp_coffee_table_sofa_vs_dining",
+     "raw_category": "correct",
+     "scene_id": "arkitscenes_41069025",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "proposal_ceiling",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "pass"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "pass"
+      },
+      {
+       "source": "human uid mapping consumed as an oracle identity input",
+       "stage": "identity_injection",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "pass"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "relation_correctness",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "serialization_consistency",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    },
+    {
+     "arm": "geometry_relation_ceiling",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "correct"
+     },
+     "path_id": "geometry_ceiling",
+     "question_id": "q25_cmp_fan_desk_vs_counter",
+     "raw_category": "correct",
+     "scene_id": "arkitscenes_41069025",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "proposal_ceiling",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "pass"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "pass"
+      },
+      {
+       "source": "human uid mapping consumed as an oracle identity input",
+       "stage": "identity_injection",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "pass"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "relation_correctness",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "serialization_consistency",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    },
+    {
+     "arm": "geometry_relation_ceiling",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "excluded"
+     },
+     "path_id": "geometry_ceiling",
+     "question_id": "q25_cmp_rug_sofa_vs_counter",
+     "raw_category": "excluded_no_human_answer",
+     "scene_id": "arkitscenes_41069025",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "proposal_ceiling",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "fail"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "object_delivery",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "relation_applicability",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "identity_injection",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "answer_generation",
+       "status": "not_reached"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "relation_correctness",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "serialization_consistency",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    },
+    {
+     "arm": "geometry_relation_ceiling",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "abstain"
+     },
+     "path_id": "geometry_ceiling",
+     "question_id": "q25_set_near_sofa",
+     "raw_category": "unanswered",
+     "scene_id": "arkitscenes_41069025",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "proposal_ceiling",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "fail"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "fail"
+      },
+      {
+       "source": "human uid mapping consumed as an oracle identity input",
+       "stage": "identity_injection",
+       "status": "fail"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "abstain"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "relation_correctness",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "serialization_consistency",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    },
+    {
+     "arm": "geometry_relation_ceiling",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "wrong"
+     },
+     "path_id": "geometry_ceiling",
+     "question_id": "q42_bin_bed_near_desk",
+     "raw_category": "wrong",
+     "scene_id": "arkitscenes_41069042",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "proposal_ceiling",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "pass"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "pass"
+      },
+      {
+       "source": "human uid mapping consumed as an oracle identity input",
+       "stage": "identity_injection",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "fail"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "relation_correctness",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "serialization_consistency",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    },
+    {
+     "arm": "geometry_relation_ceiling",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "correct"
+     },
+     "path_id": "geometry_ceiling",
+     "question_id": "q42_bin_desk_near_drawers",
+     "raw_category": "correct",
+     "scene_id": "arkitscenes_41069042",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "proposal_ceiling",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "pass"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "pass"
+      },
+      {
+       "source": "human uid mapping consumed as an oracle identity input",
+       "stage": "identity_injection",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "pass"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "relation_correctness",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "serialization_consistency",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    },
+    {
+     "arm": "geometry_relation_ceiling",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "correct"
+     },
+     "path_id": "geometry_ceiling",
+     "question_id": "q42_cmp_picture_drawers_vs_bed",
+     "raw_category": "correct",
+     "scene_id": "arkitscenes_41069042",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "proposal_ceiling",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "pass"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "pass"
+      },
+      {
+       "source": "human uid mapping consumed as an oracle identity input",
+       "stage": "identity_injection",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "pass"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "relation_correctness",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "serialization_consistency",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    },
+    {
+     "arm": "geometry_relation_ceiling",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "excluded"
+     },
+     "path_id": "geometry_ceiling",
+     "question_id": "q42_cmp_radiator_window_vs_desk",
+     "raw_category": "excluded_no_human_answer",
+     "scene_id": "arkitscenes_41069042",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "proposal_ceiling",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "fail"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "object_delivery",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "relation_applicability",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "identity_injection",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "answer_generation",
+       "status": "not_reached"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "relation_correctness",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "serialization_consistency",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    },
+    {
+     "arm": "geometry_relation_ceiling",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "abstain"
+     },
+     "path_id": "geometry_ceiling",
+     "question_id": "q42_set_near_window",
+     "raw_category": "unanswered",
+     "scene_id": "arkitscenes_41069042",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "proposal_ceiling",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "fail"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "fail"
+      },
+      {
+       "source": "human uid mapping consumed as an oracle identity input",
+       "stage": "identity_injection",
+       "status": "fail"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "abstain"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "relation_correctness",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "serialization_consistency",
+       "status": "not_applicable"
+      },
+      {
+       "source": "declared bypass on path geometry_ceiling",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    }
+   ]
+  },
+  "grounded_delivered_graph": {
+   "ladder": [
+    {
+     "reached": 12,
+     "stage": "key_eligibility",
+     "survivors": 10
+    },
+    {
+     "reached": 10,
+     "stage": "object_delivery",
+     "survivors": 8
+    },
+    {
+     "reached": 8,
+     "stage": "relation_applicability",
+     "survivors": 8
+    },
+    {
+     "reached": 8,
+     "stage": "serialization_consistency",
+     "survivors": 8
+    },
+    {
+     "reached": 8,
+     "stage": "referent_grounding",
+     "survivors": 3
+    },
+    {
+     "reached": 3,
+     "stage": "answer_generation",
+     "survivors": 2
+    }
+   ],
+   "outcome_matrix": {
+    "answer|abstain": 8,
+    "answer|correct": 2,
+    "answer|excluded": 2
+   },
+   "path_id": "graph_deployable_grounded",
+   "raw_category_counts": {
+    "correct": 2,
+    "excluded_no_human_answer": 2,
+    "unanswered": 8
+   },
+   "scope": "deployable",
+   "stage_report": [
+    {
+     "abstain": 0,
+     "fail": 2,
+     "n": 12,
+     "not_applicable": 0,
+     "not_reached": 0,
+     "pass": 10,
+     "reached": 12,
+     "stage": "key_eligibility",
+     "unknown": 0
+    },
+    {
+     "abstain": 0,
+     "fail": 2,
+     "n": 12,
+     "not_applicable": 0,
+     "not_reached": 2,
+     "pass": 8,
+     "reached": 10,
+     "stage": "object_delivery",
+     "unknown": 0
+    },
+    {
+     "abstain": 0,
+     "fail": 0,
+     "n": 12,
+     "not_applicable": 0,
+     "not_reached": 4,
+     "pass": 8,
+     "reached": 8,
+     "stage": "relation_applicability",
+     "unknown": 0
+    },
+    {
+     "abstain": 0,
+     "fail": 0,
+     "n": 12,
+     "not_applicable": 0,
+     "not_reached": 4,
+     "pass": 0,
+     "reached": 8,
+     "stage": "relation_correctness",
+     "unknown": 8
+    },
+    {
+     "abstain": 0,
+     "fail": 0,
+     "n": 12,
+     "not_applicable": 0,
+     "not_reached": 4,
+     "pass": 8,
+     "reached": 8,
+     "stage": "serialization_consistency",
+     "unknown": 0
+    },
+    {
+     "abstain": 0,
+     "fail": 5,
+     "n": 12,
+     "not_applicable": 0,
+     "not_reached": 4,
+     "pass": 3,
+     "reached": 8,
+     "stage": "referent_grounding",
+     "unknown": 0
+    },
+    {
+     "abstain": 1,
+     "fail": 0,
+     "n": 12,
+     "not_applicable": 0,
+     "not_reached": 9,
+     "pass": 2,
+     "reached": 3,
+     "stage": "answer_generation",
+     "unknown": 0
+    }
+   ],
+   "traces": [
+    {
+     "arm": "grounded_delivered_graph",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "abstain"
+     },
+     "path_id": "graph_deployable_grounded",
+     "question_id": "q25_bin_basket_near_desk",
+     "raw_category": "unanswered",
+     "scene_id": "arkitscenes_41069025",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "pass"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "pass"
+      },
+      {
+       "source": "no independent semantic relation annotation",
+       "stage": "relation_correctness",
+       "status": "unknown"
+      },
+      {
+       "source": "geometry_vs_stored_graph.rows[qid].agree",
+       "stage": "serialization_consistency",
+       "status": "pass"
+      },
+      {
+       "source": "arms.grounded_delivered_graph.rows[qid].reason vs 'the grounding bridge abstained on this anchor'",
+       "stage": "referent_grounding",
+       "status": "fail"
+      },
+      {
+       "source": "not reached: gating dependency referent_grounding is fail",
+       "stage": "answer_generation",
+       "status": "not_reached"
+      }
+     ]
+    },
+    {
+     "arm": "grounded_delivered_graph",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "correct"
+     },
+     "path_id": "graph_deployable_grounded",
+     "question_id": "q25_bin_kitchenbin_near_basket",
+     "raw_category": "correct",
+     "scene_id": "arkitscenes_41069025",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "pass"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "pass"
+      },
+      {
+       "source": "no independent semantic relation annotation",
+       "stage": "relation_correctness",
+       "status": "unknown"
+      },
+      {
+       "source": "geometry_vs_stored_graph.rows[qid].agree",
+       "stage": "serialization_consistency",
+       "status": "pass"
+      },
+      {
+       "source": "arms.grounded_delivered_graph.rows[qid].reason vs 'the grounding bridge abstained on this anchor'",
+       "stage": "referent_grounding",
+       "status": "pass"
+      },
+      {
+       "source": "arms.grounded_delivered_graph.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "pass"
+      }
+     ]
+    },
+    {
+     "arm": "grounded_delivered_graph",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "correct"
+     },
+     "path_id": "graph_deployable_grounded",
+     "question_id": "q25_bin_kitchenbin_near_counter",
+     "raw_category": "correct",
+     "scene_id": "arkitscenes_41069025",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "pass"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "pass"
+      },
+      {
+       "source": "no independent semantic relation annotation",
+       "stage": "relation_correctness",
+       "status": "unknown"
+      },
+      {
+       "source": "geometry_vs_stored_graph.rows[qid].agree",
+       "stage": "serialization_consistency",
+       "status": "pass"
+      },
+      {
+       "source": "arms.grounded_delivered_graph.rows[qid].reason vs 'the grounding bridge abstained on this anchor'",
+       "stage": "referent_grounding",
+       "status": "pass"
+      },
+      {
+       "source": "arms.grounded_delivered_graph.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "pass"
+      }
+     ]
+    },
+    {
+     "arm": "grounded_delivered_graph",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "abstain"
+     },
+     "path_id": "graph_deployable_grounded",
+     "question_id": "q25_cmp_coffee_table_sofa_vs_dining",
+     "raw_category": "unanswered",
+     "scene_id": "arkitscenes_41069025",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "pass"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "pass"
+      },
+      {
+       "source": "no independent semantic relation annotation",
+       "stage": "relation_correctness",
+       "status": "unknown"
+      },
+      {
+       "source": "geometry_vs_stored_graph.rows[qid].agree",
+       "stage": "serialization_consistency",
+       "status": "pass"
+      },
+      {
+       "source": "arms.grounded_delivered_graph.rows[qid].reason vs 'the grounding bridge abstained on this anchor'",
+       "stage": "referent_grounding",
+       "status": "pass"
+      },
+      {
+       "source": "arms.grounded_delivered_graph.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "abstain"
+      }
+     ]
+    },
+    {
+     "arm": "grounded_delivered_graph",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "abstain"
+     },
+     "path_id": "graph_deployable_grounded",
+     "question_id": "q25_cmp_fan_desk_vs_counter",
+     "raw_category": "unanswered",
+     "scene_id": "arkitscenes_41069025",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "pass"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "pass"
+      },
+      {
+       "source": "no independent semantic relation annotation",
+       "stage": "relation_correctness",
+       "status": "unknown"
+      },
+      {
+       "source": "geometry_vs_stored_graph.rows[qid].agree",
+       "stage": "serialization_consistency",
+       "status": "pass"
+      },
+      {
+       "source": "arms.grounded_delivered_graph.rows[qid].reason vs 'the grounding bridge abstained on this anchor'",
+       "stage": "referent_grounding",
+       "status": "fail"
+      },
+      {
+       "source": "not reached: gating dependency referent_grounding is fail",
+       "stage": "answer_generation",
+       "status": "not_reached"
+      }
+     ]
+    },
+    {
+     "arm": "grounded_delivered_graph",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "excluded"
+     },
+     "path_id": "graph_deployable_grounded",
+     "question_id": "q25_cmp_rug_sofa_vs_counter",
+     "raw_category": "excluded_no_human_answer",
+     "scene_id": "arkitscenes_41069025",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "fail"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "object_delivery",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "relation_applicability",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "relation_correctness",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "serialization_consistency",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "referent_grounding",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "answer_generation",
+       "status": "not_reached"
+      }
+     ]
+    },
+    {
+     "arm": "grounded_delivered_graph",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "abstain"
+     },
+     "path_id": "graph_deployable_grounded",
+     "question_id": "q25_set_near_sofa",
+     "raw_category": "unanswered",
+     "scene_id": "arkitscenes_41069025",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "fail"
+      },
+      {
+       "source": "not reached: gating dependency object_delivery is fail",
+       "stage": "relation_applicability",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency object_delivery is fail",
+       "stage": "relation_correctness",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency object_delivery is fail",
+       "stage": "serialization_consistency",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency object_delivery is fail",
+       "stage": "referent_grounding",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency object_delivery is fail",
+       "stage": "answer_generation",
+       "status": "not_reached"
+      }
+     ]
+    },
+    {
+     "arm": "grounded_delivered_graph",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "abstain"
+     },
+     "path_id": "graph_deployable_grounded",
+     "question_id": "q42_bin_bed_near_desk",
+     "raw_category": "unanswered",
+     "scene_id": "arkitscenes_41069042",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "pass"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "pass"
+      },
+      {
+       "source": "no independent semantic relation annotation",
+       "stage": "relation_correctness",
+       "status": "unknown"
+      },
+      {
+       "source": "geometry_vs_stored_graph.rows[qid].agree",
+       "stage": "serialization_consistency",
+       "status": "pass"
+      },
+      {
+       "source": "arms.grounded_delivered_graph.rows[qid].reason vs 'the grounding bridge abstained on this anchor'",
+       "stage": "referent_grounding",
+       "status": "fail"
+      },
+      {
+       "source": "not reached: gating dependency referent_grounding is fail",
+       "stage": "answer_generation",
+       "status": "not_reached"
+      }
+     ]
+    },
+    {
+     "arm": "grounded_delivered_graph",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "abstain"
+     },
+     "path_id": "graph_deployable_grounded",
+     "question_id": "q42_bin_desk_near_drawers",
+     "raw_category": "unanswered",
+     "scene_id": "arkitscenes_41069042",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "pass"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "pass"
+      },
+      {
+       "source": "no independent semantic relation annotation",
+       "stage": "relation_correctness",
+       "status": "unknown"
+      },
+      {
+       "source": "geometry_vs_stored_graph.rows[qid].agree",
+       "stage": "serialization_consistency",
+       "status": "pass"
+      },
+      {
+       "source": "arms.grounded_delivered_graph.rows[qid].reason vs 'the grounding bridge abstained on this anchor'",
+       "stage": "referent_grounding",
+       "status": "fail"
+      },
+      {
+       "source": "not reached: gating dependency referent_grounding is fail",
+       "stage": "answer_generation",
+       "status": "not_reached"
+      }
+     ]
+    },
+    {
+     "arm": "grounded_delivered_graph",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "abstain"
+     },
+     "path_id": "graph_deployable_grounded",
+     "question_id": "q42_cmp_picture_drawers_vs_bed",
+     "raw_category": "unanswered",
+     "scene_id": "arkitscenes_41069042",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "pass"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "pass"
+      },
+      {
+       "source": "no independent semantic relation annotation",
+       "stage": "relation_correctness",
+       "status": "unknown"
+      },
+      {
+       "source": "geometry_vs_stored_graph.rows[qid].agree",
+       "stage": "serialization_consistency",
+       "status": "pass"
+      },
+      {
+       "source": "arms.grounded_delivered_graph.rows[qid].reason vs 'the grounding bridge abstained on this anchor'",
+       "stage": "referent_grounding",
+       "status": "fail"
+      },
+      {
+       "source": "not reached: gating dependency referent_grounding is fail",
+       "stage": "answer_generation",
+       "status": "not_reached"
+      }
+     ]
+    },
+    {
+     "arm": "grounded_delivered_graph",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "excluded"
+     },
+     "path_id": "graph_deployable_grounded",
+     "question_id": "q42_cmp_radiator_window_vs_desk",
+     "raw_category": "excluded_no_human_answer",
+     "scene_id": "arkitscenes_41069042",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "fail"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "object_delivery",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "relation_applicability",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "relation_correctness",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "serialization_consistency",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "referent_grounding",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "answer_generation",
+       "status": "not_reached"
+      }
+     ]
+    },
+    {
+     "arm": "grounded_delivered_graph",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "abstain"
+     },
+     "path_id": "graph_deployable_grounded",
+     "question_id": "q42_set_near_window",
+     "raw_category": "unanswered",
+     "scene_id": "arkitscenes_41069042",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "deployable",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "fail"
+      },
+      {
+       "source": "not reached: gating dependency object_delivery is fail",
+       "stage": "relation_applicability",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency object_delivery is fail",
+       "stage": "relation_correctness",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency object_delivery is fail",
+       "stage": "serialization_consistency",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency object_delivery is fail",
+       "stage": "referent_grounding",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency object_delivery is fail",
+       "stage": "answer_generation",
+       "status": "not_reached"
+      }
+     ]
+    }
+   ]
+  },
+  "stored_graph_human_identity": {
+   "ladder": [
+    {
+     "reached": 12,
+     "stage": "key_eligibility",
+     "survivors": 10
+    },
+    {
+     "reached": 10,
+     "stage": "answer_generation",
+     "survivors": 7
+    }
+   ],
+   "outcome_matrix": {
+    "answer|abstain": 2,
+    "answer|correct": 7,
+    "answer|excluded": 2,
+    "answer|wrong": 1
+   },
+   "path_id": "graph_identity_oracle",
+   "raw_category_counts": {
+    "correct": 7,
+    "excluded_no_human_answer": 2,
+    "unanswered": 2,
+    "wrong": 1
+   },
+   "scope": "identity_oracle",
+   "stage_report": [
+    {
+     "abstain": 0,
+     "fail": 2,
+     "n": 12,
+     "not_applicable": 0,
+     "not_reached": 0,
+     "pass": 10,
+     "reached": 12,
+     "stage": "key_eligibility",
+     "unknown": 0
+    },
+    {
+     "abstain": 0,
+     "fail": 2,
+     "n": 12,
+     "not_applicable": 0,
+     "not_reached": 2,
+     "pass": 8,
+     "reached": 10,
+     "stage": "object_delivery",
+     "unknown": 0
+    },
+    {
+     "abstain": 0,
+     "fail": 2,
+     "n": 12,
+     "not_applicable": 0,
+     "not_reached": 2,
+     "pass": 8,
+     "reached": 10,
+     "stage": "relation_applicability",
+     "unknown": 0
+    },
+    {
+     "abstain": 0,
+     "fail": 0,
+     "n": 12,
+     "not_applicable": 0,
+     "not_reached": 2,
+     "pass": 0,
+     "reached": 10,
+     "stage": "relation_correctness",
+     "unknown": 10
+    },
+    {
+     "abstain": 0,
+     "fail": 0,
+     "n": 12,
+     "not_applicable": 0,
+     "not_reached": 2,
+     "pass": 10,
+     "reached": 10,
+     "stage": "serialization_consistency",
+     "unknown": 0
+    },
+    {
+     "abstain": 0,
+     "fail": 2,
+     "n": 12,
+     "not_applicable": 0,
+     "not_reached": 2,
+     "pass": 8,
+     "reached": 10,
+     "stage": "identity_injection",
+     "unknown": 0
+    },
+    {
+     "abstain": 2,
+     "fail": 1,
+     "n": 12,
+     "not_applicable": 0,
+     "not_reached": 2,
+     "pass": 7,
+     "reached": 10,
+     "stage": "answer_generation",
+     "unknown": 0
+    },
+    {
+     "abstain": 0,
+     "fail": 0,
+     "n": 12,
+     "not_applicable": 12,
+     "not_reached": 0,
+     "pass": 0,
+     "reached": 0,
+     "stage": "referent_grounding",
+     "unknown": 0
+    }
+   ],
+   "traces": [
+    {
+     "arm": "stored_graph_human_identity",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "correct"
+     },
+     "path_id": "graph_identity_oracle",
+     "question_id": "q25_bin_basket_near_desk",
+     "raw_category": "correct",
+     "scene_id": "arkitscenes_41069025",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "identity_oracle",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "pass"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "pass"
+      },
+      {
+       "source": "no independent semantic relation annotation",
+       "stage": "relation_correctness",
+       "status": "unknown"
+      },
+      {
+       "source": "geometry_vs_stored_graph.rows[qid].agree",
+       "stage": "serialization_consistency",
+       "status": "pass"
+      },
+      {
+       "source": "human uid mapping consumed as an oracle identity input",
+       "stage": "identity_injection",
+       "status": "pass"
+      },
+      {
+       "source": "arms.stored_graph_human_identity.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "pass"
+      },
+      {
+       "source": "declared bypass on path graph_identity_oracle",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    },
+    {
+     "arm": "stored_graph_human_identity",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "correct"
+     },
+     "path_id": "graph_identity_oracle",
+     "question_id": "q25_bin_kitchenbin_near_basket",
+     "raw_category": "correct",
+     "scene_id": "arkitscenes_41069025",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "identity_oracle",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "pass"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "pass"
+      },
+      {
+       "source": "no independent semantic relation annotation",
+       "stage": "relation_correctness",
+       "status": "unknown"
+      },
+      {
+       "source": "geometry_vs_stored_graph.rows[qid].agree",
+       "stage": "serialization_consistency",
+       "status": "pass"
+      },
+      {
+       "source": "human uid mapping consumed as an oracle identity input",
+       "stage": "identity_injection",
+       "status": "pass"
+      },
+      {
+       "source": "arms.stored_graph_human_identity.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "pass"
+      },
+      {
+       "source": "declared bypass on path graph_identity_oracle",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    },
+    {
+     "arm": "stored_graph_human_identity",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "correct"
+     },
+     "path_id": "graph_identity_oracle",
+     "question_id": "q25_bin_kitchenbin_near_counter",
+     "raw_category": "correct",
+     "scene_id": "arkitscenes_41069025",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "identity_oracle",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "pass"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "pass"
+      },
+      {
+       "source": "no independent semantic relation annotation",
+       "stage": "relation_correctness",
+       "status": "unknown"
+      },
+      {
+       "source": "geometry_vs_stored_graph.rows[qid].agree",
+       "stage": "serialization_consistency",
+       "status": "pass"
+      },
+      {
+       "source": "human uid mapping consumed as an oracle identity input",
+       "stage": "identity_injection",
+       "status": "pass"
+      },
+      {
+       "source": "arms.stored_graph_human_identity.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "pass"
+      },
+      {
+       "source": "declared bypass on path graph_identity_oracle",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    },
+    {
+     "arm": "stored_graph_human_identity",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "correct"
+     },
+     "path_id": "graph_identity_oracle",
+     "question_id": "q25_cmp_coffee_table_sofa_vs_dining",
+     "raw_category": "correct",
+     "scene_id": "arkitscenes_41069025",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "identity_oracle",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "pass"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "pass"
+      },
+      {
+       "source": "no independent semantic relation annotation",
+       "stage": "relation_correctness",
+       "status": "unknown"
+      },
+      {
+       "source": "geometry_vs_stored_graph.rows[qid].agree",
+       "stage": "serialization_consistency",
+       "status": "pass"
+      },
+      {
+       "source": "human uid mapping consumed as an oracle identity input",
+       "stage": "identity_injection",
+       "status": "pass"
+      },
+      {
+       "source": "arms.stored_graph_human_identity.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "pass"
+      },
+      {
+       "source": "declared bypass on path graph_identity_oracle",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    },
+    {
+     "arm": "stored_graph_human_identity",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "correct"
+     },
+     "path_id": "graph_identity_oracle",
+     "question_id": "q25_cmp_fan_desk_vs_counter",
+     "raw_category": "correct",
+     "scene_id": "arkitscenes_41069025",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "identity_oracle",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "pass"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "pass"
+      },
+      {
+       "source": "no independent semantic relation annotation",
+       "stage": "relation_correctness",
+       "status": "unknown"
+      },
+      {
+       "source": "geometry_vs_stored_graph.rows[qid].agree",
+       "stage": "serialization_consistency",
+       "status": "pass"
+      },
+      {
+       "source": "human uid mapping consumed as an oracle identity input",
+       "stage": "identity_injection",
+       "status": "pass"
+      },
+      {
+       "source": "arms.stored_graph_human_identity.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "pass"
+      },
+      {
+       "source": "declared bypass on path graph_identity_oracle",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    },
+    {
+     "arm": "stored_graph_human_identity",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "excluded"
+     },
+     "path_id": "graph_identity_oracle",
+     "question_id": "q25_cmp_rug_sofa_vs_counter",
+     "raw_category": "excluded_no_human_answer",
+     "scene_id": "arkitscenes_41069025",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "identity_oracle",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "fail"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "object_delivery",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "relation_applicability",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "relation_correctness",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "serialization_consistency",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "identity_injection",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "answer_generation",
+       "status": "not_reached"
+      },
+      {
+       "source": "declared bypass on path graph_identity_oracle",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    },
+    {
+     "arm": "stored_graph_human_identity",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "abstain"
+     },
+     "path_id": "graph_identity_oracle",
+     "question_id": "q25_set_near_sofa",
+     "raw_category": "unanswered",
+     "scene_id": "arkitscenes_41069025",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "identity_oracle",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "fail"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "fail"
+      },
+      {
+       "source": "no independent semantic relation annotation",
+       "stage": "relation_correctness",
+       "status": "unknown"
+      },
+      {
+       "source": "geometry_vs_stored_graph.rows[qid].agree",
+       "stage": "serialization_consistency",
+       "status": "pass"
+      },
+      {
+       "source": "human uid mapping consumed as an oracle identity input",
+       "stage": "identity_injection",
+       "status": "fail"
+      },
+      {
+       "source": "arms.stored_graph_human_identity.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "abstain"
+      },
+      {
+       "source": "declared bypass on path graph_identity_oracle",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    },
+    {
+     "arm": "stored_graph_human_identity",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "wrong"
+     },
+     "path_id": "graph_identity_oracle",
+     "question_id": "q42_bin_bed_near_desk",
+     "raw_category": "wrong",
+     "scene_id": "arkitscenes_41069042",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "identity_oracle",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "pass"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "pass"
+      },
+      {
+       "source": "no independent semantic relation annotation",
+       "stage": "relation_correctness",
+       "status": "unknown"
+      },
+      {
+       "source": "geometry_vs_stored_graph.rows[qid].agree",
+       "stage": "serialization_consistency",
+       "status": "pass"
+      },
+      {
+       "source": "human uid mapping consumed as an oracle identity input",
+       "stage": "identity_injection",
+       "status": "pass"
+      },
+      {
+       "source": "arms.stored_graph_human_identity.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "fail"
+      },
+      {
+       "source": "declared bypass on path graph_identity_oracle",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    },
+    {
+     "arm": "stored_graph_human_identity",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "correct"
+     },
+     "path_id": "graph_identity_oracle",
+     "question_id": "q42_bin_desk_near_drawers",
+     "raw_category": "correct",
+     "scene_id": "arkitscenes_41069042",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "identity_oracle",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "pass"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "pass"
+      },
+      {
+       "source": "no independent semantic relation annotation",
+       "stage": "relation_correctness",
+       "status": "unknown"
+      },
+      {
+       "source": "geometry_vs_stored_graph.rows[qid].agree",
+       "stage": "serialization_consistency",
+       "status": "pass"
+      },
+      {
+       "source": "human uid mapping consumed as an oracle identity input",
+       "stage": "identity_injection",
+       "status": "pass"
+      },
+      {
+       "source": "arms.stored_graph_human_identity.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "pass"
+      },
+      {
+       "source": "declared bypass on path graph_identity_oracle",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    },
+    {
+     "arm": "stored_graph_human_identity",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "correct"
+     },
+     "path_id": "graph_identity_oracle",
+     "question_id": "q42_cmp_picture_drawers_vs_bed",
+     "raw_category": "correct",
+     "scene_id": "arkitscenes_41069042",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "identity_oracle",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "pass"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "pass"
+      },
+      {
+       "source": "no independent semantic relation annotation",
+       "stage": "relation_correctness",
+       "status": "unknown"
+      },
+      {
+       "source": "geometry_vs_stored_graph.rows[qid].agree",
+       "stage": "serialization_consistency",
+       "status": "pass"
+      },
+      {
+       "source": "human uid mapping consumed as an oracle identity input",
+       "stage": "identity_injection",
+       "status": "pass"
+      },
+      {
+       "source": "arms.stored_graph_human_identity.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "pass"
+      },
+      {
+       "source": "declared bypass on path graph_identity_oracle",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    },
+    {
+     "arm": "stored_graph_human_identity",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "excluded"
+     },
+     "path_id": "graph_identity_oracle",
+     "question_id": "q42_cmp_radiator_window_vs_desk",
+     "raw_category": "excluded_no_human_answer",
+     "scene_id": "arkitscenes_41069042",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "identity_oracle",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "fail"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "object_delivery",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "relation_applicability",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "relation_correctness",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "serialization_consistency",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "identity_injection",
+       "status": "not_reached"
+      },
+      {
+       "source": "not reached: gating dependency key_eligibility is fail",
+       "stage": "answer_generation",
+       "status": "not_reached"
+      },
+      {
+       "source": "declared bypass on path graph_identity_oracle",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    },
+    {
+     "arm": "stored_graph_human_identity",
+     "expected_outcome": "answer",
+     "final_outcome": {
+      "positive_expected": true,
+      "result": "abstain"
+     },
+     "path_id": "graph_identity_oracle",
+     "question_id": "q42_set_near_window",
+     "raw_category": "unanswered",
+     "scene_id": "arkitscenes_41069042",
+     "schema": "stagereach_trace",
+     "schema_version": 1,
+     "scope": "identity_oracle",
+     "stages": [
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].outcome vs 'excluded_no_human_answer'",
+       "stage": "key_eligibility",
+       "status": "pass"
+      },
+      {
+       "source": "arms.geometry_relation_ceiling.rows[qid].uids \u2014 human mapping of every referenced object to a delivered instance",
+       "stage": "object_delivery",
+       "status": "fail"
+      },
+      {
+       "source": "attribution.buckets.ceiling_unanswerable_no_exhaustive_set",
+       "stage": "relation_applicability",
+       "status": "fail"
+      },
+      {
+       "source": "no independent semantic relation annotation",
+       "stage": "relation_correctness",
+       "status": "unknown"
+      },
+      {
+       "source": "geometry_vs_stored_graph.rows[qid].agree",
+       "stage": "serialization_consistency",
+       "status": "pass"
+      },
+      {
+       "source": "human uid mapping consumed as an oracle identity input",
+       "stage": "identity_injection",
+       "status": "fail"
+      },
+      {
+       "source": "arms.stored_graph_human_identity.rows[qid].outcome",
+       "stage": "answer_generation",
+       "status": "abstain"
+      },
+      {
+       "source": "declared bypass on path graph_identity_oracle",
+       "stage": "referent_grounding",
+       "status": "not_applicable"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "legacy_compat": {
+  "held_by_representation": 7,
+  "label": "legacy-ledger compatibility: mixes stages measured on different arms into one ladder, exactly as paper_statistics.py did; the per-arm ladders are the primary output",
+  "n_scored": 10,
+  "reached_by_delivered_graph": 0,
+  "reached_by_deployable_grounding": 2,
+  "reached_by_direct_rgb": 7,
+  "survivors_by_stage": [
+   {
+    "lost_here": 0,
+    "stage": "human_answerable",
+    "surviving": 10
+   },
+   {
+    "lost_here": 2,
+    "stage": "objects_delivered",
+    "surviving": 8
+   },
+   {
+    "lost_here": 0,
+    "stage": "relation_expressible",
+    "surviving": 8
+   },
+   {
+    "lost_here": 0,
+    "stage": "edge_serialized",
+    "surviving": 8
+   },
+   {
+    "lost_here": 5,
+    "stage": "anchor_grounded",
+    "surviving": 3
+   },
+   {
+    "lost_here": 3,
+    "stage": "graph_correct",
+    "surviving": 0
+   }
+  ]
+ },
+ "n_questions": 12,
+ "n_scored": 10,
+ "purpose": "Per-arm StageReach traces and causal survival ladders for the ARKit relation challenge, derived independently of the legacy statistics tool.",
+ "schema": "stagereach_track_result",
+ "schema_version": 1,
+ "source": "eval/results/project_census_v1/arkit_relation_challenge_report.json",
+ "track": "arkit"
+}

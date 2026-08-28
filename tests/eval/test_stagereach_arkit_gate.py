@@ -185,6 +185,18 @@ def test_gate_arkit_legacy_ledger_compatibility():
             legacy["n_scored"]) == (7, 2, 0, 7, 10)
 
 
+def test_committed_arkit_artifact_is_current():
+    """The committed stagereach artifact must match what the tool produces
+    now (byte-compare via the tool's own --check)."""
+    import subprocess
+    r = subprocess.run(
+        [sys.executable, str(REPO_ROOT / "tools" / "stagereach_eval.py"),
+         "--track", "arkit", "--check"],
+        capture_output=True, text=True, cwd=REPO_ROOT)
+    assert r.returncode == 0, (
+        f"arkit stagereach artifact is stale: {r.stdout}{r.stderr[-300:]}")
+
+
 TESTS = [
     test_gate_arkit_arms_delivered_ladder,
     test_gate_arkit_arms_grounded_ladder,
@@ -195,6 +207,7 @@ TESTS = [
     test_gate_arkit_relation_correctness_is_unknown_everywhere,
     test_gate_arkit_attribution_names_gating_stages_only,
     test_gate_arkit_legacy_ledger_compatibility,
+    test_committed_arkit_artifact_is_current,
 ]
 
 

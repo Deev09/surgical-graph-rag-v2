@@ -182,6 +182,18 @@ def test_replica_reads_only_the_packed_copies():
         assert not rel.startswith("runs"), rel
 
 
+def test_committed_replica_artifact_is_current():
+    """The committed stagereach artifact must match what the tool produces
+    now (byte-compare via the tool's own --check)."""
+    import subprocess
+    r = subprocess.run(
+        [sys.executable, str(REPO_ROOT / "tools" / "stagereach_eval.py"),
+         "--track", "replica", "--check"],
+        capture_output=True, text=True, cwd=REPO_ROOT)
+    assert r.returncode == 0, (
+        f"replica stagereach artifact is stale: {r.stdout}{r.stderr[-300:]}")
+
+
 TESTS = [
     test_gate_replica_raw_categories,
     test_gate_replica_normalized_matrix,
@@ -194,6 +206,7 @@ TESTS = [
     test_guard_near_surface_refuses_precision_recall,
     test_guard_definition_change_cannot_pool_with_frozen_track,
     test_replica_reads_only_the_packed_copies,
+    test_committed_replica_artifact_is_current,
 ]
 
 
