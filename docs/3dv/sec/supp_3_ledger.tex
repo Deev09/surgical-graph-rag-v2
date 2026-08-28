@@ -10,6 +10,21 @@ the tracked evidence pack and runs no model --- every cell is a re-reading
 of outcomes that were already scored and committed, so the transition where
 questions are lost can be read off rather than argued.
 
+Figure~\ref{fig:supp-ladder} gives the one-glance overview of the arms the
+main paper's path table declares: which stages each arm relies on, which
+consume human-supplied identity, and what each reaches.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{figures/fig1_evaluation_ladder}
+  \caption{The evaluation-ladder overview. Each row holds the pipeline
+  fixed and changes one source of identity; bars span the stages a row
+  relies on. Hatched rows consume human-supplied identity and are bounds,
+  never system performance. The same declarations appear as the per-arm
+  path table in the main paper; counts are the committed per-arm results.}
+  \label{fig:supp-ladder}
+\end{figure*}
+
 A naming caution carried in the ledger and enforced by a test: the column
 \texttt{evidence\_spans\_multiple\_views} is \emph{not} the transfer test's
 \emph{cross-view}. The transfer items are non-co-visible by construction;

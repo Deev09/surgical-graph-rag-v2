@@ -85,5 +85,9 @@ code & metric & value & scope & source artifact\\
 \texttt{G05} & questions lost at the serialized-edge stage & 0 of 10 lost & \texttt{identity\_\allowbreak{}oracle} & paper\_\allowbreak{}statistics.json\\
 \texttt{G06} & exact McNemar two-sided p, correct answers under substituted identity & p = 0.015625 (7 fixed, 0 regressed, 7 discordant of 10) & \texttt{identity\_\allowbreak{}oracle} & paper\_\allowbreak{}statistics.json\\
 \texttt{G07} & matched instances whose canonical class is in the top 3 but not the top 1 & 6 / 21 & \texttt{oracle\_\allowbreak{}free\_\allowbreak{}component\_\allowbreak{}eval} & evidence pack: (per-instance top\_\allowbreak{}k records)\\
+\texttt{G08} & per-arm stage ladders reproduce the committed statistics & delivered 10-\textgreater{}8-\textgreater{}8-\textgreater{}8-\textgreater{}0; grounded 10-\textgreater{}8-\textgreater{}8-\textgreater{}8-\textgreater{}3-\textgreater{}2; stored-human 10-\textgreater{}7; direct RGB 10-\textgreater{}7 -- all equal to the committed ledger & \texttt{bug-diagnostic} & arkit\_\allowbreak{}stagereach\_\allowbreak{}v1.json\\
+\texttt{G09} & normalized outcome matrix over the human-verified items & (answer,correct)=4; (answer,wrong)=20; (answer,abstain)=4; (empty,correct)=27; (empty,wrong)=1; pooled naive success 31/56 (misleading aggregate) & \texttt{delivered} & replica\_\allowbreak{}stagereach\_\allowbreak{}v1.json\\
+\texttt{G10} & human-verified items per scene & 13 / 14 / 16 / 13 (office\_0, room\_0, room\_1, room\_2) & \texttt{delivered} & replica\_\allowbreak{}stagereach\_\allowbreak{}v1.json\\
+\texttt{G11} & injected faults localized to the mutated stage while the evaluator was masked to the injected class & 24 / 24 (8 fault classes x 3 relation types); 0 failures on clean artifacts & \texttt{bug-diagnostic} & fault\_\allowbreak{}fixture\_\allowbreak{}v1.json\\
 \end{longtable}
 }

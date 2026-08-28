@@ -3,7 +3,7 @@
 
 Every numeric claim in the main paper carries a scope. The scope is not a
 narrative convention: it is a column of the results registry that accompanies
-the submission (278 rows, each carrying exactly one scope), and the
+the submission (282 rows, each carrying exactly one scope), and the
 claim-to-registry audit of \cref{ssec:audit} machine-checks that no claim
 exceeds what its scope may assert. \Cref{tab:scopes} lists the seven scopes,
 what a row within each may claim, and how many registry rows carry each. The
@@ -23,7 +23,7 @@ row counts are computed from the registry itself, not transcribed.
       oracle-free, but the \textbf{denominator is oracle-selected}; a
       component result only & 28\\
     \texttt{delivered} & the delivered pipeline's own output, scored against
-      a key & 75\\
+      a key & 77\\
     \texttt{proposal\_ceiling} & an oracle-evaluated upper bound on
       proposals & 26\\
     \texttt{identity\_oracle} & consumes human-supplied identity; a
@@ -31,9 +31,9 @@ row counts are computed from the registry itself, not transcribed.
     \texttt{definition-change} & the benchmark definition moved, not the
       model & 13\\
     \texttt{bug-diagnostic} & a correctness fix; never a model
-      before/after & 38\\
+      before/after & 40\\
     \midrule
-    total & & 278\\
+    total & & 282\\
     \bottomrule
   \end{tabular}
   \caption{The seven scopes and their registry row counts.}
