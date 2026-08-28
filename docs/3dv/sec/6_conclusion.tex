@@ -1,7 +1,7 @@
 \section{Conclusion}
 
-A representation can hold correct information that the deployable query paths we
-instantiated do not reach. We measured that gap directly: the same stored relations
+A representation can hold information sufficient to answer questions that the deployable
+query paths we instantiated do not reach. We measured that gap directly: the same stored relations
 answer 7 of 10 with human-supplied identity and 0 of 10 with the identity the system
 actually produces \rid{F35, F40}, while the serialized edges reproduce recomputed
 geometry on all 12 tested items \rid{F63}. Identity grounding is the dominant measured
@@ -24,8 +24,8 @@ What the decomposition establishes, in order:
   \item \textbf{Direct RGB is the strongest current answer path for visible evidence} ---
   7/10 at 0.90 coverage \rid{F50, F53}, though wrong on 2 of 10 on those rooms \rid{F51}.
   \item \textbf{Neither deployed path yet handles genuinely non-co-visible questions
-  reliably} --- the graph arm cannot reach them \rid{F40}, and RGB declines them on an
-  unseen room \rid{F79}.
+  reliably} --- the graph arm cannot reach them \rid{F40}, and RGB declines them on the
+  pilot room \rid{F79}.
 \end{enumerate}
 
 \paragraph{The contribution is an evaluation-method one, and narrower than

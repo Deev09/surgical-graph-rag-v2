@@ -11,6 +11,17 @@
 
 \input{preamble}
 
+% Numbers produced by the evaluator are supplied as macros. The generated file
+% is produced by the evaluation pipeline; if it is absent in a given tree, the
+% fallback block below keeps the paper compiling standalone.
+\InputIfFileExists{sec/generated_numbers.tex}{}{}
+%% TEMP-FALLBACK — delete this block once sec/generated_numbers.tex is
+%% committed. Values below are the freeze-document gate values, provided only
+%% so the paper compiles standalone; \providecommand yields to the generated
+%% definitions when that file exists.
+\providecommand{\SRSignTestP}{0.25}
+%% END TEMP-FALLBACK
+
 \definecolor{cvprblue}{rgb}{0.21,0.49,0.74}
 \usepackage[pagebackref,breaklinks,colorlinks,allcolors=cvprblue]{hyperref}
 

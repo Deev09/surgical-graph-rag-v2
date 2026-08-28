@@ -1,5 +1,14 @@
-\section{Method: an evaluation ladder with explicit scope}
+\section{Method: staged evaluation with explicit scope}
 \label{sec:method}
+
+Terminology, used consistently throughout: an \emph{arm} is an evaluated system
+configuration; a \emph{path} is an arm's route through the evaluator's stage DAG; the
+\emph{key} is the human-authored expected-answer record a question is scored against; a
+\emph{gate} is a predeclared numeric threshold committed before the corresponding score
+exists; \emph{delivered} denotes the pipeline's own output partition, produced without
+oracle input; the \emph{bridge} is the oracle-free grounding module binding question
+anchors to delivered instances. Bracketed codes such as \rid{F25} index rows of the
+results registry that accompanies the submission; they are not citations.
 
 \subsection{The scope discipline}
 
@@ -14,23 +23,23 @@ system performance). The remaining three --- \texttt{proposal\_ceiling},
 \texttt{definition-change} and \texttt{bug-diagnostic} --- are defined in the
 supplement, along with the full row counts.
 
-Answer production and grading are separate functions: no layer that produces an answer
-may read an expected value, and a syntax-tree test fails the build if a deployable answer
-function so much as binds a key-shaped name.
+Answer production and grading are separate functions: no component that produces an
+answer may read an expected value, and a syntax-tree test fails the build if a deployable
+answer function so much as binds a key-shaped name.
 
-\subsection{The ladder}
+\subsection{The arms}
 
-Five layers answer the same questions over the same stored relations, differing only in
+Five arms answer the same questions over the same stored relations, differing only in
 where object identity comes from: a geometry ceiling and a stored-edge replay, both
 consuming human identity; the delivered graph, using its own learned labels; a grounded
 graph, using an oracle-free bridge; and direct multiview RGB, which uses no graph at all.
-\Cref{fig:ladder} shows which pipeline stages each layer relies on.
+\Cref{fig:ladder} shows which pipeline stages each arm relies on.
 
 \begin{figure*}[t]
   \centering
   \includegraphics[width=\textwidth]{figures/fig1_evaluation_ladder.pdf}
-  \caption{The evaluation ladder. Each layer holds the pipeline fixed and changes one
-  source of identity; bars span the stages a layer relies on. Hatched layers consume
+  \caption{The evaluation ladder. Each \emph{arm} holds the pipeline fixed and changes
+  one source of identity; bars span the stages an arm relies on. Hatched arms consume
   human-supplied identity and are bounds, never system performance.}
   \label{fig:ladder}
 \end{figure*}

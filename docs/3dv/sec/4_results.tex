@@ -6,7 +6,7 @@
 The label stage classified each delivered instance from three isolated point-splat
 renders. Replacing those images with real capture RGB crops --- and changing nothing else
 --- produces the largest improvement measured on any oracle-free prediction path in this
-project (\cref{tab:labels}).
+study (\cref{tab:labels}).
 
 \begin{table}[t]
   \centering\footnotesize
@@ -30,16 +30,15 @@ project (\cref{tab:labels}).
   \label{tab:labels}
 \end{table}
 
-\paragraph{Paired, the effect is stronger than the marginals suggest.}
+\paragraph{Paired, the effect is one-directional.}
 Both arms were scored on the same matched instances, so the comparison is paired by
-construction. At top-1, RGB fixes 12 instances and regresses 1 --- 13 discordant pairs,
-exact McNemar $p = 0.0034$ \rid{G01}. At top-3 it fixes 14 and regresses none,
-$p = 0.00012$ \rid{G02}. The test is the two-sided exact binomial on discordant pairs,
-not the chi-square approximation, which these counts are far too small for.
-\textbf{The limitation is clustering:} the 21 instances sit within only three scenes and
-the test treats them as independent, which they are not --- instances in one room share a
-capture, a lighting condition and a reconstruction. This is an instance-level statement,
-not a scene-level or dataset-level one.
+construction. At top-1, RGB fixes 12 instances and regresses 1 (exact McNemar
+$p = 0.0034$ \rid{G01}; an instance-level statement only, since the 21 instances sit
+within three scenes and the test treats them as independent, which they are not). At
+top-3 it fixes 14 and regresses none ($p = 0.00012$ \rid{G02}, same caveat). A
+scene-level sign test cannot reach significance with three clusters: all three scenes
+improve, and $p = \SRSignTestP$ is the minimum attainable. The exact test construction
+and the full clustering discussion are in the supplement.
 
 \paragraph{A control constrains the interpretation.}
 A wide crop of a doorway reads as a kitchen, so a naive RGB win could have been the model
@@ -67,16 +66,16 @@ must not be reported as end-to-end or deployable performance.}
 \label{sec:unreachable}
 
 The central experiment asks twelve questions about \texttt{NEAR} --- the one relation the
-delivered graph actually contains --- across two rooms, with ten items scored after the
-owner marked two ambiguous \rid{F65}. Five layers answer the same questions over the same
-stored relations, differing only in where identity comes from (\cref{tab:arms}).
+delivered graph actually contains --- across two rooms, with ten items scored after one
+of the authors marked two ambiguous \rid{F65}. Five arms answer the same questions over
+the same stored relations, differing only in where identity comes from (\cref{tab:arms}).
 
 \begin{table}[t]
   \centering\footnotesize
   \setlength{\tabcolsep}{3pt}
   \begin{tabular}{@{}llcc l@{}}
     \toprule
-    layer & identity & correct & cov. & scope\\
+    arm & identity & correct & cov. & scope\\
     \midrule
     geometry ceiling & human & 7/10 \rid{F28} & 0.80 & \texttt{id\_oracle}\\
     stored-edge replay & human & 7/10 \rid{F35} & 0.80 & \texttt{id\_oracle}\\
@@ -94,14 +93,17 @@ The direct-RGB row carries a cost the correct-count hides: on these development 
 was \textbf{wrong on 2 of 10} \rid{F51}. That is the baseline against which
 \cref{sec:transfer}'s unseen-room behaviour must be read.
 
-\paragraph{Serialization adds no measurable loss.}
+\paragraph{No additional serialization loss was measured.}
 The stored-edge replay reads \emph{only} edges the extractor serialized and recomputes no
 geometry. It agrees with the recomputed geometry ceiling on all 12 authored items
-\rid{F63}. The scope is \texttt{identity\_oracle} and the limits are real: \textbf{both
-compared arms consume human-supplied identity}, the comparison covers the single
-\texttt{NEAR} relation, and because both sides apply the same 1.0\,m surface-to-surface
-convention the check catches a serialization error but \textbf{cannot} detect a wrong
-convention.
+\rid{F63}: no additional loss was measured during serialization relative to recomputation
+under the same convention. The scope is \texttt{identity\_oracle} and the limits are
+real: \textbf{both compared arms consume human-supplied identity}, the comparison covers
+the single \texttt{NEAR} relation, and because both sides apply the same 1.0\,m
+surface-to-surface convention the check catches a serialization error but \textbf{cannot}
+detect a wrong convention. Relation availability and serialization consistency were
+observed on these items; semantic correctness of the stored relations was not
+independently established.
 
 \paragraph{Identity is what binds.}
 Seven of the ten scored items are \emph{ceiling-correct, delivered-unanswered} \rid{F64}:
@@ -111,7 +113,8 @@ correct answers were 0 against a predeclared bar of 2 \rid{F60}.
 \paragraph{An oracle-free bridge does not close it.}
 A grounding bridge encoding anchor phrases and real capture crops with the same pinned
 weights, admitting a match only on cross-view agreement and with no confidence threshold
-anywhere, moved the delivered graph arm from 0/10 \rid{F40} to 2/10 \rid{F45} --- and
+anywhere, moved the delivered graph arm from 0/10 \rid{F40} to 2/10 \rid{F45} --- a
+2-versus-0 difference that is not statistically separable at $n = 10$ --- and
 failed all three predeclared gates: anchor precision 0.583 against $\ge 0.80$ \rid{F67},
 coverage 0.467 against $\ge 0.60$ \rid{F68}, and graph-unique wins 0 against $\ge 2$
 \rid{F69}. Of the 17 question anchors, 15 were human-resolvable, the bridge admitted 12,
@@ -124,19 +127,23 @@ with maximum cross-view agreement \rid{F75}. Cross-view agreement measures
 Rather than argue about where the capability goes, we record for each question whether it
 survived each stage it must pass (\cref{fig:reach}). Of the 10 scored questions, 8 survive
 object delivery \rid{G03} and all 8 survive both relation expressibility and the
-serialized-edge stage --- \textbf{no question is lost to relation extraction} \rid{G05}.
+serialized-edge stage --- \textbf{no additional loss was measured at the serialized-edge
+stage relative to recomputation under the same convention} \rid{G05}.
 Three survive anchor grounding \rid{G04}. The single largest loss, five of ten, is at
 identity grounding, larger than every other transition combined. The substitution is
 paired: 7 items are answered under human-supplied identity that the delivered graph does
-not answer, none the other way \rid{G06}. \Cref{fig:qualitative} shows one such question in the room itself. Because one side
+not answer, none the other way (exact McNemar $p = 0.0156$ \rid{G06}, an instance-level
+statement over ten items in two rooms; the test details are in the supplement).
+\Cref{fig:qualitative} shows one such question in the room itself. Because one side
 consumes human identity, it sizes a bound --- it says the arms differ, not that anything deployable achieves 7/10.
 
 \begin{figure*}[t]
   \centering
   \includegraphics[width=\textwidth]{figures/fig4_reachability.pdf}
   \caption{Where questions are lost between representation and deployable answer. One row
-  per stage an answer must survive. Nothing is lost at the serialized-edge stage;
-  identity grounding loses more than every other transition combined.}
+  per stage an answer must survive. No additional loss was measured at the
+  serialized-edge stage relative to recomputation under the same convention; identity
+  grounding loses more than every other transition combined.}
   \label{fig:reach}
 \end{figure*}
 
@@ -144,22 +151,25 @@ consumes human identity, it sizes a bound --- it says the arms differ, not that 
   \centering
   \includegraphics[width=\textwidth]{figures/fig5_qualitative.pdf}
   \caption{One question, in the room it is about. The stored \texttt{NEAR} edge between
-  the basket and the desk is present and correct (surface distance $0.0$\,m against a
-  $1.0$\,m threshold). A human resolving both referents answers it; the delivered labels
+  the basket and the desk is present, and its serialization is consistent with
+  recomputation under the same convention (surface distance $0.0$\,m against a $1.0$\,m
+  threshold); its semantic correctness was not independently established. A human
+  resolving both referents answers it; the delivered labels
   never address it; the oracle-free bridge binds one referent and abstains on the other,
   so the edge is unreachable through it. Frames and crops are from the committed human
   review sheet; outcomes from the packed relation report.}
   \label{fig:qualitative}
 \end{figure*}
 
-\subsection{Transfer to an untouched room}
+\subsection{A blinded one-scene pilot under a twice-amended generator}
 \label{sec:transfer}
 
 Direct multiview RGB at 7/10 \rid{F50} was the strongest deployable arm, but both rooms
-had been examined for months. We froze the protocol --- question generation, view
-selection, prompt, schema, scoring and two gates --- and committed it \textbf{before}
-downloading a previously untouched capture. Question generation reduces direct author
-selection: three agents independently enumerated objects from the same frames with no
+had been examined for months. For a pilot on a capture unused during development, the
+gates, the scoring and the model-facing protocol --- view selection, prompt, schema and
+two gates --- were frozen before any model run; question generation was amended twice on
+question-text defects before scoring, with the chronology in the supplement. Question
+generation reduces direct author selection: three agents independently enumerated objects from the same frames with no
 access to each other or to any question; an object became an anchor on two-of-three
 agreement; anchors were ordered mechanically and a fixed template allocated slots.
 
@@ -191,8 +201,8 @@ fixed-procedure generation. The full amendment history is in the supplement.
     coverage (gate $\ge 0.80$) & 0.50 \rid{F83} & \textbf{fail}\\
     \bottomrule
   \end{tabular}
-  \caption{One previously untouched room, scored once. Both predeclared gates failed, so
-  no transfer claim is made \rid{F88}.}
+  \caption{One pilot room, unused during development, scored once. Both predeclared
+  gates failed, so no transfer claim is made \rid{F88}.}
   \label{tab:transfer}
 \end{table}
 

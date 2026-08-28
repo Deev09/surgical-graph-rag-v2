@@ -238,9 +238,9 @@ def figure_3_unreachable(R: dict) -> str:
                   10.5, BAD, anchor="middle", weight="700"))
     n64, d64 = frac(R["F64"])
     b.append(text(28, rowy(3) + 56,
-                  f"Relation extraction is not the loss: the stored-edge replay agrees with "
-                  f"recomputed geometry {R['F63']['value'].split('(')[0].strip()} item for item "
-                  f"[F63].", 11, INK))
+                  f"No additional serialization loss was measured: the stored-edge replay "
+                  f"agrees with recomputed geometry {R['F63']['value'].split('(')[0].strip()} "
+                  f"item for item [F63].", 11, INK))
     b.append(text(28, rowy(3) + 74,
                   f"{n64} of {d64} items are ceiling-correct but delivered-unanswered [F64]; "
                   f"delivered-graph-unique wins {R['F60']['value'].split('(')[0].strip()} [F60].",
@@ -353,9 +353,9 @@ def figure_4_reachability(R: dict) -> str:
             b.append(text(cx + 188, yb + 58, "NOT DEPLOYABLE", 8, ORACLE,
                           anchor="end", weight="700", spacing="0.05em"))
 
-    b.append(text(28, H - 12, "Extraction is not the loss: no question is lost at the "
-                              "serialized-edge stage. Identity grounding is where they go.",
-                  10, FAINT))
+    b.append(text(28, H - 12, "No additional loss was measured at the serialized-edge stage "
+                              "relative to recomputation. Identity grounding is where "
+                              "questions go.", 10, FAINT))
     return svg(W, H, "".join(b), "Where questions are lost")
 
 
