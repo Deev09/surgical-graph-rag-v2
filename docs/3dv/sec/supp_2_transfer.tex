@@ -1,0 +1,242 @@
+\section{Transfer protocol: the frozen text and the full amendment history}
+\label{ssec:transfer}
+
+The main paper discloses that the transfer-test question generator was
+amended twice before run~2 was scored. This section inlines the frozen
+protocol and the complete amendment record. For anonymity, commit hashes are
+replaced here by neutral event labels (``the freeze point'', ``the
+amendment-1 record'', ``the key-recording point'', ``the response-pinning
+point'') and repository paths by generic artifact names; the de-anonymised
+transfer-protocol record, with hashes and paths restored, accompanies the
+camera-ready.
+
+\subsection{The protocol as frozen, before the capture was downloaded}
+
+The following restates the protocol text committed at the freeze point, at
+which time the test scene had never been inspected.
+
+\paragraph{The question.} Does the fixed direct multiview RGB QA path
+transfer to one untouched real handheld room, with no prompt, view-selection
+or scoring changes? This is a transfer test of an existing path. It is not a
+graph, grounding or segmentation experiment, and none of those stages runs.
+
+\paragraph{The scene, and its predeclared fallback.} The primary is a named
+ARKitScenes capture, not present locally at freeze time; only the assets
+needed for RGB packet generation are downloaded (the low-resolution wide RGB
+frames, the trajectory, and the per-frame intrinsics). A fallback capture is
+fixed in the same document so it cannot become scene-shopping later: if the
+primary cannot be obtained, a second named validation capture is used ---
+already present in a local dataset copy and never touched by any experiment
+in the project: no packet, no key, no entity manifest, no graph, no mention
+in any report. The substitution, if it happens, is recorded in the result
+with the reason. No third option exists: if neither scene is usable the test
+does not run, and no scene is chosen after seeing data. Either way the scene
+stays uninspected until the protocol is committed.
+
+\paragraph{Frame selection --- reused verbatim, not re-tuned.} The survey
+rule of the existing review-kit generator: 18 equal temporal bins across the
+capture, and inside each bin the frame with the highest answer-free
+information score (contrast plus edge density, penalising clipping). The
+score cannot know what any question is about. This is the same rule the
+previous two packets used, unchanged.
+
+\paragraph{Question generation --- fixed first, applied after the packet
+exists.} The failure mode this guards against is authoring questions the
+model can answer. The procedure removes the author's discretion at the point
+where that bias would enter.
+
+\begin{enumerate}
+  \item \textbf{Anchor enumeration, three independent blind passes.} Three
+  agents each receive only the 18 selected frames and list human-nameable
+  objects. They do not see each other's lists, any question, any prior
+  result, or anything from the project. An object becomes an \emph{anchor}
+  only if at least two of the three passes list it. Single-pass sightings
+  are discarded, including the author's.
+  \item \textbf{Anchor ordering, mechanical.} Anchors are ordered by the
+  frame index of their first appearance ascending, ties broken
+  alphabetically. This ordering, not judgement about answerability,
+  determines which anchors are used.
+  \item \textbf{Fixed template allocation.} Questions are allocated by
+  template and filled from the ordered anchor list: three presence or
+  cardinality items from the anchors ranked 1--3; three comparative-distance
+  items from ordered triples over the anchors ranked 1--6; two cross-view
+  relation items from the two lowest-combined-rank anchor pairs sharing no
+  frame. Eight questions. If fewer than two non-co-visible pairs exist
+  naturally, the shortfall is recorded and the set drops to 7 or 6 --- no
+  substitute pair is invented, and the ``if naturally present'' condition is
+  reported either way. If fewer than six anchors survive step 1, the test
+  does not run.
+\end{enumerate}
+
+Excluded by construction: internal object identifiers, annotation-derived
+wording, graph-internal state, anything RGB cannot observe
+(direction/orientation, support, containment, metric magnitude), and any
+counting question without a stated convention.
+
+\paragraph{Conventions, stated before the scene is seen.}
+\emph{Counting}: an instance is a physically separate object of the named
+class; two objects of the same class in different parts of the room count as
+two even if they never appear in one frame. This is stated because a
+previous key got it wrong: an earlier room was keyed as having one trash
+can, and it has two physically separate waste containers at opposite ends of
+the room, which all four arms then ``failed''. \emph{NEAR}: two objects are
+near when the nearest points of their surfaces are within about one metre;
+comparative questions are ordinal and use no threshold. Both conventions
+appear verbatim in the model prompt and on the owner sheet, so the two are
+answering the same question.
+
+\paragraph{Prompt and answer schema --- composed from existing text, not
+rewritten.} The prompt is assembled from the two prompts already in use,
+with no rewording: presence/cardinality forms take the representation kill
+test's integer/boolean phrasing; comparative and binary-near forms take the
+relation challenge's phrasing, including the corrected outcome-flag wording.
+The response schema records, per item, an id, an outcome (\texttt{answer} or
+\texttt{unknown}), the answer, a confidence in $[0,1]$, and evidence frame
+ids drawn only from the 18 supplied ids. The response must pin the packet
+hash.
+
+\paragraph{Human review.} One self-contained offline sheet, same generator
+family as the relation-challenge review kit. For each question the owner
+records the answer; ambiguous yes/no; evidence visibility as 0, 1, or 2+
+views, judged independently of the answer; and free-text notes. The owner
+also confirms or corrects the counting convention for any class the
+questions count. There is no UID mapping panel --- there are no delivered
+entities for this scene and none will be produced.
+
+\paragraph{Scoring.} Exactly once, after the blinded response is
+hash-pinned. Exact accuracy is correct over scored items, where scored
+excludes items the owner marked ambiguous; answer coverage is (correct +
+wrong) over scored items; ambiguous items are excluded from both and
+reported.
+
+\paragraph{Predeclared gates --- both required.} Exact accuracy $\ge 0.60$
+and answer coverage $\ge 0.80$. Plus, as conditions on the run rather than
+numbers: no prompt, view-selection, question, convention or scoring
+adjustment after the scene is inspected; and one run only.
+
+\paragraph{Stopping rule.} If either gate fails, or any condition above is
+violated: the demo remains a fixed evaluation replay and no transfer claim
+is made. Do not retune and re-run, do not try a third scene, and do not
+soften a gate.
+
+\paragraph{Interpretation limits.} A pass supports exactly one sentence:
+under a fixed procedure, direct multiview RGB transferred to one previously
+untouched ARKitScenes handheld room. It does not support generalization, a
+claim about handheld capture in general, a claim about room understanding,
+or any comparison to the graph path --- which is not run here and whose
+existing results stand unchanged. One room, 6--10 questions, one blinded
+response, one human reviewer.
+
+\paragraph{Not run.} Instance segmentation, mask proposal, grounding, graph
+extraction, the live API. No existing result, key, packet, report or demo
+artifact is modified.
+
+\subsection{Amendment 1 --- run voided and regenerated (2026-08-23)}
+
+Run~1 is void. Nothing from it is scored, and no transfer claim rests on it.
+
+\paragraph{Why, and why this is not tuning.} The blinded model never ran in
+run~1. No response was requested, no answer existed, and nothing was scored.
+The no-adjustment rule exists to prevent selecting on outcomes; there was no
+outcome to select on. What was fixed is a question-generation defect flagged
+before the owner answered. The run-1 key is preserved inside the
+amendment-1 record: its tracked location was later overwritten by the run-2
+key (10 items, none ambiguous), so the run-1 key survives only in the
+version history at the amendment-1 record, where it remains the evidence
+that the defect was real.
+
+\paragraph{What the defect was.} The owner marked 4 of 8 items ambiguous,
+leaving $n = 4$: one cardinality, two presence, one comparative, and zero
+cross-view. Two failures follow. First, the coverage gate became an
+anti-abstention gate: at $n = 4$, coverage $\ge 0.80$ requires 4 of 4
+answered, so a single honest \texttt{unknown} would fail the run --- the
+gate was written to catch a model abstaining its way out of being wrong,
+and at this sample size it instead punishes the exact behaviour the product
+path is built on. Second, the surviving mix could not support the claim:
+half the scored set was presence --- the easiest and least spatial category
+--- with no cross-view item at all. Root cause of the exclusions: six of
+eight questions said ``in this room'', and the capture is a
+$9.99 \times 13.53$\,m single-storey multi-space floor with a staircase and
+adjoining rooms, not one room. The phrase does not denote, so several items
+had no determinate answer.
+
+\paragraph{The three fixes, fixed before regenerating.}
+(1)~\emph{Scope wording}: cardinality and presence questions now say ``in
+the captured space'', defined in the conventions as everything visible
+anywhere in the supplied views; comparative and near questions need no scope
+and are unchanged. (2)~\emph{Anchor ordering}: was first-appearance
+ascending, which put a small wall print --- 2 of 3 passes, seen in 3 frames
+--- at rank~0, where it carried three of eight questions; now ordered by
+passes agreeing descending, then frames-seen descending, then first
+appearance ascending. Still entirely mechanical, still nothing to do with
+whether any system can answer. (3)~\emph{Ten questions, not eight}, for
+headroom against exclusions: 3 presence/cardinality, 4 comparative, 3
+cross-view; cross-view gains a slot because it lost both last time and it is
+the category the work turns on. Everything else is unchanged: the 18-view
+selection, the prompt composition, the answer schema, the conventions
+themselves, the gates, the stopping rule, one run only, and the
+interpretation limits.
+
+\paragraph{The anchor passes are reused, not re-run.} The three blind
+enumeration passes are reused verbatim. They enumerated objects from the 18
+frames with no access to any question, any wording, or any ordering rule, so
+none of the three fixes touches what they saw or reported.
+
+\paragraph{Gate arithmetic at the new size.} At $n = 10$, accuracy
+$\ge 0.60$ needs 6 correct and coverage $\ge 0.80$ needs 8 answered, so up
+to two honest abstentions are affordable. If exclusions again drive the
+scored set below six items, the run is void and reported as such rather
+than scored --- recorded in advance so it is a rule and not a judgement
+made afterwards.
+
+\subsection{Amendment 2 --- relational slots restricted to unique-referent
+anchors}
+
+Applied immediately after amendment~1 regenerated, before any blinded
+response existed, and before the owner was asked to review anything.
+
+Amendment~1's ordering fix promoted the best-attested anchors --- but
+best-attested turns out to correlate with \emph{numerous}. Of the top twelve
+anchors, exactly one had a unique referent. Six of the ten regenerated
+questions read ``the cushion'', ``the framed picture'', ``the wall power
+socket'', where the three passes counted four, about nine, and three. A
+singular definite description with no unique referent is ill-posed in the
+same way ``in this room'' was ill-posed on a multi-room floor. It is
+detectable without any model output, and it would have collapsed the scored
+set a second time.
+
+The rule: comparative and cross-view slots draw only from anchors where all
+three passes agreed there is exactly one. 27 of the 48 admitted anchors
+qualify, so the constraint costs nothing. Presence and cardinality slots are
+untouched --- ``how many framed pictures are in the captured space'' is a
+good question precisely because there are several. Nothing about
+answerability enters: the filter is a count agreed by three observers who
+never saw a question.
+
+\paragraph{A limit on amending.} This is the second structural amendment.
+Repeated amendment is itself a risk --- at some point ``fix the generator''
+becomes ``iterate until the questions look right'', which is the behaviour
+the protocol exists to prevent. So: no further structural amendment to this
+generator on this scene. If run~2's returned key again drives the scored set
+below six, that is reported as a finding about the fixed-procedure generator
+--- that it does not produce a usable question set on this capture --- and
+the transfer test is abandoned rather than amended a third time.
+
+\subsection{What protects the result, and blinding stated precisely}
+
+\paragraph{What protects the result.} The blinded model never ran in run~1
+--- no response was ever requested --- so nothing scored was selected on an
+outcome, and both amendments addressed defects visible in the questions
+alone.
+
+\paragraph{Blinding, stated precisely.} For the transfer run the key was
+recorded at the key-recording point and the response hash-pinned at the
+response-pinning point eight minutes later, so commit order does \emph{not}
+prove the response predates the key. What the record establishes is that
+the response was produced in a context that never received the key, and was
+pinned by hash before any score was computed. The protection is isolation
+plus the hash pin, not version-history ordering.
+
+Run~2 was scored exactly once (2026-08-23); the scored outcome and both gate
+failures appear in the main paper, and the per-item rows are in the packed
+transfer score report in the evidence pack.

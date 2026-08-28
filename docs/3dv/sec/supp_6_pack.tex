@@ -1,0 +1,19 @@
+\section{Evidence pack and reproducibility}
+\label{ssec:pack}
+
+Every load-bearing number traces to the evidence pack that accompanies the
+submission: \textbf{23 sanitized numeric reports} --- the 18 reports of the
+original pack plus the 5 frozen Replica scorecards added for this submission
+--- together with a manifest (\texttt{MANIFEST.json}) recording, for each
+report, its original path in the authors' tree, the SHA-256 of both the
+original and the sanitized bytes, and the producing commit. The sanitization
+policy (bulk per-element keys dropped, oversized lists elided) is applied by
+a dedicated packing tool that never regenerates a report: what is packed is
+byte-derived from what was scored.
+
+Twenty-eight of the 278 registry rows cite an untracked primary source and
+cannot be reproduced from the packaged artifacts alone; each such row says
+so in its source column. A further 52 quantities could not be verified
+against any committed artifact and are enumerated in the accompanying
+results census rather than entered in the registry at all. None of these is
+load-bearing for any claim in the main paper's results section.

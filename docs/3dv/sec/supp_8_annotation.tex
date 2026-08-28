@@ -1,0 +1,45 @@
+\section{Independent annotation}
+\label{ssec:annotation}
+
+The evaluation keys used by the main results were authored by a single
+non-blind reviewer, and the paper says so wherever it matters. To measure
+how reproducible those keys are, a \textbf{second annotator} --- blinded to
+all system outputs, to the arm names, and to the hypothesis --- independently
+reviewed the 12 authored relation questions: the 10 eligible for the primary
+evaluation, and the 2 excluded items, retained deliberately so that the
+\emph{exclusion} judgement itself (is the item ambiguous?) is measured for
+reproducibility rather than assumed.
+
+Agreement is reported per field as exact agreement --- answerability,
+ambiguity, referent selection, and relation label --- with Cohen's $\kappa$
+reported only where the field's categories are finite and varied enough for
+chance correction to be meaningful; where one category dominates or the
+field is free text, $\kappa$ is degenerate and only exact agreement is
+reported. The second annotator's returned review is stored as
+evaluation-key reproducibility evidence and future calibration data; it was
+not used to retune the evaluated system, and no key was altered in response
+to it for any result in this paper.
+
+%% INTEGRATOR: fill from eval/results/stagereach/annotator_agreement_v1.json
+%% at the annotator gate. Replace every \TODO cell below and delete the
+%% placeholder note from the caption.
+\begin{table}[t]
+  \centering\footnotesize
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{@{}lccc@{}}
+    \toprule
+    field & $n$ & exact agreement & Cohen's $\kappa$\\
+    \midrule
+    answerability      & 12 & \TODO{fill} & \TODO{fill}\\
+    ambiguity          & 12 & \TODO{fill} & \TODO{fill}\\
+    referent selection & \TODO{n} & \TODO{fill} & ---\\
+    relation label     & \TODO{n} & \TODO{fill} & \TODO{fill}\\
+    \bottomrule
+  \end{tabular}
+  \caption{\TODO{PLACEHOLDER --- to be filled at the annotator gate from the
+  committed agreement artifact.} Per-field agreement between the original
+  key author and the blinded second annotator. $\kappa$ is reported only
+  where categories are finite and varied; ``---'' marks fields where it is
+  degenerate.}
+  \label{tab:annotation}
+\end{table}

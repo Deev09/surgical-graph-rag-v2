@@ -1,0 +1,102 @@
+\section{Trace schema and path declarations}
+\label{ssec:schema}
+
+Every evaluated item emits one trace conforming to the frozen schema below
+(\texttt{stagereach\_trace}, schema version~1). \texttt{source} is a
+provenance string naming the artifact and field the status was derived from.
+Every emitted artifact carries its schema name and version and is written
+with sorted keys, with byte-compare support for staleness checking.
+
+\begin{center}
+\footnotesize
+\begin{verbatim}
+{
+ "schema": "stagereach_trace",
+ "schema_version": 1,
+ "question_id": "...",
+ "scene_id": "...",
+ "arm": "...",
+ "path_id": "...",
+ "scope": "...",
+ "expected_outcome": "answer|empty|defer",
+ "stages": [
+   {"stage": "...",
+    "status": "...",
+    "source": "..."}
+ ],
+ "final_outcome": {
+   "result": "correct|wrong|abstain|excluded",
+   "positive_expected": true
+ },
+ "raw_category": "verbatim source vocabulary label"
+}
+\end{verbatim}
+\end{center}
+
+A stage status is one of \texttt{pass}, \texttt{fail}, \texttt{unknown},
+\texttt{not\_applicable}, \texttt{abstain}, \texttt{not\_reached}.
+\texttt{unknown} is never counted as \texttt{pass}, never attributed as a
+failure, and never zeroes downstream survival; \texttt{not\_applicable} is
+legal only on stages the trace's path declares bypassed; and
+\texttt{not\_reached} is required downstream of a \texttt{fail} on a
+depended-on stage. Causal survival is computed over declared gating
+dependencies only; non-gating audit stages remain visible but do not reduce
+downstream reachability, and attribution reports the first \texttt{fail} on
+a gating stage.
+
+\paragraph{Per-arm path declarations.} There is no shared mixed ladder:
+each arm declares its own ordered stage subset as data
+(\cref{tab:paths}). Stages carry two attributes, \texttt{answer\_path} and
+\texttt{oracle\_fed}: \texttt{key\_eligibility} is
+\texttt{answer\_path=False, oracle\_fed=True} on every path, and
+\texttt{identity\_injection} is \texttt{answer\_path=True,
+oracle\_fed=True} --- a \texttt{deployable}-scope trace may not
+pass-consume any oracle-fed answer-path stage, and the evaluator raises if
+one tries. Gating dependencies are declared per stage per path:
+\texttt{serialization\_consistency} does \emph{not} depend on
+\texttt{relation\_correctness}, and \texttt{relation\_correctness} is a
+non-gating audit stage on the ARKit paths --- on ARKit \texttt{NEAR} it is
+\texttt{unknown} (no independent semantic annotation exists) while
+serialization consistency is measured.
+
+\begin{table*}[t]
+  \centering\footnotesize
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{@{}lp{0.40\textwidth}p{0.17\textwidth}p{0.15\textwidth}@{}}
+    \toprule
+    path & stages (ordered) & bypassed & allowed scopes\\
+    \midrule
+    \texttt{graph\_deployable\_delivered} &
+      key\_eligibility, object\_delivery, relation\_applicability,
+      relation\_correctness, serialization\_consistency,
+      referent\_grounding, answer\_generation &
+      --- & deployable, delivered\\
+    \addlinespace
+    \texttt{graph\_deployable\_grounded} &
+      same as above & --- & deployable, delivered\\
+    \addlinespace
+    \texttt{graph\_identity\_oracle} &
+      key\_eligibility, object\_delivery, relation\_applicability,
+      relation\_correctness, serialization\_consistency,
+      identity\_injection, answer\_generation &
+      referent\_grounding & identity\_oracle\\
+    \addlinespace
+    \texttt{geometry\_ceiling} &
+      key\_eligibility, object\_delivery, relation\_applicability,
+      identity\_injection, answer\_generation &
+      relation\_correctness, serialization\_consistency,
+      referent\_grounding &
+      proposal\_ceiling, identity\_oracle\\
+    \addlinespace
+    \texttt{direct\_rgb} &
+      key\_eligibility, answer\_generation &
+      object\_delivery, relation\_applicability, relation\_correctness,
+      serialization\_consistency, referent\_grounding &
+      deployable\\
+    \bottomrule
+  \end{tabular}
+  \caption{The per-arm path declarations, ported from the frozen schema.
+  Each path is an ordered subset of the stage universe; a stage bypassed by
+  a path is the only place \texttt{not\_applicable} is legal.}
+  \label{tab:paths}
+\end{table*}

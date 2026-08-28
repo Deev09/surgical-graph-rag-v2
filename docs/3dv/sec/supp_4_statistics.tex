@@ -1,0 +1,64 @@
+\section{Paired statistics}
+\label{ssec:statistics}
+
+The main paper states the paired effects and their direction; the exact
+tests live here. All three tests are exact two-sided binomial tests on the
+discordant pairs (exact McNemar), not the chi-square approximation --- the
+discordant counts are far too small for it. Under the null, the instances
+that changed verdict between the two arms are equally likely to have changed
+in either direction. Every input is a committed, already-scored outcome; the
+tests are computed by the packaged statistics tool from the evidence pack,
+with no model run.
+
+\begin{table}[t]
+  \centering\footnotesize
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabular}{@{}lccccl@{}}
+    \toprule
+    comparison & before & after & fixed & regr. & $p$\\
+    \midrule
+    splat $\to$ RGB, top-1 \rid{G01} & 1/21 & 12/21 & 12 & 1 & 0.0034\\
+    splat $\to$ RGB, top-3 \rid{G02} & 4/21 & 18/21 & 14 & 0 & 0.00012\\
+    identity substitution \rid{G06} & 0/10 & 7/10 & 7 & 0 & 0.0156\\
+    \bottomrule
+  \end{tabular}
+  \caption{Exact McNemar tests on discordant pairs. The label rows are
+  \texttt{oracle\_free\_component\_eval}; the identity row is
+  \texttt{identity\_oracle} and sizes a bound, not a system improvement.}
+  \label{tab:mcnemar}
+\end{table}
+
+\paragraph{The label-image substitution \rid{G01, G02}.} Both label arms
+were scored on the same matched instances, so the comparison is paired by
+construction. At top-1, replacing the isolated point-splat renders with real
+capture RGB crops moves matched-instance accuracy from 1/21 to 12/21
+\rid{C01, C02}: 12 instances fixed, 1 regressed, 13 discordant pairs, exact
+two-sided $p = 0.0034$ \rid{G01}. At top-3 the move is 4/21 to 18/21
+\rid{C03, C04}: 14 fixed, none regressed, $p = 0.00012$ \rid{G02}. The scope
+is \texttt{oracle\_free\_component\_eval}: the denominator of 21 is
+oracle-selected, and nothing here is end-to-end performance.
+
+\paragraph{The identity substitution \rid{G06}.} Over the ten scored
+relation questions, substituting human-supplied identity for the delivered
+labels moves the same stored edges from 0/10 \rid{F40} to 7/10 \rid{F35}:
+7 items fixed, none regressed, exact two-sided $p = 0.0156$ \rid{G06}. Both
+the direction and the exclusivity matter --- no item was answered by the
+delivered graph that human identity missed. Because one side consumes human
+identity, the scope is \texttt{identity\_oracle}: the test says the arms
+differ; it does not say anything deployable achieves 7/10. Its ten items
+come from two rooms with one non-blind reviewer, and the $p$-value inherits
+every limitation of that key.
+
+\paragraph{The clustering limitation.} The 21 label instances sit within
+only three scenes, and the instance-level tests assume an independence that
+does not hold across a scene: instances in one room share a capture, a
+lighting condition and a reconstruction. These are instance-level
+statements, not scene-level or dataset-level ones.
+
+\paragraph{The scene-level statement.} All three scenes move in the same
+direction under the label-image substitution. Treating the scene as the
+cluster, a sign test over the three scene clusters gives $p = 0.25$, so
+\textbf{no scene-level significance is claimable} --- three clusters cannot
+reach significance under any outcome. The scene-level evidence is
+directional consistency, nothing stronger, and the paper claims nothing
+stronger.

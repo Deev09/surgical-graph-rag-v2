@@ -1,0 +1,46 @@
+\section{The scope discipline in full}
+\label{ssec:scopes}
+
+Every numeric claim in the main paper carries a scope. The scope is not a
+narrative convention: it is a column of the results registry that accompanies
+the submission (278 rows, each carrying exactly one scope), and the
+claim-to-registry audit of \cref{ssec:audit} machine-checks that no claim
+exceeds what its scope may assert. \Cref{tab:scopes} lists the seven scopes,
+what a row within each may claim, and how many registry rows carry each. The
+row counts are computed from the registry itself, not transcribed.
+
+\begin{table}[t]
+  \centering\footnotesize
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabular}{@{}p{0.30\linewidth}p{0.43\linewidth}r@{}}
+    \toprule
+    scope & what a row may claim & rows\\
+    \midrule
+    \texttt{deployable} & end-to-end performance of a shippable path; no
+      oracle, no human key in the answer path, denominator not
+      oracle-selected & 50\\
+    \texttt{oracle\_free\_\allowbreak component\_\allowbreak eval} & the prediction path is
+      oracle-free, but the \textbf{denominator is oracle-selected}; a
+      component result only & 28\\
+    \texttt{delivered} & the delivered pipeline's own output, scored against
+      a key & 75\\
+    \texttt{proposal\_ceiling} & an oracle-evaluated upper bound on
+      proposals & 26\\
+    \texttt{identity\_oracle} & consumes human-supplied identity; a
+      \textbf{bound}, never system performance & 48\\
+    \texttt{definition-change} & the benchmark definition moved, not the
+      model & 13\\
+    \texttt{bug-diagnostic} & a correctness fix; never a model
+      before/after & 38\\
+    \midrule
+    total & & 278\\
+    \bottomrule
+  \end{tabular}
+  \caption{The seven scopes and their registry row counts.}
+  \label{tab:scopes}
+\end{table}
+
+Answer production and grading are separate functions throughout: no layer
+that produces an answer may read an expected value, and a syntax-tree test
+fails the build if a deployable answer function so much as binds a
+key-shaped name.

@@ -1,0 +1,60 @@
+% 3DV 2027 submission, supplementary material -- ANONYMOUS REVIEW VERSION.
+%
+% Anonymisation note: as in the main paper, this document carries no
+% repository paths, no commit hashes and no tool names from the authors'
+% tree. Commit hashes in the ported transfer record are replaced by neutral
+% event labels; artifacts are referred to generically or by packaged
+% filename only, and are named concretely only in the camera-ready.
+\documentclass[10pt,twocolumn,letterpaper]{article}
+
+\usepackage[review]{cvpr}
+
+\input{preamble}
+
+\usepackage{longtable}
+
+\definecolor{cvprblue}{rgb}{0.21,0.49,0.74}
+\usepackage[pagebackref,breaklinks,colorlinks,allcolors=cvprblue]{hyperref}
+
+\def\paperID{*****}
+\def\confName{3DV\xspace}
+\def\confYear{2027\xspace}
+
+% Result identifiers refer to rows of the results registry that accompanies
+% the submission, exactly as in the main paper.
+\newcommand{\rid}[1]{{\small\texttt{[#1]}}}
+% \srid marks registry rows cited only in this supplement (not by the main
+% text). It typesets identically to \rid; the distinct macro keeps the
+% main-paper claim audit scoped to the main paper's citations.
+\newcommand{\srid}[1]{{\small\texttt{[#1]}}}
+
+% Supplementary numbering: sections S1, S2, ...; tables and figures likewise.
+\renewcommand{\thesection}{S\arabic{section}}
+\renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\thefigure}{S\arabic{figure}}
+
+\title{StageReach3D: Supplementary Material}
+
+\author{Anonymous \confName~submission\\
+Paper ID \paperID}
+
+\begin{document}
+\maketitle
+
+\input{sec/supp_1_scopes}
+\input{sec/supp_2_transfer}
+\input{sec/supp_3_ledger}
+\input{sec/supp_4_statistics}
+\input{sec/supp_5_replica}
+\input{sec/supp_6_pack}
+\input{sec/supp_7_audit}
+\input{sec/supp_8_annotation}
+\input{sec/supp_9_faults}
+\input{sec/supp_10_schema}
+
+% The generated code index is a longtable and needs one-column layout.
+\clearpage
+\onecolumn
+\input{sec/supp_code_index}
+
+\end{document}

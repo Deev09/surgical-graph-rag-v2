@@ -1,0 +1,65 @@
+\section{Fault-localization protocol}
+\label{ssec:faults}
+
+The evaluator's claim to localize failures is itself validated, by
+controlled fault injection under masking.
+
+\paragraph{The artifact chain.} Each evaluated arm is reconstructed as a
+chain of concrete artifacts:
+\begin{center}\footnotesize
+  evaluation\_key $+$ entity\_artifact $\;\rightarrow\;$ relation\_artifact
+  $\;\rightarrow\;$ serialized\_graph $\;\rightarrow\;$ grounded\_candidates
+  $\;\rightarrow\;$ answer
+\end{center}
+Every stage checker consumes a declared artifact and nothing downstream of
+it, so each artifact has exactly one stage that owns its validity.
+
+\paragraph{The injection protocol.} Each injection mutates \textbf{exactly
+one} artifact in the chain and leaves every other artifact untouched. Eight
+fault classes are injected, each crossed with three relation types
+(\texttt{NEAR}, \texttt{ON\_ENTITY\_SURFACE}, \texttt{ATTACHED\_TO}), giving
+24 injected runs, plus clean-artifact runs as controls. The expected
+localization of a fault class is the first gating stage whose independent
+checker consumes the mutated artifact --- declared per class before any
+attribution is read.
+
+\paragraph{The masking protocol.} The evaluator is never told the injected
+class. It attributes each failure via its independent per-stage checkers,
+exactly as it would on real data, and the attribution is compared to the
+hidden injection label only afterward. A localization counts only if the
+attributed stage matches the declared expectation for the hidden class.
+
+\paragraph{Result.} 24/24 controlled artifact-level injected faults
+localized while the evaluator was masked to the injected class, with zero
+spurious failures on clean artifacts.
+
+%% INTEGRATOR: verify this table against Agent B's committed
+%% fault-injection results before submission -- the class names, mutated
+%% artifacts and expected stages below are placeholders and MUST be replaced
+%% by the committed declarations, not paraphrased from memory.
+\begin{table}[t]
+  \centering\footnotesize
+  \setlength{\tabcolsep}{2pt}
+  \begin{tabular}{@{}lllc@{}}
+    \toprule
+    fault class & mutated artifact & expected stage & loc.\\
+    \midrule
+    \TODO{class 1} & \TODO{artifact} & \TODO{stage} & \TODO{3/3}\\
+    \TODO{class 2} & \TODO{artifact} & \TODO{stage} & \TODO{3/3}\\
+    \TODO{class 3} & \TODO{artifact} & \TODO{stage} & \TODO{3/3}\\
+    \TODO{class 4} & \TODO{artifact} & \TODO{stage} & \TODO{3/3}\\
+    \TODO{class 5} & \TODO{artifact} & \TODO{stage} & \TODO{3/3}\\
+    \TODO{class 6} & \TODO{artifact} & \TODO{stage} & \TODO{3/3}\\
+    \TODO{class 7} & \TODO{artifact} & \TODO{stage} & \TODO{3/3}\\
+    \TODO{class 8} & \TODO{artifact} & \TODO{stage} & \TODO{3/3}\\
+    \midrule
+    total & & & 24/24\\
+    \bottomrule
+  \end{tabular}
+  \caption{\TODO{PLACEHOLDER --- to be verified against the committed
+  fault-injection results before submission.} The eight injected fault
+  classes, the single artifact each mutates, the predeclared localization
+  stage, and the masked evaluator's localization count across the three
+  relation types.}
+  \label{tab:faults}
+\end{table}

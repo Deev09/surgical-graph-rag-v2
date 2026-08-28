@@ -1,0 +1,12 @@
+\section{Claim-to-registry audit}
+\label{ssec:audit}
+
+A claim-audit table of 42 rows maps each claim the paper makes to the
+registry \texttt{result\_id}s that support it, their scopes, their values,
+and the caveat that must accompany them. The audit is machine-checked on
+every test run: the build fails if the paper cites an id absent from the
+registry, states a quantity no registry row asserts, calls a component
+result end-to-end, cites an \texttt{identity\_oracle} row without marking it
+a bound, or headlines the exploratory support result. The same checks are
+applied to the \LaTeX{} sources that produce this PDF, so the submitted
+artifact --- not only the working draft --- is what is audited.

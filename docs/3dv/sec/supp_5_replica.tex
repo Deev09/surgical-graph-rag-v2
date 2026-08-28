@@ -1,0 +1,71 @@
+\section{Replica scorecards, per scene}
+\label{ssec:replica}
+
+The frozen Phase-8 Replica scorecards ship in the evidence pack as
+\texttt{phase8\_scorecard\_replica\_office\_0.json},
+\texttt{\ldots room\_0.json}, \texttt{\ldots room\_1.json} and
+\texttt{\ldots room\_2.json}, plus their aggregate. They enter the
+evaluation as a schema and outcome transfer only: the evaluator re-reads the
+packed, already-scored outcomes, and every internal stage the packed
+scorecard cannot support is recorded as \texttt{unknown} --- delivery,
+relation correctness and serialization are never inferred from the final
+answer. \Cref{tab:replica} gives the per-scene outcome counts in the
+scorecards' own category vocabulary, verified against the packed files.
+
+\begin{table}[t]
+  \centering\footnotesize
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{@{}lrrrrr@{}}
+    \toprule
+    scene & $n$ & true\_answer & true\_empty & miss & false\_answer\\
+    \midrule
+    \texttt{office\_0} & 13 & 1 & 7 & 5 & 0\\
+    \texttt{room\_0}   & 14 & 2 & 5 & 7 & 0\\
+    \texttt{room\_1}   & 16 & 0 & 9 & 6 & 1\\
+    \texttt{room\_2}   & 13 & 1 & 6 & 4 & 2\\
+    \midrule
+    total              & 56 & 4 & 27 & 22 & 3\\
+    \bottomrule
+  \end{tabular}
+  \caption{Per-scene raw category counts from the packed Replica
+  scorecards. The raw vocabulary is preserved verbatim in every trace.}
+  \label{tab:replica}
+\end{table}
+
+\paragraph{The normalized outcome matrix.} The raw categories map to the
+evaluator's outcome matrix, keyed by (expected outcome, result), via each
+question's per-item record --- never by the category name alone. A
+\texttt{miss} whose record shows an explicit deferral maps to
+(answer,\,abstain); a \texttt{miss} that answered incorrectly, incompletely
+or empty-without-deferring maps to (answer,\,wrong); a
+\texttt{false\_answer} splits on the question's expected outcome. Over the
+56 items: (answer,\,correct) 4, (answer,\,wrong) 20, (answer,\,abstain) 4,
+(empty,\,correct) 27, (empty,\,wrong) 1. Positives are never pooled with
+true-empties, and no single ``accuracy'' is exposed: 27 of the 56 items
+expect an empty answer, and pooling would let true-empties mask the
+positive-row failures.
+
+\paragraph{Membership-only rows carry no precision or recall.} The
+\texttt{NEAR\_SURFACE} rows of these keys are membership-only and
+non-exhaustive: the key asserts that listed pairs are near a surface, not
+that unlisted pairs are not. Per the scorecards' own scope note, precision,
+recall and F1 are computed only over exhaustive answer rows of
+human-verified keys; on non-exhaustive rows the evaluator \emph{refuses} to
+emit precision, recall or true-negative metrics, and those rows enter only
+as membership pass/fail.
+
+\medskip
+\noindent\fbox{\parbox{0.965\linewidth}{\footnotesize
+\textbf{Definition-change track --- cannot be pooled with the frozen
+track.} A later semantics revision was measured on its own track. The
+support-citation result 5/20 \srid{E01} is \texttt{proposal\_ceiling},
+measured on a variant consuming the dataset's oracle boxes and labels; the
+revised-semantics 16/20 \srid{E02} is \texttt{definition-change} --- the
+benchmark definition moved, not the model. Support-relation citation
+precision on that scene is 0.94 \srid{E03}. The 0.58 \srid{E10} and 0.36
+\srid{E12} figures reported on two further scenes are scene-aggregate
+micro-precision across all relations --- a different metric on a different
+denominator, not the fall of 0.94; the comparable relation-level precisions
+exist only in an untracked run report and are recorded as unverifiable.
+The evaluator enforces the separation: pooling a
+\texttt{definition-change} result with the frozen track raises an error.}}
