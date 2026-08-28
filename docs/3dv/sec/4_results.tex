@@ -67,12 +67,14 @@ must not be reported as end-to-end or deployable performance.}
 
 The central experiment asks twelve questions about \texttt{NEAR} --- the one relation the
 delivered graph actually contains --- across two rooms, with ten items scored after one
-of the authors marked two ambiguous \rid{F65}. Five arms answer the same questions over
-the same stored relations, differing only in where identity comes from (\cref{tab:arms}).
+of the authors marked two ambiguous \rid{F65}. Four arms form a controlled identity
+substitution over the same stored relations, and one external deployable comparator
+answers the same questions from images alone (\cref{tab:arms}).
 
 \begin{table}[t]
   \centering\footnotesize
   \setlength{\tabcolsep}{3pt}
+  (a) controlled identity substitution\\[3pt]
   \begin{tabular}{@{}llcc l@{}}
     \toprule
     arm & identity & correct & cov. & scope\\
@@ -81,17 +83,29 @@ the same stored relations, differing only in where identity comes from (\cref{ta
     stored-edge replay & human & 7/10 \rid{F35} & 0.80 & \texttt{id\_oracle}\\
     delivered graph & labels & 0/10 \rid{F40} & 0.00 & \texttt{delivered}\\
     grounded graph & bridge & 2/10 \rid{F45} & 0.20 & \texttt{delivered}\\
+    \bottomrule
+  \end{tabular}\\[7pt]
+  (b) external deployable comparator\\[3pt]
+  \begin{tabular}{@{}llcc l@{}}
+    \toprule
+    arm & identity & correct & cov. & scope\\
+    \midrule
     direct RGB & images & 7/10 \rid{F50} & 0.90 & \texttt{deployable}\\
     \bottomrule
   \end{tabular}
-  \caption{The same stored relations under five identity sources. The two 7/10 rows
-  consume human-supplied identity and are bounds, not performance.}
+  \caption{(a) The controlled substitution: the geometry ceiling recomputes geometry,
+  the other three arms read the same stored edges, and the source of object identity is
+  the only varied input. The two 7/10 rows consume human-supplied identity and are
+  bounds, not performance. (b) Direct multiview RGB is not a fifth substitution row: it
+  follows a different path that bypasses the graph entirely, under one named model
+  (claude-opus-5), one frozen pass, so its numbers enter only as labeled cross-path
+  comparisons.}
   \label{tab:arms}
 \end{table}
 
 The direct-RGB row carries a cost the correct-count hides: on these development rooms it
 was \textbf{wrong on 2 of 10} \rid{F51}. That is the baseline against which
-\cref{sec:transfer}'s unseen-room behaviour must be read.
+\cref{sec:transfer}'s pilot-room behaviour must be read.
 
 \paragraph{No additional serialization loss was measured.}
 The stored-edge replay reads \emph{only} edges the extractor serialized and recomputes no
@@ -119,7 +133,8 @@ failed all three predeclared gates: anchor precision 0.583 against $\ge 0.80$ \r
 coverage 0.467 against $\ge 0.60$ \rid{F68}, and graph-unique wins 0 against $\ge 2$
 \rid{F69}. Of the 17 question anchors, 15 were human-resolvable, the bridge admitted 12,
 and 7 of those admissions were correct \rid{F70}. One failure is diagnostic: the bridge
-admitted a UID for an object the owner had marked absent from the delivered partition,
+admitted a UID for an object one of the authors had marked absent from the delivered
+partition,
 with maximum cross-view agreement \rid{F75}. Cross-view agreement measures
 \emph{consistency}, not \emph{existence}.
 
@@ -135,7 +150,31 @@ paired: 7 items are answered under human-supplied identity that the delivered gr
 not answer, none the other way (exact McNemar $p = 0.0156$ \rid{G06}, an instance-level
 statement over ten items in two rooms; the test details are in the supplement).
 \Cref{fig:qualitative} shows one such question in the room itself. Because one side
-consumes human identity, it sizes a bound --- it says the arms differ, not that anything deployable achieves 7/10.
+consumes human identity, it sizes a bound --- it says the arms differ, not that anything
+deployable achieves 7/10.
+
+Reachability is reported per arm, never as one mixed ladder: the delivered graph reaches
+\SRArmDeliveredLadder{} across its declared stages, the grounded graph
+\SRArmGroundedLadder{}, the stored-edge replay \SRArmStoredLadder{} (identity injected,
+grounding bypassed), and direct RGB \SRArmDirectLadder{} (graph stages bypassed)
+% NOTE for the integrator: the reserved code G07 for per-arm ARKit equivalence is
+% already occupied in the registry by the top-1-commitment row (6/21), which this paper
+% cites in Sec 4.1. G13 is used here so the collision fails loudly in the claim audit
+% instead of resolving to the wrong row; add the registry row under G13 or renumber.
+\rid{G13}. The evaluator re-derives each chain independently from the committed
+artifacts, and the chains reproduce the committed statistics field for field.
+
+\paragraph{Fault-localization validation.}
+Attribution is only as trustworthy as its checkers, so we validated it under masking.
+Into clean committed artifact chains --- evaluation key and entity artifact, relation
+artifact, serialized graph, grounded candidates, answer --- we injected controlled
+artifact-level faults, each mutating exactly one artifact, spanning \SRFaultClasses{}
+fault classes and \SRFaultRelationTypes{} relation types (\texttt{NEAR},
+\texttt{ON\_ENTITY\_SURFACE}, \texttt{ATTACHED\_TO}). The evaluator attributes via
+independent per-stage checkers and was masked to the injected class --- it is never told
+what was injected. It localized \SRFaultLocalized{} faults to the mutated stage, with
+zero false attributions on clean artifacts \rid{G10}. This is evaluator-masked
+artifact-level validation; it is not a blind study of the human protocol.
 
 \begin{figure*}[t]
   \centering
@@ -219,3 +258,57 @@ unseen room it declined 4 of 6 thin-evidence items and was right on both it answ
 \rid{F87}. That is a \emph{change} in abstention behaviour between rooms, measured once on
 each, not a property carried across. This also suggests a re-reading of the earlier 7/10:
 those cross-view items were likely answerable from co-visible evidence.
+
+\subsection{Evaluator transfer: Replica multi-relation QA}
+\label{sec:replica}
+
+To test that the \emph{evaluator} transfers --- not the pipeline --- we re-scored the
+frozen Replica multi-relation QA scorecards (four scenes, \SRReplicaTotal{} items,
+per-scene $n$ of \SRReplicaSceneNs{} \rid{G09}) through the same schema and outcome
+mapping. Raw scorecard labels are preserved verbatim in every trace, and every metric is
+keyed by (expected outcome, result) --- the normalized matrix and the raw categories are
+reported side by side (\cref{tab:replica}).
+
+\begin{table}[t]
+  \centering\footnotesize
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{@{}lccc@{}}
+    \toprule
+    expected & correct & wrong & abstain\\
+    \midrule
+    answer & \SRReplicaAnswerCorrect{} & \SRReplicaAnswerWrong{} & \SRReplicaAnswerAbstain{}\\
+    empty  & \SRReplicaEmptyCorrect{} & \SRReplicaEmptyWrong{} & ---\\
+    \bottomrule
+  \end{tabular}
+  \hspace{1.2em}
+  \begin{tabular}{@{}lc@{}}
+    \toprule
+    raw category & $n$\\
+    \midrule
+    true\_answer & \SRReplicaTrueAnswer{}\\
+    true\_empty & \SRReplicaTrueEmpty{}\\
+    miss & \SRReplicaMiss{}\\
+    false\_answer & \SRReplicaFalseAnswer{}\\
+    \bottomrule
+  \end{tabular}
+  \caption{Replica multi-relation QA re-scored through the evaluator \rid{G08}: the
+  normalized (expected outcome, result) matrix, with the raw scorecard categories
+  alongside. The \texttt{miss} category splits by the per-question record, never by the
+  category label alone.}
+  \label{tab:replica}
+\end{table}
+
+\paragraph{Aggregates mask.}
+Pooled, the same scorecards would read \SRReplicaPooled{} ``correct'' --- a number
+dominated by the \SRReplicaTrueEmpty{} true-empty items, on which being correct means
+returning nothing. Keyed by expected outcome, the answered side is
+\SRReplicaAnswerCorrect{} correct against \SRReplicaAnswerWrong{} wrong with
+\SRReplicaAnswerAbstain{} abstentions \rid{G08}. The pooled number would mislead, and
+the evaluator refuses to emit it.
+
+\paragraph{Scope.}
+The Replica arms consume oracle geometry and oracle identity. This demonstrates schema
+and outcome transfer of the evaluator; it is not deployable performance, and it is not
+full fault localization: every internal stage the packed scorecards cannot support is
+reported \texttt{unknown} --- delivery, relation correctness and serialization are never
+inferred from the final answer.
