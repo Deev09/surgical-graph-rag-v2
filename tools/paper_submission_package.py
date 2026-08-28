@@ -89,6 +89,9 @@ BANNED = [
     (re.compile(r"claude code|anthropic assistant|written by claude", re.I),
      "assistant attribution"),
     (re.compile(r"\bTODO\b|PLACEHOLDER", re.I), "unfinished marker"),
+    # Causal overclaims the paper retracted; must never ship in the package.
+    (re.compile(r"clear(s|ed|ing)? extraction|not relation extraction"
+                r"|naming[a-z ,]*\bbind", re.I), "retracted causal phrasing"),
 ]
 # Commit-hash-like hex (7-12 chars, at least one letter so digit-only scene
 # ids don't trip it; 64-char sha256 pins are excluded by the lookarounds).
