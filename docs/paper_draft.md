@@ -393,7 +393,7 @@ its three keyed positives appear only in the final owner-corrected key with no
 independent returned-form record, so the recall denominator rests on pairs captured
 once. It is marked exploratory in the registry and is deliberately not a headline.
 
-**Reproducibility.** 278 registry rows, each carrying a scope; a sanitized pack of 18
+**Reproducibility.** 282 registry rows, each carrying a scope; a sanitized pack of 23
 numeric reports with original paths, sha256 and producing commits accompanies the paper,
 because most run artifacts live in an ignored tree. Twenty-eight rows cite an untracked
 primary source and cannot be reproduced from the repository alone; a further 52
