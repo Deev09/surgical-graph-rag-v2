@@ -44,6 +44,107 @@ graph, using an oracle-free bridge; and direct multiview RGB, which uses no grap
   \label{fig:ladder}
 \end{figure*}
 
+\subsection{The StageReach3D evaluator}
+\label{sec:evaluator}
+
+Each arm is evaluated along a declared \emph{path}: an ordered subset of a fixed
+universe of eight stages (\cref{tab:paths}). Paths are data, not convention; a stage a
+path does not declare is bypassed, and a \texttt{not\_applicable} status is legal only
+there. Two stages the vocabulary keeps distinct:
+\texttt{serialization\_consistency} --- the serialized edge agrees with recomputation
+under the same convention --- is measured on the ARKit slice, while
+\texttt{relation\_correctness} --- semantic truth of the relation against independent
+ground truth --- is an \emph{audit} stage: non-gating, and \texttt{unknown} on ARKit,
+where no independent semantic annotation exists.
+
+\begin{table}[t]
+  \centering\footnotesize
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{@{}lcccc@{}}
+    \toprule
+    stage & graph & id-oracle & ceiling & RGB\\
+    \midrule
+    key\_eligibility & $\bullet$\textsuperscript{o} & $\bullet$\textsuperscript{o}
+      & $\bullet$\textsuperscript{o} & $\bullet$\textsuperscript{o}\\
+    object\_delivery & $\bullet$ & $\bullet$ & $\bullet$ & ---\\
+    relation\_applicability & $\bullet$ & $\bullet$ & $\bullet$ & ---\\
+    relation\_correctness & $\circ$ & $\circ$ & --- & ---\\
+    serialization\_consistency & $\bullet$ & $\bullet$ & --- & ---\\
+    identity\_injection & --- & $\bullet$\textsuperscript{o} &
+      $\bullet$\textsuperscript{o} & ---\\
+    referent\_grounding & $\bullet$ & --- & --- & ---\\
+    answer\_generation & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$\\
+    \bottomrule
+  \end{tabular}
+  \caption{Per-arm paths through the stage DAG; there is no shared mixed ladder.
+  $\bullet$ gating stage, $\circ$ non-gating audit stage, --- declared bypass,
+  \textsuperscript{o} oracle-fed. \emph{graph} covers the delivered and grounded arms
+  (one path shape); \emph{id-oracle} is the stored-edge replay;
+  \texttt{identity\_injection} is the only oracle-fed stage on an answer path, and
+  \texttt{key\_eligibility} is oracle-fed but not on the answer path.}
+  \label{tab:paths}
+\end{table}
+
+\begin{figure}[t]
+  \footnotesize
+\begin{verbatim}
+for stage in path(arm).stages:
+    if any(dep.status is FAIL for dep
+           in gating_deps(stage)):
+        record(stage, NOT_REACHED)
+        continue
+    s = checker[stage](artifacts)
+    # pass | fail | unknown |
+    #   not_applicable | abstain
+    record(stage, s)
+attribution = first FAIL on a gating stage
+survival: over gating dependencies only
+report reached/pass/fail/unknown separately
+\end{verbatim}
+  \vspace{-0.5em}
+  \caption{The evaluator core: first-fail attribution over declared gating
+  dependencies. Audit stages stay visible but never reduce downstream reachability;
+  \texttt{unknown} is reported as unmeasured, never attributed, and never counted as
+  pass.}
+  \label{fig:algo}
+\end{figure}
+
+Every scored question emits a trace, committed as an artifact. An excerpt, with
+per-stage provenance strings elided for width:
+% NOTE for the integrator: representative excerpt written against the frozen trace
+% schema; swap in a verbatim excerpt from the committed traces at merge.
+{\footnotesize
+\begin{verbatim}
+{"schema": "stagereach_trace",
+ "schema_version": 1, "question_id": "q07",
+ "arm": "delivered_graph", "scope": "delivered",
+ "path_id": "graph_deployable_delivered",
+ "expected_outcome": "answer",
+ "stages": [
+  {"stage": "object_delivery", "status": "pass"},
+  {"stage": "relation_correctness",
+   "status": "unknown"},
+  {"stage": "serialization_consistency",
+   "status": "pass"},
+  {"stage": "referent_grounding",
+   "status": "fail"},
+  {"stage": "answer_generation",
+   "status": "not_reached"}],
+ "final_outcome": {"result": "abstain",
+                   "positive_expected": true}}
+\end{verbatim}}
+
+The evaluator's invariants are tests, and a violation raises rather than warns:
+(i) \texttt{unknown} never counts as pass in survival;
+(ii) a deployable-scope trace may not pass-consume any oracle-fed answer-path stage;
+(iii) no silent bypass --- any reached status downstream of a fail on a depended-on
+stage is an error, and \texttt{not\_applicable} is legal only on declared bypasses;
+(iv) no pooled accuracy --- metrics are keyed by (expected outcome, result), positives
+are never pooled with true-empties, and no single ``accuracy'' is exposed;
+(v) under a non-exhaustive key the evaluator refuses to emit precision, recall or
+true-negative metrics;
+(vi) definition-change results cannot be pooled with frozen-track results.
+
 \subsection{Predeclaration}
 
 Gates, stopping rules and interpretation limits are written and committed before the
