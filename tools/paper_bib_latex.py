@@ -51,6 +51,8 @@ def convert(src: str) -> str:
         lines.append(f"@{kind}{{{key.strip()},")
         if "author" in fields:
             lines.append(f"  author    = {{{escape(authors_to_bibtex(fields['author']))}}},")
+        if "editor" in fields:
+            lines.append(f"  editor    = {{{escape(authors_to_bibtex(fields['editor']))}}},")
         for name in ("title", "booktitle", "year"):
             if name in fields:
                 value = " ".join(fields[name].split())
