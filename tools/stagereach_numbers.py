@@ -172,7 +172,8 @@ def build_macros() -> list[tuple[str, str, str]]:
     add(g, "SRReplicaRoomTwoN", scenes["replica_room_2"]["n"])
 
     g = "Fault-injection battery"
-    add(g, "SRFaultLocalized", battery["n_localized"])
+    add(g, "SRFaultLocalized",
+        f"{battery['n_localized']}/{battery['n_total']}")
     add(g, "SRFaultTotal", battery["n_total"])
     add(g, "SRFaultClasses", battery["n_fault_classes"])
     add(g, "SRFaultRelationTypes", battery["n_relation_types"])
@@ -193,6 +194,41 @@ def build_macros() -> list[tuple[str, str, str]]:
     add(g, "SRSceneSignTestPositiveScenes", sb)
     add(g, "SRSceneSignTestNegativeScenes", sc)
     add(g, "SRSceneSignTestPValue", fmt_p(sp))
+
+    # Composed prose forms used directly by the paper text. Derived from the
+    # same values as the atoms above, never typed.
+    g = "Composed prose forms"
+    arrow = r"\,$\to$\,"
+
+    def ladder(*counts: int) -> str:
+        return arrow.join(str(c) for c in counts)
+
+    add(g, "SRSignTestP", fmt_p(sp))
+    add(g, "SRArmDeliveredLadder", ladder(
+        _rung(delivered, "key_eligibility"),
+        _rung(delivered, "object_delivery"),
+        _rung(delivered, "relation_applicability"),
+        _rung(delivered, "serialization_consistency"),
+        _rung(delivered, "answer_generation")))
+    add(g, "SRArmGroundedLadder", ladder(
+        _rung(grounded, "key_eligibility"),
+        _rung(grounded, "object_delivery"),
+        _rung(grounded, "relation_applicability"),
+        _rung(grounded, "serialization_consistency"),
+        _rung(grounded, "referent_grounding"),
+        _rung(grounded, "answer_generation")))
+    add(g, "SRArmStoredLadder", ladder(
+        _rung(stored, "key_eligibility"),
+        _rung(stored, "answer_generation")))
+    add(g, "SRArmDirectLadder", ladder(
+        _rung(rgb, "key_eligibility"),
+        _rung(rgb, "answer_generation")))
+    add(g, "SRReplicaTotal", tot["n"])
+    add(g, "SRReplicaSceneNs", "/".join(str(scenes[s]["n"]) for s in (
+        "replica_office_0", "replica_room_0",
+        "replica_room_1", "replica_room_2")))
+    add(g, "SRReplicaPooled",
+        f"{raw['true_answer'] + raw['true_empty']}/{tot['n']}")
 
     names = [n for _, n, _ in m]
     assert len(names) == len(set(names)), "duplicate macro name"

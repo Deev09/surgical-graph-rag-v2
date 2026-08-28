@@ -469,3 +469,25 @@ Machine-checked in `docs/paper_claim_audit.csv`, which is validated against
 
 See that file for the complete row-level mapping: each paper claim, its section, the
 `result_id`s it cites, the scope of each, and the sentence that may be written from it.
+
+## StageReach3D additions (3DV revision, 2026-08-28)
+
+The 3DV submission reframes the evaluation as StageReach3D, a scope-aware
+stage-DAG evaluator. New derived results, registry-backed like everything
+above:
+
+- The evaluator's per-arm causal ladders reproduce the committed reachability
+  statistics field-by-field — delivered 10->8->8->8->0, grounded
+  10->8->8->8->3->2, stored-human 10->7, direct RGB 10->7 — as an equivalence
+  between two independent derivations of the same packed report `[G08]`. The
+  historical mixed ladder survives only as a legacy compatibility check.
+- Over the 56 human-verified Replica items, the normalized outcome matrix is
+  (answer,correct)=4, (answer,wrong)=20, (answer,abstain)=4,
+  (empty,correct)=27, (empty,wrong)=1 `[G09]`, across per-scene populations of
+  13/14/16/13 `[G10]`. Replica arms consume oracle geometry and identity:
+  this demonstrates schema/outcome transfer of the evaluator and aggregate
+  masking (a pooled 31/56 would mislead), not deployable performance.
+- 24/24 controlled artifact-level injected faults were localized while the
+  evaluator was masked to the injected class, with zero failures on clean
+  artifacts `[G11]`. Synthetic fixture; validates attribution, not any
+  system's performance.
