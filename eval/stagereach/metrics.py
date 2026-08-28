@@ -215,8 +215,7 @@ def pooled_accuracy(*_args, **_kwargs):
            "result); report matrix cells, not a single accuracy")
 
 
-def precision_recall(tp: int, fp: int, fn: int, *, relation: str,
-                     exhaustive: bool) -> dict:
+def require_exhaustive_key(relation: str, exhaustive: bool) -> None:
     """Invariant 5: precision/recall/true-negative metrics require an
     exhaustive key. For a non-exhaustive key (e.g. Replica NEAR_SURFACE)
     this refuses instead of quietly emitting a number."""
@@ -224,6 +223,12 @@ def precision_recall(tp: int, fp: int, fn: int, *, relation: str,
         raise InvariantViolation(
             5, f"relation {relation}: the key is not exhaustive, so "
                "precision/recall/true-negative metrics are refused")
+
+
+def precision_recall(tp: int, fp: int, fn: int, *, relation: str,
+                     exhaustive: bool) -> dict:
+    """P/R over an exhaustive key; refuses otherwise (invariant 5)."""
+    require_exhaustive_key(relation, exhaustive)
     precision = tp / (tp + fp) if tp + fp else None
     recall = tp / (tp + fn) if tp + fn else None
     return {"relation": relation, "tp": tp, "fp": fp, "fn": fn,
