@@ -289,6 +289,9 @@ def agreement(adjudications: Path | None) -> int:
     report = {
         "schema": "stagereach_annotator_agreement",
         "schema_version": 1,
+        "annotator_type": ("human; independent of the authors; blinded to "
+                           "system outputs, arm names and the hypothesis "
+                           "(owner-confirmed at ingest)"),
         "n_questions_reviewed": n,
         "n_eligible_primary": 10,
         "n_retained_for_exclusion_reproducibility": 2,

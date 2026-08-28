@@ -492,10 +492,11 @@ above:
   artifacts `[G11]`. Synthetic fixture; validates attribution, not any
   system's performance.
 
-- After the keys were frozen, a blinded second annotator independently
+- After the keys were frozen, a blinded independent human annotator
   answered all 12 relation questions from the committed packet frames:
-  6 of 10 scored answers agree exactly after committed adjudication, every
-  pure disagreement is a confidence-1 abstention rather than a
-  contradiction, and the two owner-excluded items split one-one on the
-  exclusion judgement `[G12]`. Keys were not altered in response; the
-  evaluated system was not retuned.
+  6 of 10 scored answers agree exactly after committed adjudication; 3 of
+  the 4 disagreements are confidence-1 abstentions and the fourth is a
+  confidence-3 set over-inclusion; the annotator marked neither originally
+  excluded item ambiguous (one answered confidently, one "cannot
+  determine") `[G12]`. Partial, not complete, key reproducibility. Keys
+  were not altered in response; the evaluated system was not retuned.

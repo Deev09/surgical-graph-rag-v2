@@ -248,6 +248,19 @@ def main(argv=None) -> int:
             print(f"  (optional, absent: {rel})")
     stage_pack(STAGE / "evidence_pack")
     stage_packet_manifests(STAGE / "packets")
+    ann_dir = STAGE / "annotation"
+    ann_dir.mkdir(parents=True, exist_ok=True)
+    for rel in [
+        "eval/human_feedback/arkitscenes_relation_challenge_annotator2_raw.json",
+        "eval/human_feedback/arkitscenes_relation_challenge_annotator2_returned.json",
+        "eval/human_feedback/arkitscenes_relation_challenge_annotator2_adjudications.json",
+        "eval/results/stagereach/annotator_agreement_v1.json",
+    ]:
+        src = REPO / rel
+        if src.is_file():
+            (ann_dir / Path(rel).name).write_text(scrub_paths(src.read_text()))
+        else:
+            print(f"  (annotation, absent: {rel})")
     code_dir = STAGE / "code"
     for rel in CODE_FILES:
         src = REPO / rel

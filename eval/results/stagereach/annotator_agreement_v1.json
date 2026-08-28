@@ -4,6 +4,7 @@
   "of": 12
  },
  "ambiguity_kappa": 0.0,
+ "annotator_type": "human; independent of the authors; blinded to system outputs, arm names and the hypothesis (owner-confirmed at ingest)",
  "answer_exact_agreement": {
   "agree": 6,
   "n_adjudicated": 10,

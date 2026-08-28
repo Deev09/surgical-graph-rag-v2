@@ -4,8 +4,8 @@
 The evaluation keys used by the main results were authored by a single
 reviewer who is one of the authors and is not blind to the hypothesis, and
 the paper says so wherever it matters. To measure how reproducible those
-keys are, a second annotator --- blinded to all system outputs, to the arm
-names, and to the hypothesis --- independently answered the 12 authored
+keys are, an independent human annotator --- blinded to all system
+outputs, to the arm names, and to the hypothesis --- answered the 12 authored
 relation questions from a self-contained review sheet presenting the same
 frozen packet frames the blinded model received, in seeded-shuffled order:
 the 10 items eligible for the primary evaluation, and the 2 excluded items,
@@ -34,19 +34,16 @@ measured for reproducibility rather than assumed.
   \label{tab:annotation}
 \end{table}
 
-The structure of the disagreements matters more than the count. Of the
-\SRAnnScoredOf{} scored items, \SRAnnScoredAgree{} agree exactly. All
-\SRAnnAbstainDisagreements{} pure answer disagreements are annotator
-\emph{abstentions} (``cannot determine'', confidence 1 of 5): on no scored
-item did the second annotator give a confidently wrong answer relative to
-the key. The remaining disagreement is a set over-inclusion (the returned
-near-set adds the anchor object itself alongside the key's single member).
-On the two owner-excluded items, the outcomes split: one the annotator
-answered confidently --- a genuine exclusion-judgement disagreement,
-reported as such --- and one the annotator also could not determine,
-functionally agreeing that the item is unanswerable. Ambiguity-flag
-agreement is \SRAnnAmbiguityAgree{}/\SRAnnAmbiguityOf{}; the two
-differences are exactly the owner-excluded items.
+Of the \SRAnnScoredOf{} scored items, \SRAnnScoredAgree{} agree exactly.
+\SRAnnAbstainDisagreements{} of the 4 disagreements are annotator
+\emph{abstentions} (``cannot determine'', confidence 1 of 5); the fourth is
+a set over-inclusion at confidence 3 (the returned near-set adds the anchor
+object itself alongside the key's single member). The annotator marked
+neither owner-excluded item ambiguous: one was answered confidently and one
+received ``cannot determine''. Ambiguity-flag agreement is
+\SRAnnAmbiguityAgree{}/\SRAnnAmbiguityOf{}; the two differences are
+exactly the owner-excluded items. This is evidence of partial --- not
+complete --- key reproducibility.
 
 Referent descriptions and free-text relation labels are preserved verbatim
 in the committed returned form for post-hoc analysis. The adjudication
