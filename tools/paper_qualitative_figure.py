@@ -125,35 +125,28 @@ def build_html() -> str:
 
     return f"""<!doctype html><meta charset="utf-8">
 <style>
-  @page {{ size: 1240px 436px; margin: 0; }}
+  @page {{ size: 1240px 402px; margin: 0; }}
   * {{ box-sizing: border-box; }}
-  body {{ margin: 0; font: 13px -apple-system, "Helvetica Neue", Arial, sans-serif;
-          color: {INK}; background: #fff; width: 1240px; height: 436px; padding: 13px 16px; }}
-  h1 {{ font-size: 17px; margin: 0 0 3px; font-weight: 600; }}
-  .sub {{ font-size: 12.5px; color: {MUTED}; margin: 0 0 10px; }}
-  .cols {{ display: flex; gap: 16px; align-items: flex-start; }}
+  body {{ margin: 0; font: 20px -apple-system, "Helvetica Neue", Arial, sans-serif;
+          color: {INK}; background: #fff; width: 1240px; height: 402px; padding: 14px 16px; }}
+  .cols {{ display: flex; gap: 18px; align-items: flex-start; }}
   .col {{ flex: 0 0 auto; }}
-  .lbl {{ font-size: 11px; color: {FAINT}; margin: 0 0 4px;
-          letter-spacing: .05em; text-transform: uppercase; }}
-  img.frame {{ height: 132px; border: 1px solid #d3d9e0; border-radius: 3px; margin-right: 7px; }}
-  img.crop {{ height: 108px; border: 2px solid {ACCENT}; border-radius: 3px; }}
-  .cap {{ font-size: 11.5px; color: {MUTED}; margin-top: 4px; max-width: 190px; line-height: 1.35; }}
-  .uid {{ font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: {INK}; }}
-  .edge {{ margin: 8px 0 0; font-size: 13px; }}
+  .lbl {{ font-size: 18px; color: {FAINT}; margin: 0 0 5px;
+          letter-spacing: .04em; text-transform: uppercase; }}
+  img.frame {{ height: 148px; border: 1px solid #d3d9e0; border-radius: 3px; margin-right: 7px; }}
+  img.crop {{ height: 124px; border: 2px solid {ACCENT}; border-radius: 3px; }}
+  .cap {{ font-size: 17px; color: {MUTED}; margin-top: 4px; max-width: 250px; line-height: 1.3; }}
+  .uid {{ font-family: ui-monospace, Menlo, monospace; font-size: 17px; color: {INK}; }}
+  .edge {{ margin: 9px 0 0; font-size: 19px; }}
   .edge b {{ color: {ACCENT}; }}
-  table {{ border-collapse: collapse; margin-top: 4px; width: 100%; }}
-  td {{ padding: 3px 6px; font-size: 12px; vertical-align: top;
+  table {{ border-collapse: collapse; margin-top: 6px; width: 100%; }}
+  td {{ padding: 4px 7px; font-size: 18px; vertical-align: top;
         border-top: 1px solid #e8ecf0; }}
-  td.arm {{ width: 260px; }} td.out {{ width: 118px; font-weight: 700; }}
-  td.why {{ color: {FAINT}; font-size: 11px; }}
-  .oracle {{ color: {ORACLE}; font-weight: 700; font-size: 8.5px;
-             letter-spacing: .05em; white-space: nowrap; }}
-  .note {{ font-size: 11px; color: {FAINT}; margin-top: 8px; }}
+  td.arm {{ width: 400px; }} td.out {{ width: 175px; font-weight: 700; }}
+  td.why {{ color: {FAINT}; font-size: 16px; }}
+  .oracle {{ color: {ORACLE}; font-weight: 700; font-size: 14px;
+             letter-spacing: .04em; white-space: nowrap; }}
 </style>
-<h1>One question, in the room it is about</h1>
-<p class="sub">&ldquo;Is the small grey wastepaper basket near the long narrow desk?&rdquo;
-  &mdash; a real handheld capture, the two delivered regions, and the stored relation
-  between them.</p>
 <div class="cols">
   <div class="col">
     <p class="lbl">the capture &mdash; both referents visible</p>
@@ -161,7 +154,7 @@ def build_html() -> str:
   </div>
   <div class="col">
     <p class="lbl">the two referents, as delivered</p>
-    <div style="display:flex; gap:10px">
+    <div style="display:flex; gap:12px">
       <div><img class="crop" src="{basket}">
         <div class="cap"><span class="uid">{BASKET}</span> &mdash; the basket.<br>
         Bridge resolved it: <b style="color:{OK}">correct</b>.</div></div>
@@ -170,15 +163,11 @@ def build_html() -> str:
         Bridge <b style="color:{BAD}">abstained</b>: no entity won two view slots.</div></div>
     </div>
     <p class="edge">Stored edge <span class="uid">{BASKET}</span>&nbsp;&harr;&nbsp;<span
-      class="uid">{DESK}</span>: surface distance <b>{dist} m</b> &lt; {thr} m, so
-      <b>NEAR holds</b>. The answer is in the store.</p>
+      class="uid">{DESK}</span>: surface distance <b>{dist} m</b> &lt; {thr} m &mdash; the
+      serialized <b>NEAR</b> edge matches recomputed geometry under the same convention.</p>
   </div>
 </div>
 <table>{''.join(rows)}</table>
-<p class="note">The relation is present and correct. Human identity reaches it; the
-  delivered labels never address it; the bridge binds one referent of two and abstains on
-  the other, so the edge is unreachable through it. Crops and frames are from the
-  committed review sheet; outcomes from the packed relation report.</p>
 """
 
 
