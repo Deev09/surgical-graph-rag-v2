@@ -1,0 +1,33 @@
+{
+ "comparability": "NEW Phase 8 track \u2014 not comparable to the v1 benchmark or the per-phase scorecards. The plausibility section is NOT evidence: unreviewed drafts score 100% against themselves by construction.",
+ "headline_human_verified": {
+  "all_expected_outcomes_met": false,
+  "category_counts": {
+   "false_answer": 3,
+   "miss": 22,
+   "true_answer": 4,
+   "true_empty": 27
+  },
+  "scenes": [
+   "replica_office_0",
+   "replica_room_0",
+   "replica_room_1",
+   "replica_room_2"
+  ],
+  "total_questions": 56
+ },
+ "plausibility_not_ground_truth": {
+  "all_expected_outcomes_met": true,
+  "category_counts": {
+   "true_answer": 5,
+   "true_empty": 8
+  },
+  "scenes": [
+   "replica_frl_apartment_0"
+  ],
+  "total_questions": 13
+ },
+ "schema": "phase8_scorecard_aggregate",
+ "schema_version": 1,
+ "skipped_scenes": []
+}

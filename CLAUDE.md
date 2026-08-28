@@ -4,6 +4,32 @@ The historical rules below remain useful for comparability, but their
 `graffiti_bathroom` baseline description is no longer the active development
 target.
 
+## Overnight amendment 2026-08-27/28, on owner authorization
+
+Owner authorizes an overnight paper/evaluation pivot to StageReach3D
+(2026-08-27/28). This does not reverse the product conclusion favoring direct
+RGB or reopen graph tuning. The graph pipeline is retained as the system under
+evaluation.
+
+Scope of the amendment, for every agent working tonight:
+
+- The 3DV 2027 submission (`docs/3dv/`, deadline 2026-08-28 11:00 PDT) is
+  reframed around a reusable, schema-driven evaluator, **StageReach3D**
+  (`eval/stagereach/`), validated by evaluator-masked artifact-level fault
+  injection and demonstrated on the frozen ARKit relation challenge (per-arm
+  traces) and the frozen Phase-8 Replica scorecards (schema/outcome transfer
+  only).
+- Frozen design: `docs/stagereach_schema_freeze.md`. No agent may change the
+  schema without the integrator.
+- `tools/paper_statistics.py` stays byte-for-byte untouched; StageReach3D
+  reproduces its committed numbers independently (equivalence gates).
+- No graph tuning, no new grounding variants, no new VLM runs, no new scenes.
+  Direct multiview RGB remains the product answer path and is disclosed in the
+  paper as one named model (claude-opus-5), one frozen pass.
+- The second annotator's returned review is stored as evaluation-key
+  reproducibility evidence and future calibration data; it must not be used to
+  retune the evaluated system tonight.
+
 Current development target:
 
 - canonical repo: `~/Desktop/surgical-graph-rag-v2` (THE only working copy;

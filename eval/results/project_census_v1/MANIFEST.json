@@ -149,6 +149,56 @@
    "why_included": "D: the one authoritative camera-convention depth measurement"
   },
   {
+   "original_bytes": 894,
+   "original_path": "runs/phase8_scorecard/aggregate.json",
+   "original_sha256": "03498593b03c2d301c1cf432c812234f475cca3f89ce7a50bf2765bf370abf24",
+   "pack_file": "phase8_scorecard_aggregate.json",
+   "producing_commit": "untracked (runs/ is gitignored)",
+   "sanitization": "keys dropped if present: ['embedding', 'embeddings', 'image', 'images', 'masks', 'point_indices', 'rows_raw', 'vertex_ids', 'vertices']; lists over 4000 elements elided",
+   "sanitized_sha256": "877feed8a8d22280d8021e2c4e68e439a832eb5ef2bb1d82db13f60bda3b8bde",
+   "why_included": "Replica outcome matrix (raw categories + normalization source) cited in the 3DV paper's evaluator-generality section"
+  },
+  {
+   "original_bytes": 8865,
+   "original_path": "runs/phase8_scorecard/replica_office_0.json",
+   "original_sha256": "98f1cc0d80c361129614dcc62077f8300492aa3c0aa45bd47d70fa7da43f878f",
+   "pack_file": "phase8_scorecard_replica_office_0.json",
+   "producing_commit": "untracked (runs/ is gitignored)",
+   "sanitization": "keys dropped if present: ['embedding', 'embeddings', 'image', 'images', 'masks', 'point_indices', 'rows_raw', 'vertex_ids', 'vertices']; lists over 4000 elements elided",
+   "sanitized_sha256": "c325ebaa588456c628c91fab60af30bb7c0315b7e8aa9205f27db63695f40e94",
+   "why_included": "per-scene Replica outcomes, supplement S5 and StageReach3D replica adapter input"
+  },
+  {
+   "original_bytes": 11084,
+   "original_path": "runs/phase8_scorecard/replica_room_0.json",
+   "original_sha256": "e9e24cb8f2a83a699e79bb3fa210b6d856d426b72e470e4345b476ecc5fbff14",
+   "pack_file": "phase8_scorecard_replica_room_0.json",
+   "producing_commit": "untracked (runs/ is gitignored)",
+   "sanitization": "keys dropped if present: ['embedding', 'embeddings', 'image', 'images', 'masks', 'point_indices', 'rows_raw', 'vertex_ids', 'vertices']; lists over 4000 elements elided",
+   "sanitized_sha256": "7f22d8ec0c366b4f762c45b7f249480a1d18100134e02ad26a48ad881ce67f87",
+   "why_included": "per-scene Replica outcomes, supplement S5 and StageReach3D replica adapter input"
+  },
+  {
+   "original_bytes": 10282,
+   "original_path": "runs/phase8_scorecard/replica_room_1.json",
+   "original_sha256": "bd6fcb8da16c5bce0a5b4005b4b69d6024232539f6b0249308db620b08eb85e8",
+   "pack_file": "phase8_scorecard_replica_room_1.json",
+   "producing_commit": "untracked (runs/ is gitignored)",
+   "sanitization": "keys dropped if present: ['embedding', 'embeddings', 'image', 'images', 'masks', 'point_indices', 'rows_raw', 'vertex_ids', 'vertices']; lists over 4000 elements elided",
+   "sanitized_sha256": "b079b19e6000760e21c65c89ddf1e2219160d502973b7cf6a3c9e04e878134a1",
+   "why_included": "per-scene Replica outcomes, supplement S5 and StageReach3D replica adapter input"
+  },
+  {
+   "original_bytes": 10327,
+   "original_path": "runs/phase8_scorecard/replica_room_2.json",
+   "original_sha256": "5a26b37e500e423fd432accc53362a724ba30603dd35d31c31f0cab0b33b5a14",
+   "pack_file": "phase8_scorecard_replica_room_2.json",
+   "producing_commit": "untracked (runs/ is gitignored)",
+   "sanitization": "keys dropped if present: ['embedding', 'embeddings', 'image', 'images', 'masks', 'point_indices', 'rows_raw', 'vertex_ids', 'vertices']; lists over 4000 elements elided",
+   "sanitized_sha256": "28ad0203b93733c26c01de9d918186d1841bd44d55c0d4f1a779c918f32042e5",
+   "why_included": "per-scene Replica outcomes, supplement S5 and StageReach3D replica adapter input"
+  },
+  {
    "original_bytes": 15480,
    "original_path": "runs/phase8_c1/ms02/replica_office_0_exact_eval.json",
    "original_sha256": "78b5b2a6dc6fbd375e3199020e141ed57773a59ba0dc094dca4d646dcc9b33ad",

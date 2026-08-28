@@ -1,0 +1,359 @@
+{
+ "answer_key_type": "human_verified",
+ "bundle_hash": "graph_10ffdb8f9bf477e0",
+ "confusion": {
+  "answer": {
+   "bindings": 5,
+   "empty": 1
+  },
+  "empty": {
+   "empty": 7
+  }
+ },
+ "defer_rate": 0.0,
+ "fixture_id": "replica_office_0_phase8_qa_human_verified",
+ "key_path": "eval/questions/phase8/replica_office_0_qa.json",
+ "latency_ms": {
+  "max": 0.132,
+  "mean": 0.087,
+  "p50": 0.101
+ },
+ "per_relation": {
+  "ATTACHED_TO": {
+   "categories": {
+    "miss": 1
+   },
+   "exhaustive_n": 0,
+   "f1": null,
+   "n": 1,
+   "precision": null,
+   "recall": null
+  },
+  "CONTACTS_SURFACE": {
+   "categories": {
+    "miss": 1
+   },
+   "exhaustive_n": 0,
+   "f1": null,
+   "n": 1,
+   "precision": null,
+   "recall": null
+  },
+  "NEAR_SURFACE": {
+   "categories": {
+    "true_answer": 1
+   },
+   "exhaustive_n": 0,
+   "f1": null,
+   "n": 1,
+   "precision": null,
+   "recall": null
+  },
+  "ON_ENTITY_SURFACE": {
+   "categories": {
+    "miss": 2,
+    "true_empty": 7
+   },
+   "exhaustive_n": 2,
+   "f1": 0.5455,
+   "n": 9,
+   "precision": 1.0,
+   "recall": 0.375
+  },
+  "SUPPORTS_FLOOR": {
+   "categories": {
+    "miss": 1
+   },
+   "exhaustive_n": 0,
+   "f1": null,
+   "n": 1,
+   "precision": null,
+   "recall": null
+  }
+ },
+ "prf_scope_note": "P/R/F1 computed only over exhaustive answer rows of human_verified keys; all other rows are membership pass/fail via eval/router_qa.py. prf_rows=2.",
+ "router_qa": {
+  "aggregate": {
+   "all_expected_outcomes_met": false,
+   "category_counts": {
+    "miss": 5,
+    "true_answer": 1,
+    "true_empty": 7
+   },
+   "false_answer_count": 0,
+   "miss_count": 5,
+   "total_questions": 13,
+   "unexpected_count": 0
+  },
+  "deferral_detection": "compile_metadata",
+  "per_question": [
+   {
+    "actual_outcome": "bindings",
+    "category": "miss",
+    "cited_edges": [
+     "e_00dde674e7f884b2",
+     "e_0e70d920ec0aa80b",
+     "e_498c80f4d621723c",
+     "e_b20697a264290099",
+     "e_c68c9e6759b4dada",
+     "e_cd7db7dddb6f162d",
+     "e_eb9dd4ab46072945"
+    ],
+    "cited_uids": [
+     "obj_16",
+     "obj_19",
+     "obj_34",
+     "obj_5",
+     "obj_58",
+     "obj_61",
+     "obj_7"
+    ],
+    "deferred": false,
+    "expected_outcome": "answer",
+    "latency_ms": 0.037,
+    "prf": null,
+    "question": "what is on the floor?",
+    "question_id": "Q01"
+   },
+   {
+    "actual_outcome": "bindings",
+    "category": "miss",
+    "cited_edges": [
+     "e_fd766214a38ce0cb"
+    ],
+    "cited_uids": [
+     "obj_65"
+    ],
+    "deferred": false,
+    "expected_outcome": "answer",
+    "latency_ms": 0.016,
+    "prf": null,
+    "question": "what is against the wall?",
+    "question_id": "Q02"
+   },
+   {
+    "actual_outcome": "bindings",
+    "category": "true_answer",
+    "cited_edges": [
+     "e_1068b01aa2d92628",
+     "e_2002c386c3b0730f",
+     "e_250b092728ffe04b",
+     "e_26ab50221dadd72d",
+     "e_285caf71de18422a",
+     "e_361ff6c5a55106bb",
+     "e_43568e8edb6a6272",
+     "e_4a1f6687791b7c64",
+     "e_5148330fa3dc8504",
+     "e_5584e0f0964f30e0",
+     "e_5c3b106a8bc3a1d6",
+     "e_7cbe22c57ce30bc5",
+     "e_8cc7951eee5d3f8f",
+     "e_9327be96dbea01a6",
+     "e_9ee346678dc417a3",
+     "e_a33ce5d6da0a71ac",
+     "e_a8ca3a5de6c49056",
+     "e_ac3fba2d39c5e4e3",
+     "e_b4e047b83581a392",
+     "e_b9c7e9a3632fb3f3",
+     "e_bc539bcaf37e163d",
+     "e_ce1b967aac7885d9",
+     "e_dc9e0037647d2ab6",
+     "e_decb8d2ad182ea5b",
+     "e_e529dfdd826f7306",
+     "e_e6296a43c13ab40d",
+     "e_f07fe1ecca7c6c3b",
+     "e_f45c1a73e87a208d",
+     "e_f6cafabfd8857499",
+     "e_fb4371ff693c8dfd"
+    ],
+    "cited_uids": [
+     "obj_11",
+     "obj_12",
+     "obj_15",
+     "obj_16",
+     "obj_17",
+     "obj_19",
+     "obj_20",
+     "obj_22",
+     "obj_23",
+     "obj_25",
+     "obj_27",
+     "obj_3",
+     "obj_30",
+     "obj_31",
+     "obj_33",
+     "obj_34",
+     "obj_35",
+     "obj_36",
+     "obj_38",
+     "obj_39",
+     "obj_45",
+     "obj_53",
+     "obj_56",
+     "obj_57",
+     "obj_60",
+     "obj_65",
+     "obj_66",
+     "obj_67",
+     "obj_7",
+     "obj_9"
+    ],
+    "deferred": false,
+    "expected_outcome": "answer",
+    "latency_ms": 0.04,
+    "prf": null,
+    "question": "what is near the wall?",
+    "question_id": "Q03"
+   },
+   {
+    "actual_outcome": "bindings",
+    "category": "miss",
+    "cited_edges": [
+     "e_1f86f9a4884cd09f"
+    ],
+    "cited_uids": [
+     "obj_65"
+    ],
+    "deferred": false,
+    "expected_outcome": "answer",
+    "latency_ms": 0.014,
+    "prf": null,
+    "question": "what is attached to the wall?",
+    "question_id": "Q04"
+   },
+   {
+    "actual_outcome": "bindings",
+    "category": "miss",
+    "cited_edges": [
+     "e_9f0eaf9d754ed5a9",
+     "e_a75e521824fa5cd4",
+     "e_db6b303d7a490b49"
+    ],
+    "cited_uids": [
+     "obj_2",
+     "obj_44",
+     "obj_64"
+    ],
+    "deferred": false,
+    "expected_outcome": "answer",
+    "latency_ms": 0.126,
+    "prf": {
+     "f1": 0.6,
+     "n_cited": 3,
+     "n_expected": 7,
+     "precision": 1.0,
+     "recall": 0.4286,
+     "tp": 3
+    },
+    "question": "what is on the table?",
+    "question_id": "Q05"
+   },
+   {
+    "actual_outcome": "empty",
+    "category": "true_empty",
+    "cited_edges": [],
+    "cited_uids": [],
+    "deferred": false,
+    "expected_outcome": "empty",
+    "latency_ms": 0.101,
+    "prf": null,
+    "question": "what is on the desk?",
+    "question_id": "Q06"
+   },
+   {
+    "actual_outcome": "empty",
+    "category": "true_empty",
+    "cited_edges": [],
+    "cited_uids": [],
+    "deferred": false,
+    "expected_outcome": "empty",
+    "latency_ms": 0.1,
+    "prf": null,
+    "question": "what is on the shelf?",
+    "question_id": "Q07"
+   },
+   {
+    "actual_outcome": "empty",
+    "category": "true_empty",
+    "cited_edges": [],
+    "cited_uids": [],
+    "deferred": false,
+    "expected_outcome": "empty",
+    "latency_ms": 0.1,
+    "prf": null,
+    "question": "what is on the counter?",
+    "question_id": "Q08"
+   },
+   {
+    "actual_outcome": "empty",
+    "category": "true_empty",
+    "cited_edges": [],
+    "cited_uids": [],
+    "deferred": false,
+    "expected_outcome": "empty",
+    "latency_ms": 0.107,
+    "prf": null,
+    "question": "what is on the stool?",
+    "question_id": "Q09"
+   },
+   {
+    "actual_outcome": "empty",
+    "category": "true_empty",
+    "cited_edges": [],
+    "cited_uids": [],
+    "deferred": false,
+    "expected_outcome": "empty",
+    "latency_ms": 0.111,
+    "prf": null,
+    "question": "what is on the bench?",
+    "question_id": "Q10"
+   },
+   {
+    "actual_outcome": "empty",
+    "category": "true_empty",
+    "cited_edges": [],
+    "cited_uids": [],
+    "deferred": false,
+    "expected_outcome": "empty",
+    "latency_ms": 0.132,
+    "prf": null,
+    "question": "what is on the sofa?",
+    "question_id": "Q11"
+   },
+   {
+    "actual_outcome": "empty",
+    "category": "true_empty",
+    "cited_edges": [],
+    "cited_uids": [],
+    "deferred": false,
+    "expected_outcome": "empty",
+    "latency_ms": 0.128,
+    "prf": null,
+    "question": "what is on the chair?",
+    "question_id": "Q12"
+   },
+   {
+    "actual_outcome": "empty",
+    "category": "miss",
+    "cited_edges": [],
+    "cited_uids": [],
+    "deferred": false,
+    "expected_outcome": "answer",
+    "latency_ms": 0.119,
+    "prf": {
+     "f1": 0.0,
+     "n_cited": 0,
+     "n_expected": 1,
+     "precision": 0.0,
+     "recall": 0.0,
+     "tp": 0
+    },
+    "question": "what is on the plant-stand?",
+    "question_id": "Q13"
+   }
+  ]
+ },
+ "scene_id": "replica_office_0",
+ "schema": "phase8_scene_scorecard",
+ "schema_version": 1
+}
