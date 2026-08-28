@@ -1,0 +1,581 @@
+{
+ "answer_artifact": {
+  "q_att_answer": {
+   "outcome": "answer",
+   "uids": [
+    "e12"
+   ]
+  },
+  "q_att_empty": {
+   "outcome": "empty",
+   "uids": []
+  },
+  "q_att_extra": {
+   "outcome": "answer",
+   "uids": [
+    "e14"
+   ]
+  },
+  "q_near_answer": {
+   "outcome": "answer",
+   "uids": [
+    "e01"
+   ]
+  },
+  "q_near_empty": {
+   "outcome": "empty",
+   "uids": []
+  },
+  "q_near_extra": {
+   "outcome": "answer",
+   "uids": [
+    "e03"
+   ]
+  },
+  "q_on_answer": {
+   "outcome": "answer",
+   "uids": [
+    "e07"
+   ]
+  },
+  "q_on_empty": {
+   "outcome": "empty",
+   "uids": []
+  },
+  "q_on_extra": {
+   "outcome": "answer",
+   "uids": [
+    "e09"
+   ]
+  }
+ },
+ "entity_artifact": {
+  "entities": [
+   {
+    "center": [
+     0.0,
+     0.0,
+     0.4
+    ],
+    "name": "reading lamp",
+    "size": [
+     0.3,
+     0.3,
+     0.8
+    ],
+    "uid": "e01"
+   },
+   {
+    "center": [
+     0.8,
+     0.0,
+     0.25
+    ],
+    "name": "side table",
+    "size": [
+     0.5,
+     0.5,
+     0.5
+    ],
+    "uid": "e02"
+   },
+   {
+    "center": [
+     3.0,
+     3.0,
+     0.4
+    ],
+    "name": "armchair",
+    "size": [
+     0.8,
+     0.8,
+     0.8
+    ],
+    "uid": "e03"
+   },
+   {
+    "center": [
+     3.9,
+     3.0,
+     0.2
+    ],
+    "name": "ottoman",
+    "size": [
+     0.6,
+     0.6,
+     0.4
+    ],
+    "uid": "e04"
+   },
+   {
+    "center": [
+     0.0,
+     8.0,
+     0.3
+    ],
+    "name": "floor safe",
+    "size": [
+     0.5,
+     0.5,
+     0.6
+    ],
+    "uid": "e05"
+   },
+   {
+    "center": [
+     100.0,
+     0.0,
+     0.4
+    ],
+    "name": "writing desk",
+    "size": [
+     1.2,
+     0.6,
+     0.8
+    ],
+    "uid": "e06"
+   },
+   {
+    "center": [
+     100.0,
+     0.0,
+     0.83
+    ],
+    "name": "notebook",
+    "size": [
+     0.2,
+     0.15,
+     0.06
+    ],
+    "uid": "e07"
+   },
+   {
+    "center": [
+     104.0,
+     0.0,
+     0.45
+    ],
+    "name": "kitchen counter",
+    "size": [
+     1.0,
+     0.6,
+     0.9
+    ],
+    "uid": "e08"
+   },
+   {
+    "center": [
+     104.0,
+     0.0,
+     0.95
+    ],
+    "name": "coffee mug",
+    "size": [
+     0.1,
+     0.1,
+     0.1
+    ],
+    "uid": "e09"
+   },
+   {
+    "center": [
+     100.0,
+     8.0,
+     0.35
+    ],
+    "name": "bar stool",
+    "size": [
+     0.4,
+     0.4,
+     0.7
+    ],
+    "uid": "e10"
+   },
+   {
+    "center": [
+     200.0,
+     0.0,
+     1.5
+    ],
+    "name": "wall panel",
+    "size": [
+     2.0,
+     0.1,
+     3.0
+    ],
+    "uid": "e11"
+   },
+   {
+    "center": [
+     200.0,
+     0.08,
+     1.5
+    ],
+    "name": "coat hook",
+    "size": [
+     0.06,
+     0.06,
+     0.1
+    ],
+    "uid": "e12"
+   },
+   {
+    "center": [
+     204.0,
+     0.0,
+     1.5
+    ],
+    "name": "support pillar",
+    "size": [
+     0.3,
+     0.3,
+     3.0
+    ],
+    "uid": "e13"
+   },
+   {
+    "center": [
+     204.0,
+     0.16,
+     1.2
+    ],
+    "name": "handrail",
+    "size": [
+     0.4,
+     0.06,
+     0.06
+    ],
+    "uid": "e14"
+   },
+   {
+    "center": [
+     200.0,
+     8.0,
+     1.5
+    ],
+    "name": "wall mirror",
+    "size": [
+     0.8,
+     0.05,
+     1.2
+    ],
+    "uid": "e15"
+   }
+  ]
+ },
+ "evaluation_key": {
+  "questions": [
+   {
+    "anchor": "side table",
+    "exhaustive": true,
+    "expected_outcome": "answer",
+    "expected_uids": [
+     "e01"
+    ],
+    "human_marked_ambiguous": false,
+    "question_id": "q_near_answer",
+    "relation": "NEAR"
+   },
+   {
+    "anchor": "floor safe",
+    "exhaustive": true,
+    "expected_outcome": "empty",
+    "expected_uids": [],
+    "human_marked_ambiguous": false,
+    "question_id": "q_near_empty",
+    "relation": "NEAR"
+   },
+   {
+    "anchor": "ottoman",
+    "exhaustive": true,
+    "expected_outcome": "answer",
+    "expected_uids": [
+     "e03"
+    ],
+    "human_marked_ambiguous": false,
+    "question_id": "q_near_extra",
+    "relation": "NEAR"
+   },
+   {
+    "anchor": "writing desk",
+    "exhaustive": true,
+    "expected_outcome": "answer",
+    "expected_uids": [
+     "e07"
+    ],
+    "human_marked_ambiguous": false,
+    "question_id": "q_on_answer",
+    "relation": "ON_ENTITY_SURFACE"
+   },
+   {
+    "anchor": "bar stool",
+    "exhaustive": true,
+    "expected_outcome": "empty",
+    "expected_uids": [],
+    "human_marked_ambiguous": false,
+    "question_id": "q_on_empty",
+    "relation": "ON_ENTITY_SURFACE"
+   },
+   {
+    "anchor": "kitchen counter",
+    "exhaustive": true,
+    "expected_outcome": "answer",
+    "expected_uids": [
+     "e09"
+    ],
+    "human_marked_ambiguous": false,
+    "question_id": "q_on_extra",
+    "relation": "ON_ENTITY_SURFACE"
+   },
+   {
+    "anchor": "wall panel",
+    "exhaustive": true,
+    "expected_outcome": "answer",
+    "expected_uids": [
+     "e12"
+    ],
+    "human_marked_ambiguous": false,
+    "question_id": "q_att_answer",
+    "relation": "ATTACHED_TO"
+   },
+   {
+    "anchor": "wall mirror",
+    "exhaustive": true,
+    "expected_outcome": "empty",
+    "expected_uids": [],
+    "human_marked_ambiguous": false,
+    "question_id": "q_att_empty",
+    "relation": "ATTACHED_TO"
+   },
+   {
+    "anchor": "support pillar",
+    "exhaustive": true,
+    "expected_outcome": "answer",
+    "expected_uids": [
+     "e14"
+    ],
+    "human_marked_ambiguous": false,
+    "question_id": "q_att_extra",
+    "relation": "ATTACHED_TO"
+   }
+  ]
+ },
+ "ground_truth": {
+  "anchor_uids": {
+   "q_att_answer": "e11",
+   "q_att_empty": "e15",
+   "q_att_extra": "e13",
+   "q_near_answer": "e02",
+   "q_near_empty": "e05",
+   "q_near_extra": "e04",
+   "q_on_answer": "e06",
+   "q_on_empty": "e10",
+   "q_on_extra": "e08"
+  },
+  "relations": [
+   [
+    "ATTACHED_TO",
+    "e12",
+    "e11"
+   ],
+   [
+    "ATTACHED_TO",
+    "e14",
+    "e13"
+   ],
+   [
+    "NEAR",
+    "e01",
+    "e02"
+   ],
+   [
+    "NEAR",
+    "e03",
+    "e04"
+   ],
+   [
+    "NEAR",
+    "e06",
+    "e07"
+   ],
+   [
+    "NEAR",
+    "e08",
+    "e09"
+   ],
+   [
+    "NEAR",
+    "e11",
+    "e12"
+   ],
+   [
+    "NEAR",
+    "e13",
+    "e14"
+   ],
+   [
+    "ON_ENTITY_SURFACE",
+    "e07",
+    "e06"
+   ],
+   [
+    "ON_ENTITY_SURFACE",
+    "e09",
+    "e08"
+   ]
+  ]
+ },
+ "grounded_candidates": {
+  "q_att_answer": {
+   "anchor": "wall panel",
+   "uid": "e11"
+  },
+  "q_att_empty": {
+   "anchor": "wall mirror",
+   "uid": "e15"
+  },
+  "q_att_extra": {
+   "anchor": "support pillar",
+   "uid": "e13"
+  },
+  "q_near_answer": {
+   "anchor": "side table",
+   "uid": "e02"
+  },
+  "q_near_empty": {
+   "anchor": "floor safe",
+   "uid": "e05"
+  },
+  "q_near_extra": {
+   "anchor": "ottoman",
+   "uid": "e04"
+  },
+  "q_on_answer": {
+   "anchor": "writing desk",
+   "uid": "e06"
+  },
+  "q_on_empty": {
+   "anchor": "bar stool",
+   "uid": "e10"
+  },
+  "q_on_extra": {
+   "anchor": "kitchen counter",
+   "uid": "e08"
+  }
+ },
+ "relation_artifact": {
+  "relations": [
+   [
+    "ATTACHED_TO",
+    "e12",
+    "e11"
+   ],
+   [
+    "ATTACHED_TO",
+    "e14",
+    "e13"
+   ],
+   [
+    "NEAR",
+    "e01",
+    "e02"
+   ],
+   [
+    "NEAR",
+    "e03",
+    "e04"
+   ],
+   [
+    "NEAR",
+    "e06",
+    "e07"
+   ],
+   [
+    "NEAR",
+    "e08",
+    "e09"
+   ],
+   [
+    "NEAR",
+    "e11",
+    "e12"
+   ],
+   [
+    "NEAR",
+    "e13",
+    "e14"
+   ],
+   [
+    "ON_ENTITY_SURFACE",
+    "e07",
+    "e06"
+   ],
+   [
+    "ON_ENTITY_SURFACE",
+    "e09",
+    "e08"
+   ]
+  ],
+  "vocabulary": [
+   "NEAR",
+   "ON_ENTITY_SURFACE",
+   "ATTACHED_TO"
+  ]
+ },
+ "schema": "stagereach_fault_fixture",
+ "schema_version": 1,
+ "serialized_graph": {
+  "edges": [
+   {
+    "object": "e11",
+    "relation": "ATTACHED_TO",
+    "subject": "e12"
+   },
+   {
+    "object": "e13",
+    "relation": "ATTACHED_TO",
+    "subject": "e14"
+   },
+   {
+    "object": "e02",
+    "relation": "NEAR",
+    "subject": "e01"
+   },
+   {
+    "object": "e04",
+    "relation": "NEAR",
+    "subject": "e03"
+   },
+   {
+    "object": "e07",
+    "relation": "NEAR",
+    "subject": "e06"
+   },
+   {
+    "object": "e09",
+    "relation": "NEAR",
+    "subject": "e08"
+   },
+   {
+    "object": "e12",
+    "relation": "NEAR",
+    "subject": "e11"
+   },
+   {
+    "object": "e14",
+    "relation": "NEAR",
+    "subject": "e13"
+   },
+   {
+    "object": "e06",
+    "relation": "ON_ENTITY_SURFACE",
+    "subject": "e07"
+   },
+   {
+    "object": "e08",
+    "relation": "ON_ENTITY_SURFACE",
+    "subject": "e09"
+   }
+  ]
+ }
+}
