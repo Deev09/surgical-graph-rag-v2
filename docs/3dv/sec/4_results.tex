@@ -48,12 +48,9 @@ the target dimmed, run on the development scene only (7 of the 21 pooled instanc
 scores \textbf{below} the tight arm at both ranks --- 3/7 \rid{C17} and 5/7 \rid{C18}
 against that scene's 5/7 \rid{C07} and 7/7 \rid{C08}. More context measurably hurts,
 which \textbf{supports} the interpretation that the gain comes from object texture rather
-than room gist. It does not prove it.
-
-One observation is worth recording for what it suggests rather than what it shows: six of
-the 21 matched instances kept the canonical class in the top three and lost it to hard
-top-1 commitment \rid{G07}. We make no claim that retaining those hypotheses would
-improve question answering --- that has not been tested.
+than room gist. It does not prove it. One descriptive observation: six of the 21 matched
+instances kept the canonical class in the top three and lost it to hard top-1 commitment
+\rid{G07}; whether retaining those hypotheses would help answering has not been tested.
 
 \paragraph{Scope.}
 This is \texttt{oracle\_free\_component\_eval}. The prediction path consumes no oracle
@@ -112,12 +109,11 @@ was \textbf{wrong on 2 of 10} \rid{F51}. That is the baseline against which
 The stored-edge replay reads \emph{only} edges the extractor serialized and recomputes no
 geometry. It agrees with the recomputed geometry ceiling on all 12 authored items
 \rid{F63}: no additional loss was measured during serialization relative to recomputation
-under the same convention. The scope is \texttt{identity\_oracle} and the limits are
-real: \textbf{both compared arms consume human-supplied identity}, the comparison covers
-the single \texttt{NEAR} relation, and because both sides apply the same 1.0\,m
-surface-to-surface convention the check catches a serialization error but \textbf{cannot}
-detect a wrong convention. Relation availability and serialization consistency were
-observed on these items; semantic correctness of the stored relations was not
+under the same convention. The limits are real: \textbf{both compared arms consume
+human-supplied identity} (\texttt{identity\_oracle}), the comparison covers the single
+\texttt{NEAR} relation, and a shared 1.0\,m convention catches a serialization error but
+\textbf{cannot} detect a wrong convention. Relation availability and serialization
+consistency were observed; semantic correctness of the stored relations was not
 independently established.
 
 \paragraph{Identity is what binds.}
@@ -132,38 +128,34 @@ anywhere, moved the delivered graph arm from 0/10 \rid{F40} to 2/10 \rid{F45} --
 2-versus-0 difference that is not statistically separable at $n = 10$ --- and
 failed all three predeclared gates: anchor precision 0.583 against $\ge 0.80$ \rid{F67},
 coverage 0.467 against $\ge 0.60$ \rid{F68}, and graph-unique wins 0 against $\ge 2$
-\rid{F69}. Of the 17 question anchors, 15 were human-resolvable, the bridge admitted 12,
-and 7 of those admissions were correct \rid{F70}. One failure is diagnostic: the bridge
-admitted a UID for an object one of the authors had marked absent from the delivered
-partition,
-with maximum cross-view agreement \rid{F75}. Cross-view agreement measures
-\emph{consistency}, not \emph{existence}.
+\rid{F69}. Of 17 question anchors, 15 were human-resolvable; the bridge admitted 12, 7
+of them correctly \rid{F70}. One failure is diagnostic: the bridge admitted a UID for an
+object one of the authors had marked absent from the delivered partition, with maximum
+cross-view agreement \rid{F75} --- cross-view agreement measures \emph{consistency}, not
+\emph{existence}.
 
-\paragraph{A ledger makes the transitions explicit.}
-Rather than argue about where the capability goes, we record for each question whether it
-survived each stage it must pass (\cref{fig:reach}). Of the 10 scored questions, 8 survive
-object delivery \rid{G03} and all 8 survive both relation expressibility and the
-serialized-edge stage --- \textbf{no additional loss was measured at the serialized-edge
-stage relative to recomputation under the same convention} \rid{G05}.
-Three survive anchor grounding \rid{G04}. The single largest loss, five of ten, is at
-identity grounding, larger than every other transition combined. The substitution is
-paired: 7 items are answered under human-supplied identity that the delivered graph does
-not answer, none the other way (exact McNemar $p = 0.0156$ \rid{G06}, an instance-level
-statement over ten items in two rooms; the test details are in the supplement).
-\Cref{fig:qualitative} shows one such question in the room itself. Because one side
-consumes human identity, it sizes a bound --- it says the arms differ, not that anything
-deployable achieves 7/10.
-
-Reachability is reported per arm, never as one mixed ladder: the delivered graph reaches
-\SRArmDeliveredLadder{} across its declared stages, the grounded graph
-\SRArmGroundedLadder{}, the stored-edge replay \SRArmStoredLadder{} (identity injected,
-grounding bypassed), and direct RGB \SRArmDirectLadder{} (graph stages bypassed)
+\paragraph{A per-arm ledger makes the transitions explicit.}
+Reachability is reported per arm, never as one mixed ladder (\cref{fig:reach}): the
+delivered graph reaches \SRArmDeliveredLadder{} across its declared stages, the grounded
+graph \SRArmGroundedLadder{}, the stored-edge replay \SRArmStoredLadder{} (identity
+injected, grounding bypassed), and direct RGB \SRArmDirectLadder{} (graph stages
+bypassed)
 % NOTE for the integrator: new-claim codes follow the corrected reservation (G07 was
 % already occupied by the top-3-commitment row): G08 per-arm equivalence, G09 Replica
 % normalized matrix, G10 Replica per-scene n's, G11 masked fault localization. Registry
 % rows to be added at merge.
-\rid{G08}. The evaluator re-derives each chain independently from the committed
-artifacts, and the chains reproduce the committed statistics field for field.
+\rid{G08}; the evaluator re-derives each chain from the committed artifacts, reproducing
+the committed statistics field for field. Eight of the 10 scored questions survive object
+delivery \rid{G03}, and all 8 survive relation expressibility and the serialized-edge
+stage --- \textbf{no additional loss was measured at the serialized-edge stage relative
+to recomputation under the same convention} \rid{G05}. Three survive anchor grounding
+\rid{G04}: the single largest loss, five of ten, larger than every other transition
+combined. The substitution is paired: 7 items are answered under human-supplied identity
+that the delivered graph does not answer, none the other way (exact McNemar $p = 0.0156$
+\rid{G06}, instance-level, over ten items in two rooms; test details in the supplement).
+\Cref{fig:qualitative} shows one such question in the room itself. Because one side
+consumes human identity, this sizes a bound --- the arms differ; it does not follow that
+anything deployable achieves 7/10.
 
 \paragraph{Fault-localization validation.}
 Attribution is only as trustworthy as its checkers, so we validated it under masking.
@@ -193,74 +185,44 @@ artifact-level validation; it is not a blind study of the human protocol.
   \centering
   \includegraphics[width=\textwidth]{figures/fig5_qualitative.pdf}
   \caption{One question, in the room it is about. The stored \texttt{NEAR} edge between
-  the basket and the desk is present, and its serialization is consistent with
-  recomputation under the same convention (surface distance $0.0$\,m against a $1.0$\,m
-  threshold); its semantic correctness was not independently established. A human
-  resolving both referents answers it; the delivered labels
-  never address it; the oracle-free bridge binds one referent and abstains on the other,
-  so the edge is unreachable through it. Frames and crops are from the committed human
-  review sheet; outcomes from the packed relation report.}
+  the basket and the desk is present and serialization-consistent under the shared
+  convention (surface distance $0.0$\,m against $1.0$\,m); its semantic correctness was
+  not independently established. A human resolving both referents answers it; the
+  delivered labels never address it; the bridge binds one referent and abstains on the
+  other, so the edge is unreachable through it.}
   \label{fig:qualitative}
 \end{figure*}
 
 \subsection{A blinded one-scene pilot under a twice-amended generator}
 \label{sec:transfer}
 
-Direct multiview RGB at 7/10 \rid{F50} was the strongest deployable arm, but both rooms
-had been examined for months. For a pilot on a capture unused during development, the
-gates, the scoring and the model-facing protocol --- view selection, prompt, schema and
-two gates --- were frozen before any model run; question generation was amended twice on
-question-text defects before scoring, with the chronology in the supplement. Question
-generation reduces direct author selection: three agents independently enumerated objects from the same frames with no
-access to each other or to any question; an object became an anchor on two-of-three
-agreement; anchors were ordered mechanically and a fixed template allocated slots.
+Direct multiview RGB was the strongest deployable arm \rid{F50}, but both rooms had been
+examined for months. For a pilot on a capture unused during development, the gates, the
+scoring and the model-facing protocol --- view selection, prompt, schema and two gates
+--- were frozen before any model run. Questions came from a mechanical generator (anchors
+by two-of-three agreement among independent enumerations, slots by fixed template) that
+was amended twice on question-text defects before scoring: run 1's eight questions came
+back with four marked ambiguous and was voided; \textbf{the blinded model never ran in
+run 1}, so nothing scored was selected on an outcome, and both amendments addressed
+defects visible in the questions alone. Run 2 was authored and scored once at $n = 10$
+\rid{F84}. The full amendment chronology is in the supplement.
 
-\paragraph{The generator was amended twice, and we state it plainly.}
-Run 1's eight questions came back with four marked ambiguous, leaving $n = 4$ --- a size
-at which the coverage gate degenerates into an anti-abstention gate. Run 1 was voided and
-the generator amended twice, for scope wording and anchor ordering, then to restrict
-relational slots to unique-referent anchors. What protects the result is narrower than
-``we froze it first'': \textbf{the blinded model never ran in run 1}, so nothing scored
-was selected on an outcome, and both amendments addressed defects visible in the
-questions alone. Run 2 was authored and scored once at $n = 10$ \rid{F84}. A reader who
-prefers the weaker reading --- that a generator was iterated twice on this scene before
-producing a scorable set --- is entitled to it, and that is itself a finding about
-fixed-procedure generation. The full amendment history is in the supplement.
+Scored once: 5/10 correct \rid{F76}, \textbf{0/10 wrong} \rid{F77}, 5/10 unanswered
+\rid{F78}, accuracy 1.000 over the 5 answered \rid{F85}, and all three cross-view items
+declined (0/3) \rid{F79}. \textbf{Both predeclared gates failed} --- exact accuracy 0.50
+against $\ge 0.60$ \rid{F82}, coverage 0.50 against $\ge 0.80$ \rid{F83} --- so no
+transfer claim is made \rid{F88}.
 
-\begin{table}[t]
-  \centering\footnotesize
-  \setlength{\tabcolsep}{3pt}
-  \begin{tabular}{@{}lll@{}}
-    \toprule
-    metric & value & \\
-    \midrule
-    correct & 5/10 \rid{F76} & \\
-    \textbf{wrong} & \textbf{0/10} \rid{F77} & never wrong\\
-    unanswered & 5/10 \rid{F78} & \\
-    acc.\ when answered & 1.000 \rid{F85} & over 5 answered\\
-    \textbf{cross-view items} & \textbf{0/3} \rid{F79} & all declined\\
-    exact acc.\ (gate $\ge 0.60$) & 0.50 \rid{F82} & \textbf{fail}\\
-    coverage (gate $\ge 0.80$) & 0.50 \rid{F83} & \textbf{fail}\\
-    \bottomrule
-  \end{tabular}
-  \caption{One pilot room, unused during development, scored once. Both predeclared
-  gates failed, so no transfer claim is made \rid{F88}.}
-  \label{tab:transfer}
-\end{table}
-
-The shape of the failure is the result. It is not an accuracy failure: every answer given
-was correct \rid{F85} and none was wrong \rid{F77}. It is entirely coverage --- and
-because exact accuracy counts an abstention as a non-correct item, a perfectly calibrated
+The shape of the failure is the result: not accuracy but coverage, and because exact
+accuracy counts an abstention as a non-correct item, a perfectly calibrated
 abstainer fails both gates on one behaviour. The model declined precisely the category
-that motivates the work.
-
-We resist the phrase ``calibration transferred''. On the development rooms the same arm
-was \textbf{wrong on 2 of 10} \rid{F51} at 0.90 coverage \rid{F53}, and its two-view
-sufficiency gate never fired on any of the 7 thin-evidence items there \rid{F66}; on the
-unseen room it declined 4 of 6 thin-evidence items and was right on both it answered
-\rid{F87}. That is a \emph{change} in abstention behaviour between rooms, measured once on
-each, not a property carried across. This also suggests a re-reading of the earlier 7/10:
-those cross-view items were likely answerable from co-visible evidence.
+that motivates the work. We
+resist the phrase ``calibration transferred'': on the development rooms the same arm was
+wrong on 2 of 10 \rid{F51} at 0.90 coverage \rid{F53} and its two-view sufficiency gate
+never fired on any of the 7 thin-evidence items there \rid{F66}; on the pilot room it
+declined 4 of 6 thin-evidence items and was right on both it answered \rid{F87}. That is
+a \emph{change} in abstention behaviour between rooms, measured once on each, not a
+property carried across.
 
 \subsection{Evaluator transfer: Replica multi-relation QA}
 \label{sec:replica}
@@ -268,50 +230,24 @@ those cross-view items were likely answerable from co-visible evidence.
 To test that the \emph{evaluator} transfers --- not the pipeline --- we re-scored the
 frozen Replica multi-relation QA scorecards (four scenes, \SRReplicaTotal{} items,
 per-scene $n$ of \SRReplicaSceneNs{} \rid{G10}) through the same schema and outcome
-mapping. Raw scorecard labels are preserved verbatim in every trace, and every metric is
-keyed by (expected outcome, result) --- the normalized matrix and the raw categories are
-reported side by side (\cref{tab:replica}).
-
-\begin{table}[t]
-  \centering\footnotesize
-  \setlength{\tabcolsep}{4pt}
-  \begin{tabular}{@{}lccc@{}}
-    \toprule
-    expected & correct & wrong & abstain\\
-    \midrule
-    answer & \SRReplicaAnswerCorrect{} & \SRReplicaAnswerWrong{} & \SRReplicaAnswerAbstain{}\\
-    empty  & \SRReplicaEmptyCorrect{} & \SRReplicaEmptyWrong{} & ---\\
-    \bottomrule
-  \end{tabular}
-  \hspace{1.2em}
-  \begin{tabular}{@{}lc@{}}
-    \toprule
-    raw category & $n$\\
-    \midrule
-    true\_answer & \SRReplicaTrueAnswer{}\\
-    true\_empty & \SRReplicaTrueEmpty{}\\
-    miss & \SRReplicaMiss{}\\
-    false\_answer & \SRReplicaFalseAnswer{}\\
-    \bottomrule
-  \end{tabular}
-  \caption{Replica multi-relation QA re-scored through the evaluator \rid{G09}: the
-  normalized (expected outcome, result) matrix, with the raw scorecard categories
-  alongside. The \texttt{miss} category splits by the per-question record, never by the
-  category label alone.}
-  \label{tab:replica}
-\end{table}
+mapping. Keyed by (expected outcome, result) \rid{G09}: on answer-expected items,
+\SRReplicaAnswerCorrect{} correct, \SRReplicaAnswerWrong{} wrong and
+\SRReplicaAnswerAbstain{} abstentions; on empty-expected items,
+\SRReplicaEmptyCorrect{} correct and \SRReplicaEmptyWrong{} wrong. The raw scorecard
+labels are preserved verbatim in every trace --- \SRReplicaTrueAnswer{}
+\texttt{true\_answer}, \SRReplicaTrueEmpty{} \texttt{true\_empty}, \SRReplicaMiss{}
+\texttt{miss}, \SRReplicaFalseAnswer{} \texttt{false\_answer} --- and \texttt{miss}
+splits by the per-question record, never by the category label alone.
 
 \paragraph{Aggregates mask.}
 Pooled, the same scorecards would read \SRReplicaPooled{} ``correct'' --- a number
 dominated by the \SRReplicaTrueEmpty{} true-empty items, on which being correct means
-returning nothing. Keyed by expected outcome, the answered side is
-\SRReplicaAnswerCorrect{} correct against \SRReplicaAnswerWrong{} wrong with
-\SRReplicaAnswerAbstain{} abstentions \rid{G09}. The pooled number would mislead, and
-the evaluator refuses to emit it.
+returning nothing, while masking the error rate on the answered side. The pooled number
+would mislead, and the evaluator refuses to emit it.
 
 \paragraph{Scope.}
 The Replica arms consume oracle geometry and oracle identity. This demonstrates schema
-and outcome transfer of the evaluator; it is not deployable performance, and it is not
-full fault localization: every internal stage the packed scorecards cannot support is
-reported \texttt{unknown} --- delivery, relation correctness and serialization are never
-inferred from the final answer.
+and outcome transfer of the evaluator --- not deployable performance, and not full fault
+localization: every internal stage the packed scorecards cannot support is reported
+\texttt{unknown}; delivery, relation correctness and serialization are never inferred
+from the final answer.

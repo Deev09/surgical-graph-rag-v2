@@ -6,21 +6,20 @@ number entitled to claim? On our development slice the diagnosis is concentrated
 collects at identity grounding: the same stored relations answer 7 of 10 scored
 questions under human-supplied identity and 0 of 10 under the pipeline's own labels,
 while relation availability and serialization consistency are measurably clean on the
-tested items --- a replay reading only serialized edges agrees with recomputed geometry
-on every one, though semantic correctness of the stored relations was not independently
-established. The contribution is \textbf{StageReach3D}, a scope-aware evaluator that
-declares each evaluated arm's route through a stage DAG, derives reachability from
-declared gating dependencies, reports reached, pass, fail and unknown separately, and
-enforces scope in code: a deployable trace refuses to consume an oracle-fed stage. Its
-attribution is validated by evaluator-masked artifact-level fault localization ---
+tested items (semantic correctness of the stored relations was not independently
+established). The contribution is \textbf{StageReach3D}, a scope-aware evaluator that
+declares each arm's route through a stage DAG, derives reachability from declared gating
+dependencies, reports reached, pass, fail and unknown separately, and enforces scope in
+code: a deployable trace refuses to consume an oracle-fed stage. Its attribution is
+validated by evaluator-masked artifact-level fault localization ---
 \SRFaultLocalized{} injected faults across \SRFaultClasses{} fault classes and
-\SRFaultRelationTypes{} relation types were localized to the correct stage while the
-evaluator was masked to the injected class --- and demonstrated on ARKitScenes, as
-per-arm reachability over identity-substitution arms, and on Replica multi-relation QA,
-as schema and outcome transfer in which outcome-keyed reporting keeps true-empty items
-from masking the error rate on answered items. The held-but-unreachable finding is
-scoped: under one named model (claude-opus-5), one frozen pass, the strongest deployable
-path answered 5 of 10 on a blinded one-scene pilot with zero wrong answers and failed
-both predeclared transfer gates, so no cross-room claim is made. The evaluator, its
-schema and its protocol transfer; every number is instance-bound.
+\SRFaultRelationTypes{} relation types localized to the correct stage while the
+evaluator was masked to the injected class --- and demonstrated on ARKitScenes (per-arm
+reachability) and on Replica multi-relation QA (schema and outcome transfer, where
+outcome-keyed reporting keeps true-empty items from masking the error rate on answered
+items). The held-but-unreachable finding is scoped: under one named model
+(claude-opus-5), one frozen pass, the strongest deployable path answered 5 of 10 on a
+blinded one-scene pilot with zero wrong answers and failed both predeclared transfer
+gates, so no cross-room claim is made. The evaluator, its schema and its protocol
+transfer; every number is instance-bound.
 \end{abstract}

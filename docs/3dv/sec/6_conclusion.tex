@@ -1,14 +1,13 @@
 \section{Conclusion}
 
 A representation can hold information sufficient to answer questions that the deployable
-query paths we instantiated do not reach. We measured that gap directly: the same stored
-relations answer 7 of 10 with human-supplied identity and 0 of 10 with the identity the
-system actually produces \rid{F35, F40}, while the serialized edges reproduce recomputed
-geometry on all 12 tested items \rid{F63}. Identity grounding is the dominant measured
-loss on this \texttt{NEAR} slice. Nothing here clears relation \emph{extraction}: no
-additional loss was measured during serialization relative to recomputation under the
-same convention, on twelve items, over human-resolved delivered objects, and semantic
-correctness of the stored relations was not independently established.
+query paths we instantiated do not reach: the same stored relations answer 7 of 10 with
+human-supplied identity and 0 of 10 with the identity the system actually produces
+\rid{F35, F40}, while the serialized edges reproduce recomputed geometry on all 12
+tested items \rid{F63}. Identity grounding is the dominant measured loss on this
+\texttt{NEAR} slice. Nothing here clears relation \emph{extraction}: no additional loss
+was measured during serialization relative to recomputation under the same convention,
+and semantic correctness of the stored relations was not independently established.
 
 The contributions, restated:
 \begin{enumerate}\itemsep2pt \parskip0pt
@@ -23,12 +22,11 @@ The contributions, restated:
   class, with zero false attributions on clean artifacts \rid{G11}.
   \item \textbf{The findings.} Real RGB substantially improves the label stage on
   oracle-matched instances \rid{C01, C02, C03, C04} --- a component evaluation on an
-  oracle-selected denominator, \textbf{not end-to-end or deployable performance} ---
-  with a control that supports, but does not prove, the object-texture reading
-  \rid{C17, C18}. Stored relations hold answers under human-resolved identity that
-  deployable grounding does not reach --- 7/10 \rid{F35} against 0/10 \rid{F40} and
-  2/10 \rid{F45}. Direct RGB is the strongest measured path on the two development
-  rooms --- 7/10 at 0.90 coverage \rid{F50, F53}, wrong on 2 of 10 there \rid{F51} ---
+  oracle-selected denominator, \textbf{not end-to-end or deployable performance}, with a
+  control that supports but does not prove the object-texture reading \rid{C17, C18}.
+  Stored relations hold answers under human-resolved identity that deployable grounding
+  does not reach \rid{F35, F40, F45}. Direct RGB is the strongest measured path on the
+  two development rooms \rid{F50, F53}, though wrong on 2 of 10 there \rid{F51} ---
   under one named model (claude-opus-5), one frozen pass; on the pilot room it answered
   5 of 10 with zero wrong answers \rid{F76, F77}, declined every non-co-visible item
   \rid{F79}, and failed both predeclared gates \rid{F82, F83}, so no cross-room claim
@@ -37,8 +35,7 @@ The contributions, restated:
 
 We do \textbf{not} claim that representations in general hold unreachable information,
 that \emph{no} deployable path could reach it, or any ordering among 7, 2 and 0. Every
-number is bound to this pipeline, these rooms, these arms and one frozen pass; what
-transfers is the evaluator --- its schema, its gating semantics and its protocol. Every
-negative result stands as measured; none was retuned or re-run.
+number is instance-bound; what transfers is the evaluator, and every negative result
+stands as measured.
 
 \label{endofmaintext}

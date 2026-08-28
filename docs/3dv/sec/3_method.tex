@@ -33,18 +33,8 @@ Five arms answer the same questions over the same stored relations, differing on
 where object identity comes from: a geometry ceiling and a stored-edge replay, both
 consuming human identity; the delivered graph, using its own learned labels; a grounded
 graph, using an oracle-free bridge; and direct multiview RGB, which uses no graph at all.
-\Cref{fig:ladder} shows which pipeline stages each arm relies on.
-
-\begin{figure*}[t]
-  \centering
-  \includegraphics[width=\textwidth]{figures/fig1_evaluation_ladder.pdf}
-  \caption{The evaluation ladder. Each \emph{arm} holds the pipeline fixed and changes
-  one source of identity; bars span the stages an arm relies on. Hatched arms consume
-  human-supplied identity and are bounds, never system performance. Correct counts are
-  over the 10 scored items on the two development rooms
-  \rid{F28, F35, F40, F45, F50}.}
-  \label{fig:ladder}
-\end{figure*}
+\Cref{tab:paths} shows which pipeline stages each arm relies on; the evaluation-ladder
+overview figure is in the supplement.
 
 \subsection{The StageReach3D evaluator}
 \label{sec:evaluator}
@@ -96,9 +86,7 @@ for stage in path(arm).stages:
         record(stage, NOT_REACHED)
         continue
     s = checker[stage](artifacts)
-    # pass | fail | unknown |
-    #   not_applicable | abstain
-    record(stage, s)
+    record(stage, s)   # pass|fail|unknown|...
 attribution = first FAIL on a gating stage
 survival: over gating dependencies only
 report reached/pass/fail/unknown separately
@@ -115,25 +103,19 @@ Every scored question emits a trace, committed as an artifact. An excerpt, with
 per-stage provenance strings elided for width:
 % NOTE for the integrator: representative excerpt written against the frozen trace
 % schema; swap in a verbatim excerpt from the committed traces at merge.
-{\footnotesize
+{\scriptsize
 \begin{verbatim}
-{"schema": "stagereach_trace",
- "schema_version": 1, "question_id": "q07",
- "arm": "delivered_graph", "scope": "delivered",
+{"schema": "stagereach_trace", "schema_version": 1,
+ "question_id": "q07", "arm": "delivered_graph",
  "path_id": "graph_deployable_delivered",
- "expected_outcome": "answer",
+ "scope": "delivered", "expected_outcome": "answer",
  "stages": [
-  {"stage": "object_delivery", "status": "pass"},
-  {"stage": "relation_correctness",
-   "status": "unknown"},
-  {"stage": "serialization_consistency",
-   "status": "pass"},
-  {"stage": "referent_grounding",
-   "status": "fail"},
-  {"stage": "answer_generation",
-   "status": "not_reached"}],
- "final_outcome": {"result": "abstain",
-                   "positive_expected": true}}
+  {"stage":"object_delivery",      "status":"pass"},
+  {"stage":"relation_correctness", "status":"unknown"},
+  {"stage":"serialization_consistency","status":"pass"},
+  {"stage":"referent_grounding",   "status":"fail"},
+  {"stage":"answer_generation","status":"not_reached"}],
+ "final_outcome": {"result": "abstain", ...}}
 \end{verbatim}}
 
 The evaluator's invariants are tests, and a violation raises rather than warns:
@@ -151,16 +133,14 @@ true-negative metrics;
 
 Gates, stopping rules and interpretation limits are written and committed before the
 corresponding scores exist. Twice this caught a \emph{structurally unreachable} outcome
-before measurement: a predeclared clause that cannot fire is a broken instrument, not a
-null result, and only a check in advance reveals it. In the first relation experiment the
-routing structure made the accuracy clause unreachable, and it duly came in at exactly
-$0.0000$ \rid{F25} with the proceed decision \texttt{false} \rid{F27}.
-
-Blinded responses are generated in an isolated context with \textbf{no access to the key}
-and hash-pinned before scoring. The protection is isolation plus the hash pin, not
-version-history ordering: for the transfer run the key was recorded before the response
-was pinned, so commit order does not prove the response predates the key. The full
-chronology and the transfer protocol's amendment history are in the supplement.
+before measurement --- a predeclared clause that cannot fire is a broken instrument, not
+a null result: in the first relation experiment the routing structure made the accuracy
+clause unreachable, and it duly came in at exactly $0.0000$ \rid{F25} with the proceed
+decision \texttt{false} \rid{F27}. Blinded responses are generated in an isolated
+context with \textbf{no access to the key} and hash-pinned before scoring; the
+protection is isolation plus the hash pin, not version-history ordering (commit order
+does not prove the pilot response predates its key). The full chronology and the pilot
+protocol's amendment history are in the supplement.
 
 
 \subsection{Experimental setup}
@@ -182,16 +162,15 @@ partition is an input to every arm and is never re-resolved between arms.
 
 \paragraph{Label stage.}
 OpenCLIP \texttt{ViT-B-32-quickgelu} with \texttt{openai} weights, $\text{top\_k}=3$,
-admission threshold $\text{min\_top1\_score}=0.28$ on raw cosine similarity (uncalibrated),
-over a fixed 41-class indoor vocabulary. Three prompt templates are scored per class ---
-``a photo of a \{c\}'', ``a photo of a \{c\} in a room'', ``a 3D render of a \{c\}'' ---
-and the per-class score is the maximum over templates. The three arms differ only in the
-images: \texttt{splat} renders three isolated point splats per instance;
-\texttt{rgb\_tight} takes real capture crops at 0.15 box padding with no marking; and the
-\texttt{rgb\_context} control takes crops at 0.6 padding with the target dimmed. Crops
-come from a fixed multiview source (every 6th posed frame, three views per instance, a
-24\,px minimum crop side). Evaluation matches delivered instances one-to-one to
-annotation-box vertex sets greedily at vertex $\text{IoU}\ge 0.50$.
+admission threshold $\text{min\_top1\_score}=0.28$ on raw cosine similarity
+(uncalibrated), over a fixed 41-class indoor vocabulary; three fixed prompt templates
+per class, scored by their maximum. The three arms differ only in the images:
+\texttt{splat} renders three isolated point splats per instance; \texttt{rgb\_tight}
+takes real capture crops at 0.15 box padding; the \texttt{rgb\_context} control takes
+0.6-padding crops with the target dimmed --- all from a fixed multiview source (every
+6th posed frame, three views per instance, 24\,px minimum crop side). Evaluation
+matches delivered instances one-to-one to annotation-box vertex sets greedily at vertex
+$\text{IoU}\ge 0.50$.
 
 \paragraph{Graph relation.}
 \texttt{NEAR} holds when the axis-aligned bounding boxes of two instances are within
@@ -209,11 +188,9 @@ is applied or swept anywhere in the bridge.}
 
 \paragraph{Direct multiview RGB.}
 Claude Opus 5 (Anthropic), single pass, one response per packet, no retries and no
-self-consistency sampling. Frames are selected answer-free: 18 equal temporal bins across
-the capture, and within each bin the frame with the highest information score (contrast
-and edge density, penalising clipping). The selector cannot see any question. The
-response schema is fixed --- per item an identifier, an \texttt{outcome} of
-\texttt{answer} or \texttt{unknown}, the answer, a confidence in $[0,1]$, and evidence
-frame identifiers drawn only from the 18 supplied --- and the response must pin the hash
-of the packet it answered. Declining is a first-class outcome, distinct from answering
-wrongly.
+self-consistency sampling. Frames are selected answer-free (18 temporal bins, highest
+information score per bin; the selector cannot see any question). The response schema is
+fixed --- per item an identifier, an \texttt{outcome} of \texttt{answer} or
+\texttt{unknown}, the answer, a confidence in $[0,1]$, and evidence frames drawn only
+from the 18 supplied --- and the response must pin the hash of the packet it answered.
+Declining is a first-class outcome, distinct from answering wrongly.

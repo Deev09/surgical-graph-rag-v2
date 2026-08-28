@@ -307,7 +307,7 @@ def figure_4_reachability(R: dict) -> str:
     serialized = by_stage["edge_serialized"]
     grounded = by_stage["anchor_grounded"]
 
-    W, H = 1040, 620
+    W, H = 1040, 532
     b = [text(28, 36, "Per-arm reachability", 20, INK, weight="600"),
          text(28, 60, "Each arm reports its own declared path; counts are questions "
                       "surviving each stage. There is no mixed ladder.", 15, MUTED),
@@ -354,7 +354,7 @@ def figure_4_reachability(R: dict) -> str:
         return "".join(out)
 
     # --- delivered graph -----------------------------------------------------
-    y = 148
+    y = 134
     b.append(band(y, "delivered graph", "F40", "learned labels; deployable path", MUTED))
     ny = y + 14
     chain = [(xs[0], n), (xs[1], delivered), (xs[2], expressible), (xs[3], serialized)]
@@ -370,7 +370,7 @@ def figure_4_reachability(R: dict) -> str:
     b.append(stage_label(xo, ny + nh + 20, "correct"))
 
     # --- grounded graph ------------------------------------------------------
-    y = 266
+    y = 238
     b.append(band(y, "grounded graph", "F45", "oracle-free bridge; deployable path", MUTED))
     ny = y + 14
     chain = [(xs[0], n), (xs[1], delivered), (xs[2], expressible), (xs[3], serialized),
@@ -389,7 +389,7 @@ def figure_4_reachability(R: dict) -> str:
                   anchor="middle", weight="700"))
 
     # --- stored-human identity ----------------------------------------------
-    y = 406
+    y = 364
     b.append(band(y, "stored-human identity", "F35",
                   "identity_oracle \u2014 a bound, NOT DEPLOYABLE", ORACLE))
     ny = y + 14
@@ -401,7 +401,7 @@ def figure_4_reachability(R: dict) -> str:
     b.append(stage_label(xo, ny + nh + 20, "correct (held)"))
 
     # --- direct RGB ----------------------------------------------------------
-    y = 524
+    y = 462
     b.append(band(y, "direct multiview RGB", "F50", "no graph; deployable path", MUTED))
     ny = y + 14
     b.append(node(xs[0], ny, n))
