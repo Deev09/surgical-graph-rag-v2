@@ -31,12 +31,11 @@ attributed stage matches the declared expectation for the hidden class.
 
 \paragraph{Result.} 24/24 controlled artifact-level injected faults
 localized while the evaluator was masked to the injected class, with zero
-spurious failures on clean artifacts.
+spurious failures on clean artifacts. The injectors and the per-stage
+checkers share the evaluator's stage ontology: this validates the internal
+consistency of the attribution machinery, not the localization of natural
+faults arising in unfamiliar pipelines.
 
-%% INTEGRATOR: verify this table against Agent B's committed
-%% fault-injection results before submission -- the class names, mutated
-%% artifacts and expected stages below are placeholders and MUST be replaced
-%% by the committed declarations, not paraphrased from memory.
 \begin{table*}[t]
   \centering\footnotesize
   \setlength{\tabcolsep}{6pt}

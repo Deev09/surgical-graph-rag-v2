@@ -23,8 +23,8 @@ convention is one accuracy per system. Several systems answer \emph{from a persi
 graph} and bound what we may claim: GraphEQA~\cite{saxena2025grapheqa} feeds a real-time
 scene graph plus retrieved images to a VLM planner and ablates graph-only against
 images-only; BBQ~\cite{linok2025bbq} serializes stored metric-semantic edges into an LLM
-prompt; SG-Nav~\cite{yin2024sgnav} is the reference design for that serialization and
-adds re-perception precisely because wrong node identity poisons downstream use;
+prompt; SG-Nav~\cite{yin2024sgnav} adds re-perception to that serialization precisely
+because wrong node identity poisons downstream use;
 VL-KnG~\cite{almdfaa2026vlkng} makes identity association an explicit module;
 3D-Mem~\cite{yang2025threedmem} argues the opposite design, keeping retrieved images
 \emph{as} the memory. We claim no novelty for combining a graph with retrieved images,
@@ -33,18 +33,22 @@ graph-mediated QA; GraphEQA states that in its own limitations.
 
 \paragraph{What we concede, and what remains.}
 Three works break the single-number convention and we position as their continuation:
-Beacon3D~\cite{huang2025beacon3d} decouples grounding from answering,
-MV-ScanQA~\cite{mo2025mvscanqa} formalises cross-view necessity, and Jin et
-al.~\cite{jin2025revisiting3d} find 2D VLMs on rendered views match 3D LLMs. Prior
-stage-wise analyses compare the \emph{quality} of stored
-representations~\cite{gu2024conceptgraphs}, split \emph{inference-time} stages over an
-already-annotated scene~\cite{huang2025beacon3d}, or report an oracle bound from a
-\emph{different system}~\cite{azuma2022scanqa, takmaz2023openmask3d}; none places an
-oracle-fed and a pipeline-labelled number side by side on the same questions over the
-same store, under an evaluator that enforces the distinction. GraphEQA illustrates why
-that matters: its benchmark results use ground-truth segmentation masks and its only
-detector-fed evaluation is a handful of real-world trials with no aggregate, so the gap
-between held and delivered is not recoverable from the paper.
+Beacon3D~\cite{huang2025beacon3d} decouples grounding from answering and chains them
+into per-object coherence cases, at far larger scale than ours;
+MV-ScanQA~\cite{mo2025mvscanqa} formalises cross-view necessity; and Jin et
+al.~\cite{jin2025revisiting3d} find 2D VLMs on rendered views match 3D LLMs.
+Fine-grained 3D-VL diagnosis is therefore not the contribution here. What these
+stage-wise analyses do is \emph{observe}: they
+compare the quality of stored representations~\cite{gu2024conceptgraphs}, correlate
+inference-time stages over an already-annotated scene~\cite{huang2025beacon3d}, or
+report an oracle bound from a \emph{different
+system}~\cite{azuma2022scanqa, takmaz2023openmask3d}. StageReach3D \emph{intervenes}:
+scope-aware oracle substitutions on declared stage paths, with executable consistency
+checks, place an oracle-fed and a pipeline-labelled number side by side on the same
+questions over the same store, under an evaluator that enforces the distinction.
+GraphEQA illustrates the stake: its benchmark numbers use ground-truth segmentation
+masks and its detector-fed evaluation is a few unaggregated real-world trials, so its
+held-versus-delivered gap is not recoverable.
 
 \paragraph{Direct multimodal baselines.}
 VLMs read off RGB are competitive with dedicated 3D systems at room
@@ -70,5 +74,5 @@ geifman2019selectivenet, hendrickx2024reject}, as do
 calibration~\cite{guo2017calibration, kadavath2022know} and the QA
 side~\cite{rajpurkar2018squad2, kamath2020selectiveqa, whitehead2022reliablevqa,
 ren2024exploreuntilconfident}; none addresses \emph{where inside a pipeline} the
-abstention-worthy uncertainty originates, nor expresses a system that should have been
-able to answer because its own store held the fact, and did not reach it.
+abstention-worthy uncertainty originates, nor expresses a system that should have
+answered because its own store held the fact, and did not reach it.

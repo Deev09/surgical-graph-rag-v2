@@ -130,7 +130,7 @@ def figure_1_layers(R: dict) -> str:
                  f'fill="{fill}" stroke="{ORACLE if oracle else ACCENT}" stroke-width="1"/>')
         b.append(text(x0 + 6 * colw + 14, y + 2, val, 16, INK, weight="700", family=MONO))
         b.append(text(x0 + 6 * colw + 14, y + 22,
-                      "NOT DEPLOYABLE" if oracle else "deployable" if j == 4 else "delivered",
+                      "NOT DEPLOYABLE" if oracle else "deployable",
                       15, ORACLE if oracle else MUTED, weight="700" if oracle else "normal"))
     return svg(W, H, "".join(b), "The evaluation ladder")
 
@@ -385,7 +385,7 @@ def figure_4_reachability(R: dict) -> str:
     for x, s in zip(xs, ("scored", "delivered", "expressible", "serialized", "grounded")):
         b.append(stage_label(x, ny + nh + 20, s))
     b.append(stage_label(xo, ny + nh + 20, "correct"))
-    b.append(text(xs[4] + nw / 2, ny + nh + 42, "the dominant loss", 15, BAD,
+    b.append(text(xs[4] + nw / 2, ny + nh + 42, "largest single transition loss", 15, BAD,
                   anchor="middle", weight="700"))
 
     # --- stored-human identity ----------------------------------------------

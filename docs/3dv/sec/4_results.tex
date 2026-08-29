@@ -38,11 +38,11 @@ $p = 0.0034$ \rid{G01}; an instance-level statement only, since the 21 instances
 within three scenes and the test treats them as independent, which they are not). At
 top-3 it fixes 14 and regresses none ($p = 0.00012$ \rid{G02}, same caveat). A
 scene-level sign test cannot reach significance with three clusters: all three scenes
-improve, and $p = \SRSignTestP$ is the minimum attainable. The exact test construction
-and the full clustering discussion are in the supplement.
+improve, and $p = \SRSignTestP$ is the minimum attainable; test construction and the
+clustering discussion are in the supplement.
 
 \paragraph{A control constrains the interpretation.}
-A wide crop of a doorway reads as a kitchen, so a naive RGB win could have been the model
+A naive RGB win could have been the model
 recognising \emph{rooms} rather than \emph{objects}. A third arm with wider context and
 the target dimmed, run on the development scene only (7 of the 21 pooled instances),
 scores \textbf{below} the tight arm at both ranks, 3/7 \rid{C17} and 5/7 \rid{C18},
@@ -50,7 +50,7 @@ against that scene's 5/7 \rid{C07} and 7/7 \rid{C08}. More context measurably hu
 which \textbf{supports} the interpretation that the gain comes from object texture rather
 than room gist. It does not prove it. One descriptive observation: six of the 21 matched
 instances kept the canonical class in the top three and lost it to hard top-1 commitment
-\rid{G07}; whether retaining those hypotheses would help answering has not been tested.
+\rid{G07}; whether retaining them would help answering is untested.
 
 \paragraph{Scope.}
 This is \texttt{oracle\_free\_component\_eval}. The prediction path consumes no oracle
@@ -65,22 +65,24 @@ must not be reported as end-to-end or deployable performance.}
 
 The central experiment asks twelve questions about \texttt{NEAR} (the one relation the
 delivered graph actually contains) across two rooms, with ten items scored after one
-of the authors marked two ambiguous \rid{F65}. Four arms form a controlled identity
-substitution over the same stored relations, and one external deployable comparator
-answers the same questions from images alone (\cref{tab:arms}).
+of the authors marked two ambiguous \rid{F65}. Three arms form a controlled identity
+substitution over the same stored relations; a geometry-recomputation control, also
+under human identity, is reported separately as a serialization check on the replay;
+and one external deployable comparator answers the same questions from images alone
+(\cref{tab:arms}).
 
 \begin{table}[t]
   \centering\footnotesize
   \setlength{\tabcolsep}{3pt}
-  (a) controlled identity substitution\\[3pt]
+  (a) identity substitution and serialization control\\[3pt]
   \begin{tabular}{@{}llcc l@{}}
     \toprule
     arm & identity & correct & cov. & scope\\
     \midrule
     geometry ceiling & human & 7/10 \rid{F28} & 0.80 & \texttt{id\_oracle}\\
     stored-edge replay & human & 7/10 \rid{F35} & 0.80 & \texttt{id\_oracle}\\
-    delivered graph & labels & 0/10 \rid{F40} & 0.00 & \texttt{delivered}\\
-    grounded graph & bridge & 2/10 \rid{F45} & 0.20 & \texttt{delivered}\\
+    delivered graph & labels & 0/10 \rid{F40} & 0.00 & \texttt{deployable}\\
+    grounded graph & bridge & 2/10 \rid{F45} & 0.20 & \texttt{deployable}\\
     \bottomrule
   \end{tabular}\\[7pt]
   (b) external deployable comparator\\[3pt]
@@ -91,10 +93,11 @@ answers the same questions from images alone (\cref{tab:arms}).
     direct RGB & images & 7/10 \rid{F50} & 0.90 & \texttt{deployable}\\
     \bottomrule
   \end{tabular}
-  \caption{(a) The controlled substitution: the geometry ceiling recomputes geometry,
-  the other three arms read the same stored edges, and the source of object identity is
-  the only varied input. The two 7/10 rows consume human-supplied identity and are
-  bounds, not performance. (b) Direct multiview RGB is not a fifth substitution row: it
+  \caption{(a) Three arms read the same stored edges, and the source of object identity
+  is their only varied input; the geometry ceiling recomputes geometry rather than
+  reading stored edges, so it enters as a serialization control, not a fourth
+  substitution row. The two 7/10 rows consume human-supplied identity and are
+  bounds, not performance. (b) Direct multiview RGB is not another substitution row: it
   follows a different path that bypasses the graph entirely, under one named model
   (claude-opus-5), one frozen pass, so its numbers enter only as labeled cross-path
   comparisons.}
@@ -102,8 +105,8 @@ answers the same questions from images alone (\cref{tab:arms}).
 \end{table}
 
 The direct-RGB row carries a cost the correct-count hides: on these development rooms it
-was \textbf{wrong on 2 of 10} \rid{F51}. That is the baseline against which
-\cref{sec:transfer}'s pilot-room behaviour must be read.
+was \textbf{wrong on 2 of 10} \rid{F51}, the baseline for \cref{sec:transfer}'s
+pilot-room behaviour.
 
 \paragraph{No additional serialization loss was measured.}
 The stored-edge replay reads \emph{only} edges the extractor serialized and recomputes no
@@ -112,19 +115,22 @@ geometry. It agrees with the recomputed geometry ceiling on all 12 authored item
 under the same convention. The limits are real: \textbf{both compared arms consume
 human-supplied identity} (\texttt{identity\_oracle}), the comparison covers the single
 \texttt{NEAR} relation, and a shared 1.0\,m convention catches a serialization error but
-\textbf{cannot} detect a wrong convention. Relation availability and serialization
-consistency were observed; semantic correctness of the stored relations was not
-independently established.
+\textbf{cannot} detect a wrong convention. Semantic correctness of the stored
+relations was not independently established.
 
-\paragraph{Identity is what binds.}
+\paragraph{Identity access is implicated.}
 Seven of the ten scored items are \emph{ceiling-correct, delivered-unanswered} \rid{F64}:
 the delivered pipeline could not address the questions at all. Delivered-graph-unique
-correct answers were 0 against a predeclared bar of 2 \rid{F60}.
+correct answers were 0 against a predeclared bar of 2 \rid{F60}. The paired substitution
+supports exactly that much: the schema has no separate learned object-naming stage, and
+referent grounding is recorded \texttt{unknown} for the delivered-label arm, so entity
+naming, question-to-label matching and referent grounding are not separated, and the
+loss is not localized among them.
 
 \paragraph{An oracle-free bridge does not close it.}
-A grounding bridge encoding anchor phrases and real capture crops with the same pinned
-weights, admitting a match only on cross-view agreement and with no confidence threshold
-anywhere, moved the delivered graph arm from 0/10 \rid{F40} to 2/10 \rid{F45} (a
+The grounding bridge (\cref{sec:setup}: same pinned weights, admission only on
+cross-view agreement, no confidence threshold anywhere) moved the delivered graph arm
+from 0/10 \rid{F40} to 2/10 \rid{F45} (a
 2-versus-0 difference that is not statistically separable at $n = 10$) and
 failed all three predeclared gates: anchor precision 0.583 against $\ge 0.80$ \rid{F67},
 coverage 0.467 against $\ge 0.60$ \rid{F68}, and graph-unique wins 0 against $\ge 2$
@@ -140,22 +146,18 @@ delivered graph reaches \SRArmDeliveredLadder{} across its declared stages, the 
 graph \SRArmGroundedLadder{}, the stored-edge replay \SRArmStoredLadder{} (identity
 injected, grounding bypassed), and direct RGB \SRArmDirectLadder{} (graph stages
 bypassed)
-% NOTE for the integrator: new-claim codes follow the corrected reservation (G07 was
-% already occupied by the top-3-commitment row): G08 per-arm equivalence, G09 Replica
-% normalized matrix, G10 Replica per-scene n's, G11 masked fault localization. Registry
-% rows to be added at merge.
 \rid{G08}; the evaluator re-derives each chain from the committed artifacts, reproducing
 the committed statistics field for field. Eight of the 10 scored questions survive object
 delivery \rid{G03}, and all 8 survive relation expressibility and the serialized-edge
-stage: \textbf{no additional loss was measured at the serialized-edge stage relative
-to recomputation under the same convention} \rid{G05}. Three survive anchor grounding
+stage \rid{G05} (no additional serialized-edge loss, as above). Three survive anchor grounding
 \rid{G04}: the single largest loss, five of ten, larger than every other transition
-combined. The substitution is paired: 7 items are answered under human-supplied identity
+combined on the grounded arm's path. The substitution is paired: 7 items are answered under human-supplied identity
 that the delivered graph does not answer, none the other way (exact McNemar $p = 0.0156$
 \rid{G06}, instance-level, over ten items in two rooms; test details in the supplement).
 \Cref{fig:qualitative} shows one such question in the room itself. Because one side
 consumes human identity, this sizes a bound: the arms differ; it does not follow that
-anything deployable achieves 7/10.
+anything deployable achieves 7/10. The 7-versus-0 result's sensitivity to the
+evaluation key is quantified in the supplement.
 
 \paragraph{Fault-localization validation.}
 Attribution is only as trustworthy as its checkers, so we validated it under masking.
@@ -164,10 +166,10 @@ artifact, serialized graph, grounded candidates, answer) we injected controlled
 artifact-level faults, each mutating exactly one artifact, spanning \SRFaultClasses{}
 fault classes and \SRFaultRelationTypes{} relation types (\texttt{NEAR},
 \texttt{ON\_ENTITY\_SURFACE}, \texttt{ATTACHED\_TO}). The evaluator attributes via
-independent per-stage checkers and was masked to the injected class: it is never told
-what was injected. It localized \SRFaultLocalized{} faults to the mutated stage, with
-zero false attributions on clean artifacts \rid{G11}. This is evaluator-masked
-artifact-level validation; it is not a blind study of the human protocol.
+independent per-stage checkers and was masked to the injected class. It localized
+\SRFaultLocalized{} faults to the mutated stage, with zero false attributions on clean
+artifacts \rid{G11}: an internal-consistency check, as \cref{sec:limitations}
+details.
 
 \begin{figure*}[t]
   \centering
@@ -175,9 +177,9 @@ artifact-level validation; it is not a blind study of the human protocol.
   \caption{Per-arm reachability: each arm reports its own declared path (there is no
   shared mixed ladder) and counts are questions surviving each stage
   \rid{G03, G04, G05, G08}. The stored-human arm is \texttt{identity\_oracle}, a bound,
-  not performance \rid{F35}. No additional loss was measured at the serialized-edge
-  stage relative to recomputation under the same convention; identity grounding loses
-  more than every other transition combined \rid{F40, F45, F50}.}
+  not performance \rid{F35}. No additional serialized-edge loss was measured relative
+  to recomputation under the same convention; the anchor-grounding transition on the
+  grounded arm loses more than every other transition combined \rid{F40, F45, F50}.}
   \label{fig:reach}
 \end{figure*}
 
@@ -202,11 +204,11 @@ examined for months. For a pilot on a capture unused during development, the gat
 scoring and the model-facing protocol (view selection, prompt, schema and two gates)
 were frozen before any model run. Questions came from a mechanical generator (anchors
 by two-of-three agreement among independent enumerations, slots by fixed template) that
-was amended twice on question-text defects before scoring: run 1's eight questions came
-back with four marked ambiguous and was voided; \textbf{the blinded model never ran in
-run 1}, so nothing scored was selected on an outcome, and both amendments addressed
-defects visible in the questions alone. Run 2 was authored and scored once at $n = 10$
-\rid{F84}. The full amendment chronology is in the supplement.
+was amended twice on question-text defects before scoring (full chronology in the
+supplement): run 1's eight questions came back with four marked ambiguous and was
+voided; \textbf{the blinded model never ran in run 1}, so nothing scored was selected
+on an outcome, and both amendments addressed defects visible in the questions alone.
+Run 2 was authored and scored once at $n = 10$ \rid{F84}.
 
 Scored once: 5/10 correct \rid{F76}, \textbf{0/10 wrong} \rid{F77}, 5/10 unanswered
 \rid{F78}, accuracy 1.000 over the 5 answered \rid{F85}, and all three cross-view items
@@ -216,7 +218,7 @@ transfer claim is made \rid{F88}.
 
 The shape of the failure is the result: not accuracy but coverage, and because exact
 accuracy counts an abstention as a non-correct item, a perfectly calibrated
-abstainer fails both gates on one behaviour. The model declined precisely the category
+abstainer fails both gates on one behaviour; the model declined precisely the category
 that motivates the work. We
 resist the phrase ``calibration transferred'': on the development rooms the same arm was
 wrong on 2 of 10 \rid{F51} at 0.90 coverage \rid{F53} and its two-view sufficiency gate
@@ -243,8 +245,8 @@ splits by the per-question record, never by the category label alone.
 \paragraph{Aggregates mask.}
 Pooled, the same scorecards would read \SRReplicaPooled{} ``correct'', a number
 dominated by the \SRReplicaTrueEmpty{} true-empty items, on which being correct means
-returning nothing, while masking the error rate on the answered side. The pooled number
-would mislead, and the evaluator refuses to emit it.
+returning nothing, while masking the error rate on the answered side; the evaluator
+refuses to emit it.
 
 \paragraph{Scope.}
 The Replica arms consume oracle geometry and oracle identity. This demonstrates schema

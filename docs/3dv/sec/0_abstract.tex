@@ -5,23 +5,23 @@ deployable claims. We introduce StageReach3D, a scope-aware evaluator that
 declares each evaluated arm's route through a fixed stage DAG, derives
 reachability from gating dependencies, reports reached, pass, fail, and
 unknown separately, and prevents deployable traces from consuming oracle-fed
-stages. Evaluator-masked fault injection localizes \SRFaultLocalized{}
+answer-path stages. Evaluator-masked fault injection localizes \SRFaultLocalized{}
 controlled faults spanning \SRFaultClasses{} fault classes and
 \SRFaultRelationTypes{} relation types to the mutated stage. On an
-ARKitScenes handheld RGB-D development slice, the dominant measured loss is
-identity grounding: the same stored relations answer 7 of 10 scored
-questions with human-supplied identity and 0 of 10 with the pipeline's
-labels. Stored-edge replay agrees with recomputation on all 12 authored
-items under the shared NEAR convention, establishing serialization
-consistency but not independent semantic correctness. An oracle-free
-grounding bridge recovers 2 of 10 answers and fails all predeclared gates.
-Using one fixed, single-pass direct-RGB comparator (Claude Opus 5),
-performance is 7 of 10 on the development rooms but 5 of 10, with zero
-wrong answers and five abstentions, on a blinded one-scene pilot. Both
-transfer gates fail, so we make no cross-room claim. On Replica
-multi-relation QA, the evaluator's schema and outcome-aware reporting
-transfer across four scorecards while preventing true-empty items from
-masking errors on answer-expected items. StageReach3D turns a pooled score
-into inspectable, scope-bounded failure attribution; all empirical findings
-remain instance-bound.
+ARKitScenes handheld RGB-D slice, a paired substitution implicates identity
+access: the same stored relations answer 7 of 10 scored questions with
+human-supplied identity and 0 of 10 with the pipeline's labels; the
+delivered-label arm's entity naming, question-to-label matching and referent
+grounding are not separated, so the loss is not localized among them.
+Stored-edge replay agrees with recomputation on all 12 authored items under
+the shared NEAR convention, a serialization-consistency result only. An
+oracle-free grounding bridge recovers 2 of 10 and fails all predeclared
+gates; a single-pass direct-RGB comparator is the strongest deployable arm on the
+development rooms yet fails both gates on a blinded one-scene pilot, so no transfer
+claim is made. The evaluator is intended for any staged 3D-QA
+pipeline; its validation is narrower: one fully observable pipeline, a fault
+battery whose injectors and checkers share the evaluator's ontology, and a
+Replica re-scoring demonstrating outcome-schema compatibility only.
+StageReach3D turns a pooled score into inspectable, scope-bounded failure
+attribution; all findings remain instance-bound.
 \end{abstract}

@@ -4,7 +4,7 @@
 Terminology, used consistently throughout: an \emph{arm} is an evaluated system
 configuration; a \emph{path} is an arm's route through the evaluator's stage DAG; the
 \emph{key} is the human-authored expected-answer record a question is scored against; a
-\emph{gate} is a predeclared numeric threshold committed before the corresponding score
+\emph{gate} is a numeric threshold committed before the corresponding score
 exists; \emph{delivered} denotes the pipeline's own output partition, produced without
 oracle input; the \emph{bridge} is the oracle-free grounding module binding question
 anchors to delivered instances. Bracketed codes such as \rid{F25} index rows of the
@@ -20,8 +20,8 @@ oracle-free, but the \textbf{denominator is oracle-selected}, a component result
 only); \texttt{delivered} (the pipeline's own output, scored against a key); and
 \texttt{identity\_oracle} (consumes human-supplied identity: a \textbf{bound}, never
 system performance). The remaining three (\texttt{proposal\_ceiling},
-\texttt{definition-change} and \texttt{bug-diagnostic}) are defined in the
-supplement, along with the full row counts.
+\texttt{definition-change}, \texttt{bug-diagnostic}) are defined in the supplement,
+with the full row counts.
 
 Answer production and grading are separate functions: no component that produces an
 answer may read an expected value, and a syntax-tree test fails the build if a deployable
@@ -29,12 +29,14 @@ answer function so much as binds a key-shaped name.
 
 \subsection{The arms}
 
-Five arms answer the same questions. Four form a controlled identity substitution over
-the same stored relations, differing only in where object identity comes from: a
-geometry ceiling and a stored-edge replay, both consuming human identity; the delivered
-graph, using its own learned labels; and a grounded graph, using an oracle-free bridge.
-The fifth, direct multiview RGB, is an external comparator on a different path: it uses
-no graph at all.
+Five arms answer the same questions. Three form a controlled identity substitution over
+the same stored edges, differing only in where object identity comes from: a stored-edge
+replay, consuming human identity; the delivered graph, using its own learned labels; and
+a grounded graph, using an oracle-free bridge. A geometry ceiling recomputes geometry
+rather than reading stored edges; it also consumes human identity and enters separately,
+as a serialization control against the replay, not as a fourth substitution row. The
+fifth, direct multiview RGB, is an external comparator on a different path: it uses no
+graph at all.
 \Cref{tab:paths} shows which pipeline stages each arm relies on; the evaluation-ladder
 overview figure is in the supplement.
 
@@ -89,57 +91,43 @@ for stage in path(arm).stages:
         continue
     s = checker[stage](artifacts)
     record(stage, s)   # pass|fail|unknown|...
-attribution = first FAIL on a gating stage
-survival: over gating dependencies only
-report reached/pass/fail/unknown separately
 \end{verbatim}
   \vspace{-0.5em}
   \caption{The evaluator core: first-fail attribution over declared gating
-  dependencies. Audit stages stay visible but never reduce downstream reachability;
-  \texttt{unknown} is reported as unmeasured, never attributed, and never counted as
-  pass.}
+  dependencies. Audit stages stay visible but never reduce downstream reachability.}
   \label{fig:algo}
 \end{figure}
 
-Every scored question emits a trace, committed as an artifact. The committed
-trace for Fig.~\ref{fig:qualitative}'s question on the grounded arm (schema
-header, scene id, provenance strings and raw category elided):
-{\scriptsize
-\begin{verbatim}
-{"question_id": "q25_bin_basket_near_desk",
- "arm": "grounded_delivered_graph",
- "path_id": "graph_deployable_grounded",
- "scope": "deployable", "expected_outcome": "answer",
- "stages": [
-  {"stage":"key_eligibility",       "status":"pass"},
-  {"stage":"object_delivery",       "status":"pass"},
-  {"stage":"relation_applicability","status":"pass"},
-  {"stage":"relation_correctness",  "status":"unknown"},
-  {"stage":"serialization_consistency","status":"pass"},
-  {"stage":"referent_grounding",    "status":"fail"},
-  {"stage":"answer_generation","status":"not_reached"}],
- "final_outcome": {"result": "abstain"}}
-\end{verbatim}}
+Every scored question emits a trace, committed as an artifact; the supplement
+reproduces the committed trace for Fig.~\ref{fig:qualitative}'s question on the
+grounded arm.
 
 The evaluator's invariants are tests, and a violation raises rather than warns:
 (i) \texttt{unknown} never counts as pass in survival;
 (ii) a deployable-scope trace may not pass-consume any oracle-fed answer-path stage;
 (iii) no silent bypass: any reached status downstream of a fail on a depended-on
-stage is an error, and \texttt{not\_applicable} is legal only on declared bypasses;
+stage is an error;
 (iv) no pooled accuracy: metrics are keyed by (expected outcome, result), positives
 are never pooled with true-empties, and no single ``accuracy'' is exposed;
 (v) under a non-exhaustive key the evaluator refuses to emit precision, recall or
 true-negative metrics;
 (vi) definition-change results cannot be pooled with frozen-track results.
 
+One boundary is stated rather than implied: scope enforcement is schema-level. The
+evaluator verifies each trace's declared path and per-stage statuses against these
+invariants; it does not verify the data lineage behind an adapter's declarations, so a
+misdeclared adapter could route oracle information through a stage declared oracle-free
+without tripping any invariant. The guarantee holds under trusted, correctly-declared
+adapters; it is not a noninterference proof.
+
 \subsection{Predeclaration}
 
 Gates, stopping rules and interpretation limits are written and committed before the
 corresponding scores exist. Twice this caught a \emph{structurally unreachable} outcome
-before measurement; a predeclared clause that cannot fire is a broken instrument, not
-a null result: in the first relation experiment the routing structure made the accuracy
-clause unreachable, and it duly came in at exactly $0.0000$ \rid{F25} with the proceed
-decision \texttt{false} \rid{F27}. Blinded responses are generated in an isolated
+before measurement (a predeclared clause that cannot fire is a broken instrument, not
+a null result): in the first relation experiment the routing structure made the accuracy
+clause unreachable, and it duly came in at exactly $0.0000$ \rid{F25}, proceed
+\texttt{false} \rid{F27}. Blinded responses are generated in an isolated
 context with \textbf{no access to the key} and hash-pinned before scoring; the
 protection is isolation plus the hash pin, not version-history ordering (commit order
 does not prove the pilot response predates its key). The full chronology and the pilot
@@ -193,7 +181,6 @@ is applied or swept anywhere in the bridge.}
 Claude Opus 5 (Anthropic), single pass, one response per packet, no retries and no
 self-consistency sampling. Frames are selected answer-free (18 temporal bins, highest
 information score per bin; the selector cannot see any question). The response schema is
-fixed (per item an identifier, an \texttt{outcome} of \texttt{answer} or
-\texttt{unknown}, the answer, a confidence in $[0,1]$, and evidence frames drawn only
-from the 18 supplied), and the response must pin the hash of the packet it answered.
+fixed (full schema in the supplement), and the response must pin the hash of the
+packet it answered.
 Declining is a first-class outcome, distinct from answering wrongly.

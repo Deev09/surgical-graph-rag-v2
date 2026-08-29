@@ -18,12 +18,12 @@ row counts are computed from the registry itself, not transcribed.
     \midrule
     \texttt{deployable} & end-to-end performance of a shippable path; no
       oracle, no human key in the answer path, denominator not
-      oracle-selected & 50\\
+      oracle-selected & 61\\
     \texttt{oracle\_free\_\allowbreak component\_\allowbreak eval} & the prediction path is
       oracle-free, but the \textbf{denominator is oracle-selected}; a
       component result only & 28\\
     \texttt{delivered} & the delivered pipeline's own output, scored against
-      a key & 77\\
+      a key & 66\\
     \texttt{proposal\_ceiling} & an oracle-evaluated upper bound on
       proposals & 26\\
     \texttt{identity\_oracle} & consumes human-supplied identity; a
@@ -44,3 +44,8 @@ Answer production and grading are separate functions throughout: no layer
 that produces an answer may read an expected value, and a syntax-tree test
 fails the build if a deployable answer function so much as binds a
 key-shaped name.
+
+One labelling difference is deliberate: registry rows F28/F30 label the
+geometry ceiling \texttt{identity\_oracle} while its StageReach trace records
+\texttt{proposal\_ceiling}; both are schema-valid for that path, and the
+table prints the registry label.

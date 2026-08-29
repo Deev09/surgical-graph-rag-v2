@@ -1,4 +1,5 @@
 \section{Limitations}
+\label{sec:limitations}
 
 \paragraph{Scale.}
 Four ARKitScenes rooms (three examined during development, one first scored in the
@@ -27,7 +28,11 @@ performance; only the schema and outcome mapping transfer.
 \Cref{sec:transfer} is a one-scene pilot under a twice-amended generator; both gates
 failed. Every paired test in
 \cref{sec:results} is instance-level; a scene-level sign test cannot reach significance
-with three clusters (\cref{sec:component}).
+with three clusters (\cref{sec:component}). The fault battery's injectors and checkers
+share the evaluator's ontology, so its \SRFaultLocalized{} is internal-consistency
+validation only. Scope enforcement itself is schema-level: it verifies declared paths
+and statuses under trusted, correctly-declared adapters, and cannot detect a
+misdeclared adapter leaking oracle information (\cref{sec:evaluator}).
 
 \paragraph{An exploratory result is excluded from the claims.}
 A human-keyed support experiment on one ARKit scene (1 of 3 author-confirmed positives

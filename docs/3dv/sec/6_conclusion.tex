@@ -3,35 +3,31 @@
 A representation can hold information sufficient to answer questions that the deployable
 query paths we instantiated do not reach: the same stored relations answer 7 of 10 with
 human-supplied identity and 0 of 10 with the identity the system actually produces
-\rid{F35, F40}, while the serialized edges reproduce recomputed geometry on all 12
-tested items \rid{F63}. Identity grounding is the dominant measured loss on this
-\texttt{NEAR} slice; serialization added no measured loss relative to recomputation
-under the same convention, and semantic correctness of the stored relations was not
-independently established.
+\rid{F35, F40}. The measured loss on this \texttt{NEAR} slice implicates
+identity access, without localizing it further: entity naming, question-to-label
+matching and referent grounding are not separated for the delivered-label arm
+(serialization and semantic-correctness limits: \cref{sec:limitations}).
 
 The contributions, restated:
 \begin{enumerate}\itemsep2pt \parskip0pt
   \item \textbf{The tool.} StageReach3D: per-arm paths declared as data over a fixed
-  stage vocabulary, reachability derived from declared gating dependencies, reached,
-  pass, fail and unknown reported separately, scope enforced in code, and outcome-keyed
-  metrics that refuse pooled accuracy, demonstrated on ARKitScenes per-arm
-  reachability and on Replica schema and outcome transfer \rid{G09}.
+  stage vocabulary, reachability derived from declared gating, reached/pass/fail/unknown
+  reported separately, scope enforced in code, and outcome-keyed metrics that refuse
+  pooled accuracy \rid{G09}.
   \item \textbf{The controlled validation.} \SRFaultLocalized{} artifact-level injected
   faults, spanning \SRFaultClasses{} fault classes and \SRFaultRelationTypes{} relation
   types, localized to the mutated stage while the evaluator was masked to the injected
-  class, with zero false attributions on clean artifacts \rid{G11}.
+  class, with zero false attributions on clean artifacts \rid{G11}: an
+  internal-consistency check, as \cref{sec:limitations} details.
   \item \textbf{The findings.} Real RGB substantially improves the label stage on
   oracle-matched instances \rid{C01, C02, C03, C04}, a component evaluation on an
-  oracle-selected denominator, \textbf{not end-to-end or deployable performance}, with a
-  control that supports but does not prove the object-texture reading \rid{C17, C18}.
+  oracle-selected denominator, \textbf{not end-to-end or deployable performance}, with
+  a control supporting but not proving the object-texture reading \rid{C17, C18}.
   Stored relations hold answers under human-resolved identity that deployable grounding
   does not reach \rid{F35, F40, F45}. Direct RGB is the strongest measured path on the
   two development rooms \rid{F50, F53}, though wrong on 2 of 10 there \rid{F51},
   under one named model (claude-opus-5), one frozen pass; on the pilot room it answered
   5 of 10 with zero wrong answers \rid{F76, F77} and failed both predeclared gates
   \rid{F82, F83}, so no cross-room claim is made. Every number is
-  instance-bound; what transfers is the evaluator. Negative results stand as
-  measured.
+  instance-bound; what is designed to transfer is the evaluator.\label{endofmaintext}
 \end{enumerate}
-
-\label{endofmaintext}

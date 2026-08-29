@@ -1,6 +1,7 @@
 # 3DV 2027 submission build
 
-Anonymous review version. Deadline 2026-08-28 11:00 PDT, no extension.
+Anonymous review version. Paper deadline 2026-08-28 23:59 AoE
+(= 2026-08-29 06:59 CDT); supplementary 2026-09-02 11:00 PDT. No extension.
 Eight pages excluding references; reference pages do not count.
 
 ## Build

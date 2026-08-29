@@ -33,6 +33,26 @@ with sorted keys, with byte-compare support for staleness checking.
 \end{verbatim}
 \end{center}
 
+\paragraph{A concrete committed trace.} The main paper's Fig.~3 question
+(the basket--desk \texttt{NEAR} item) on the grounded arm, as committed
+(schema header, scene id, provenance strings and raw category elided):
+{\scriptsize
+\begin{verbatim}
+{"question_id": "q25_bin_basket_near_desk",
+ "arm": "grounded_delivered_graph",
+ "path_id": "graph_deployable_grounded",
+ "scope": "deployable", "expected_outcome": "answer",
+ "stages": [
+  {"stage":"key_eligibility",       "status":"pass"},
+  {"stage":"object_delivery",       "status":"pass"},
+  {"stage":"relation_applicability","status":"pass"},
+  {"stage":"relation_correctness",  "status":"unknown"},
+  {"stage":"serialization_consistency","status":"pass"},
+  {"stage":"referent_grounding",    "status":"fail"},
+  {"stage":"answer_generation","status":"not_reached"}],
+ "final_outcome": {"result": "abstain"}}
+\end{verbatim}}
+
 A stage status is one of \texttt{pass}, \texttt{fail}, \texttt{unknown},
 \texttt{not\_applicable}, \texttt{abstain}, \texttt{not\_reached}.
 \texttt{unknown} is never counted as \texttt{pass}, never attributed as a

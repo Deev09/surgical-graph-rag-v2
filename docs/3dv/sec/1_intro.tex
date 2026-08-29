@@ -1,17 +1,18 @@
 \section{Introduction}
 
-A 3D scene graph built from a room scan can, in principle, answer spatial questions about
-that room: it stores objects, and it stores relations between them. Whether it does so in
-practice is usually reported as one accuracy number, which conflates four things: did
-the pipeline recover the object, did it name it, did it extract the relation, and could a
-question reach any of it. A pooled number cannot say where a lost question went, and it
-quietly licenses claims that a component measurement is not entitled to make.
+A 3D scene graph built from a room scan can, in principle, answer spatial questions
+about that room. Whether it does in practice is usually reported as one accuracy
+number, which conflates four things: did the pipeline recover the object, did it name
+it, did it extract the relation, and could a question reach any of it. A pooled number
+cannot say where a lost question went, and quietly licenses claims a component
+measurement is not entitled to make.
 
 This paper treats the evaluation itself as the artifact. \textbf{StageReach3D} declares,
 for each evaluated \emph{arm}, a path through a DAG of pipeline stages; derives which
 stages a question can reach from declared gating dependencies; reports reached, pass,
 fail and unknown separately at every stage; and enforces scope in code rather than in
-prose: a trace scoped as deployable refuses to consume any oracle-fed stage, and
+prose: a trace scoped as deployable refuses to consume any oracle-fed answer-path
+stage, and
 unknown is never counted as pass (\cref{sec:method}).
 
 Applied to a real pipeline over handheld RGB-D captures, the evaluator returns a
@@ -23,8 +24,8 @@ object identity and 0 of 10 when the pipeline supplies it, while relation availa
 and serialization consistency are measurably clean on the tested items (semantic
 correctness of the stored relations was not independently established). And on a blinded
 one-scene pilot under a twice-amended generator (gates, scoring and the model-facing
-protocol frozen before any model run; question generation amended twice on question-text
-defects before scoring), direct multiview RGB answers 5 of 10 with zero wrong answers,
+protocol frozen before any model run; the generator amended twice on question-text
+defects), direct multiview RGB answers 5 of 10 with zero wrong answers,
 declines every non-co-visible item, and fails both predeclared gates.
 
 The contributions, in order:
@@ -36,7 +37,9 @@ The contributions, in order:
   \SRFaultLocalized{} controlled artifact-level injected faults, spanning
   \SRFaultClasses{} fault classes and \SRFaultRelationTypes{} relation types, each
   localized to the injected stage while the evaluator was masked to the injected class,
-  and none falsely attributed on clean artifacts.
+  and none falsely attributed on clean artifacts. Injectors and checkers share the
+  evaluator's ontology: internal-consistency validation, not evidence about natural
+  faults in unfamiliar pipelines.
   \item \textbf{The held-but-unreachable diagnosis, with an aggregate-masking
   demonstration.} On ARKitScenes, information the store demonstrably holds is reached by
   no deployable identity path we instantiated; on Replica multi-relation QA, outcome-keyed
@@ -44,8 +47,8 @@ The contributions, in order:
   read as competence.
 \end{enumerate}
 
-What transfers to other pipelines is the schema, the evaluator and the protocol:
+What is designed to transfer is the schema, the evaluator and the protocol:
 stage vocabulary, path declarations, gating and survival semantics, the masked
 fault-injection recipe. What does not transfer is any number: every count here is
-instance-bound: one pipeline, at most two rooms per experiment, one named model where
+instance-bound: one pipeline, at most four scenes per experiment, one named model where
 a model is involved, one frozen pass.

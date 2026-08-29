@@ -13,7 +13,8 @@ evaluation.
 
 Scope of the amendment, for every agent working tonight:
 
-- The 3DV 2027 submission (`docs/3dv/`, deadline 2026-08-28 11:00 PDT) is
+- The 3DV 2027 submission (`docs/3dv/`, paper deadline 2026-08-28 23:59 AoE
+  = 2026-08-29 06:59 CDT; supplementary 2026-09-02 11:00 PDT) is
   reframed around a reusable, schema-driven evaluator, **StageReach3D**
   (`eval/stagereach/`), validated by evaluator-masked artifact-level fault
   injection and demonstrated on the frozen ARKit relation challenge (per-arm

@@ -1,0 +1,578 @@
+{
+ "agreement_mask": {
+  "q25_bin_basket_near_desk": true,
+  "q25_bin_kitchenbin_near_basket": false,
+  "q25_bin_kitchenbin_near_counter": true,
+  "q25_cmp_coffee_table_sofa_vs_dining": true,
+  "q25_cmp_fan_desk_vs_counter": true,
+  "q25_cmp_rug_sofa_vs_counter": false,
+  "q25_set_near_sofa": true,
+  "q42_bin_bed_near_desk": false,
+  "q42_bin_desk_near_drawers": true,
+  "q42_cmp_picture_drawers_vs_bed": false,
+  "q42_cmp_radiator_window_vs_desk": false,
+  "q42_set_near_window": false
+ },
+ "arms": {
+  "blinded_rgb_vlm": {
+   "agreement_subset": {
+    "correct": 6,
+    "coverage": 1.0,
+    "items": {
+     "q25_bin_basket_near_desk": "correct",
+     "q25_bin_kitchenbin_near_counter": "correct",
+     "q25_cmp_coffee_table_sofa_vs_dining": "correct",
+     "q25_cmp_fan_desk_vs_counter": "correct",
+     "q25_set_near_sofa": "correct",
+     "q42_bin_desk_near_drawers": "correct"
+    },
+    "n_scored": 6,
+    "tally": {
+     "correct": 6,
+     "excluded_no_human_answer": 0,
+     "unanswered": 0,
+     "wrong": 0
+    }
+   },
+   "annotator2_key": {
+    "correct": 7,
+    "coverage": 1.0,
+    "items": {
+     "q25_bin_basket_near_desk": "correct",
+     "q25_bin_kitchenbin_near_basket": "excluded_no_human_answer",
+     "q25_bin_kitchenbin_near_counter": "correct",
+     "q25_cmp_coffee_table_sofa_vs_dining": "correct",
+     "q25_cmp_fan_desk_vs_counter": "correct",
+     "q25_cmp_rug_sofa_vs_counter": "correct",
+     "q25_set_near_sofa": "correct",
+     "q42_bin_bed_near_desk": "excluded_no_human_answer",
+     "q42_bin_desk_near_drawers": "correct",
+     "q42_cmp_picture_drawers_vs_bed": "excluded_no_human_answer",
+     "q42_cmp_radiator_window_vs_desk": "excluded_no_human_answer",
+     "q42_set_near_window": "wrong"
+    },
+    "n_scored": 8,
+    "tally": {
+     "correct": 7,
+     "excluded_no_human_answer": 4,
+     "unanswered": 0,
+     "wrong": 1
+    }
+   },
+   "deployable": true,
+   "original_key": {
+    "correct": 7,
+    "coverage": 0.9,
+    "items": {
+     "q25_bin_basket_near_desk": "correct",
+     "q25_bin_kitchenbin_near_basket": "correct",
+     "q25_bin_kitchenbin_near_counter": "correct",
+     "q25_cmp_coffee_table_sofa_vs_dining": "correct",
+     "q25_cmp_fan_desk_vs_counter": "correct",
+     "q25_cmp_rug_sofa_vs_counter": "excluded_no_human_answer",
+     "q25_set_near_sofa": "correct",
+     "q42_bin_bed_near_desk": "wrong",
+     "q42_bin_desk_near_drawers": "correct",
+     "q42_cmp_picture_drawers_vs_bed": "unanswered",
+     "q42_cmp_radiator_window_vs_desk": "excluded_no_human_answer",
+     "q42_set_near_window": "wrong"
+    },
+    "n_scored": 10,
+    "tally": {
+     "correct": 7,
+     "excluded_no_human_answer": 2,
+     "unanswered": 1,
+     "wrong": 2
+    }
+   }
+  },
+  "delivered_graph": {
+   "agreement_subset": {
+    "correct": 0,
+    "coverage": 0.0,
+    "items": {
+     "q25_bin_basket_near_desk": "unanswered",
+     "q25_bin_kitchenbin_near_counter": "unanswered",
+     "q25_cmp_coffee_table_sofa_vs_dining": "unanswered",
+     "q25_cmp_fan_desk_vs_counter": "unanswered",
+     "q25_set_near_sofa": "unanswered",
+     "q42_bin_desk_near_drawers": "unanswered"
+    },
+    "n_scored": 6,
+    "tally": {
+     "correct": 0,
+     "excluded_no_human_answer": 0,
+     "unanswered": 6,
+     "wrong": 0
+    }
+   },
+   "annotator2_key": {
+    "correct": 0,
+    "coverage": 0.0,
+    "items": {
+     "q25_bin_basket_near_desk": "unanswered",
+     "q25_bin_kitchenbin_near_basket": "excluded_no_human_answer",
+     "q25_bin_kitchenbin_near_counter": "unanswered",
+     "q25_cmp_coffee_table_sofa_vs_dining": "unanswered",
+     "q25_cmp_fan_desk_vs_counter": "unanswered",
+     "q25_cmp_rug_sofa_vs_counter": "unanswered",
+     "q25_set_near_sofa": "unanswered",
+     "q42_bin_bed_near_desk": "excluded_no_human_answer",
+     "q42_bin_desk_near_drawers": "unanswered",
+     "q42_cmp_picture_drawers_vs_bed": "excluded_no_human_answer",
+     "q42_cmp_radiator_window_vs_desk": "excluded_no_human_answer",
+     "q42_set_near_window": "unanswered"
+    },
+    "n_scored": 8,
+    "tally": {
+     "correct": 0,
+     "excluded_no_human_answer": 4,
+     "unanswered": 8,
+     "wrong": 0
+    }
+   },
+   "deployable": true,
+   "original_key": {
+    "correct": 0,
+    "coverage": 0.0,
+    "items": {
+     "q25_bin_basket_near_desk": "unanswered",
+     "q25_bin_kitchenbin_near_basket": "unanswered",
+     "q25_bin_kitchenbin_near_counter": "unanswered",
+     "q25_cmp_coffee_table_sofa_vs_dining": "unanswered",
+     "q25_cmp_fan_desk_vs_counter": "unanswered",
+     "q25_cmp_rug_sofa_vs_counter": "excluded_no_human_answer",
+     "q25_set_near_sofa": "unanswered",
+     "q42_bin_bed_near_desk": "unanswered",
+     "q42_bin_desk_near_drawers": "unanswered",
+     "q42_cmp_picture_drawers_vs_bed": "unanswered",
+     "q42_cmp_radiator_window_vs_desk": "excluded_no_human_answer",
+     "q42_set_near_window": "unanswered"
+    },
+    "n_scored": 10,
+    "tally": {
+     "correct": 0,
+     "excluded_no_human_answer": 2,
+     "unanswered": 10,
+     "wrong": 0
+    }
+   }
+  },
+  "evidence_aware_hybrid": {
+   "agreement_subset": {
+    "correct": 6,
+    "coverage": 1.0,
+    "items": {
+     "q25_bin_basket_near_desk": "correct",
+     "q25_bin_kitchenbin_near_counter": "correct",
+     "q25_cmp_coffee_table_sofa_vs_dining": "correct",
+     "q25_cmp_fan_desk_vs_counter": "correct",
+     "q25_set_near_sofa": "correct",
+     "q42_bin_desk_near_drawers": "correct"
+    },
+    "n_scored": 6,
+    "tally": {
+     "correct": 6,
+     "excluded_no_human_answer": 0,
+     "unanswered": 0,
+     "wrong": 0
+    }
+   },
+   "annotator2_key": {
+    "correct": 7,
+    "coverage": 1.0,
+    "items": {
+     "q25_bin_basket_near_desk": "correct",
+     "q25_bin_kitchenbin_near_basket": "excluded_no_human_answer",
+     "q25_bin_kitchenbin_near_counter": "correct",
+     "q25_cmp_coffee_table_sofa_vs_dining": "correct",
+     "q25_cmp_fan_desk_vs_counter": "correct",
+     "q25_cmp_rug_sofa_vs_counter": "correct",
+     "q25_set_near_sofa": "correct",
+     "q42_bin_bed_near_desk": "excluded_no_human_answer",
+     "q42_bin_desk_near_drawers": "correct",
+     "q42_cmp_picture_drawers_vs_bed": "excluded_no_human_answer",
+     "q42_cmp_radiator_window_vs_desk": "excluded_no_human_answer",
+     "q42_set_near_window": "wrong"
+    },
+    "n_scored": 8,
+    "tally": {
+     "correct": 7,
+     "excluded_no_human_answer": 4,
+     "unanswered": 0,
+     "wrong": 1
+    }
+   },
+   "deployable": true,
+   "original_key": {
+    "correct": 7,
+    "coverage": 0.9,
+    "items": {
+     "q25_bin_basket_near_desk": "correct",
+     "q25_bin_kitchenbin_near_basket": "correct",
+     "q25_bin_kitchenbin_near_counter": "correct",
+     "q25_cmp_coffee_table_sofa_vs_dining": "correct",
+     "q25_cmp_fan_desk_vs_counter": "correct",
+     "q25_cmp_rug_sofa_vs_counter": "excluded_no_human_answer",
+     "q25_set_near_sofa": "correct",
+     "q42_bin_bed_near_desk": "wrong",
+     "q42_bin_desk_near_drawers": "correct",
+     "q42_cmp_picture_drawers_vs_bed": "unanswered",
+     "q42_cmp_radiator_window_vs_desk": "excluded_no_human_answer",
+     "q42_set_near_window": "wrong"
+    },
+    "n_scored": 10,
+    "tally": {
+     "correct": 7,
+     "excluded_no_human_answer": 2,
+     "unanswered": 1,
+     "wrong": 2
+    }
+   }
+  },
+  "geometry_relation_ceiling": {
+   "agreement_subset": {
+    "correct": 5,
+    "coverage": 0.8333,
+    "items": {
+     "q25_bin_basket_near_desk": "correct",
+     "q25_bin_kitchenbin_near_counter": "correct",
+     "q25_cmp_coffee_table_sofa_vs_dining": "correct",
+     "q25_cmp_fan_desk_vs_counter": "correct",
+     "q25_set_near_sofa": "unanswered",
+     "q42_bin_desk_near_drawers": "correct"
+    },
+    "n_scored": 6,
+    "tally": {
+     "correct": 5,
+     "excluded_no_human_answer": 0,
+     "unanswered": 1,
+     "wrong": 0
+    }
+   },
+   "annotator2_key": {
+    "correct": 5,
+    "coverage": 0.625,
+    "items": {
+     "q25_bin_basket_near_desk": "correct",
+     "q25_bin_kitchenbin_near_basket": "excluded_no_human_answer",
+     "q25_bin_kitchenbin_near_counter": "correct",
+     "q25_cmp_coffee_table_sofa_vs_dining": "correct",
+     "q25_cmp_fan_desk_vs_counter": "correct",
+     "q25_cmp_rug_sofa_vs_counter": "unanswered",
+     "q25_set_near_sofa": "unanswered",
+     "q42_bin_bed_near_desk": "excluded_no_human_answer",
+     "q42_bin_desk_near_drawers": "correct",
+     "q42_cmp_picture_drawers_vs_bed": "excluded_no_human_answer",
+     "q42_cmp_radiator_window_vs_desk": "excluded_no_human_answer",
+     "q42_set_near_window": "unanswered"
+    },
+    "n_scored": 8,
+    "tally": {
+     "correct": 5,
+     "excluded_no_human_answer": 4,
+     "unanswered": 3,
+     "wrong": 0
+    }
+   },
+   "deployable": false,
+   "original_key": {
+    "correct": 7,
+    "coverage": 0.8,
+    "items": {
+     "q25_bin_basket_near_desk": "correct",
+     "q25_bin_kitchenbin_near_basket": "correct",
+     "q25_bin_kitchenbin_near_counter": "correct",
+     "q25_cmp_coffee_table_sofa_vs_dining": "correct",
+     "q25_cmp_fan_desk_vs_counter": "correct",
+     "q25_cmp_rug_sofa_vs_counter": "excluded_no_human_answer",
+     "q25_set_near_sofa": "unanswered",
+     "q42_bin_bed_near_desk": "wrong",
+     "q42_bin_desk_near_drawers": "correct",
+     "q42_cmp_picture_drawers_vs_bed": "correct",
+     "q42_cmp_radiator_window_vs_desk": "excluded_no_human_answer",
+     "q42_set_near_window": "unanswered"
+    },
+    "n_scored": 10,
+    "tally": {
+     "correct": 7,
+     "excluded_no_human_answer": 2,
+     "unanswered": 2,
+     "wrong": 1
+    }
+   }
+  },
+  "grounded_delivered_graph": {
+   "agreement_subset": {
+    "correct": 1,
+    "coverage": 0.1667,
+    "items": {
+     "q25_bin_basket_near_desk": "unanswered",
+     "q25_bin_kitchenbin_near_counter": "correct",
+     "q25_cmp_coffee_table_sofa_vs_dining": "unanswered",
+     "q25_cmp_fan_desk_vs_counter": "unanswered",
+     "q25_set_near_sofa": "unanswered",
+     "q42_bin_desk_near_drawers": "unanswered"
+    },
+    "n_scored": 6,
+    "tally": {
+     "correct": 1,
+     "excluded_no_human_answer": 0,
+     "unanswered": 5,
+     "wrong": 0
+    }
+   },
+   "annotator2_key": {
+    "correct": 1,
+    "coverage": 0.125,
+    "items": {
+     "q25_bin_basket_near_desk": "unanswered",
+     "q25_bin_kitchenbin_near_basket": "excluded_no_human_answer",
+     "q25_bin_kitchenbin_near_counter": "correct",
+     "q25_cmp_coffee_table_sofa_vs_dining": "unanswered",
+     "q25_cmp_fan_desk_vs_counter": "unanswered",
+     "q25_cmp_rug_sofa_vs_counter": "unanswered",
+     "q25_set_near_sofa": "unanswered",
+     "q42_bin_bed_near_desk": "excluded_no_human_answer",
+     "q42_bin_desk_near_drawers": "unanswered",
+     "q42_cmp_picture_drawers_vs_bed": "excluded_no_human_answer",
+     "q42_cmp_radiator_window_vs_desk": "excluded_no_human_answer",
+     "q42_set_near_window": "unanswered"
+    },
+    "n_scored": 8,
+    "tally": {
+     "correct": 1,
+     "excluded_no_human_answer": 4,
+     "unanswered": 7,
+     "wrong": 0
+    }
+   },
+   "deployable": true,
+   "original_key": {
+    "correct": 2,
+    "coverage": 0.2,
+    "items": {
+     "q25_bin_basket_near_desk": "unanswered",
+     "q25_bin_kitchenbin_near_basket": "correct",
+     "q25_bin_kitchenbin_near_counter": "correct",
+     "q25_cmp_coffee_table_sofa_vs_dining": "unanswered",
+     "q25_cmp_fan_desk_vs_counter": "unanswered",
+     "q25_cmp_rug_sofa_vs_counter": "excluded_no_human_answer",
+     "q25_set_near_sofa": "unanswered",
+     "q42_bin_bed_near_desk": "unanswered",
+     "q42_bin_desk_near_drawers": "unanswered",
+     "q42_cmp_picture_drawers_vs_bed": "unanswered",
+     "q42_cmp_radiator_window_vs_desk": "excluded_no_human_answer",
+     "q42_set_near_window": "unanswered"
+    },
+    "n_scored": 10,
+    "tally": {
+     "correct": 2,
+     "excluded_no_human_answer": 2,
+     "unanswered": 8,
+     "wrong": 0
+    }
+   }
+  },
+  "stored_graph_human_identity": {
+   "agreement_subset": {
+    "correct": 5,
+    "coverage": 0.8333,
+    "items": {
+     "q25_bin_basket_near_desk": "correct",
+     "q25_bin_kitchenbin_near_counter": "correct",
+     "q25_cmp_coffee_table_sofa_vs_dining": "correct",
+     "q25_cmp_fan_desk_vs_counter": "correct",
+     "q25_set_near_sofa": "unanswered",
+     "q42_bin_desk_near_drawers": "correct"
+    },
+    "n_scored": 6,
+    "tally": {
+     "correct": 5,
+     "excluded_no_human_answer": 0,
+     "unanswered": 1,
+     "wrong": 0
+    }
+   },
+   "annotator2_key": {
+    "correct": 5,
+    "coverage": 0.625,
+    "items": {
+     "q25_bin_basket_near_desk": "correct",
+     "q25_bin_kitchenbin_near_basket": "excluded_no_human_answer",
+     "q25_bin_kitchenbin_near_counter": "correct",
+     "q25_cmp_coffee_table_sofa_vs_dining": "correct",
+     "q25_cmp_fan_desk_vs_counter": "correct",
+     "q25_cmp_rug_sofa_vs_counter": "unanswered",
+     "q25_set_near_sofa": "unanswered",
+     "q42_bin_bed_near_desk": "excluded_no_human_answer",
+     "q42_bin_desk_near_drawers": "correct",
+     "q42_cmp_picture_drawers_vs_bed": "excluded_no_human_answer",
+     "q42_cmp_radiator_window_vs_desk": "excluded_no_human_answer",
+     "q42_set_near_window": "unanswered"
+    },
+    "n_scored": 8,
+    "tally": {
+     "correct": 5,
+     "excluded_no_human_answer": 4,
+     "unanswered": 3,
+     "wrong": 0
+    }
+   },
+   "deployable": false,
+   "original_key": {
+    "correct": 7,
+    "coverage": 0.8,
+    "items": {
+     "q25_bin_basket_near_desk": "correct",
+     "q25_bin_kitchenbin_near_basket": "correct",
+     "q25_bin_kitchenbin_near_counter": "correct",
+     "q25_cmp_coffee_table_sofa_vs_dining": "correct",
+     "q25_cmp_fan_desk_vs_counter": "correct",
+     "q25_cmp_rug_sofa_vs_counter": "excluded_no_human_answer",
+     "q25_set_near_sofa": "unanswered",
+     "q42_bin_bed_near_desk": "wrong",
+     "q42_bin_desk_near_drawers": "correct",
+     "q42_cmp_picture_drawers_vs_bed": "correct",
+     "q42_cmp_radiator_window_vs_desk": "excluded_no_human_answer",
+     "q42_set_near_window": "unanswered"
+    },
+    "n_scored": 10,
+    "tally": {
+     "correct": 7,
+     "excluded_no_human_answer": 2,
+     "unanswered": 2,
+     "wrong": 1
+    }
+   }
+  }
+ },
+ "handling_rule": "an item with no key answer is excluded from that key's denominator via the frozen scorer's excluded_no_human_answer branch, uniformly across arms; under the annotator-2 key a returned 'cannot determine' is an abstention (key answer None) and takes the same branch",
+ "inputs": {
+  "questions": "eval/questions/arkitscenes_relation_challenge_v1.json",
+  "report": "eval/results/project_census_v1/arkit_relation_challenge_report.json"
+ },
+ "keys": {
+  "agreement_subset": {
+   "definition": "items with final_answer_match true in the adjudicated agreement record",
+   "n_scored": 6,
+   "source": "eval/results/stagereach/annotator_agreement_v1.json"
+  },
+  "annotator2_key": {
+   "n_scored": 8,
+   "source": "eval/human_feedback/arkitscenes_relation_challenge_annotator2_returned.json",
+   "typed_key": [
+    {
+     "ambiguous": false,
+     "answer": true,
+     "evidence_views": null,
+     "id": "q25_bin_basket_near_desk",
+     "notes": null,
+     "returned_verbatim": "Yes"
+    },
+    {
+     "ambiguous": false,
+     "answer": null,
+     "evidence_views": null,
+     "id": "q25_bin_kitchenbin_near_basket",
+     "notes": "the tall stainless kitchen bin os barely visible and they are not in the same frame to determine",
+     "returned_verbatim": "cannot determine"
+    },
+    {
+     "ambiguous": false,
+     "answer": true,
+     "evidence_views": null,
+     "id": "q25_bin_kitchenbin_near_counter",
+     "notes": null,
+     "returned_verbatim": "yes"
+    },
+    {
+     "ambiguous": false,
+     "answer": "sofa",
+     "evidence_views": null,
+     "id": "q25_cmp_coffee_table_sofa_vs_dining",
+     "notes": null,
+     "returned_verbatim": "Sofa"
+    },
+    {
+     "ambiguous": false,
+     "answer": "long narrow desk",
+     "evidence_views": null,
+     "id": "q25_cmp_fan_desk_vs_counter",
+     "notes": null,
+     "returned_verbatim": "closer to the long narrow desk"
+    },
+    {
+     "ambiguous": false,
+     "answer": "sofa",
+     "evidence_views": null,
+     "id": "q25_cmp_rug_sofa_vs_counter",
+     "notes": null,
+     "returned_verbatim": "Closer to Sofa"
+    },
+    {
+     "ambiguous": false,
+     "answer": [
+      "coffee table",
+      "striped rug",
+      "white convector heater"
+     ],
+     "evidence_views": null,
+     "id": "q25_set_near_sofa",
+     "notes": null,
+     "returned_verbatim": "Coffee Table, striped rug, white heater"
+    },
+    {
+     "ambiguous": false,
+     "answer": null,
+     "evidence_views": null,
+     "id": "q42_bin_bed_near_desk",
+     "notes": "Don't see both on the same frame",
+     "returned_verbatim": "cannot determine"
+    },
+    {
+     "ambiguous": false,
+     "answer": true,
+     "evidence_views": null,
+     "id": "q42_bin_desk_near_drawers",
+     "notes": null,
+     "returned_verbatim": "Yes"
+    },
+    {
+     "ambiguous": false,
+     "answer": null,
+     "evidence_views": null,
+     "id": "q42_cmp_picture_drawers_vs_bed",
+     "notes": "Cannot see the framed picture",
+     "returned_verbatim": "cannot determine"
+    },
+    {
+     "ambiguous": false,
+     "answer": null,
+     "evidence_views": null,
+     "id": "q42_cmp_radiator_window_vs_desk",
+     "notes": "Doesn't have any frames with both objects in it to compare",
+     "returned_verbatim": "cannot determine"
+    },
+    {
+     "ambiguous": false,
+     "answer": [
+      "window",
+      "cream curtain"
+     ],
+     "evidence_views": null,
+     "id": "q42_set_near_window",
+     "notes": null,
+     "returned_verbatim": "window, cream curtain"
+    }
+   ]
+  },
+  "original_key": {
+   "n_scored": 10,
+   "source": "eval/human_feedback/arkitscenes_relation_challenge_key_v1.json"
+  }
+ },
+ "purpose": "evaluation-key reproducibility evidence; re-scores frozen arm answers under alternative keys; retunes nothing",
+ "schema": "arkitscenes_annotation_sensitivity",
+ "schema_version": 1
+}

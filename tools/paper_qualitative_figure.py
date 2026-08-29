@@ -103,9 +103,6 @@ def build_html() -> str:
     basket, desk = region_crop(html, BASKET), region_crop(html, DESK)
     f = facts()
 
-    basket_anchor = next(a for k, a in f["anchors"].items() if "basket" in k)
-    desk_anchor = next(a for k, a in f["anchors"].items() if "long narrow desk" in k)
-
     rows = []
     for label, row, is_oracle in f["arms"]:
         outcome = row["outcome"]
@@ -113,11 +110,12 @@ def build_html() -> str:
         mark = "correct" if outcome == "correct" else (
             "wrong" if outcome == "wrong" else "could not answer")
         why = row.get("reason") or ""
-        badge = (f'<span class="oracle">NOT DEPLOYABLE</span>' if is_oracle else "")
+        badge = (' <span class="oracle">NOT DEPLOYABLE</span>' if is_oracle else "")
+        reason = f'<span class="why"> &mdash; {why}</span>' if why else ""
         rows.append(
-            f'<tr><td class="arm">{label} {badge}</td>'
-            f'<td class="out" style="color:{colour}">{mark}</td>'
-            f'<td class="why">{why}</td></tr>')
+            f'<div class="orow"><span class="arm">{label}</span>{badge}'
+            f'<span class="sep"> &mdash; </span>'
+            f'<span class="out" style="color:{colour}">{mark}</span>{reason}</div>')
 
     frame_imgs = "".join(f'<img class="frame" src="{s}">' for s in frames)
     dist = f["stored_distance_m"]
@@ -125,49 +123,57 @@ def build_html() -> str:
 
     return f"""<!doctype html><meta charset="utf-8">
 <style>
-  @page {{ size: 1240px 402px; margin: 0; }}
+  @page {{ size: 1150px 348px; margin: 0; }}
   * {{ box-sizing: border-box; }}
   body {{ margin: 0; font: 20px -apple-system, "Helvetica Neue", Arial, sans-serif;
-          color: {INK}; background: #fff; width: 1240px; height: 402px; padding: 14px 16px; }}
-  .cols {{ display: flex; gap: 18px; align-items: flex-start; }}
-  .col {{ flex: 0 0 auto; }}
-  .lbl {{ font-size: 18px; color: {FAINT}; margin: 0 0 5px;
-          letter-spacing: .04em; text-transform: uppercase; }}
-  img.frame {{ height: 148px; border: 1px solid #d3d9e0; border-radius: 3px; margin-right: 7px; }}
-  img.crop {{ height: 124px; border: 2px solid {ACCENT}; border-radius: 3px; }}
-  .cap {{ font-size: 17px; color: {MUTED}; margin-top: 4px; max-width: 250px; line-height: 1.3; }}
-  .uid {{ font-family: ui-monospace, Menlo, monospace; font-size: 17px; color: {INK}; }}
-  .edge {{ margin: 9px 0 0; font-size: 19px; }}
-  .edge b {{ color: {ACCENT}; }}
-  table {{ border-collapse: collapse; margin-top: 6px; width: 100%; }}
-  td {{ padding: 4px 7px; font-size: 18px; vertical-align: top;
-        border-top: 1px solid #e8ecf0; }}
-  td.arm {{ width: 400px; }} td.out {{ width: 175px; font-weight: 700; }}
-  td.why {{ color: {FAINT}; font-size: 16px; }}
-  .oracle {{ color: {ORACLE}; font-weight: 700; font-size: 14px;
+          color: {INK}; background: #fff; width: 1150px; height: 348px; padding: 12px 16px; }}
+  .cols {{ display: flex; gap: 20px; align-items: flex-start; }}
+  .lbl {{ font-size: 18px; color: {FAINT}; margin: 0 0 6px;
+          letter-spacing: .04em; text-transform: uppercase; line-height: 1.25; }}
+  .framecol {{ flex: 0 0 200px; }}
+  img.frame {{ height: 118px; border: 1px solid #d3d9e0; border-radius: 3px;
+               display: block; }}
+  img.frame + img.frame {{ margin-top: 6px; }}
+  .cropcol {{ flex: 0 0 286px; }}
+  img.crop {{ height: 132px; border: 2px solid {ACCENT}; border-radius: 3px; }}
+  .cap {{ font-size: 18px; color: {MUTED}; margin-top: 5px; line-height: 1.32; }}
+  .uid {{ font-family: ui-monospace, Menlo, monospace; font-size: 18px; color: {INK}; }}
+  .outcol {{ flex: 1 1 auto; min-width: 0; }}
+  .orow {{ font-size: 20px; line-height: 1.32; padding: 5px 0;
+           border-top: 1px solid #e8ecf0; }}
+  .orow:first-of-type {{ border-top: 0; padding-top: 0; }}
+  .out {{ font-weight: 700; }}
+  .why {{ color: {MUTED}; font-size: 18px; }}
+  .oracle {{ color: {ORACLE}; font-weight: 700; font-size: 16px;
              letter-spacing: .04em; white-space: nowrap; }}
+  .edge {{ margin: 10px 0 0; font-size: 20px; line-height: 1.32;
+           border-top: 1px solid #e8ecf0; padding-top: 8px; }}
+  .edge b {{ color: {ACCENT}; }}
 </style>
 <div class="cols">
-  <div class="col">
+  <div class="framecol">
     <p class="lbl">the capture: both referents visible</p>
     {frame_imgs}
   </div>
-  <div class="col">
+  <div class="cropcol">
     <p class="lbl">the two referents, as delivered</p>
     <div style="display:flex; gap:12px">
-      <div><img class="crop" src="{basket}">
-        <div class="cap"><span class="uid">{BASKET}</span>: the basket.<br>
-        Bridge resolved it: <b style="color:{OK}">correct</b>.</div></div>
-      <div><img class="crop" src="{desk}">
-        <div class="cap"><span class="uid">{DESK}</span>: the desk.<br>
-        Bridge <b style="color:{BAD}">abstained</b>: no entity won two view slots.</div></div>
+      <img class="crop" src="{basket}">
+      <img class="crop" src="{desk}">
     </div>
+    <div class="cap"><span class="uid">{BASKET}</span> (left): the basket. Bridge
+      resolved it: <b style="color:{OK}">correct</b>.</div>
+    <div class="cap"><span class="uid">{DESK}</span> (right): the desk. Bridge
+      <b style="color:{BAD}">abstained</b>: no entity won two view slots.</div>
+  </div>
+  <div class="outcol">
+    <p class="lbl">one question, per-arm outcomes</p>
+    {''.join(rows)}
     <p class="edge">Stored edge <span class="uid">{BASKET}</span>&nbsp;&harr;&nbsp;<span
       class="uid">{DESK}</span>: surface distance <b>{dist} m</b> &lt; {thr} m: the
       serialized <b>NEAR</b> edge matches recomputed geometry under the same convention.</p>
   </div>
 </div>
-<table>{''.join(rows)}</table>
 """
 
 

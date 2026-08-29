@@ -3,11 +3,19 @@
 
 Populates runs/submission_package/ (gitignored) from:
   1. a fixed allowlist of tracked evidence files,
-  2. freshly built docs/3dv/out/main.pdf and out/supp.pdf,
+  2. freshly built docs/3dv/out/supp.pdf (NEVER main.pdf: 3DV prohibits
+     supplements that contain an updated/corrected submission PDF),
   3. sanitized frame-ID manifests for the frozen blinded packets
      (frame ids + sha256 pins + prompt text; NO ARKitScenes imagery),
-then writes a sha256 manifest of everything staged, runs an anonymity scan
-over every staged TEXT file, and zips the staging directory.
+then writes a top-level README with the single reproduction command, a
+sha256 manifest of everything staged, runs an anonymity scan over every
+staged TEXT file, and zips the staging directory.
+
+Layout contract: everything the packaged runner reads is staged under
+code/ at its repo-relative path, because code/tools/stagereach_eval.py
+resolves REPO = code/. From a clean unzip this must succeed:
+
+    python3 code/tools/stagereach_eval.py --track all --check
 
 Sanitization applied to STAGED COPIES ONLY (repo files are never touched):
   - registry CSV: source_commit_or_tag values -> "withheld-for-review"
@@ -16,8 +24,8 @@ Sanitization applied to STAGED COPIES ONLY (repo files are never touched):
   - claim-audit CSV: the values_at_<hash> column is renamed values_at_freeze
   - evidence-pack MANIFEST: producing_commit values -> "withheld-for-review"
 
-The scan covers staged text files. The two PDFs are NOT text-scanned here;
-they must be read page-by-page in the final manual sweep.
+The scan covers staged text files. supp.pdf is NOT text-scanned here;
+it must be read page-by-page in the final manual sweep.
 
     tools/paper_submission_package.py [--no-zip]
 """
@@ -48,13 +56,77 @@ ALLOWLIST = [
     "docs/paper_reachability_ledger.csv",
     "eval/results/paper_statistics.json",
 ]
-OPTIONAL = [
+# Data the packaged runner needs, staged under code/ at repo-relative
+# paths so code/tools/stagereach_eval.py --track all --check resolves them
+# from a clean unzip. REQUIRED: missing files fail the build.
+RUNNER_DATA = [
     "eval/results/stagereach/arkit_stagereach_v1.json",
     "eval/results/stagereach/replica_stagereach_v1.json",
     "eval/results/stagereach/fault_battery_v1.json",
-    "eval/results/stagereach/annotator_agreement_v1.json",
     "eval/fixtures/stagereach/fault_fixture_v1.json",
+    "eval/questions/phase8/replica_office_0_qa.json",
+    "eval/questions/phase8/replica_room_0_qa.json",
+    "eval/questions/phase8/replica_room_1_qa.json",
+    "eval/questions/phase8/replica_room_2_qa.json",
 ]
+# The census evidence pack is staged INSIDE code/ at its repo-relative
+# path -- the arkit and replica adapters read it from there.
+PACK_STAGE_REL = "code/eval/results/project_census_v1"
+
+# Top-level README. EXACTLY ONE reproduction command; it must keep working
+# from a clean unzip (verified against the staged layout by this build's
+# smoke test). Scanned by the anonymity scan like every staged text file.
+README = """\
+# Supplementary Material -- 3DV 2027 Submission #468 (StageReach3D)
+
+## Contents
+
+- `supp.pdf` -- the supplementary document.
+- `code/` -- the frozen StageReach3D evaluator (schema, evaluator,
+  metrics, fault injection, dataset adapters), its unit tests, the
+  command-line runner, and every input the runner reads: the packed
+  evidence reports under `code/eval/results/project_census_v1/`, the
+  committed result artifacts under `code/eval/results/stagereach/`, the
+  fault fixture under `code/eval/fixtures/stagereach/`, and the Replica
+  QA keys under `code/eval/questions/phase8/`.
+- `annotation/` -- second-annotator returns, the agreement artifact, and
+  the key-sensitivity artifact `annotation_sensitivity_v1.json` (recomputed
+  by `code/tools/annotation_sensitivity.py`; backs the supplement's
+  key-sensitivity table). Evaluation-key reproducibility evidence; used to
+  retune nothing.
+- `packets/` -- frame-ID manifests (frame id + sha256 against the source
+  dataset) and prompts for the frozen blinded packets. No dataset
+  imagery is redistributed.
+- `project_results_registry.csv`, `paper_claim_audit.csv`,
+  `paper_reachability_ledger.csv`, `paper_statistics.json` -- the
+  results registry and claim audit backing the paper's numbers.
+- `MANIFEST.json` -- sha256 of every other file in this package.
+
+For anonymity, commit identifiers are replaced with
+"withheld-for-review" and absolute paths with "<home>" / "<repo>" in the
+packaged copies; camera-ready restores them.
+
+## Reproduction
+
+Setup: any Python 3.9+ interpreter; the code uses only the Python
+standard library (nothing to install).
+
+From the directory containing this README, run:
+
+    python3 code/tools/stagereach_eval.py --track all --check
+
+Expected output: the runner recomputes, from the packed evidence only,
+(a) the per-arm ARKit relation-challenge StageReach traces and survival
+ladders, (b) the Replica Phase-8 schema/outcome transfer, (c) the fault
+fixture, and (d) the 24/24 evaluator-masked fault-injection battery,
+then byte-compares each against the committed artifacts shipped under
+`code/eval/`. On success it prints the single line
+
+    stagereach artifacts are current
+
+and exits with status 0. Any divergence prints the stale artifact paths
+and exits nonzero.
+"""
 # The 24/24 claim's full evidence chain: evaluator code, CLI, and the test
 # that asserts the battery. Staged under code/ with paths flattened.
 CODE_FILES = [
@@ -68,6 +140,7 @@ CODE_FILES = [
     "eval/stagereach/adapters/replica.py",
     "tools/stagereach_eval.py",
     "tools/stagereach_numbers.py",
+    "tools/annotation_sensitivity.py",
     "tests/eval/test_stagereach_schema.py",
     "tests/eval/test_stagereach_evaluator.py",
     "tests/eval/test_stagereach_faults.py",
@@ -92,7 +165,7 @@ BANNED = [
 ]
 # Causal overclaims the paper retracted; must never appear in CURATED staged
 # files (registry, claim audit, tex-derived text, code). Historical run
-# reports in evidence_pack/ are byte-derived from what was scored and are
+# reports in the staged census pack are byte-derived from what was scored and are
 # never rewritten; their run-time interpretive strings are superseded by the
 # paper and the registry, which NOTE_historical_reports.txt states.
 RETRACTED = [
@@ -209,7 +282,7 @@ def scan(stage: Path) -> list[str]:
             continue
         pats = list(BANNED)
         rel = f.relative_to(stage)
-        if rel.parts[0] != "evidence_pack":
+        if not str(rel).startswith(PACK_STAGE_REL + "/"):
             pats += RETRACTED
         if f.suffix in PROSE_SUFFIXES:
             pats.append((COMMIT_HASH, "commit-like hash"))
@@ -221,13 +294,13 @@ def scan(stage: Path) -> list[str]:
     reg = (stage / "project_results_registry.csv").read_text()
     if re.search(r'"[0-9a-f]{7,40}"\s*(,"[^"]*"){0,2}\n', reg) and WITHHELD not in reg:
         problems.append("registry: source_commit_or_tag not sanitized")
-    packman = stage / "evidence_pack" / "MANIFEST.json"
+    packman = stage / PACK_STAGE_REL / "MANIFEST.json"
     if packman.is_file():
         doc = packman.read_text()
         for m in re.finditer(r'"producing_commit":\s*"([^"]+)"', doc):
             if re.fullmatch(r"[0-9a-f]{7,40}", m.group(1)):
-                problems.append(f"evidence_pack/MANIFEST.json: unsanitized "
-                                f"producing_commit {m.group(1)}")
+                problems.append(f"{PACK_STAGE_REL}/MANIFEST.json: "
+                                f"unsanitized producing_commit {m.group(1)}")
     return problems
 
 
@@ -252,14 +325,16 @@ def main(argv=None) -> int:
             missing.append(rel)
             continue
         shutil.copy2(src, STAGE / Path(rel).name)
-    for rel in OPTIONAL:
+    for rel in RUNNER_DATA:
         src = REPO / rel
-        if src.is_file():
-            shutil.copy2(src, STAGE / Path(rel).name)
-        else:
-            print(f"  (optional, absent: {rel})")
-    stage_pack(STAGE / "evidence_pack")
-    (STAGE / "evidence_pack" / "NOTE_historical_reports.txt").write_text(
+        if not src.is_file():
+            missing.append(rel)
+            continue
+        dst = STAGE / "code" / rel
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        dst.write_text(scrub_paths(src.read_text()))
+    stage_pack(STAGE / PACK_STAGE_REL)
+    (STAGE / PACK_STAGE_REL / "NOTE_historical_reports.txt").write_text(
         "The reports in this directory are byte-derived, sanitized copies of\n"
         "run artifacts exactly as they existed when the results were scored;\n"
         "they are never regenerated or edited (MANIFEST.json records the\n"
@@ -279,6 +354,7 @@ def main(argv=None) -> int:
         "eval/human_feedback/arkitscenes_relation_challenge_annotator2_returned.json",
         "eval/human_feedback/arkitscenes_relation_challenge_annotator2_adjudications.json",
         "eval/results/stagereach/annotator_agreement_v1.json",
+        "eval/results/stagereach/annotation_sensitivity_v1.json",
     ]:
         src = REPO / rel
         if src.is_file():
@@ -295,12 +371,15 @@ def main(argv=None) -> int:
         dst.parent.mkdir(parents=True, exist_ok=True)
         dst.write_text(scrub_paths(src.read_text()))
 
-    for pdf in ("main.pdf", "supp.pdf"):
-        src = REPO / "docs" / "3dv" / "out" / pdf
-        if src.is_file():
-            shutil.copy2(src, STAGE / pdf)
-        else:
-            missing.append(f"docs/3dv/out/{pdf}")
+    # ONLY supp.pdf. Never stage main.pdf: 3DV prohibits supplements that
+    # contain an updated/corrected copy of the submission PDF.
+    src = REPO / "docs" / "3dv" / "out" / "supp.pdf"
+    if src.is_file():
+        shutil.copy2(src, STAGE / "supp.pdf")
+    else:
+        missing.append("docs/3dv/out/supp.pdf")
+
+    (STAGE / "README.md").write_text(README)
 
     manifest = {
         "schema": "submission_package_manifest",

@@ -46,6 +46,64 @@ received ``cannot determine''. Ambiguity-flag agreement is
 exactly the owner-excluded items. This is evidence of partial, not
 complete, key reproducibility.
 
+To quantify how much the headline comparison depends on whose key scores it,
+we re-score the arms' frozen answers -- unchanged, from the committed
+per-arm traces -- under three keys (\cref{tab:key-sensitivity}): the original
+adjudicated key ($n{=}10$), the second annotator's key exactly as returned,
+and the agreement-only subset of items on which the two annotators returned
+the same answer ($n{=}6$). Under the returned key the annotator's four
+``cannot determine'' items are abstentions carrying no key answer; the frozen
+scorer excludes them from that key's denominator ($n{=}8$) through the same
+branch that already excludes the key author's two ambiguous items under the
+original key. The rule is applied uniformly to every arm, and no new scoring
+branch was written for this analysis. The ordering that motivates the paper
+survives all three keys: the delivered-label graph scores 0 under every key,
+the grounded graph 1--2, the two human-identity arms (the geometry control
+and the stored-edge replay) retain most of their correct answers (5--7), and
+the 7-versus-0 separation between stored edges under human identity and the
+delivered graph persists as 5-versus-0 under both alternative keys. The keys are not interchangeable in every
+respect, and we flag the one movement: under the returned key and the
+agreement subset, direct RGB moves strictly ahead of the two human-identity
+arms (7/8 and 6/6 against 5/8 and 5/6), where the adjudicated key has them
+tied at 7/10. The gap is coverage, not new errors: under those keys the
+human-identity arms record no wrong answers but abstain on set and
+comparative items that direct RGB answers, including one item the original
+key excludes as ambiguous but the second annotator answered -- direct RGB
+answered it too, and the stored-graph arms did not. Direct RGB's single error
+under the returned key is a set item on which its returned set differs from
+the annotator's. No arm, prompt, or key was retuned in response to the second
+annotation.
+
+\begin{table}[t]
+  \centering\footnotesize
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabular}{@{}lccc@{}}
+    \toprule
+    arm & adjudicated & annotator 2 & agreement\\
+        & ($n{=}10$)  & ($n{=}8$)   & ($n{=}6$)\\
+    \midrule
+    geometry ceiling   & 7/10 & 5/8 & 5/6\\
+    stored-edge replay & 7/10 & 5/8 & 5/6\\
+    delivered graph    & 0/10 & 0/8 & 0/6\\
+    grounded graph     & 2/10 & 1/8 & 1/6\\
+    direct RGB         & 7/10 & 7/8 & 6/6\\
+    \bottomrule
+  \end{tabular}
+  \caption{Evaluation-key reproducibility: each arm's frozen answers re-scored
+  under (left) the adjudicated key, (middle) an independent second annotator's
+  key exactly as returned, and (right) the agreement-only subset of items on
+  which both annotators returned the same answer ($n{=}6$). The second
+  annotator abstained (``cannot determine'') on four items; abstentions carry
+  no key answer and are excluded from that key's denominator by the same rule
+  that excludes owner-marked ambiguous items, uniformly across arms. The
+  delivered-label graph scores 0 and the two human-identity arms (the
+  geometry control and the stored-edge replay) retain most of their correct
+  answers under every key, so the held-but-unreachable gap is not an artifact
+  of one annotator's judgments. The evidence-aware hybrid is item-identical
+  to direct RGB on these items and is omitted.}
+  \label{tab:key-sensitivity}
+\end{table}
+
 Referent descriptions and free-text relation labels are preserved verbatim
 in the committed returned form for post-hoc analysis. The adjudication
 overlay is itself a committed artifact and never overwrites the returned
